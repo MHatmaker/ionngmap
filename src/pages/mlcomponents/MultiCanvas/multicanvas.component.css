@@ -1,0 +1,12 @@
+
+    .multi-can-active {
+      position: absolute;
+      top: 500px;
+    }
+    .multi-can-active current {
+      top: 30px;
+    }
+    .multi-can-current {
+      position: absolute;
+      top: 30px;
+    }
