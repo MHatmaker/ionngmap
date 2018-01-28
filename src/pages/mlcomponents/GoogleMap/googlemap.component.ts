@@ -4,8 +4,8 @@ import { MouseEvent } from '@agm/core';
 
 @Component({
   selector: 'maplinkr-googlemap',
-  template: './googlemap.component.html'),
-  styles: [ './googlemap.component.css')]
+  template: './googlemap.component.html',
+  styles: [ './googlemap.component.css']
 })
 export class GoogleMapComponent implements OnInit {
   @Output()

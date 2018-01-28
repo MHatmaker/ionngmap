@@ -6,12 +6,12 @@ import {FormsModule} from '@angular/forms'
 // import {} from '@types/googlemaps';
 import { MouseEvent } from '@agm/core';
 
-// declare var google;
+declare var google;
 
 @Component({
   selector: 'places-for-maplinkr',
-  template: './places.component.html'),
-  styles: [ './places.component.css')]
+  template: './places.component.html',
+  styles: [ './places.component.css']
 })
 export class PlacesSearchComponent implements AfterViewInit {
     @ViewChild("searchBox")
@@ -38,7 +38,7 @@ export class PlacesSearchComponent implements AfterViewInit {
         })
       });
     }
-    
+
  placeMarkers(map, places) {
 
     var markers = [];
