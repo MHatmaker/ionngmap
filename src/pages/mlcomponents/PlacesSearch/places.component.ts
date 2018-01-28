@@ -10,8 +10,8 @@ import { MouseEvent } from '@agm/core';
 
 @Component({
   selector: 'places-for-maplinkr',
-  template: require('./places.component.html'),
-  styles: [ require('./places.component.css')]
+  template: './places.component.html'),
+  styles: [ './places.component.css')]
 })
 export class PlacesSearchComponent implements AfterViewInit {
     @ViewChild("searchBox")

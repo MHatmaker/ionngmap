@@ -10,16 +10,16 @@ import {
     // ViewChild,
     // ElementRef,
     // ComponentFactoryResolver } from '@angular/core';
-import { IPosition, MLPosition } from '../services/position.service';
-import { ConfigParams, IConfigParams } from '../services/configparams.service';
+import { IPosition, MLPosition } from '../../../services/position.service';
+import { ConfigParams, IConfigParams } from '../../../services/configparams.service';
 import { MLConfig } from '../libs/MLConfig';
-import { MapInstanceService} from '../services/MapInstanceService';
+import { MapInstanceService} from '../../../services/MapInstanceService';
 import { CarouselComponent} from '../Carousel/carousel.component';
 import { MultiCanvasEsri } from '../MultiCanvas/multicanvasesri.component';
 import { MultiCanvasGoogle } from '../MultiCanvas/multicanvasgoogle.component';
-import { CanvasService } from '../services/CanvasService';
-import { ISlideData } from "../services/slidedata.interface";
-import { SlideShareService } from '../services/slideshare.service';
+import { CanvasService } from '../../../services/CanvasService';
+import { ISlideData } from "../../../services/slidedata.interface";
+import { SlideShareService } from '../../../services/slideshare.service';
 
 declare var google;
 
@@ -29,8 +29,8 @@ console.log("loading CanvasHolder");
   selector: 'canvas-holder',
   providers: [MapInstanceService, CanvasService, SlideShareService],
   // providers: [MapInstanceService, CanvasService, MLPosition, ConfigParams, MLConfig, SlideShareService],
-  template: require('./canvasholder.component.html'),
-  styles: [require('./canvasholder.component.css')]
+  template: './canvasholder.component.html',
+  styles: ['./canvasholder.component.css']
 })
 export class CanvasHolderComponent {
     private isInstantiated : boolean;

@@ -2,28 +2,35 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
-import { MyApp } from './app.component';
+// import { MapView } from 'esri/views/MapView';
+// import { Point } from 'esri/geometry/Point';
+// import { SpatialReference } from 'esri/geometry/SpatialReference';
+
+import { MapLinkrApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
+import { MapsPage } from '../pages/maps/maps';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 @NgModule({
   declarations: [
-    MyApp,
+    MapLinkrApp,
     HomePage,
-    ListPage
+    ListPage,
+    MapsPage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MapLinkrApp),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
+    MapLinkrApp,
     HomePage,
-    ListPage
+    ListPage,
+    MapsPage
   ],
   providers: [
     StatusBar,

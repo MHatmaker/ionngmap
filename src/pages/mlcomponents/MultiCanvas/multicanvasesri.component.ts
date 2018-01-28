@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CanvasService } from '../services/CanvasService';
+import { Component } from '@angular/core';
+import { CanvasService } from '../../../services/CanvasService';
 
 @Component({
   selector: 'multi-canvas-esri',
-  template: require('./multicanvasesri.component.html'),
-  styles: [require('./multicanvas.component.css')]
+  templateUrl: './multicanvasesri.component.html',
+  styles: ['./multicanvas.component.css']
 })
 
 export class MultiCanvasEsri {
-    private el : string = null;
+    // private el : string = null;
     private ndx : number = null;
     private mapcolheight : number = 510;
 

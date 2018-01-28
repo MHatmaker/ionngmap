@@ -1,5 +1,9 @@
 import { Component, ElementRef, Output, EventEmitter, OnInit } from '@angular/core';
-import { ESRIMapService } from '../services/esrimap.service';
+import { ESRIMapService } from '../../../services/esrimap.service';
+
+// import * as MapView from 'esri/views/MapView';
+// import * as Point  from 'esri/geometry/Point';
+// import * as SpatialReference from 'esri/geometry/SpatialReference';
 
 import MapView = require('esri/views/MapView');
 import Point = require('esri/geometry/Point');

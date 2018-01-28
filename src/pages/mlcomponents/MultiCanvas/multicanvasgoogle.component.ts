@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CanvasService } from '../services/CanvasService';
+import { Component } from '@angular/core';
+import { CanvasService } from '../../../services/CanvasService';
 
 @Component({
   selector: 'multi-canvas-google',
-  template: require('./multicanvasgoogle.component.html'),
-  styles: [require('./multicanvas.component.css')]
+  templateUrl: './multicanvasgoogle.component.html',
+  styles: ['./multicanvas.component.css']
 })
 
 export class MultiCanvasGoogle {
-    private el : string = null;
+    // private el : string = null;
     private ndx : number = null;
     private mapcolheight : number = 510;
 

@@ -1,14 +1,14 @@
 
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { MapInstanceService } from '../services/MapInstanceService';
-import { SlideShareService } from '../services/slideshare.service';
-import { ISlideData } from "../services/slidedata.interface";
+import { Component, OnInit } from '@angular/core';
+import { MapInstanceService } from '../../../services/MapInstanceService';
+import { SlideShareService } from '../../../services/slideshare.service';
+import { ISlideData } from "../../../services/slidedata.interface";
 
 @Component({
   selector: 'carousel',
   providers: [MapInstanceService],
-  template: require('./carousel.component.html'),
-  styles: [require('./carousel.component.css')]
+  templateUrl: './carousel.component.html',
+  styles: ['./carousel.component.css']
 })
 export class CarouselComponent { // extends BroadcastBase { //implements OnInit  {
     //console.log("Carousel : ready to set up Carousel");
