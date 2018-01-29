@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import Map = 'esri/Map');
+import Map = require('esri/Map');
 
 @Injectable()
 export class ESRIMapService {
