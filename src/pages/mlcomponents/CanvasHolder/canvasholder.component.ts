@@ -1,6 +1,5 @@
 import {
     Component,
-    OnInit,
     OnDestroy,
     Input,
     EventEmitter } from '@angular/core';
@@ -29,7 +28,7 @@ console.log("loading CanvasHolder");
   selector: 'canvas-holder',
   providers: [MapInstanceService, CanvasService, SlideShareService],
   // providers: [MapInstanceService, CanvasService, MLPosition, ConfigParams, MLConfig, SlideShareService],
-  template: './canvasholder.component.html',
+  templateUrl: './canvasholder.component.html',
   styles: ['./canvasholder.component.css']
 })
 export class CanvasHolderComponent {
@@ -67,7 +66,7 @@ export class CanvasHolderComponent {
     }*/
     addCanvas (mapType, mlcfg, resolve) {
         console.log("in CanvasHolderCtrl.addCanvas");
-        var currIndex = this.mapInstanceService.getSlideCount(),
+        var currIndex : number = this.mapInstanceService.getSlideCount(),
             newCanvasItem,
             mapDctv,
             parentDiv,

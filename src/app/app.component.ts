@@ -88,13 +88,14 @@ export class MapLinkrApp {
 
 		// Load options with nested items (with icons)
 		// -----------------------------------------------
-		this.options.push({
-			iconName: 'apps',
-			displayName: 'Maps',
-			component: MapsPage
-		});
+		// this.options.push({
+		// 	iconName: 'apps',
+		// 	displayName: 'Maps',
+		// 	component: MapsPage
+		// });
 
 		this.options.push({
+			iconName: 'apps',
 			displayName: 'Map options with icons',
 			subItems: [
 				{

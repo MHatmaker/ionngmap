@@ -1,13 +1,14 @@
-import { Component, ElementRef, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, ElementRef, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { ESRIMapService } from '../../../services/esrimap.service';
+import { loadModules } from 'esri-loader';
 
 // import * as MapView from 'esri/views/MapView';
 // import * as Point  from 'esri/geometry/Point';
 // import * as SpatialReference from 'esri/geometry/SpatialReference';
 
-import MapView = require('esri/views/MapView');
-import Point = require('esri/geometry/Point');
-import SpatialReference = require('esri/geometry/SpatialReference');
+// import MapView = require('esri/views/MapView');
+// import Point = require('esri/geometry/Point');
+// import SpatialReference = require('esri/geometry/SpatialReference');
 
 @Component({
   selector: 'maplinkr-esrimap',
@@ -17,23 +18,30 @@ export class EsriMapComponent implements OnInit {
 
   @Output()
   viewCreated = new EventEmitter();
-
-  mapView: MapView;
+  @ViewChild('map') mapEl: ElementRef;
+      mapView:any = null;
 
   constructor(private mapService: ESRIMapService,
     private elementRef: ElementRef) { }
 
   ngOnInit() {
-    this.mapView = new MapView({
-      container: this.elementRef.nativeElement.firstChild,
-      map: this.mapService.map,
-      center: new Point({
-        x: -87.620692,
-        y: 41.888941,
-        spatialReference: new SpatialReference({ wkid: 4326 })
-      }),
-      zoom: 15
-    });
-    this.viewCreated.next(this.mapView);
-  }
+
+
+  // Load the mapping API modules
+      loadModules([
+        'esri/Map', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'
+      ]).then(([Map, MapView, Point, SpatialReference]) => {
+      this.mapView = new MapView({
+        container: this.elementRef.nativeElement.firstChild,
+        map: this.mapService.map,
+        center: new Point({
+          x: -87.620692,
+          y: 41.888941,
+          spatialReference: new SpatialReference({ wkid: 4326 })
+        }),
+        zoom: 15
+      });
+      this.viewCreated.next(this.mapView);
+    }
+  )}
 }

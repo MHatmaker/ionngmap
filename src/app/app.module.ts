@@ -16,13 +16,32 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';// Custom components
 import { SideMenuContentComponent } from '../side-menu-content/side-menu-content.component';
 
+import { PlacesSearchComponent } from '../pages/mlcomponents/PlacesSearch/places.component';
+import { EsriMapComponent } from '../pages/mlcomponents/EsriMap/esrimap.component';
+import { GoogleMapComponent } from '../pages/mlcomponents/GoogleMap/googlemap.component';
+import { ESRIMapService } from '../services/esrimap.service';
+import { MultiCanvasEsri } from '../pages/mlcomponents/MultiCanvas/multicanvasesri.component';
+import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvasgoogle.component';
+
+// import { CoordinateComponent } from '../pages/mlcomponents/coordinate/coordinate.component';
+import { CarouselComponent } from '../pages/mlcomponents/Carousel/carousel.component';
+import { DomService } from '../services/dom.service';
+import { MapInstanceService } from '../services/MapInstanceService';
+import { CanvasService } from '../services/CanvasService';
+import { SlideShareService } from '../services/slideshare.service';
 @NgModule({
   declarations: [
     MapLinkrApp,
     HomePage,
     ListPage,
     MapsPage,
-    SideMenuContentComponent
+    SideMenuContentComponent,
+    PlacesSearchComponent,
+    EsriMapComponent,
+    GoogleMapComponent,
+    MultiCanvasEsri,
+    MultiCanvasGoogle,
+    CarouselComponent
   ],
   imports: [
     BrowserModule,
@@ -40,11 +59,19 @@ import { SideMenuContentComponent } from '../side-menu-content/side-menu-content
     MapLinkrApp,
     HomePage,
     ListPage,
-    MapsPage
+    MapsPage,
+    MultiCanvasEsri,
+    MultiCanvasGoogle,
+    EsriMapComponent,
+    GoogleMapComponent
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    ESRIMapService,
+    CanvasService,
+    MapInstanceService,
+    SlideShareService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

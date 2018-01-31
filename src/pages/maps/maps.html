@@ -3,21 +3,12 @@
     <button ion-button menuToggle>
       <ion-icon name="maptypes"></ion-icon>
     </button>
-    <ion-title>List</ion-title>
+    <ion-title>Maps</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-    <ion-list>
-         <button ion-item menuClose (click)="openPage(homePage)">
-            Home
-        </button>
-        <button ion-item menuClose (click)="openPage(mapsPage)">
-            Maps
-        </button>
-        <button ion-item menuClose (click)="openPage(listPage)">
-            List
-        </button>
-    </ion-list>
+    <places-for-maplinkr></places-for-maplinkr>
+    <carousel #clickHandler></carousel>
 
 </ion-content>
