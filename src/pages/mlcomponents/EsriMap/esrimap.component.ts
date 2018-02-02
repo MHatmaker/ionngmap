@@ -12,7 +12,7 @@ import { loadModules } from 'esri-loader';
 
 @Component({
   selector: 'maplinkr-esrimap',
-  template: '<div id="viewDiv" style="height:100%"><ng-content></ng-content></div>'
+  template: '<div id="viewDiv" style="width:100%; height: 510px;"><ng-content></ng-content></div>'
 })
 export class EsriMapComponent implements OnInit {
 
@@ -20,6 +20,7 @@ export class EsriMapComponent implements OnInit {
   viewCreated = new EventEmitter();
   @ViewChild('map') mapEl: ElementRef;
       mapView:any = null;
+  // mapView: any;
 
   constructor(private mapService: ESRIMapService,
     private elementRef: ElementRef) { }
@@ -31,9 +32,12 @@ export class EsriMapComponent implements OnInit {
       loadModules([
         'esri/Map', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'
       ]).then(([Map, MapView, Point, SpatialReference]) => {
+      let map = new Map({
+        basemap: <any>'topo-vector'
+        });
       this.mapView = new MapView({
         container: this.elementRef.nativeElement.firstChild,
-        map: this.mapService.map,
+        map: map, //this.mapService.map,
         center: new Point({
           x: -87.620692,
           y: 41.888941,

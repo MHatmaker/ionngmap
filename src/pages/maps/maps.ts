@@ -3,7 +3,8 @@ import {
     OnInit,
     OnDestroy,
     Input,
-    EventEmitter } from '@angular/core';
+    EventEmitter,
+    AfterViewInit} from '@angular/core';
     // ViewContainerRef,
     // ComponentRef,
     // ReflectiveInjector,
@@ -32,10 +33,11 @@ declare var google;
   templateUrl: 'maps.html',
   styles: ['./canvasholder.component.css']
 })
-export class MapsPage {
+export class MapsPage implements AfterViewInit {
   selectedMapType : string;
     private isInstantiated : boolean;
     private outerMapNumber : number = 0;
+    private mlconfig : MLConfig;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
               private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
@@ -45,9 +47,13 @@ export class MapsPage {
 
     console.log("fire up ConfigParams");
     var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
-        cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : 'google', webmapId : "nowebmap", mlposition :ipos},
+        cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
         mlconfig = new MLConfig(cfgparams);
     this.mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
+  }
+
+  ngAfterViewInit() {
+    this.addCanvas(this.selectedMapType, this.mlconfig, null);
   }
 
   ionViewDidLoad() {

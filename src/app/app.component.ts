@@ -100,17 +100,17 @@ export class MapLinkrApp {
 			subItems: [
 				{
 					iconName: 'google',
-					displayName: 'Google',
+					displayName: 'google',
 					component: MapsPage
 				},
 				{
 					iconName: 'arcgis',
-					displayName: 'ArcGIS',
+					displayName: 'esri',
 					component: MapsPage
 				},
 				{
 					iconName: 'leaflet',
-					displayName: 'Leaflet',
+					displayName: 'leaflet',
 					component: MapsPage
 				}
 			]

@@ -10,8 +10,10 @@ declare var google;
 
 @Component({
   selector: 'places-for-maplinkr',
-  template: './places.component.html',
+  templateUrl: './places.component.html',
   styles: [ './places.component.css']
+  // template: require('./places.component.html'),
+  // styles: [require('./places.component.css')]
 })
 export class PlacesSearchComponent implements AfterViewInit {
     @ViewChild("searchBox")
@@ -25,6 +27,7 @@ export class PlacesSearchComponent implements AfterViewInit {
   ngAfterViewInit() {
       let input: any = this.searchBoxRef.nativeElement;
       console.log(this.searchBoxRef);
+
       var searchBox = new google.maps.places.SearchBox(input);
       searchBox.addListener("places_changed", () => {
         this._ngZone.run(() => {
@@ -37,6 +40,7 @@ export class PlacesSearchComponent implements AfterViewInit {
           }
         })
       });
+
     }
 
  placeMarkers(map, places) {

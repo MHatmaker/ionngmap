@@ -6,3 +6,4 @@ plugins/
 www/
 src/side-menu-content/
 gitpass
+.sourcemaps/
