@@ -20,6 +20,7 @@ export class MapInstanceService {
     }
     incrementMapNumber() {
         this.slideCount += 1;
+        console.log("incrementMapNumber to " + this.slideCount);
     }
     getNextMapNumber() {
         if (this.isFirstInstance) {

@@ -1,16 +1,15 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MapInstanceService } from '../../../services/MapInstanceService';
 import { SlideShareService } from '../../../services/slideshare.service';
 import { ISlideData } from "../../../services/slidedata.interface";
 
 @Component({
   selector: 'carousel',
-  providers: [MapInstanceService],
   templateUrl: './carousel.component.html',
   styles: ['./carousel.component.css']
 })
-export class CarouselComponent { // extends BroadcastBase { //implements OnInit  {
+export class CarouselComponent {
     //console.log("Carousel : ready to set up Carousel");
     private items : Array<any> = new Array<any>();
     private activeSlideNumber : number = 0;
@@ -27,9 +26,7 @@ export class CarouselComponent { // extends BroadcastBase { //implements OnInit 
     private ActNoAct : string = 'active';
 
     constructor(private mapInstanceService: MapInstanceService, private slideshareService : SlideShareService) {
-        // super(broadcaster);
         console.log("Carousel ctor");
-        // this.mapInstanceService = mapInstanceService;
         // this.currentSlide = this.items[0] || null;
         this.slideshareService.slideData.subscribe(
           (data: ISlideData) => {

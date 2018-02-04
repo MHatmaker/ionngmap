@@ -1,55 +1,51 @@
 import {
     Component,
-    OnInit,
-    OnDestroy,
-    Input,
-    EventEmitter,
     AfterViewInit} from '@angular/core';
-    // ViewContainerRef,
-    // ComponentRef,
-    // ReflectiveInjector,
-    // ViewChild,
-    // ElementRef,
-    // ComponentFactoryResolver } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { IPosition, MLPosition } from '../../services/position.service';
-import { ConfigParams, IConfigParams } from '../../services/configparams.service';
+import { IConfigParams } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
 import { MapInstanceService} from '../../services/MapInstanceService';
-import { CarouselComponent} from '../mlcomponents/Carousel/carousel.component';
+// import { CarouselComponent} from '../mlcomponents/Carousel/carousel.component';
 import { MultiCanvasEsri } from '../mlcomponents/MultiCanvas/multicanvasesri.component';
 import { MultiCanvasGoogle } from '../mlcomponents/MultiCanvas/multicanvasgoogle.component';
 import { CanvasService } from '../../services/CanvasService';
-import { ISlideData } from "../../services/slidedata.interface";
+// import { ISlideData } from "../../services/slidedata.interface";
 import { SlideShareService } from '../../services/slideshare.service';
 
-declare var google;
+// declare var google;
+// var mapInstanceService : MapInstanceService = new MapInstanceService();
+// var canvasService : CanvasService; // = new CanvasService();
+// var slideshareService : SlideShareService = new SlideShareService();
 
 @IonicPage()
 @Component({
   selector: 'page-maps',
-  providers: [MapInstanceService, CanvasService, SlideShareService],
-  templateUrl: 'maps.html',
-  styles: ['./canvasholder.component.css']
+  templateUrl: './map.component.html',
+  styles: ['./map.component.css']
 })
 export class MapsPage implements AfterViewInit {
   selectedMapType : string;
-    private isInstantiated : boolean;
+    // private isInstantiated : boolean = false;
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
+  constructor(public navCtrl: NavController, public navParams: NavParams, // private canvasService : CanvasService
               private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService) {
     // If we navigated to this page, we will have an item available as a nav param
     this.selectedMapType = navParams.get('title');
 
+    // if (this.isInstantiated) {
+    //     this.outerMapNumber = mapInstanceService.getNextMapNumber();
+    // }
+    // this.isInstantiated = true;
     console.log("fire up ConfigParams");
     var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
         cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
         mlconfig = new MLConfig(cfgparams);
-    this.mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
+    mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
   }
 
   ngAfterViewInit() {

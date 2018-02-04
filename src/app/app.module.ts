@@ -10,7 +10,7 @@ import { AgmCoreModule } from '@agm/core';
 import { MapLinkrApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
-import { MapsPage } from '../pages/maps/maps';
+import { MapsPage } from '../pages/maps/map.component';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';// Custom components
@@ -25,7 +25,7 @@ import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvas
 
 // import { CoordinateComponent } from '../pages/mlcomponents/coordinate/coordinate.component';
 import { CarouselComponent } from '../pages/mlcomponents/Carousel/carousel.component';
-import { DomService } from '../services/dom.service';
+// import { DomService } from '../services/dom.service';
 import { MapInstanceService } from '../services/MapInstanceService';
 import { CanvasService } from '../services/CanvasService';
 import { SlideShareService } from '../services/slideshare.service';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IPosition, MLPosition } from './position.service';
+import { IPosition } from './position.service';
 
 export interface IConfigParams {
     mapId : number;

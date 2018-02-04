@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
-import { MapsPage } from '../pages/maps/maps';
+import { MapsPage } from '../pages/maps/map.component';
 // Side Menu Component
 import { SideMenuContentComponent } from './../side-menu-content/side-menu-content.component';
 import { SideMenuSettings } from './../side-menu-content/models/side-menu-settings';
@@ -59,13 +59,13 @@ export class MapLinkrApp {
 			this.initializeOptions();
     });
   }
-
+/*
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
     this.navCtrl.setRoot(page.component);
   }
-
+*/
 	private initializeOptions(): void {
 		this.options = new Array<MenuOptionModel>();
 
@@ -86,17 +86,9 @@ export class MapLinkrApp {
 			component: ListPage
 });
 
-		// Load options with nested items (with icons)
-		// -----------------------------------------------
-		// this.options.push({
-		// 	iconName: 'apps',
-		// 	displayName: 'Maps',
-		// 	component: MapsPage
-		// });
-
 		this.options.push({
 			iconName: 'apps',
-			displayName: 'Map options with icons',
+			displayName: 'Map options',
 			subItems: [
 				{
 					iconName: 'google',
@@ -160,6 +152,7 @@ export class MapLinkrApp {
 
 				// Redirect to the selected page
 				this.navCtrl.setRoot(option.component || MapsPage, { 'title': option.displayName });
+        // this.rootPage = option.component;
 			// }
 		});
 	}

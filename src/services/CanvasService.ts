@@ -3,8 +3,8 @@ import {
     Injector,
     ComponentFactoryResolver,
     EmbeddedViewRef,
-    ApplicationRef,
-    ComponentRef
+    ApplicationRef
+    // ComponentRef
 } from '@angular/core';
 
 // import {MultiCanvasGoogle} from '../MultiCanvas/multicanvasgoogle.component';
