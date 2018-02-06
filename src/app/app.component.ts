@@ -1,27 +1,26 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform , MenuController } from 'ionic-angular';
+import { Platform , MenuController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { NavController, NavParams } from 'ionic-angular';
 
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
 import { MapsPage } from '../pages/maps/map.component';
 // Side Menu Component
 import { SideMenuContentComponent } from './../side-menu-content/side-menu-content.component';
 import { SideMenuSettings } from './../side-menu-content/models/side-menu-settings';
+import { PageService } from './../services/pageservice';
 import { MenuOptionModel } from './../side-menu-content/models/menu-option-model';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MapLinkrApp {
-  @ViewChild(Nav) navCtrl: Nav;
+  @ViewChild('mlcontent') nav: NavController // <--- Reference to the Nav
 	// Get the instance to call the public methods
 	@ViewChild(SideMenuContentComponent) sideMenu: SideMenuContentComponent;
-
-  rootPage: any = HomePage;
   // Options to show in the SideMenuComponent
 	public options: Array<MenuOptionModel>;
+  rootPage = MapsPage;
 
 	// Settings for the SideMenuComponent
 	public sideMenuSettings: SideMenuSettings = {
@@ -37,13 +36,11 @@ export class MapLinkrApp {
   pages: Array<{title: string, component: any}>;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
-      private menuCtrl: MenuController) {
+      private menuCtrl: MenuController, private pageService : PageService) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Home', component: HomePage },
-      { title: 'List', component: ListPage },
       { title: 'Maps', component: MapsPage }
     ];
 
@@ -68,23 +65,6 @@ export class MapLinkrApp {
 */
 	private initializeOptions(): void {
 		this.options = new Array<MenuOptionModel>();
-
-		// Load simple menu options
-		// ------------------------------------------
-		this.options.push({
-			iconName: 'home',
-			displayName: 'Home',
-			component: HomePage,
-
-			// This option is already selected
-			selected: true
-		});
-
-		this.options.push({
-			iconName: 'lists',
-			displayName: 'Lists',
-			component: ListPage
-});
 
 		this.options.push({
 			iconName: 'apps',
@@ -141,6 +121,7 @@ export class MapLinkrApp {
 
 	public selectOption(option: MenuOptionModel): void {
 		this.menuCtrl.close().then(() => {
+      this.pageService.menuOption.emit(option)
 			// if (option.custom && option.custom.isLogin) {
 			// 	this.presentAlert('You\'ve clicked the login option!');
 			// } else if (option.custom && option.custom.isLogout) {
@@ -151,7 +132,7 @@ export class MapLinkrApp {
 			// } else {
 
 				// Redirect to the selected page
-				this.navCtrl.setRoot(option.component || MapsPage, { 'title': option.displayName });
+				// this.navCtrl.setRoot(option.component || MapsPage, { 'title': option.displayName });
         // this.rootPage = option.component;
 			// }
 		});

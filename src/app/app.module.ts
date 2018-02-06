@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule, NavController } from 'ionic-angular';
 import { AgmCoreModule } from '@agm/core';
 
 // import { MapView } from 'esri/views/MapView';
@@ -8,8 +8,6 @@ import { AgmCoreModule } from '@agm/core';
 // import { SpatialReference } from 'esri/geometry/SpatialReference';
 
 import { MapLinkrApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
 import { MapsPage } from '../pages/maps/map.component';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -29,11 +27,10 @@ import { CarouselComponent } from '../pages/mlcomponents/Carousel/carousel.compo
 import { MapInstanceService } from '../services/MapInstanceService';
 import { CanvasService } from '../services/CanvasService';
 import { SlideShareService } from '../services/slideshare.service';
+import { PageService } from '../services/pageservice'
 @NgModule({
   declarations: [
     MapLinkrApp,
-    HomePage,
-    ListPage,
     MapsPage,
     SideMenuContentComponent,
     PlacesSearchComponent,
@@ -57,8 +54,6 @@ import { SlideShareService } from '../services/slideshare.service';
   bootstrap: [IonicApp],
   entryComponents: [
     MapLinkrApp,
-    HomePage,
-    ListPage,
     MapsPage,
     MultiCanvasEsri,
     MultiCanvasGoogle,
@@ -72,6 +67,7 @@ import { SlideShareService } from '../services/slideshare.service';
     CanvasService,
     MapInstanceService,
     SlideShareService,
+    PageService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

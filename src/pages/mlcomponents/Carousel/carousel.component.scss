@@ -1,5 +1,22 @@
-page-maps {
-
+carousel {
+    .carousel-active {
+      position: absolute;
+      top: 500px;
+    }
+    .carousel-active current {
+      top: 30px;
+    }
+    .carousel-basic {
+      position: absolute;
+      visibility: hidden;
+      width: 100%;
+      top: 500px;
+    }
+    .carousel-current {
+      top: 10px;
+      visibility: visible;
+      left: 5px;
+    }
     .carouselbox {
       font-family: helvetica,sans-serif;
       font-size: 14px;
@@ -87,5 +104,4 @@ page-maps {
     .icon-row {
          -webkit-align-items: center;
     }
-
 }

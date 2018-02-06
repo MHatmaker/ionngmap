@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ISlideData } from './slidedata.interface'
+// import { ISlideData } from './slidedata.interface'
 
 @Injectable()
 export class SlideData {

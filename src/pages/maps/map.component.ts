@@ -1,7 +1,6 @@
 import {
     Component,
     AfterViewInit} from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { IPosition, MLPosition } from '../../services/position.service';
 import { IConfigParams } from '../../services/configparams.service';
@@ -13,17 +12,18 @@ import { MultiCanvasGoogle } from '../mlcomponents/MultiCanvas/multicanvasgoogle
 import { CanvasService } from '../../services/CanvasService';
 // import { ISlideData } from "../../services/slidedata.interface";
 import { SlideShareService } from '../../services/slideshare.service';
+import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
+import { PageService } from "../../services/pageservice"
 
 // declare var google;
 // var mapInstanceService : MapInstanceService = new MapInstanceService();
 // var canvasService : CanvasService; // = new CanvasService();
 // var slideshareService : SlideShareService = new SlideShareService();
 
-@IonicPage()
 @Component({
   selector: 'page-maps',
   templateUrl: './map.component.html',
-  styles: ['./map.component.css']
+  styles: ['map.component.css']
 })
 export class MapsPage implements AfterViewInit {
   selectedMapType : string;
@@ -31,11 +31,10 @@ export class MapsPage implements AfterViewInit {
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, // private canvasService : CanvasService
-              private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
-              private slideshareService : SlideShareService) {
+  constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
+              private slideshareService : SlideShareService, pageService : PageService) {
     // If we navigated to this page, we will have an item available as a nav param
-    this.selectedMapType = navParams.get('title');
+    //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
     // if (this.isInstantiated) {
     //     this.outerMapNumber = mapInstanceService.getNextMapNumber();
@@ -46,10 +45,15 @@ export class MapsPage implements AfterViewInit {
         cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
         mlconfig = new MLConfig(cfgparams);
     mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
+    pageService.menuOption.subscribe(
+      (data: MenuOptionModel) => {
+        console.log(data);
+        this.onsetMap(data);
+      });
   }
 
   ngAfterViewInit() {
-    this.addCanvas(this.selectedMapType, this.mlconfig, null);
+    // this.addCanvas(this.selectedMapType, this.mlconfig, null);
   }
 
   ionViewDidLoad() {
@@ -58,6 +62,10 @@ export class MapsPage implements AfterViewInit {
   openPage(p) {
       console.log("selected map type " + p);
   }
+  onsetMap (menuOption : MenuOptionModel) {
+      this.addCanvas( menuOption.displayName, null, null);
+  }
+
   addCanvas (mapType, mlcfg, resolve) {
       console.log("in CanvasHolderCtrl.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
