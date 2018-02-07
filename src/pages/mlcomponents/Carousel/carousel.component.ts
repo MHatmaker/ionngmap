@@ -6,8 +6,8 @@ import { ISlideData } from "../../../services/slidedata.interface";
 
 @Component({
   selector: 'carousel',
-  templateUrl: './carousel.component.html',
-  styles: ['./carousel.component.css']
+  templateUrl: './carousel.component.html'
+  // styleUrls: ['./carousel.component.scss']
 })
 export class CarouselComponent {
     //console.log("Carousel : ready to set up Carousel");

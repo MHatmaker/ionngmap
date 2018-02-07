@@ -1,7 +1,8 @@
 
     <div style="height: 100%;" class='icon-row'>
         <div class="carouselbox {{ActNoAct}}" style="margin: 0.2em;">
-            <div class="buttons icon-row ">
+            <div class="buttons icon-row" style="display: flex">
+
                 <div class="col-md-1 col-xs-1">
                     <button class="chevron-prev" *ngIf="showNavButtons" (click)="onClickPrev()">
                         <span class="offscreen">Previous</span>
@@ -14,6 +15,7 @@
                         <span class="offscreen">Next</span>
                     </button>
                 </div>
+
             </div>
 
             <!-- <ol class="MapContainer" [style.height] = "mapcolheight + 'px'" [style.width] = "'100%'"></ol> -->

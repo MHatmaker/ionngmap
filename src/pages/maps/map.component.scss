@@ -85,7 +85,8 @@ page-maps {
     }
 
     .icon-row {
-         -webkit-align-items: center;
+        display: flex;
+        align-items: flex-end;
     }
 
 }

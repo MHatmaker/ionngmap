@@ -22,8 +22,8 @@ import { PageService } from "../../services/pageservice"
 
 @Component({
   selector: 'page-maps',
-  templateUrl: './map.component.html',
-  styles: ['map.component.css']
+  templateUrl: './map.component.html'
+  // styleUrls: ['./map.component.scss']
 })
 export class MapsPage implements AfterViewInit {
   selectedMapType : string;

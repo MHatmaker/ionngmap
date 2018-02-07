@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule, NavController } from 'ionic-angular';
 import { AgmCoreModule } from '@agm/core';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 // import { MapView } from 'esri/views/MapView';
 // import { Point } from 'esri/geometry/Point';
@@ -43,6 +44,7 @@ import { PageService } from '../services/pageservice'
   imports: [
     BrowserModule,
     IonicModule.forRoot(MapLinkrApp),
+    NgbModule.forRoot(),
     AgmCoreModule.forRoot({
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
