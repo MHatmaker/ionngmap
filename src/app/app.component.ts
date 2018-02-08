@@ -67,21 +67,21 @@ export class MapLinkrApp {
 		this.options = new Array<MenuOptionModel>();
 
 		this.options.push({
-			iconName: 'apps',
+			iconName: 'link',
 			displayName: 'Map options',
 			subItems: [
 				{
-					iconName: 'google',
+					iconName: 'logo-google',
 					displayName: 'google',
 					component: MapsPage
 				},
 				{
-					iconName: 'arcgis',
+					iconName: 'globe',
 					displayName: 'esri',
 					component: MapsPage
 				},
 				{
-					iconName: 'leaflet',
+					iconName: 'leaf',
 					displayName: 'leaflet',
 					component: MapsPage
 				}
