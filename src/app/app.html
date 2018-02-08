@@ -6,14 +6,9 @@
 	</ion-header>
 
 	<ion-content>
-		<ion-list>
-			<button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-				  {{p.title}}
-			</button>
-		</ion-list>
 		<!-- Side Menu -->
 		<side-menu-content [settings]="sideMenuSettings" [options]="options" (selectOption)="selectOption($event)"></side-menu-content>
 	</ion-content>
 </ion-menu>
-<ion-nav #mlcontent [root]='MapsPage'></ion-nav>
-<page-maps></page-maps>
+<ion-nav #mlcontent [root]='rootPage' swipeBackEnabled="false"></ion-nav>
+<!-- <page-maps></page-maps> -->

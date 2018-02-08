@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { Platform , MenuController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { NavController, NavParams } from 'ionic-angular';
+import { Platform, NavController, MenuController, NavParams } from 'ionic-angular';
 
 import { MapsPage } from '../pages/maps/map.component';
+import { HomePage } from '../pages/home/home';
 // Side Menu Component
 import { SideMenuContentComponent } from './../side-menu-content/side-menu-content.component';
 import { SideMenuSettings } from './../side-menu-content/models/side-menu-settings';
@@ -15,12 +15,13 @@ import { MenuOptionModel } from './../side-menu-content/models/menu-option-model
   templateUrl: 'app.html'
 })
 export class MapLinkrApp {
-  @ViewChild('mlcontent') nav: NavController // <--- Reference to the Nav
+  @ViewChild('mlcontent') navCtrl: NavController // <--- Reference to the Nav
 	// Get the instance to call the public methods
 	@ViewChild(SideMenuContentComponent) sideMenu: SideMenuContentComponent;
   // Options to show in the SideMenuComponent
 	public options: Array<MenuOptionModel>;
-  rootPage = MapsPage;
+  rootPage: any = HomePage;
+  mapsOpen: boolean = false;
 
 	// Settings for the SideMenuComponent
 	public sideMenuSettings: SideMenuSettings = {
@@ -41,6 +42,7 @@ export class MapLinkrApp {
 
     // used for an example of ngFor and navigation
     this.pages = [
+      { title: 'Home', component: HomePage },
       { title: 'Maps', component: MapsPage }
     ];
 
@@ -66,6 +68,14 @@ export class MapLinkrApp {
 	private initializeOptions(): void {
 		this.options = new Array<MenuOptionModel>();
 
+		this.options.push({
+			iconName: 'home',
+			displayName: 'Home',
+			component: HomePage,
+
+			// This option is already selected
+			selected: true
+		});
 		this.options.push({
 			iconName: 'link',
 			displayName: 'Map options',
@@ -121,7 +131,12 @@ export class MapLinkrApp {
 
 	public selectOption(option: MenuOptionModel): void {
 		this.menuCtrl.close().then(() => {
-      this.pageService.menuOption.emit(option)
+      if (option.component.name === 'MapsPage' && this.mapsOpen) {
+          this.rootPage = option.component;
+				  // this.navCtrl.setRoot(MapsPage, { 'title': option.displayName });
+          this.pageService.menuOption.emit(option);
+      } else {
+
 			// if (option.custom && option.custom.isLogin) {
 			// 	this.presentAlert('You\'ve clicked the login option!');
 			// } else if (option.custom && option.custom.isLogout) {
@@ -132,9 +147,13 @@ export class MapLinkrApp {
 			// } else {
 
 				// Redirect to the selected page
-				// this.navCtrl.setRoot(option.component || MapsPage, { 'title': option.displayName });
+				      this.navCtrl.setRoot(option.component, { 'title': option.displayName });
+              if (option.component.name === 'MapsPage') {
+                  this.mapsOpen = true;
+                  this.pageService.menuOption.emit(option);
+              }
         // this.rootPage = option.component;
-			// }
+			}
 		});
 	}
 

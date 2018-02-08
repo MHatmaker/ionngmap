@@ -10,6 +10,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { MapLinkrApp } from './app.component';
 import { MapsPage } from '../pages/maps/map.component';
+import { HomePage } from '../pages/home/home';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';// Custom components
@@ -33,6 +34,7 @@ import { PageService } from '../services/pageservice'
   declarations: [
     MapLinkrApp,
     MapsPage,
+    HomePage,
     SideMenuContentComponent,
     PlacesSearchComponent,
     EsriMapComponent,
@@ -57,6 +59,7 @@ import { PageService } from '../services/pageservice'
   entryComponents: [
     MapLinkrApp,
     MapsPage,
+    HomePage,
     MultiCanvasEsri,
     MultiCanvasGoogle,
     EsriMapComponent,
