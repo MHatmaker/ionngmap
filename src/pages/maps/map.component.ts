@@ -48,7 +48,11 @@ export class MapsPage implements AfterViewInit {
     pageService.menuOption.subscribe(
       (data: MenuOptionModel) => {
         console.log(data);
-        this.onsetMap(data);
+        if ( data.displayName === 'MapLinkr') {
+            alert("MapLinkr!");
+        } else {
+            this.onsetMap(data);
+        }
       });
   }
 

@@ -87,6 +87,12 @@ export class MapLinkrApp {
 				}
 			]
 		});
+		this.options.push({
+			iconName: 'link',
+			displayName: 'MapLinkr',
+      component: MapsPage
+    });
+
 /*
 		// Load special options
 		// -----------------------------------------------
