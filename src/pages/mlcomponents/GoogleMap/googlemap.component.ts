@@ -1,31 +1,118 @@
-import { Component, Output, EventEmitter, ElementRef, OnInit } from '@angular/core';
-import { MouseEvent } from '@agm/core';
+import { Component, Output, EventEmitter, ElementRef, OnInit, AfterViewInit, NgZone, ViewChild } from '@angular/core';
+import { AgmCoreModule, MapsAPILoader, AgmMap, MouseEvent, GoogleMapsAPIWrapper } from '@agm/core';
+import { GoogleMap, Size, Point, LatLngLiteral } from '@agm/core/services/google-maps-types';
+import { MapInstanceService} from '../../../services/MapInstanceService';
+import { MLConfig } from '../libs/MLConfig';
+import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
+
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 
 @Component({
   selector: 'maplinkr-googlemap',
   templateUrl: './googlemap.component.html',
-  styles: [ './googlemap.component.css']
+  // styles: [ './googlemap.component.css']
 })
 export class GoogleMapComponent implements OnInit {
+  @ViewChild(AgmMap)
+  private agmMap;
   @Output()
   viewCreated = new EventEmitter();
   private lat: number;
   private lng: number;
   private zoom: number;
+  private map: GoogleMap;
+  private mlconfig : MLConfig;
+  private mlconfigSet : boolean = false;
   // private places : PlacesSearch;
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(private elementRef: ElementRef, private map_: GoogleMapsAPIWrapper,
+      private mapsAPILoader: MapsAPILoader, ngZone : NgZone, private mapInstanceService: MapInstanceService) {
+      // this.mapw = map_.getNativeMap();
+    console.log("ctor");
+    // this.mapsAPILoader.load()
+    //     .then(() => {
+    //     this.map_.getNativeMap()
+    //       .then(map => console.log('map: ', map))
+    //       .catch(error => console.log('getNativeMap() Error: ', error));
+    //     this.map_.getBounds()
+    //       .then(bounds => console.log('bounds: ', bounds))
+    //       .catch(error => console.log('getBounds() Error: ', error));
+    //   })
+  }
 
+  ngAfterViewInit(){/*
+    const mapRef : google.maps.Map = null;
+  	this.agmMap.mapReady.subscribe(map => {
+      console.log("get corners");
+      // map.getNativeMap()
+      // .then(map => console.log('map: ', map))
+      // .catch(error => console.log('getNativeMap() Error: ', error));
+    let bnds = map.getBounds();
+      console.log('bounds: ', bnds);
+      // .catch(error => console.log('getBounds() Error: ', error));
+      let ne = bnds.getNorthEast();
+      console.log(ne);
+
+      // map.getBounds()
+      //   .then((bounds) => {
+      //       console.log(bounds);
+      //       return bounds;
+      //     },
+      //     (err) => console.error(err)
+      //   ).
+      //   then((bounds) => bounds.getNorthEast()
+      //         .then((ne) => console.log(ne),
+      //         (err) => console.error(err))
+      //   );
+      // console.log(map.getBounds().getNorthEast());
+      // console.log(map.getBounds().getSouthWest());
+  	});*/
+  }
+
+  onMapReady(map: GoogleMap) {
+      // let bnds = map.__proto__.getBounds();
+      this.map = map;
+      // let ndx = this.mapInstanceService.getSlideCount();
+      // let mlcfg = this.mapInstanceService.getConfigForMap(ndx);
+      // mlcfg.setRawMap(map);
+      // console.log(this.map);
+
+  }
+  onBoundsChange($event) {
+      console.log("boundsChange");
+      if (!this.mlconfigSet) {
+          this.mlconfigSet = true;
+          let ndx = this.mapInstanceService.getSlideCount();
+          this.mlconfig = this.mapInstanceService.getConfigForMap(ndx - 1);
+          this.mlconfig.setRawMap(this.map);
+      }
+      let mp = this.map;
+      this.mlconfig.setBounds(new MLBounds(mp.getBounds().getSouthWest().lng(),
+                               mp.getBounds().getSouthWest().lat(),
+                               mp.getBounds().getNorthEast().lng(),
+                               mp.getBounds().getNorthEast().lat()));
+  }
   ngOnInit() {
+    console.log("ngOnInit");
     // google maps zoom level
     this.zoom = 14;
 
     // initial center position for the map
     this.lat = 41.888941;
     this.lng = -87.620692;
+      console.log('OnInit');
+      /*
+      this.map_.getNativeMap()
+        .then(map => console.log('OnInit: map: ', map))
+        .catch(error => console.log('OnInit: getNativeMap() Error: ', error));
+      this.map_.getBounds()
+        .then(bounds => console.log('OnInit: bounds: ', bounds))
+        .catch(error => console.log('OnInit: getBounds() Error: ', error));
+    let bnds = this.map_.getBounds(); //.getNativeMap().getBounds();
+    console.log(bnds);
 
     // this.places = new PlacesSearch(this.elementRef.nativeElement);
+    */
   }
 
   clickedMarker(label: string, index: number) {

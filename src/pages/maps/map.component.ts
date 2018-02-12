@@ -15,10 +15,6 @@ import { SlideShareService } from '../../services/slideshare.service';
 import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
 import { PageService } from "../../services/pageservice"
 
-// declare var google;
-// var mapInstanceService : MapInstanceService = new MapInstanceService();
-// var canvasService : CanvasService; // = new CanvasService();
-// var slideshareService : SlideShareService = new SlideShareService();
 
 @Component({
   selector: 'page-maps',
@@ -27,29 +23,29 @@ import { PageService } from "../../services/pageservice"
 })
 export class MapsPage implements AfterViewInit {
   selectedMapType : string;
-    // private isInstantiated : boolean = false;
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
+    private self = this;
 
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
-    // if (this.isInstantiated) {
-    //     this.outerMapNumber = mapInstanceService.getNextMapNumber();
-    // }
-    // this.isInstantiated = true;
     console.log("fire up ConfigParams");
     var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
         cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
         mlconfig = new MLConfig(cfgparams);
+    this.mlconfig = mlconfig;
     mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
     pageService.menuOption.subscribe(
       (data: MenuOptionModel) => {
         console.log(data);
         if ( data.displayName === 'MapLinkr') {
-            alert("MapLinkr!");
+            // alert("MapLinkr!");
+            let mp = this.mlconfig.getRawMap();
+            let bnds = mp.getBounds();
+            console.log(bnds);
         } else {
             this.onsetMap(data);
         }
@@ -67,7 +63,7 @@ export class MapsPage implements AfterViewInit {
       console.log("selected map type " + p);
   }
   onsetMap (menuOption : MenuOptionModel) {
-      this.addCanvas( menuOption.displayName, null, null);
+      this.addCanvas( menuOption.displayName, this.mlconfig, null);
   }
 
   addCanvas (mapType, mlcfg, resolve) {
@@ -93,7 +89,6 @@ export class MapsPage implements AfterViewInit {
               this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
           }
       }
-      // let cmp = this.createComponent(this._placeHolder, MultiCanvas);
       if (mapType === 'google') {
           mapTypeToCreate = MultiCanvasGoogle;
       } else if (mapType === 'esri') {
@@ -101,6 +96,7 @@ export class MapsPage implements AfterViewInit {
       }
 
       appendedElem = this.canvasService.appendNewCanvasToContainer(mapTypeToCreate, currIndex);
+
       this.mapInstanceService.incrementMapNumber();
       this.slideshareService.slideData.emit({
                   mapListItem: appendedElem,

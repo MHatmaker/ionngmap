@@ -1,6 +1,6 @@
 
 
-<agm-map style="height:510px"
+<agm-map style="height:510px" (mapReady)="onMapReady($event)" (boundsChange)="onBoundsChange($event)"
   [latitude]="lat"
   [longitude]="lng"
   [zoom]="zoom"

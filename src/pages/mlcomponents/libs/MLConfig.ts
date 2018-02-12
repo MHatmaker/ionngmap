@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import { IPosition, MLPosition } from "../../../services/position.service";
 import { IConfigParams } from "../../../services/configparams.service";
+import { ImlBounds } from "../../../services/mlbounds.service";
 
 console.log("loading MLConfig");
 
@@ -21,6 +22,7 @@ export class MLConfig {
         query : "",
         bounds : {llx : -1, lly : -1, urx : -1, ury : -1},
         mapType : 'google',
+        rawMap : null,
         mapHosterInstance : null,
         mapNumber: null,
         mapHoster : null,
@@ -50,24 +52,24 @@ export class MLConfig {
             results = regex.exec(this.details.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-    setMapId (id) {
+    setMapId (id : number) {
         console.log("MLConfig setMapId to " + id);
         this.details.mapId = id;
         console.log("MapId is now " + this.details.mapId);
     }
-    getMapId () {
+    getMapId () : number {
         return this.details.mapId;
     }
-    setMapType (type) {
+    setMapType (type : string) {
         this.details.mapType = type;
     }
-    getMapType () {
+    getMapType () : string {
         return this.details.mapType;
     }
     setMapNumber (mapNo) {
         this.details.mapNumber = mapNo;
     }
-    getMapNumber () {
+    getMapNumber () : number {
         return this.details.mapNumber;
     }
     setMapHosterInstance (inst) {
@@ -86,8 +88,8 @@ export class MLConfig {
         }
         return this.details.mapHosterInstance;
     }
-    getWebmapId (newWindow) {
-        var result = "";
+    getWebmapId (newWindow : boolean) : string {
+        let result = "";
         if (newWindow === true) {
             result = this.getParameterByName('id', this.details);
             if (result === "") {
@@ -98,32 +100,32 @@ export class MLConfig {
         }
         return result;
     }
-    setWebmapId (id) {
+    setWebmapId (id : string) {
         console.log("Setting webmapId to " + id);
         this.details.webmapId = id;
     }
-    getUserId () {
+    getUserId () : string {
         return this.details.userId;
     }
-    setUserId (id) {
+    setUserId (id : string) {
         this.details.userId = id;
     }
-    getReferrerId () {
+    getReferrerId () : string {
         return this.details.referrerId;
     }
-    getReferrerIdFromUrl () {
+    getReferrerIdFromUrl () : string{
         this.details.referrerId = this.getParameterByName('referrerId');
         return this.details.referrerId;
     }
-    setReferrerId (id) {
+    setReferrerId (id : string) {
         this.details.referrerId = id;
     }
-    getReferrerNameFromUrl () {
+    getReferrerNameFromUrl () : string{
         this.details.referrerName = this.getParameterByName('referrerName');
         return this.details.referrerName;
     }
-    testUrlArgs () {
-        var rslt = this.getParameterByName('id', this.details);
+    testUrlArgs () : boolean{
+        let rslt = this.getParameterByName('id', this.details);
         // alert("getParameterByName('id') = " + rslt);
         // alert(rslt.length);
         // alert(rslt.length != 0);
@@ -134,36 +136,36 @@ export class MLConfig {
         return rslt.length !== 0;
     }
 
-    setUrl (u) {
+    setUrl (u : string) {
         this.details.url = u;
     }
-    getUrl () {
+    getUrl () : string {
         return this.details.url;
     }
-    getbaseurl () {
+    getbaseurl () : string{
         var baseurl = this.details.protocol + "//" + this.details.host + "/";
         console.log("getbaseurl --> " + baseurl);
         return baseurl;
     }
-    sethost (h) {
+    sethost (h : string) {
         this.details.host = h;
         console.log("host : " + this.details.host);
     }
-    gethost () {
+    gethost () : string {
         return this.details.host;
     }
-    hasCoordinates () {
+    hasCoordinates () : boolean {
         var result = "";
         result = this.getParameterByName('zoom', this.details.mlposition);
         return result === "" ? false : true;
     }
-    lon () {
+    lon () : string{
         return this.getParameterByName('lon', this.details.mlposition);
     }
-    lat () {
+    lat () : string {
         return this.getParameterByName('lat', this.details.mlposition);
     }
-    zoom () {
+    zoom () : string {
         return this.getParameterByName('zoom', this.details.mlposition);
     }
     setConfigParams (config : IConfigParams) {
@@ -200,17 +202,17 @@ export class MLConfig {
             return new MLPosition(this.details.mlposition.lon, this.details.mlposition.details.lat, this.details.mlposition.details.zoom);
     }
 
-    setQuery (q) {
+    setQuery (q : string) {
         this.details.query = q;
     }
-    query () {
+    query () : string {
         return this.getParameterByName('gmquery', this.details);
     }
-    getQueryFromUrl () {
+    getQueryFromUrl () : string {
         // this.details.query.push(this.getParameterByName('gmquery'));
         return this.details.query;
     }
-    getBoundsForUrl () {
+    getBoundsForUrl () : string {
         var bnds = this.details.bounds,
             bndsUrl = "&llx=" + bnds.llx + "&lly=" + bnds.lly + "&urx=" + bnds.urx + "&ury=" + bnds.ury;
         return bndsUrl;
@@ -222,16 +224,22 @@ export class MLConfig {
             ury = this.getParameterByName('ury');
         return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
     }
-    getSmallFormDimensions () {
+    getSmallFormDimensions () : string {
         var d = this.details.smallFormDimensions,
             ltwh = 'top=${d.top}, left=${d.left}, height=${d.height}, width=${d.width}';
         return ltwh;
     }
-    setBounds (bnds) {
+    setBounds (bnds : ImlBounds) {
         this.details.bounds = bnds;
     }
-    getBounds () {
+    getBounds () : ImlBounds {
         return this.details.bounds;
+    }
+    setRawMap (rawMap) {
+        this.details.rawMap = rawMap;
+    }
+    getRawMap () {
+        return this.details.rawMap;
     }
     setInjector (inj) {
         this.details.nginj = inj;
@@ -246,7 +254,7 @@ export class MLConfig {
     getStartupView () {
         return this.details.startupView;
     }
-    showConfigdetails (msg) {
+    showConfigdetails (msg : string ) {
         console.log(msg);
         console.log(
             'isInitialUser ' + this.details.isInitialUser + "\n" +

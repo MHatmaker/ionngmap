@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule, NavController } from 'ionic-angular';
-import { AgmCoreModule } from '@agm/core';
+import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 // import { MapView } from 'esri/views/MapView';
@@ -70,6 +70,7 @@ import { PageService } from '../services/pageservice'
     MapInstanceService,
     SlideShareService,
     PageService,
+    GoogleMapsAPIWrapper,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
