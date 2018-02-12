@@ -2,19 +2,23 @@ import {Injectable} from '@angular/core';
 import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
 import { ConfigParams } from './configparams.service'
 
+// interface IHash {
+//     []
+// }
+
 @Injectable()
 export class MapInstanceService {
     slideCount : 0;
     isFirstInstance : boolean;
     currentSlideNumber : number;
-    configInstances : MLConfig;
+    configInstances : Map<string, MLConfig> = new Map<string, MLConfig>();
 
     constructor() {
         console.log("service to return slideCount");
         this.isFirstInstance = true;
         this.slideCount = 0;
         this.currentSlideNumber = 0;
-        this.configInstances = new MLConfig(new ConfigParams(-1, "", "", null));
+        // this.configInstances = new MLConfig(new ConfigParams(-1, "", "", null));
     }
 
     getSlideCount() : number {

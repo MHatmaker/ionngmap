@@ -63,7 +63,7 @@ export class MapsPage implements AfterViewInit {
       console.log("selected map type " + p);
   }
   onsetMap (menuOption : MenuOptionModel) {
-      this.addCanvas( menuOption.displayName, this.mlconfig, null);
+      this.addCanvas( menuOption.displayName, null, null);
   }
 
   addCanvas (mapType, mlcfg, resolve) {
@@ -79,14 +79,17 @@ export class MapsPage implements AfterViewInit {
           mlConfig = mlcfg;
       } else {
           if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
-              newpos = new MLPosition(-1, -1, -1);
-              icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
-              mlConfig = new MLConfig(icfg);
+              var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
+                  cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
+                  mlconfig = new MLConfig(cfgparams);
+              // newpos = new MLPosition(-1, -1, -1);
+              // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
+              // mlConfig = new MLConfig(icfg);
               console.log("addCanvas with index " + currIndex);
               console.debug(mlConfig);
-              mlConfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
+              mlconfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
                   currIndex === 0 ? currIndex : currIndex - 1).getConfigParams());
-              this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig); //angular.copy(mlConfig));
+              this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig); //angular.copy(mlConfig));
           }
       }
       if (mapType === 'google') {
