@@ -12,7 +12,11 @@ import { PageService } from './../services/pageservice';
 import { MenuOptionModel } from './../side-menu-content/models/menu-option-model';
 
 @Component({
-  templateUrl: 'app.html'
+  templateUrl: 'app.html',
+  // styleUrls : ['src/app.css']
+  styles : [".custom-icon {src: '../assets/icon/map-w-marker-icon.png'}"]
+  // background-image: url("https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/checkmark-24-24.png");
+
 })
 export class MapLinkrApp {
   @ViewChild('mlcontent') nav: NavController // <--- Reference to the Nav
@@ -71,7 +75,7 @@ export class MapLinkrApp {
 			displayName: 'Map options',
 			subItems: [
 				{
-					iconName: 'logo-google',
+					iconName: 'custom-icon',
 					displayName: 'google',
 					component: MapsPage
 				},
