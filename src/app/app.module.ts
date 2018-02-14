@@ -29,6 +29,8 @@ import { MapInstanceService } from '../services/MapInstanceService';
 import { CanvasService } from '../services/CanvasService';
 import { SlideShareService } from '../services/slideshare.service';
 import { PageService } from '../services/pageservice'
+import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig'
+import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
 @NgModule({
   declarations: [
     MapLinkrApp,
@@ -71,6 +73,8 @@ import { PageService } from '../services/pageservice'
     SlideShareService,
     PageService,
     GoogleMapsAPIWrapper,
+    PusherConfig,
+    HostConfig,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

@@ -10,6 +10,9 @@ import { SideMenuContentComponent } from './../side-menu-content/side-menu-conte
 import { SideMenuSettings } from './../side-menu-content/models/side-menu-settings';
 import { PageService } from './../services/pageservice';
 import { MenuOptionModel } from './../side-menu-content/models/menu-option-model';
+import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
+import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
+import { Geolocation } from '@ionic-native/geolocation';
 
 @Component({
   templateUrl: 'app.html',
@@ -24,7 +27,9 @@ export class MapLinkrApp {
 	@ViewChild(SideMenuContentComponent) sideMenu: SideMenuContentComponent;
   // Options to show in the SideMenuComponent
 	public options: Array<MenuOptionModel>;
-  rootPage = MapsPage;
+  public channel: any;
+  private userName : string;
+  // rootPage = MapsPage;
 
 	// Settings for the SideMenuComponent
 	public sideMenuSettings: SideMenuSettings = {
@@ -40,7 +45,8 @@ export class MapLinkrApp {
   pages: Array<{title: string, component: any}>;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
-      private menuCtrl: MenuController, private pageService : PageService) {
+      private menuCtrl: MenuController, private pageService : PageService,
+      private pusherConfig : PusherConfig, private hostConfig : HostConfig) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -48,6 +54,36 @@ export class MapLinkrApp {
       { title: 'Maps', component: MapsPage }
     ];
 
+    console.log('HostConfig initialization');
+    hostConfig.showConfig('MapLinkr App startup before modifying default settings and dojodomReady');
+
+    hostConfig.setLocationPath(location.origin + location.pathname);
+    console.log("location.search");
+    console.log(location.search);
+    hostConfig.setSearch(location.search);
+    pusherConfig.setSearch(location.search);
+    hostConfig.setprotocol(location.protocol);
+    hostConfig.sethost(location.host);
+    hostConfig.sethostport(location.port);
+    hostConfig.sethref(location.href);
+
+    if (location.search === '') {
+        hostConfig.setInitialUserStatus(true);
+        hostConfig.setReferrerId('-99');
+    } else {
+        hostConfig.setInitialUserStatus(false);
+        this.channel = pusherConfig.getChannelFromUrl();
+        if (this.channel !== '') {
+            pusherConfig.setChannel(this.channel);
+            pusherConfig.setNameChannelAccepted(true);
+        }
+        this.userName = hostConfig.getUserNameFromUrl();
+        if (this.userName !== '') {
+            pusherConfig.setUserName(this.userName);
+        }
+        // hostConfig.setStartupView(true, false);
+        console.log("hostConfig.SETSTARTUPVIEW to sumvis true, sitevis false");
+    }
   }
 
   initializeApp() {

@@ -1,0 +1,20 @@
+import re
+
+f = open('src/pages/mlcomponents/libs/PusherConfig.ts')
+of = open('src/pages/mlcomponents/libs/PusherConfig.ts.fixed', 'w')
+# p = re.compile('(?P<fname>\w+\s)= function')
+p = re.compile('(\w+\s)= function')
+m = p.match('isNameChannelAccepted = function ')
+# print(m.group(0))
+# print(m.groups())
+# print(m.groups()[0])
+print("sub")
+line = f.readline()
+while line:
+    # print(p.sub(r'{\g<fname>}', 'isNameChannelAccepted = function '))
+    print(p.sub(r'\g<1>', line))
+    of.write(p.sub(r'\g<1>', line))
+    line = f.readline()
+    # print(p.sub(r'\g<1>', 'isNameChannelAccepted = function '))
+f.close()
+of.close()
