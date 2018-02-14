@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, ElementRef, OnInit, AfterViewInit, NgZone, ViewChild } from '@angular/core';
 import { AgmCoreModule, MapsAPILoader, AgmMap, MouseEvent, GoogleMapsAPIWrapper } from '@agm/core';
 import { GoogleMap, Size, Point, LatLngLiteral } from '@agm/core/services/google-maps-types';
+import { Geolocation } from '@ionic-native/geolocation';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
 import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
@@ -17,8 +18,9 @@ export class GoogleMapComponent implements OnInit {
   private agmMap;
   @Output()
   viewCreated = new EventEmitter();
-  private lat: number;
-  private lng: number;
+  private gmap: GoogleMap;
+  private glat: number;
+  private glng: number;
   private zoom: number;
   private map: GoogleMap;
   private mlconfig : MLConfig;
@@ -26,18 +28,20 @@ export class GoogleMapComponent implements OnInit {
   // private places : PlacesSearch;
 
   constructor(private elementRef: ElementRef, private map_: GoogleMapsAPIWrapper,
-      private mapsAPILoader: MapsAPILoader, ngZone : NgZone, private mapInstanceService: MapInstanceService) {
-      // this.mapw = map_.getNativeMap();
-    console.log("ctor");
-    // this.mapsAPILoader.load()
-    //     .then(() => {
-    //     this.map_.getNativeMap()
-    //       .then(map => console.log('map: ', map))
-    //       .catch(error => console.log('getNativeMap() Error: ', error));
-    //     this.map_.getBounds()
-    //       .then(bounds => console.log('bounds: ', bounds))
-    //       .catch(error => console.log('getBounds() Error: ', error));
-    //   })
+      private mapsAPILoader: MapsAPILoader, ngZone : NgZone, private mapInstanceService: MapInstanceService,
+      public geolocation : Geolocation) {
+
+      console.log("ctor");
+      this.geolocation.getCurrentPosition().then((position) => {
+
+      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      this.glat = position.coords.latitude;
+      this.glng = position.coords.longitude;
+      console.log("geolocation center at " + this.glng + ", " + this.glat);
+
+      }, (err) => {
+          console.log(err);
+      });
   }
 
   ngAfterViewInit(){/*
@@ -70,7 +74,6 @@ export class GoogleMapComponent implements OnInit {
   }
 
   onMapReady(map: GoogleMap) {
-      // let bnds = map.__proto__.getBounds();
       this.map = map;
       // let ndx = this.mapInstanceService.getSlideCount();
       // let mlcfg = this.mapInstanceService.getConfigForMap(ndx);
@@ -85,8 +88,10 @@ export class GoogleMapComponent implements OnInit {
           let ndx = this.mapInstanceService.getSlideCount();
           this.mlconfig = this.mapInstanceService.getConfigForMap(ndx - 1);
           this.mlconfig.setRawMap(this.map);
+          this.addCenterMarker();
       }
       let mp = this.map;
+
       this.mlconfig.setBounds(new MLBounds(mp.getBounds().getSouthWest().lng(),
                                mp.getBounds().getSouthWest().lat(),
                                mp.getBounds().getNorthEast().lng(),
@@ -94,13 +99,12 @@ export class GoogleMapComponent implements OnInit {
   }
   ngOnInit() {
     console.log("ngOnInit");
-    // google maps zoom level
     this.zoom = 14;
 
     // initial center position for the map
-    this.lat = 41.888941;
-    this.lng = -87.620692;
-      console.log('OnInit');
+    // this.glat = 41.888941;
+    // this.glng = -87.620692;
+    console.log('OnInit');
       /*
       this.map_.getNativeMap()
         .then(map => console.log('OnInit: map: ', map))
@@ -130,7 +134,32 @@ export class GoogleMapComponent implements OnInit {
   markerDragEnd(m: marker, $event: MouseEvent) {
     console.log('dragEnd', m, $event);
   }
+  addInfoWindow(marker, content){
+      let infoWindow = new google.maps.InfoWindow({
+          content: content
+      });
 
+      google.maps.event.addListener(marker, 'click', () => {
+          infoWindow.open(this.mlconfig.getRawMap(), marker);
+      });
+  }
+  addCenterMarker(){
+    // var mp : GoogleMap = this.mlconfig.getRawMap();
+    // console.log("addMarker center at " + mp.getCenter().lng() + ", " + mp.getCenter().lat());
+    // console.log("addMarker center at " + position.coords.longitude + ", " + position.coords.glatitude);
+    let pos = {lat: this.glat, lng: this.glng, label: 'C'};
+    let marker = new google.maps.Marker({
+      map: this.mlconfig.getRawMap(),
+      animation: google.maps.Animation.DROP,
+      position: pos,
+      draggable: false
+    });
+
+    let content = "<h4>Information!</h4>";
+
+    this.addInfoWindow(marker, content);
+
+  }
   markers: marker[] = [
 	  {
 		  lat: 41.888941,

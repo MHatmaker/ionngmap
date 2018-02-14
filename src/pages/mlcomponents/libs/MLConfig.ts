@@ -238,7 +238,7 @@ export class MLConfig {
     setRawMap (rawMap) {
         this.details.rawMap = rawMap;
     }
-    getRawMap () {
+    getRawMap ()  {
         return this.details.rawMap;
     }
     setInjector (inj) {

@@ -3,6 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule, NavController } from 'ionic-angular';
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { Geolocation } from '@ionic-native/geolocation';
 
 // import { MapView } from 'esri/views/MapView';
 // import { Point } from 'esri/geometry/Point';
@@ -75,6 +76,7 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
     GoogleMapsAPIWrapper,
     PusherConfig,
     HostConfig,
+    Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
