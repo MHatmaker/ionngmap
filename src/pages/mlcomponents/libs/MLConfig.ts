@@ -12,6 +12,7 @@ export class MLConfig {
     private details = {
         mapId :  -1, //this.ndx,
         userId : "",
+        userName : "",
         referrerId : "",
         referrerName : "",
         isInitialUser : true,
@@ -109,6 +110,9 @@ export class MLConfig {
     }
     setUserId (id : string) {
         this.details.userId = id;
+    }
+    setUserName (nm : string) {
+        this.details.userName = nm;
     }
     getReferrerId () : string {
         return this.details.referrerId;

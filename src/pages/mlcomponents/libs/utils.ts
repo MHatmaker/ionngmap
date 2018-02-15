@@ -1,26 +1,31 @@
-import { Injectable } from '@angular.core';
+import { Injectable } from '@angular/core';
+import { loadModules } from 'esri-loader';
 
-if (!String.prototype.format) {
-    String.prototype.format = () {
-        "use strict";
-        var args = arguments;
-        return this.replace(/{(\d+)}/g, (match, number) {
-            return args[number] !== 'undefined' ?
-                    args[number] : match;
-        });
-    };
-}
+// if (!String.prototype.format) {
+//     String.prototype.format = () {
+//         "use strict";
+//         var args = arguments;
+//         return this.replace(/{(\d+)}/g, (match, number) {
+//             return args[number] !== 'undefined' ?
+//                     args[number] : match;
+//         });
+//     };
+// }
+
 @Injectable()
 export class utils {
     constructor () {
-
-    stringFormat() {
-        var args = arguments;
-        return this.replace(/{(\d+)}/g, (match, number) {
-            return args[number] !== 'undefined' ?
-                    args[number] : match;
-        });
+      loadModules([
+        'esri/core'
+      ]);
     }
+    // stringFormat() {
+    //     var args = arguments;
+    //     return this.replace(/{(\d+)}/g, (match, number) {
+    //         return args[number] !== 'undefined' ?
+    //                 args[number] : match;
+    //     });
+    // }
 
     toFixedOne(val, prec) {
         var precision = prec || 0,
@@ -40,18 +45,18 @@ export class utils {
 
     toFixedTwo(x, y, precision) {
         var fixed = {
-            lon: toFixedOne(x, precision),
-            lat: toFixedOne(y, precision)
+            lon: this.toFixedOne(x, precision),
+            lat: this.toFixedOne(y, precision)
         };
         return fixed;
     }
 
     fixCoords(pos) {
-        return toFixedTwo(pos.lng, pos.lat, 5);
+        return this.toFixedTwo(pos.lng, pos.lat, 5);
     }
 
     formatCoords(pos) {
-        var fixed = fixCoords(pos),
+        var fixed = this.fixCoords(pos),
             formatted = '<div style="color: blue;">' + fixed.lon + ', ' + fixed.lat + '</div>';
         return formatted;
     }
@@ -78,11 +83,11 @@ export class utils {
     }
 
     convertRem(value) {
-        return value * getRootElementFontSize();
+        return value * this.getRootElementFontSize();
     }
 
     getButtonHeight(m) {
-        var btnHeight = convertRem(m);
+        var btnHeight = this.convertRem(m);
         // btnHeight = btnHeight; // / 16;
         return btnHeight;
     }
@@ -100,7 +105,8 @@ export class utils {
             units = 'px';
         }
         elem = document.getElementById(itm);
-        hstr = String.format("{0}{1}", hgt, units);
+        // hstr = String.format("{0}{1}", hgt, units);
+        hstr = "{hgt},{units}";
         // elem.css({"height": hstr});
         elem.setAttribute("style", "height:" + hstr);
     }
@@ -129,13 +135,14 @@ export class utils {
             units = 'px';
         }
         elem = document.getElementById(itm);
-        dimstr = String.format("{0} : {1}{2}", dim, value, units);
+        // dimstr = String.format("{0} : {1}{2}", dim, value, units);
+        dimstr = "{dim} : {value}{units}"
         console.log("dim string : " + dimstr);
         elem.setAttribute("style", dimstr);
     }
 
     getElemById(id) {
-        return angular.element(document.getElementById(id));
+        return document.getElementById(id).nativeElement;
     }
 
     setVisible(itm, flexnone) {
@@ -146,10 +153,11 @@ export class utils {
 
     geoLocate(pos, mlmap, msg) {
         var infoWindow = new google.maps.InfoWindow({
-            map: mlmap
+            content : msg
+            // map: mlmap
         });
         infoWindow.setPosition(pos);
-        infoWindow.setContent(formatCoords(pos));
+        infoWindow.setContent(this.formatCoords(pos));
         console.log(msg);
         console.log('geoLocate just happened at ' + pos.lng + ", " + pos.lat);
     }
@@ -160,24 +168,24 @@ export class utils {
                 'lat': mpopt.center.lat(),
                 'lng': mpopt.center.lng()
             },
-            fixed = fixCoords(pos),
+            fixed = this.fixCoords(pos),
             mapdiv = document.getElementById('mapdiv'),
             mlmap = new google.maps.Map(mapdiv, mpopt);
 
         console.log("In showMap: Create map centered at " + fixed.lon + ", " + fixed.lat);
         mlmap.setCenter(mpopt.center);
         //console.debug(mpopt.center);
-        geoLocate(pos, mlmap, "Calling geoLocate from showMap");
+        this.geoLocate(pos, mlmap, "Calling geoLocate from showMap");
         return mlmap;
     }
 
     showLoading() {
         console.log("show loading");
-        esri.show(loading);
+        // esri.show(loading);
     }
 
     hideLoading(error) {
         console.log("hide loading");
-        esri.hide(loading);
+        // esri.hide(loading);
     }
 }

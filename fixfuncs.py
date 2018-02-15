@@ -1,7 +1,7 @@
 import re
 
-f = open('src/pages/mlcomponents/libs/PusherConfig.ts')
-of = open('src/pages/mlcomponents/libs/PusherConfig.ts.fixed', 'w')
+f = open('src/pages/mlcomponents/libs/MapHosterGoogle.js')
+of = open('src/pages/mlcomponents/libs/MapHosterGoogle.ts', 'w')
 # p = re.compile('(?P<fname>\w+\s)= function')
 p = re.compile('(\w+\s)= function')
 m = p.match('isNameChannelAccepted = function ')
@@ -12,7 +12,7 @@ print("sub")
 line = f.readline()
 while line:
     # print(p.sub(r'{\g<fname>}', 'isNameChannelAccepted = function '))
-    print(p.sub(r'\g<1>', line))
+    # print(p.sub(r'\g<1>', line))
     of.write(p.sub(r'\g<1>', line))
     line = f.readline()
     # print(p.sub(r'\g<1>', 'isNameChannelAccepted = function '))

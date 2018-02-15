@@ -4,6 +4,7 @@ import { IonicApp, IonicErrorHandler, IonicModule, NavController } from 'ionic-a
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { Geolocation } from '@ionic-native/geolocation';
+import "leaflet";
 
 // import { MapView } from 'esri/views/MapView';
 // import { Point } from 'esri/geometry/Point';
