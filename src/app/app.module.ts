@@ -20,9 +20,11 @@ import { SideMenuContentComponent } from '../side-menu-content/side-menu-content
 import { PlacesSearchComponent } from '../pages/mlcomponents/PlacesSearch/places.component';
 import { EsriMapComponent } from '../pages/mlcomponents/EsriMap/esrimap.component';
 import { GoogleMapComponent } from '../pages/mlcomponents/GoogleMap/googlemap.component';
+import { LeafletMapComponent } from '../pages/mlcomponents/LeafletMap/leafletmap.component';
 import { ESRIMapService } from '../services/esrimap.service';
 import { MultiCanvasEsri } from '../pages/mlcomponents/MultiCanvas/multicanvasesri.component';
 import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvasgoogle.component';
+import { MultiCanvasLeaflet } from '../pages/mlcomponents/MultiCanvas/multicanvasleaflet.component';
 
 // import { CoordinateComponent } from '../pages/mlcomponents/coordinate/coordinate.component';
 import { CarouselComponent } from '../pages/mlcomponents/Carousel/carousel.component';
@@ -43,6 +45,7 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
     GoogleMapComponent,
     MultiCanvasEsri,
     MultiCanvasGoogle,
+    MultiCanvasLeaflet,
     CarouselComponent
   ],
   imports: [
@@ -64,7 +67,8 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
     MultiCanvasEsri,
     MultiCanvasGoogle,
     EsriMapComponent,
-    GoogleMapComponent
+    GoogleMapComponent,
+    LeafletMapComponent
   ],
   providers: [
     StatusBar,

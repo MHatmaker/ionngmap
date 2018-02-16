@@ -9,6 +9,7 @@ import { MapInstanceService} from '../../services/MapInstanceService';
 // import { CarouselComponent} from '../mlcomponents/Carousel/carousel.component';
 import { MultiCanvasEsri } from '../mlcomponents/MultiCanvas/multicanvasesri.component';
 import { MultiCanvasGoogle } from '../mlcomponents/MultiCanvas/multicanvasgoogle.component';
+import { MultiCanvasLeaflet } from '../mlcomponents/MultiCanvas/multicanvasleaflet.component';
 import { CanvasService } from '../../services/CanvasService';
 // import { ISlideData } from "../../services/slidedata.interface";
 import { SlideShareService } from '../../services/slideshare.service';
@@ -96,6 +97,9 @@ export class MapsPage implements AfterViewInit {
           mapTypeToCreate = MultiCanvasGoogle;
       } else if (mapType === 'esri') {
           mapTypeToCreate = MultiCanvasEsri;
+
+      } else if (mapType === 'leaflet') {
+          mapTypeToCreate = MultiCanvasLeaflet;
       }
 
       appendedElem = this.canvasService.appendNewCanvasToContainer(mapTypeToCreate, currIndex);

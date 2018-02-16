@@ -15,7 +15,7 @@ export class GeoCoder {
         serviceUrl : string
     };
 
-    constructor (private nominatim : Nominatim) {
+    constructor () {
         this.geocoder = new Nominatim();
     }
 
