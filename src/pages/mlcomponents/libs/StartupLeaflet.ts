@@ -3,6 +3,10 @@ import {Injectable} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
 import { ConfigParams } from '../../../services/configparams.service';
+import * as L from "leaflet";
+import { MapHosterLeaflet } from './MapHosterLeaflet'
+import { GeoCoder } from './GeoCoder';
+import { utils } from './utils';
 
 @Injectable()
 export class StartupLeaflet {
@@ -13,9 +17,10 @@ export class StartupLeaflet {
     private pusher = null;
     private mapNumber = null;
 
-    constructor(private mapNo: number, private mlconfig: MLConfig) {
+    constructor(private mapNo: number, private mlconfig: MLConfig, private pusherConfig : PusherConfig,
+        private geoCoder : GeoCoder, private utils : utils) {
     this.mlconfig.setMapNumber(mapNo);
-    this.mlconfig.setUserId(PusherConfig.getUserName() + mapNo);
+    this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNo);
     }
     getMap  () {
         return this.lMap;
@@ -70,18 +75,18 @@ export class StartupLeaflet {
             this.lMap = new L.Map(document.getElementById("map" + this.mapNumber));
         }
 
-        this.mapHoster = new MapHosterLeaflet.MapHosterLeaflet();
+        this.mapHoster = new MapHosterLeaflet(this.mapNo, this.mlconfig, this.utils, this.pusherConfig, this.geoCoder);
         this.mapHoster.config(this.lMap, mapLocOpts, this.mlconfig);
         mapInstanceSvc.setMapHosterInstance(this.mapNumber, this.mapHoster);
         mapInstanceSvc.setConfigInstanceForMap(this.mapNumber, this.mlconfig);
         mapTypeSvc.setCurrentMapType('leaflet');
-        this.mlconfig.setUserId(PusherConfig.getUserName() + this.mapNumber);
-        this.pusherChannel = PusherConfig.masherChannel(false);
+        this.mlconfig.setUserId(this.pusherConfig.getUserName() + this.mapNumber);
+        this.pusherChannel = this.pusherConfig.masherChannel(false);
         console.debug(this.pusherChannel);
         this.pusher = PusherSetupCtrl.createPusherClient(
             this.mlconfig,
-            (channel, userName) {
-                PusherConfig.setUserName(userName);
+            (channel, userName) => {
+                this.pusherConfig.setUserName(userName);
             },
             null
             // {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId}

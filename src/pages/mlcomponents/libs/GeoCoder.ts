@@ -19,7 +19,7 @@ export class GeoCoder {
         this.geocoder = new Nominatim();
     }
 
-    search () { //}: [{'error': 'uh-oh'}] {
+    search () : any { //}: [{'error': 'uh-oh'}] {
         this.geocoder.search({ q: 'Berlin, Germany' } )
         .then((response) => {
             console.log(response);
@@ -30,7 +30,7 @@ export class GeoCoder {
         })
     }
 
-    reverse (location, scale) {
+    reverse (location, scale) : any {
         var zm = 18, //Math.round(Math.log(scale / 256) / Math.log(2)),
             qstr = `{this.options.serviceUrl}reverse/?lat={location.lat}&lon={location.lng}
                     &zoom={zm}&addressdetails=1&format=json`;

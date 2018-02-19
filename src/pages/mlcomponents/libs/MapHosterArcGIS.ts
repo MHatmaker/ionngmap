@@ -1,103 +1,132 @@
-/*global require, define, google, console, document, angular, esri, dojo, proj4, alert, window, event*/
-/*jslint unparam: true*/
+import {Injectable, OnInit} from '@angular/core';
+import { MLConfig } from './MLConfig';
+import { PusherConfig } from './PusherConfig';
+import { utils } from './utils';
+import { ConfigParams } from '../../../services/configparams.service';
+import { GeoCoder } from './GeoCoder';
+import { PusherEventHandler } from './PusherEventHandler';
+import { loadModules } from 'esri-loader';
+import { ImlBounds } from '../../../services/mlbounds.service'
+import { SpatialReference } from 'esri/geometry';
+import { Point } from 'esri/geometry';
+import * as proj4 from 'proj4';
+// import { toScreenGeometry } from 'esri/geometry/screenUtils';
+import { webMercatorToGeographic, geographicToWebMercator } from 'esri/geometry/support/webMercatorUtils';
+import * as Locator from 'esri/tasks/Locator';
 
-(function () {
-    "use strict";
-    console.log('ready to require stuff in MapHosterArcGIS');
-    require(['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map']);
+@Injectable()
+export class MapHosterArcGIS implements OnInit {
+    hostName = "MapHosterArcGIS";
+    scale2Level = [];
+    zmG = -1;
+    userZoom = true;
+    // this.mphmapCenter;
+    cntrxG = null;
+    cntryG = null;
+    bounds = null;
+    minZoom = null;
+    maxZoom = null;
+    zoomLevels = null;
+    mapReady = true;
+    popup = null;
+    marker = null;
+    mphmap = null;
+    markers = [];
+    popups = [];
+    mrkr = null;
+    CustomControl = null;
+    queryListenerLoaded = false;
 
-    define([
-        'controllers/PositionViewCtrl',
-        'libs/utils',
-        'libs/MLConfig',
-        'libs/PusherEventHandler',
-        'controllers/PusherSetupCtrl',
-        'libs/PusherConfig',
-        'esri/geometry/Point',
-        'dojo/_base/event'
-    ], function (PositionViewCtrl, utils, MLConfig, PusherEventHandler, PusherSetupCtrl, PusherConfig, GeometryPoint, event) {
-        console.log('MapHosterArcGIS define');
-        var MapHosterArcGIS  () {
-            var self = this,
-                scale2Level = [],
-                mphmap = null,
-                // mapNumber,
-                mapReady = true,
-                zoomLevels = 0,
-                zmG,
-                cntrxG,
-                cntryG,
-                bounds,
-                userZoom = true,
-                selectedMarkerId = 101,
-                initialActionListHtml = '',
-                geoLocator = null,
-                screenPt = null,
-                fixedLLG = null,
-                btnShare,
-                selfPusherDetails = {
-                    channel : null,
-                    pusher : null
-                },
-                mlconfig = null,
-                pusherEvtHandler;
+    selectedMarkerId = 101;
+    initialActionListHtml = '';
+    geoLocator = null;
+    screenPt = null;
+    fixedLLG = null;
+    btnShare;
+    selfPusherDetails = {
+        channel : null,
+        pusher : null
+    };
+    // require(['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map']);
+    //
+    // define([
+    //     'controllers/PositionViewCtrl',
+    //     'libs/utils',
+    //     'libs/this.mlconfig',
+    //     'libs/PusherEventHandler',
+    //     'controllers/PusherSetupCtrl',
+    //     'libs/PusherConfig',
+    //     'esri/geometry/Point',
+    //     'dojo/_base/event'
+    // ],
 
-            function getMap() {
-                return mphmap;
+    constructor(private mapNumber: number, private mlconfig: MLConfig, private utils: utils,
+        private pusherConfig : PusherConfig, private pusherEventHandler : PusherEventHandler, private geoCoder : GeoCoder) {
+
+    }
+
+    ngOnInit () {
+        loadModules([
+            'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/WebMercator',
+            'esri/geometry/Geometry', 'esri/tasks/Locator', 'esri/geometry/support/webMercatorUtils'
+          ]).then(([Point, SpatialReference, WebMercator, Geometry, Locator, webMercatorUtils]) => {});
+      }
+            getMap() {
+                return this.mphmap;
             }
 
-            function getMapNumber() {
-                return self.mapNumber;
+            getMapNumber() {
+                return this.mapNumber;
             }
-            //    function  getMapHosterInstance (ndx) {
-            //     return mphmap;
+            //     getMapHosterInstance (ndx) {
+            //     return this.mphmap;
             // }
 
-            function updateGlobals(msg, cntrx, cntry, zm) {
+            updateGlobals(msg, cntrx, cntry, zm) {
                 console.log("updateGlobals ");
-                zmG = zm;
-                cntrxG = cntrx;
-                cntryG = cntry;
-                if (mphmap !== null) {
-                    bounds = mphmap.geographicExtent;
-                    mlconfig.setBounds({'llx' : bounds.xmin, 'lly' : bounds.ymin, 'urx' : bounds.xmax, 'ury' : bounds.ymax});
+                this.zmG = zm;
+                this.cntrxG = cntrx;
+                this.cntryG = cntry;
+                if (this.mphmap !== null) {
+                    this.bounds = this.mphmap.geographicExtent;
+                    this.mlconfig.setBounds({'llx' : this.bounds.xmin, 'lly' : this.bounds.ymin, 'urx' : this.bounds.xmax, 'ury' : this.bounds.ymax});
                 }
-                console.log("Updated Globals " + msg + " " + cntrxG + ", " + cntryG + " : " + zmG);
+                console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
                 PositionViewCtrl.update('zm', {
-                    'zm' : zmG,
-                    'scl' : scale2Level.length > 0 ? scale2Level[zmG].scale : 3,
-                    'cntrlng' : cntrxG,
-                    'cntrlat': cntryG,
-                    'evlng' : cntrxG,
-                    'evlat' : cntryG
+                    'zm' : this.zmG,
+                    'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
+                    'cntrlng' : this.cntrxG,
+                    'cntrlat': this.cntryG,
+                    'evlng' : this.cntrxG,
+                    'evlat' : this.cntryG
                 });
-                mlconfig.setPosition({'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG});
+                this.mlconfig.setPosition({'lon' : this.cntrxG, 'lat' : this.cntryG, 'zoom' : this.zmG});
             }
 
-            function showGlobals(cntxt) {
-                console.log(cntxt + " Globals : lon " + cntrxG + " lat " + cntryG + " zoom " + zmG);
+            showGlobals(cntxt) {
+                console.log(cntxt + " Globals : lon " + this.cntrxG + " lat " + this.cntryG + " zoom " + this.zmG);
             }
 
-            function initMap(value, precision) {
+            initMap(value) {
                 /*jslint nomen: true */  // for dangling _
-                var tileInfo = mphmap.__tileInfo,
+                var tileInfo = this.mphmap.__tileInfo,
                     lods = tileInfo.lods,
                     sc2lv;
-                zoomLevels = lods.length;
-                scale2Level = [];
-                sc2lv = scale2Level;
-                dojo.forEach(lods, function (item, i) {
+                this.zoomLevels = lods.length;
+                this.scale2Level = [];
+                sc2lv = this.scale2Level;
+                for( let item of lods) {
                     var obj = {"scale" : item.scale, "resolution" : item.resolution, "level" : item.level};
                     sc2lv.push(obj);
                     // console.log("scale " + obj.scale + " level " + obj.level + " resolution " + obj.resolution);
-                });
-                console.log("zoom levels : " + zoomLevels);
+                };
+                console.log("zoom levels : " + this.zoomLevels);
             }
 
-            function extractBounds(zm, cntr, action) {
+            extractBounds(zm, cntr, action) {
                 var source = proj4.Proj('GOOGLE'),
                     dest = proj4.Proj('WGS84'),
-                    p = new proj4.toPoint([cntr.x, cntr.y]),
+                    p = proj4.toPoint([cntr.x, cntr.y]),
                     cntrpt,
                     fixedLL,
                     xtntDict = {};
@@ -110,75 +139,75 @@
                 }
                 console.log("ready to create ESRI pt with " + p.x + ", " + p.y);
 
-                cntrpt = new esri.geometry.Point(p.x, p.y, new esri.SpatialReference({wkid: 4326}));
+                cntrpt = new Point({longitude : p.x, latitude : p.y, spatialReference : new SpatialReference({wkid: 4326})});
                 console.log("cntr " + cntr.x + ", " + cntr.y);
                 console.log("cntrpt " + cntrpt.x + ", " + cntrpt.y);
-                fixedLL = utils.toFixed(cntrpt.x, cntrpt.y, 3);
+                fixedLL = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
                 xtntDict = {
                     'src' : 'arcgis',
                     'zoom' : zm,
                     'lon' : fixedLL.lon,
                     'lat' : fixedLL.lat,
-                    'scale': scale2Level[zm].scale,
+                    'scale': this.scale2Level[zm].scale,
                     'action': action
                 };
                 return xtntDict;
             }
 
-            function compareExtents(msg, xtnt) {
-                var cmp = xtnt.zoom === zmG,
-                    wdth = Math.abs(bounds.xmax - bounds.xmin),
-                    hgt = Math.abs(bounds.ymax - bounds.ymin),
-                    lonDif = Math.abs((xtnt.lon - cntrxG) / wdth),
-                    latDif =  Math.abs((xtnt.lat - cntryG) / hgt);
-                // cmp = ((cmp == true) && (xtnt.lon == cntrxG) && (xtnt.lat == cntryG));
+            compareExtents(msg, xtnt) {
+                var cmp = xtnt.zoom === this.zmG,
+                    wdth = Math.abs(this.bounds.xmax - this.bounds.xmin),
+                    hgt = Math.abs(this.bounds.ymax - this.bounds.ymin),
+                    lonDif = Math.abs((xtnt.lon - this.cntrxG) / wdth),
+                    latDif =  Math.abs((xtnt.lat - this.cntryG) / hgt);
+                // cmp = ((cmp == true) && (xtnt.lon == this.cntrxG) && (xtnt.lat == this.cntryG));
                 cmp = ((cmp === true) && (lonDif < 0.0005) && (latDif < 0.0005));
                 console.log("compareExtents " + msg + " " + cmp);
                 return cmp;
             }
 
-            function setBounds(xtExt) {
-                console.log("MapHosterArcGIS setBounds with selfPusherDetails.pusher " + mlconfig.getMapNumber());
+            setBounds(xtExt) {
+                console.log("MapHosterArcGIS setBounds with selfPusherDetails.pusher " + this.mlconfig.getMapNumber());
                 var xtntJsonStr,
                     cmp;
-                if (mapReady === true) { //} && selfPusherDetails.pusher) { // && self.pusher.ready == true) {
+                if (this.mapReady === true) { //} && selfPusherDetails.pusher) { // && self.pusher.ready == true) {
                     // runs this code after you finishing the zoom
-                    console.log("MapHoster ArcGIS " + mlconfig.getMapNumber() + " setBounds ready to process json xtExt");
+                    console.log("MapHoster ArcGIS " + this.mlconfig.getMapNumber() + " setBounds ready to process json xtExt");
                     xtntJsonStr = JSON.stringify(xtExt);
                     console.log("extracted bounds " + xtntJsonStr);
-                    cmp = compareExtents("setBounds", xtExt);
+                    cmp = this.compareExtents("setBounds", xtExt);
                     if (cmp === false) {
-                        console.log("MapHoster arcGIS " + mlconfig.getMapNumber() + " setBounds pusher send ");
+                        console.log("MapHoster arcGIS " + this.mlconfig.getMapNumber() + " setBounds pusher send ");
                         //
                         // if (selfPusherDetails.pusher && selfPusherDetails.channelName) {
                         //     selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
                         // }
                         PusherSetupCtrl.publishPanEvent(xtExt);
-                        updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
+                        this.updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                         //console.debug(sendRet);
                     }
                 }
             }
 
-            function setUserName(name) {
-                PusherConfig.setUserName(name);
+            setUserName(name) {
+                this.pusherConfig.setUserName(name);
             }
-            function getEventDictionary() {
-                var eventDct = pusherEvtHandler.getEventDct();
+            getEventDictionary() {
+                var eventDct = this.pusherEventHandler.getEventDct();
                 return eventDct;
             }
 
-            function setPusherClient(pusher, channel) {
-                console.log("MapHosterArcGIS setPusherClient " +  pusherEvtHandler.getMapNumber());
+            setPusherClient(pusher, channel) {
+                console.log("MapHosterArcGIS setPusherClient " +  this.pusherEventHandler.getMapNumber());
                 /*
-                var evtDct = pusherEvtHandler.getEventDct(),
+                var evtDct = this.pusherEventHandler.getEventDct(),
                     key;
 
-                console.log("Ready to subscribe MapHosterArcGIS " + mlconfig.getMapNumber());
+                console.log("Ready to subscribe MapHosterArcGIS " + this.mlconfig.getMapNumber());
                 if (selfPusherDetails.pusher === null) {
                     selfPusherDetails.pusher = pusher;
                     selfPusherDetails.channelName = channel;
-                    pusherConfig.setChannel(channel);
+                    this.pusherConfig.setChannel(channel);
 
                     for (key in evtDct) {
                         if (evtDct.hasOwnProperty(key)) {
@@ -194,34 +223,34 @@
                 */
             }
 
-            function retrievedClick(clickPt) {
+            retrievedClick(clickPt) {
                 console.log("Back in retrievedClick");
                 // var latlng = L.latLng(clickPt.y, clickPt.x, clickPt.y);
                 console.log("You clicked the map at " + clickPt.x + ", " + clickPt.y);
                 // alert("You clicked the map at " + clickPt.x + ", " + clickPt.y);
                 console.debug(clickPt);
                 var
-                    mpDiv = document.getElementById("map" + mlconfig.getMapNumber()),
+                    mpDiv = document.getElementById("map" + this.mlconfig.getMapNumber()),
                     mpDivNG = angular.element(mpDiv),
                     wdt = mpDivNG[0].clientWidth,
                     hgt = mpDivNG[0].clientHeight,
-                    mppt = new GeometryPoint(clickPt.x, clickPt.y),
-                    screenGeo = new esri.geometry.toScreenGeometry(mphmap.geographicExtent, wdt, hgt, mppt),
+                    mppt = new Point({longitude : clickPt.x, latitude : clickPt.y}),
+                    // screenGeo = new toScreenGeometry(this.mphmap.geographicExtent, wdt, hgt, mppt),
                     fixedLL,
                     content,
                     $inj,
                     linkrSvc;
 
-                console.log("screenGeo");
-                console.debug(screenGeo);
-                $inj = mlconfig.getInjector();
+                // console.log("screenGeo");
+                // console.debug(screenGeo);
+                $inj = this.mlconfig.getInjector();
                 linkrSvc = $inj.get('LinkrService');
                 linkrSvc.hideLinkr();
 
-                //      screengraphic = new esri.geometry.toScreenGeometry(mphmap.extent,800,600,userdrawlayer.graphics[0].geometry);
+                //      screengraphic = new esri.geometry.toScreenGeometry(this.mphmap.extent,800,600,userdrawlayer.graphics[0].geometry);
 
-                if (clickPt.referrerId !== mlconfig.getUserId()) {
-                    fixedLL = utils.toFixed(clickPt.x, clickPt.y, 6);
+                if (clickPt.referrerId !== this.mlconfig.getUserId()) {
+                    fixedLL = this.utils.toFixedTwo(clickPt.x, clickPt.y, 6);
                     content = "Map click at " + fixedLL.lat + ", " + fixedLL.lon;
                     if (clickPt.title) {
                         content += '<br>' + clickPt.title;
@@ -229,30 +258,30 @@
                     if (clickPt.address) {
                         content += '<br>' + clickPt.address;
                     }
-                    mphmap.infoWindow.setTitle("Received from user " + clickPt.referrerName + ", " + clickPt.referrerId);
-                    mphmap.infoWindow.setContent(content);
+                    this.mphmap.infoWindow.setTitle("Received from user " + clickPt.referrerName + ", " + clickPt.referrerId);
+                    this.mphmap.infoWindow.setContent(content);
                 }
 
-                mphmap.infoWindow.show(mppt, mphmap.getInfoWindowAnchor(screenGeo));
+                this.mphmap.infoWindow.show(mppt, this.mphmap.getInfoWindowAnchor(screenGeo));
                 // popup
                     // .setLatLng(latlng)
                     // .setContent("You clicked the map at " + latlng.toString())
-                    // .openOn(mphmap);
+                    // .openOn(this.mphmap);
             }
 
-            function retrievedBounds(xj) {
-                console.log("Back in MapHosterArcGIS " + mlconfig.getMapNumber() + " retrievedBounds");
+            retrievedBounds(xj) {
+                console.log("Back in MapHosterArcGIS " + this.mlconfig.getMapNumber() + " retrievedBounds");
                 if (xj.zoom === '0') {
-                    xj.zoom = zmG;
+                    xj.zoom = this.zmG;
                 }
                 var zm = xj.zoom,
-                    cmp = compareExtents("retrievedBounds",
+                    cmp = this.compareExtents("retrievedBounds",
                         {
                             'zoom' : xj.zoom,
                             'lon' : xj.lon,
                             'lat' : xj.lat
                         }),
-                    view = xj.lon + ", " + xj.lat + " : " + zm + " " + scale2Level[zm].scale,
+                    view = xj.lon + ", " + xj.lat + " : " + zm + " " + this.scale2Level[zm].scale,
                     tmpLon,
                     tmpLat,
                     tmpZm,
@@ -262,54 +291,54 @@
                     document.getElementById("mppos").value = view;
                 }
                 if (cmp === false) {
-                    tmpLon = cntrxG;
-                    tmpLat = cntryG;
-                    tmpZm = zmG;
+                    tmpLon = this.cntrxG;
+                    tmpLat = this.cntryG;
+                    tmpZm = this.zmG;
 
-                    updateGlobals("retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
-                    // userZoom = false;
+                    this.updateGlobals("retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
+                    // this.userZoom = false;
                     console.log("retrievedBounds centerAndZoom at zm = " + zm);
-                    cntr = new GeometryPoint(xj.lon, xj.lat, new esri.SpatialReference({wkid: 4326}));
+                    cntr = new Point({longitude : xj.lon, latitude : xj.lat, spatialReference : new SpatialReference({wkid: 4326})});
 
-                    userZoom = false;
+                    this.userZoom = false;
                     if (xj.action === 'pan') {
                         if (tmpZm !== zm) {
-                            mphmap.centerAndZoom(cntr, zm);
+                            this.mphmap.centerAndZoom(cntr, zm);
                         } else {
-                            mphmap.centerAt(cntr);
+                            this.mphmap.centerAt(cntr);
                         }
                     } else {
                         if (tmpLon !== xj.lon || tmpLat !== xj.lat) {
                             // var tmpCenter = new GeometryPoint(tmpLon, tmpLat, new esri.SpatialReference({wkid: 4326}));
-                            mphmap.centerAndZoom(cntr, zm);
+                            this.mphmap.centerAndZoom(cntr, zm);
                         } else {
-                            mphmap.setZoom(zm);
+                            this.mphmap.setZoom(zm);
                         }
                     }
-                    userZoom = true;
+                    this.userZoom = true;
                 }
             }
 
-            function onMapClick(e) {
+            onMapClick(e) {
                 var mapPt = {x : e.mapPoint.x, y : e.mapPoint.y},
-                    source = new proj4.Proj('GOOGLE'),
-                    dest = new proj4.Proj('WGS84'),
+                    source = proj4.Proj('GOOGLE'),
+                    dest =  proj4.Proj('WGS84'),
                     p,
                     cntrpt;
-                screenPt = e.screenPoint;
+                this.screenPt = e.screenPoint;
                 console.log("e.screenPoint");
                 console.debug(e.screenPoint);
-                p = new proj4.toPoint([e.mapPoint.x, e.mapPoint.y]);
+                p = proj4.toPoint([e.mapPoint.x, e.mapPoint.y]);
                 proj4.transform(source, dest, p);
-                cntrpt = new esri.geometry.Point(p.x, p.y, new esri.SpatialReference({wkid: 4326}));
+                cntrpt = new Point({longitude : p.x, latitude : p.y, spatialReference : new SpatialReference({wkid: 4326})});
                 console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
                 console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
-                fixedLLG = utils.toFixed(cntrpt.x, cntrpt.y, 3);
-                geoLocator.locationToAddress(esri.geometry.webMercatorToGeographic(e.mapPoint), 100);
+                this.fixedLLG = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
+                this.geoLocator.locationToAddress(webMercatorToGeographic(e.mapPoint), 100);
              /*
-                // mphmap.infoWindow.setTitle("Coordinates");
-                // mphmap.infoWindow.setContent("lat/lon : " + fixedLL.lat + ", " + fixedLL.lon);
-                mphmap.infoWindow.show(e.screenPoint,mphmap.getInfoWindowAnchor(e.screenPoint));
+                // this.mphmap.infoWindow.setTitle("Coordinates");
+                // this.mphmap.infoWindow.setContent("lat/lon : " + fixedLL.lat + ", " + fixedLL.lon);
+                this.mphmap.infoWindow.show(e.screenPoint,this.mphmap.getInfoWindowAnchor(e.screenPoint));
 
                 if (selfPusherDetails.pusher)
                 {
@@ -321,31 +350,32 @@
                  */
             }
 
-            // pusherEvtHandler = new PusherEventHandler.PusherEventHandler(mlconfig.getMapNumber());
+            // this.pusherEventHandler = new PusherEventHandler.PusherEventHandler(this.mlconfig.getMapNumber());
             //
-            // pusherEvtHandler.addEvent('client-MapXtntEvent', retrievedBounds);
-            // pusherEvtHandler.addEvent('client-MapClickEvent',  retrievedClick);
+            // this.pusherEventHandler.addEvent('client-MapXtntEvent', retrievedBounds);
+            // this.pusherEventHandler.addEvent('client-MapClickEvent',  retrievedClick);
 
-            function showClickResult(content) {
+            showClickResult(content) {
                 var contextContent = content,
                     actionList = document.getElementsByClassName('actionList')[0],
                     contentNode = document.getElementsByClassName('contentPane')[0],
-                    shareBtnId = 'shareSomethingId' + selectedMarkerId,
+                    shareBtnId = 'shareSomethingId' + this.selectedMarkerId,
                     addedShareBtn = '<button class="btn-primary" id="' + shareBtnId + '" >Share</button>',
                     addedContent,
+                    showSomething,
                     addedContentNode;
 
                 console.debug(actionList);
-                if (selectedMarkerId === 101) {
-                    initialActionListHtml = actionList.innerHTML;
+                if (this.selectedMarkerId === 101) {
+                    this.initialActionListHtml = actionList.innerHTML;
                 }
-                selectedMarkerId += 1;
-                actionList.innerHTML = initialActionListHtml + addedShareBtn;
+                this.selectedMarkerId += 1;
+                actionList.innerHTML = this.initialActionListHtml + addedShareBtn;
 
                 if (content === null) {
-                    addedContent = "Share lat/lon : " + fixedLLG.lat + ", " + fixedLLG.lon;
-                    mphmap.infoWindow.setTitle("Ready to Push Click");
-                    mphmap.infoWindow.setContent("lat/lon : " + fixedLLG.lat + ", " + fixedLLG.lon);
+                    addedContent = "Share lat/lon : " + this.fixedLLG.lat + ", " + this.fixedLLG.lon;
+                    this.mphmap.infoWindow.setTitle("Ready to Push Click");
+                    this.mphmap.infoWindow.setContent("lat/lon : " + this.fixedLLG.lat + ", " + this.fixedLLG.lon);
                 } else {
                     addedContent = 'Share address : ' + content;
                     // if (actionList.className === 'actionList hidden') {
@@ -353,42 +383,42 @@
                     // }
                     addedContentNode = document.createTextNode(addedContent);
                     contentNode.appendChild(addedContentNode);
-                    // mphmap.infoWindow.setContent(content);
+                    // this.mphmap.infoWindow.setContent(content);
                 }
 
-                function showSomething() {
+                showSomething = function() {
                     var referrerId,
                         referrerName,
                         pushLL = {};
 
                     // if (selfPusherDetails.pusher) {
-                        referrerId = mlconfig.getUserId();
-                        referrerName = PusherConfig.getUserName();
+                        referrerId = this.mlconfig.getUserId();
+                        referrerName = this.pusherConfig.getUserName();
                         pushLL = {
-                            "x" : fixedLLG.lon,
-                            "y" : fixedLLG.lat,
-                            "z" : zmG,
+                            "x" : this.fixedLLG.lon,
+                            "y" : this.fixedLLG.lat,
+                            "z" : this.zmG,
                             "referrerId" : referrerId,
                             "referrerName" : referrerName,
                             'address' : contextContent
                         };
-                        console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLLG.lat + ", " + fixedLLG.lon);
+                        console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + this.fixedLLG.lat + ", " + this.fixedLLG.lon);
                         // selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
                         PusherSetupCtrl.publishClickEvent(pushLL);
                     // }
                 }
 
-                mphmap.infoWindow.show(screenPt, mphmap.getInfoWindowAnchor(screenPt));
+                this.mphmap.infoWindow.show(this.screenPt, this.mphmap.getInfoWindowAnchor(this.screenPt));
 
-                btnShare = document.getElementById(shareBtnId);
-                btnShare.onclick  () {
-                    showSomething();
+                this.btnShare = document.getElementById(shareBtnId);
+                this.btnShare.onclick () => {
+                    this.showSomething();
                 };
                   /*
                 if (selfPusherDetails.pusher)
                 {
-                    var referrerId = mlconfig`.getUserId();
-                         referrerName = PusherConfig.getUserName();
+                    var referrerId = this.mlconfig`.getUserId();
+                         referrerName = this.pusherConfig.getUserName();
                          pushLL = {"x" : fixedLLG.lon, "y" : fixedLLG.lat, "z" : "0",
                             "referrerId" : referrerId, "referrerName" : referrerName,
                                 'address' : contextContent };
@@ -398,11 +428,11 @@
                 */
             }
 
-            function configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
+            configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
                 console.log("MapHosterArcGIS configureMap");
-                mphmap = xtntMap;
-                mapReady = false;
-                mlconfig = mlcfg;
+                this.mphmap = xtntMap;
+                this.mapReady = false;
+                this.mlconfig = mlcfg;
                 var qlat, qlon, qzoom, startCenter, cntr, xtnt, address,
                     // mpWrap = null,
                     // mpCan = null,
@@ -410,80 +440,80 @@
                     // currentVerbVis = false;; //, location;
                 // alert("before first update globals");
 
-                pusherEvtHandler = new PusherEventHandler.PusherEventHandler(mlconfig.getMapNumber());
+                this.pusherEventHandler = new PusherEventHandler(this.mlconfig.getMapNumber());
 
-                pusherEvtHandler.addEvent('client-MapXtntEvent', retrievedBounds);
-                pusherEvtHandler.addEvent('client-MapClickEvent',  retrievedClick);
+                this.pusherEventHandler.addEvent('client-MapXtntEvent', this.retrievedBounds);
+                this.pusherEventHandler.addEvent('client-MapClickEvent',  this.retrievedClick);
 
                 if (zoomWebMap !== null) {
-                    updateGlobals("init with attributes in args", pointWebMap[0], pointWebMap[1], zoomWebMap);
+                    this.updateGlobals("init with attributes in args", pointWebMap[0], pointWebMap[1], zoomWebMap);
                 } else {
 
-                    qlat = mlconfig.lat();
-                    qlon = mlconfig.lon();
-                    qzoom = mlconfig.zoom();
+                    qlat = this.mlconfig.lat();
+                    qlon = this.mlconfig.lon();
+                    qzoom = this.mlconfig.zoom();
 
                     if (qlat !== '') {
-                        updateGlobals("MapHosterArcGIS init with qlon, qlat", qlon, qlat, qzoom);
+                        this.updateGlobals("MapHosterArcGIS init with qlon, qlat", qlon, qlat, qzoom);
                     } else {
-                        updateGlobals("MapHosterArcGIS init with hard-coded values", -87.620692, 41.888941, 13);
+                        this.updateGlobals("MapHosterArcGIS init with hard-coded values", -87.620692, 41.888941, 13);
                     }
 
                     // updateGlobals("init standard", -87.7, 41.8, 13);
                 }
-                showGlobals("MapHosterArcGIS - Prior to new Map");
+                this.showGlobals("MapHosterArcGIS - Prior to new Map");
                 // alert("showed first globals");
-                startCenter = new esri.geometry.Point(cntrxG, cntryG, new esri.SpatialReference({wkid: 4326}));
+                startCenter = new Point({longitude : this.cntrxG, latitude : this.cntryG, spatialReference : new SpatialReference({wkid: 4326})});
 
-                updateGlobals("using startCenter", startCenter.x, startCenter.y, zmG, 0.0);
-                showGlobals("Prior to startup centerAndZoom");
-                mphmap.centerAndZoom(startCenter, zmG);
-                showGlobals("After centerAndZoom");
+                this.updateGlobals("using startCenter", startCenter.x, startCenter.y, this.zmG);
+                this.showGlobals("Prior to startup centerAndZoom");
+                this.mphmap.centerAndZoom(startCenter, this.zmG);
+                this.showGlobals("After centerAndZoom");
 
-                initMap("mapDiv_layer0");
-                geoLocator = new esri.tasks.Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
+                this.initMap("mapDiv_layer0");
+                this.geoLocator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
 
                 // addInitialSymbols();
-                bounds = mphmap.geographicExtent;
-                userZoom = true;
+                this.bounds = this.mphmap.geographicExtent;
+                this.userZoom = true;
 
-                mphmap.on('zoom-start', function (evt) {
-                    zmG = evt.level;
+                this.mphmap.on('zoom-start', function (evt) {
+                    this.zmG = evt.level;
                 });
-                mphmap.on('zoom-end', function (evt) {
-                    console.debug("onZoomEnd with userZoom = " + userZoom);
-                    if (userZoom === true) {
-                        setBounds(extractBounds(mphmap.getLevel(), evt.extent.getCenter(), 'zoom'));
+                this.mphmap.on('zoom-end', function (evt) {
+                    console.debug("onZoomEnd with userZoom = " + this.userZoom);
+                    if (this.userZoom === true) {
+                        this.setBounds(this.extractBounds(this.mphmap.getLevel(), evt.extent.getCenter(), 'zoom'));
                     }
-                    // userZoom = true;
+                    // this.userZoom = true;
                 });
 
-                mphmap.on('pan-start', function (evt) {
+                this.mphmap.on('pan-start', function (evt) {
                     // event.stop(evt);
                     console.log('pan-start');
                 });
 
-                mphmap.on('pan-end', function (evt) {
-                    if (userZoom === true) {
-                        setBounds(extractBounds(mphmap.getLevel(), evt.extent.getCenter(), 'pan'));
+                this.mphmap.on('pan-end', function (evt) {
+                    if (this.userZoom === true) {
+                        this.setBounds(this.extractBounds(this.mphmap.getLevel(), evt.extent.getCenter(), 'pan'));
                     }
                 });
-                mphmap.on('mouse-move', function (evt) {
-                    var ltln = esri.geometry.webMercatorToGeographic(evt.mapPoint),
-                        fixedLL = utils.toFixed(ltln.x, ltln.y, 4),
+                this.mphmap.on('mouse-move', function (evt) {
+                    var ltln = webMercatorToGeographic(evt.mapPoint),
+                        fixedLL = this.utils.toFixedTwo(ltln.x, ltln.y, 4),
                         evlng = fixedLL.lon,
                         evlat = fixedLL.lat,
-                        zm = mphmap.getLevel(),
-                        xtntLoc = mphmap.extent,
-                        cntrLoc = esri.geometry.webMercatorToGeographic(xtntLoc.getCenter()),
-                        fixedCntrLL = utils.toFixed(cntrLoc.x, cntrLoc.y, 4),
+                        zm = this.mphmap.getLevel(),
+                        xtntLoc = this.mphmap.extent,
+                        cntrLoc = webMercatorToGeographic(xtntLoc.getCenter()),
+                        fixedCntrLL = this.utils.toFixedTwo(cntrLoc.x, cntrLoc.y, 4),
                         cntrlng = fixedCntrLL.lon,
                         cntrlat = fixedCntrLL.lat;
                     //     view = "Zoom : " + zm + " Center : " + cntrlng + ", " + cntrlat + " Current  : " + evlng + ", " + evlat;      // + selectedWebMapId;
                     // document.getElementById("mppos").value = view;
                     PositionViewCtrl.update('coords', {
                         'zm' : zm,
-                        'scl' : scale2Level[zm].scale,
+                        'scl' : this.scale2Level[zm].scale,
                         'cntrlng' : cntrlng,
                         'cntrlat': cntrlat,
                         'evlng' : evlng,
@@ -491,94 +521,68 @@
                     });
                 });
 
-                mphmap.on("click", onMapClick);
-                geoLocator.on("location-to-address-complete", function (evt) {
+                this.mphmap.on("click", this.onMapClick);
+                this.geoLocator.on("location-to-address-complete", (evt) => {
                     var location;
                     if (evt.address.address) {
                         address = evt.address.address;
-                        location = esri.geometry.geographicToWebMercator(evt.address.location);
-                        showClickResult(address.Address);
+                        location = geographicToWebMercator(evt.address.location);
+                        this.showClickResult(address.Address);
                         console.debug(location);
                     } else {
-                        showClickResult(null);
+                        this.showClickResult(null);
                     }
                 });
-                window.addEventListener("resize", function () {
-                    mphmap.resize();
+                window.addEventListener("resize", () => {
+                    this.mphmap.resize();
 
                     mpCanRoot.style.width = "100%";
                     mpCanRoot.style.height = "100%";
                 });
-                mapReady = true;
-                userZoom = true;
+                this.mapReady = true;
+                this.userZoom = true;
 
                 // mpWrap = document.getElementById("map_wrapper");
                 // mpCan = document.getElementById("map_canvas");
                 // mpCanRoot = document.getElementById("map_canvas_root");
 
                 // mpWrap = document.getElementById("map_wrapper");
-                // mpCan = document.getElementById("map_" + mlconfig.getMapNumber());
-                mpCanRoot = document.getElementById("map" + mlconfig.getMapNumber() + "_root");
+                // mpCan = document.getElementById("map_" + this.mlconfig.getMapNumber());
+                mpCanRoot = document.getElementById("map" + this.mlconfig.getMapNumber() + "_root");
             }
 
-            function retrievedNewPosition(pos) {
+            retrievedNewPosition(pos) {
                 console.log("Back in retrievedNewPosition");
                 console.log(pos);
-                String.format('open map using framework {0} at x {1}, y {2} zoom (3)',
-                    pos.maphost, pos.lon, pos.lat, pos.zoom);
+                console.log('open map using framework {pos.maphost} at x {pos.lon}, y {pos.lat} zoom {pos.zoom}');
             }
 
-            function getGlobalsForUrl() {
+            getGlobalsForUrl() {
                 console.log(" MapHosterArcGIS.prototype.getGlobalsForUrl");
-                console.log("&lon=" + cntrxG + "&lat=" + cntryG + "&zoom=" + zmG);
-                return "&lon=" + cntrxG + "&lat=" + cntryG + "&zoom=" + zmG;
+                console.log("&lon=" + this.cntrxG + "&lat=" + this.cntryG + "&zoom=" + this.zmG);
+                return "&lon=" + this.cntrxG + "&lat=" + this.cntryG + "&zoom=" + this.zmG;
             }
 
-            function getGlobalPositionComponents() {
-                return {"lon" : cntrxG, "lat" : cntryG, "zoom" : zmG};
+            getGlobalPositionComponents() {
+                return {"lon" : this.cntrxG, "lat" : this.cntryG, "zoom" : this.zmG};
             }
 
-            function getCenter() {
-                var pos = { 'lon' : cntrxG, 'lat' : cntryG, 'zoom' : zmG};
+            getCenter() {
+                var pos = { 'lon' : this.cntrxG, 'lat' : this.cntryG, 'zoom' : this.zmG};
                 console.log("return accurate center from getCenter()");
                 console.debug(pos);
                 return pos;
             }
 
-            function getPusherEventHandler() {
-                return pusherEvtHandler;
+            getPusherEventHandler() {
+                return this.pusherEventHandler;
             }
-            function removeEventListeners() {
-                // mphmap.removeListener();
+            removeEventListeners() {
+                // this.mphmap.removeListener();
                 console.log("empty function removeEventListners");
             }
 
-            function getMLConfig() {
-                return mlconfig;
+            getMLconfig() {
+                return this.mlconfig;
             }
-
-            return {
-                getMap: getMap,
-                getMapNumber: getMapNumber,
-                config: configureMap,
-                setPusherClient: setPusherClient,
-                retrievedBounds: retrievedBounds,
-                retrievedClick: retrievedClick,
-                retrievedNewPosition: retrievedNewPosition,
-                setUserName: setUserName,
-                getEventDictionary: getEventDictionary,
-                getPusherEventHandler: getPusherEventHandler,
-                getGlobalsForUrl: getGlobalsForUrl,
-                getGlobalPositionComponents: getGlobalPositionComponents,
-                getCenter: getCenter,
-                removeEventListeners: removeEventListeners,
-                getMLConfig : getMLConfig
-            };
-        };
-        return {
-            MapHosterArcGIS: MapHosterArcGIS
-        };
-
-    });
-
-}());
+}

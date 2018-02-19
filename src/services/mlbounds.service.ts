@@ -7,6 +7,14 @@ export interface ImlBounds {
     ury : number
 };
 
+export interface xtntParams  {
+    'src' : string,
+    'zoom' : number,
+    'lon' : number,
+    'lat' : number,
+    'scale': number,
+    'action': string
+};
 
 console.log("loading MLBounds");
 

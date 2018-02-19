@@ -2,10 +2,12 @@ import {Injectable} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
 import { utils } from './utils';
+import { ImlBounds, xtntParams } from '../../../services/mlbounds.service';
 import { ConfigParams } from '../../../services/configparams.service';
 import * as L from "leaflet";
 import { GeoCoder } from './GeoCoder';
 import { PusherEventHandler } from './PusherEventHandler';
+
 
 @Injectable()
 export class MapHosterLeaflet {
@@ -31,7 +33,8 @@ export class MapHosterLeaflet {
     pusherEvtHandler;
 
 
-    constructor(private mapNo: number, private mlconfig: MLConfig, private utils: utils, private geoCoder : GeoCoder) {
+    constructor(private mapNo: number, private mlconfig: MLConfig, private utils: utils,
+        private pusherConfig : PusherConfig, private geoCoder : GeoCoder) {
             this.CustomControl =  L.Control.extend({
                 options: {
                     position: 'topright'
@@ -70,6 +73,7 @@ export class MapHosterLeaflet {
                 this.cntrxG = cntrx;
                 this.cntryG = cntry;
                 console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
+                /*
                 PositionViewCtrl.update('zm', {
                     'zm' : this.zmG,
                     'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
@@ -78,6 +82,7 @@ export class MapHosterLeaflet {
                     'evlng' : this.cntrxG,
                     'evlat' : this.cntryG
                 });
+                */
                 this.mlconfig.setPosition({'lon' : this.cntrxG, 'lat' : this.cntryG, 'zoom' : this.zmG});
             }
 
@@ -118,20 +123,20 @@ export class MapHosterLeaflet {
                 this.mrkr = L.marker(pos).addTo(this.mphmap);
 
 
-                triggerPusher =function () {
+                triggerPusher = function () {
                     var fixedLL,
                         referrerId,
                         referrerName,
                         pushLL;
                     fixedLL = this.utils.toFixed(contextPos[1], contextPos[0], 6);
                     referrerId = this.mlconfig.getUserId();
-                    referrerName = PusherConfig.getUserName();
+                    referrerName = this.pusherConfig.getUserName();
                     pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
                         "referrerId" : referrerId, "referrerName" :  referrerName,
                         'address' : contextContent, 'title' : contextHint };
                     console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
 
-                    PusherSetupCtrl.publishCLickEvent(pushLL);
+                    // PusherSetupCtrl.publishCLickEvent(pushLL);
                 };
 
                 container = angular.element('<div />');
@@ -141,7 +146,7 @@ export class MapHosterLeaflet {
                 this.mrkr.bindPopup(this.popup);
                 this.markers.push(this.mrkr);
                 this.popups.push(this.popup);
-                this.mphmap.on('popupopen', () {
+                this.mphmap.on('popupopen', function () {
                     // alert('pop pop pop');
                     console.debug(this.popup);
                     var referrerId = this.mlconfig.getReferrerId(),
@@ -151,7 +156,7 @@ export class MapHosterLeaflet {
                         if (btnShare) {
                             console.debug(btnShare);
                             btnShare.style.visibility = 'visible';
-                            btnShare.onclick () {
+                            btnShare.onclick = function(e) {
                                 triggerPusher();
                             };
                         }
@@ -230,19 +235,19 @@ export class MapHosterLeaflet {
             onMapClick(e) {
                 var r;
                 this.geoCoder.reverse(e.latlng, this.mphmap.options.crs.scale(this.mphmap.getZoom())).
-                    then((results) {
+                    then((results) => {
                         r = results;
                         this.showClickResult(r);
                     });
             }
 
-            extractBounds(action) { // , latlng) {
+            extractBounds(action) : xtntParams { // , latlng) {
                 var zm = this.mphmap.getZoom(),
                     // scale = mphmap.options.crs.scale(zm),
                     // oldMapCenter = mphmapCenter,
                     cntr,
                     fixedLL,
-                    xtntDict = {};
+                    xtntDict  : xtntParams;
                     // mphmapCenter = mphmap.getCenter();
                 // var cntr = action == 'pan' ? latlng : mphmap.getCenter();
                 cntr = this.mphmap.getCenter();
@@ -381,7 +386,7 @@ export class MapHosterLeaflet {
                 console.debug(this.mphmap);
                 this.showLoading();
 
-                this.geoCoder =  GeoCoder; //.nominatim();
+                this.geoCoder =  new GeoCoder(); //.nominatim();
 
                 if (this.mlconfig.testUrlArgs()) {
                     qlat = this.mlconfig.lat();
@@ -447,7 +452,7 @@ export class MapHosterLeaflet {
                         this.setBounds('pan', e.latlng);
                     }
                 });
-                this.pusherEvtHandler = new PusherEventHandler.PusherEventHandler(this.mlconfig.getMapNumber());
+                this.pusherEvtHandler = new PusherEventHandler(this.mlconfig.getMapNumber());
                 console.log("Add pusher event handler for MapHosterGoogle " + this.mlconfig.getMapNumber());
 
                 this.pusherEvtHandler.addEvent('client-MapXtntEvent', this.retrievedBounds);
@@ -503,7 +508,8 @@ export class MapHosterLeaflet {
                 console.log(pos);
 
                 var lfltBounds = this.mphmap.getBounds(),
-                    bnds = {},
+                    bndsUrl : string,
+                    bnds : ImlBounds,
                     ne,
                     sw;
                 console.debug(lfltBounds);
@@ -522,7 +528,7 @@ export class MapHosterLeaflet {
                     this.mlconfig.setBounds(bnds);
                 }
 
-                bnds = this.mlconfig.getBoundsForUrl();
+                bndsUrl = this.mlconfig.getBoundsForUrl();
                 pos.search += bnds;
 
                 PusherSetupCtrl.publishPosition(pos);
