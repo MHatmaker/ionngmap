@@ -8,6 +8,8 @@ import { GoogleMap, Size, Point, LatLngLiteral, LatLng, LatLngBounds } from '@ag
 import { createClient, GoogleMapsClient } from '@google/maps';
 // import { GeoCoder } from './GeoCoder';
 import { GeoCodingService } from '../../../services/GeoCodingService';
+import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
+import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { PusherEventHandler } from './PusherEventHandler';
 
 @Injectable()
@@ -52,7 +54,7 @@ export class MapHosterGoogle {
     // private geoCoder = createClient();
 
     constructor(private mapNo: number, private mlconfig: MLConfig, private utils: utils,
-        private pusherConfig : PusherConfig, private geoCoder : GeoCodingService) {
+        private pusherConfig : PusherConfig, private geoCoder : GeoCodingService, private positionUpdateService : PositionUpdateService) {
     }
 
     // MLConfig.showConfigDetails('MapHosterGoogle - startup');
@@ -76,13 +78,16 @@ export class MapHosterGoogle {
         this.cntrxG = cntrx;
         this.cntryG = cntry;
         console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
-        PositionViewCtrl.update('zm', {
-            'zm' : this.zmG,
-            'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
-            'cntrlng' : this.cntrxG,
-            'cntrlat': this.cntryG,
-            'evlng' : this.cntrxG,
-            'evlat' : this.cntryG
+        this.positionUpdateService.positionData.emit(
+            {'key' : 'zm',
+              'val' : {
+                'zm' : this.zmG,
+                'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
+                'cntrlng' : this.cntrxG,
+                'cntrlat': this.cntryG,
+                'evlng' : this.cntrxG,
+                'evlat' : this.cntryG
+          }
         });
         this.mlconfig.setPosition({'lon' : this.cntrxG, 'lat' : this.cntryG, 'zoom' : this.zmG});
         this.mlconfig.setBounds(mapLinkrBounds);

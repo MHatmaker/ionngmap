@@ -4,6 +4,8 @@ import { PusherConfig } from './PusherConfig';
 import { utils } from './utils';
 import { ConfigParams } from '../../../services/configparams.service';
 import { GeoCoder } from './GeoCoder';
+import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
+import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { PusherEventHandler } from './PusherEventHandler';
 import { loadModules } from 'esri-loader';
 import { ImlBounds } from '../../../services/mlbounds.service'
@@ -11,7 +13,7 @@ import { SpatialReference } from 'esri/geometry';
 import { Point } from 'esri/geometry';
 import * as proj4 from 'proj4';
 // import { toScreenGeometry } from 'esri/geometry/screenUtils';
-import { webMercatorToGeographic, geographicToWebMercator } from 'esri/geometry/support/webMercatorUtils';
+import { webMercatorToGeographic, geographicToWebMercator, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
 import * as Locator from 'esri/tasks/Locator';
 
 @Injectable()
@@ -39,7 +41,7 @@ export class MapHosterArcGIS implements OnInit {
 
     selectedMarkerId = 101;
     initialActionListHtml = '';
-    geoLocator = null;
+    geoLocator : Locator;
     screenPt = null;
     fixedLLG = null;
     btnShare;
@@ -61,7 +63,8 @@ export class MapHosterArcGIS implements OnInit {
     // ],
 
     constructor(private mapNumber: number, private mlconfig: MLConfig, private utils: utils,
-        private pusherConfig : PusherConfig, private pusherEventHandler : PusherEventHandler, private geoCoder : GeoCoder) {
+        private pusherConfig : PusherConfig, private pusherEventHandler : PusherEventHandler,
+        private geoCoder : GeoCoder, private positionUpdateService : PositionUpdateService) {
 
     }
 
@@ -92,13 +95,16 @@ export class MapHosterArcGIS implements OnInit {
                     this.mlconfig.setBounds({'llx' : this.bounds.xmin, 'lly' : this.bounds.ymin, 'urx' : this.bounds.xmax, 'ury' : this.bounds.ymax});
                 }
                 console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
-                PositionViewCtrl.update('zm', {
-                    'zm' : this.zmG,
-                    'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
-                    'cntrlng' : this.cntrxG,
-                    'cntrlat': this.cntryG,
-                    'evlng' : this.cntrxG,
-                    'evlat' : this.cntryG
+                this.positionUpdateService.positionData.emit(
+                    {'key' : 'zm',
+                      'val' : {
+                        'zm' : this.zmG,
+                        'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
+                        'cntrlng' : this.cntrxG,
+                        'cntrlat': this.cntryG,
+                        'evlng' : this.cntrxG,
+                        'evlat' : this.cntryG
+                  }
                 });
                 this.mlconfig.setPosition({'lon' : this.cntrxG, 'lat' : this.cntryG, 'zoom' : this.zmG});
             }
@@ -235,7 +241,7 @@ export class MapHosterArcGIS implements OnInit {
                     wdt = mpDivNG[0].clientWidth,
                     hgt = mpDivNG[0].clientHeight,
                     mppt = new Point({longitude : clickPt.x, latitude : clickPt.y}),
-                    // screenGeo = new toScreenGeometry(this.mphmap.geographicExtent, wdt, hgt, mppt),
+                    screenGeo = new toScreenGeometry(this.mphmap.geographicExtent, wdt, hgt, mppt),
                     fixedLL,
                     content,
                     $inj,
@@ -334,7 +340,24 @@ export class MapHosterArcGIS implements OnInit {
                 console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
                 console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
                 this.fixedLLG = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
-                this.geoLocator.locationToAddress(webMercatorToGeographic(e.mapPoint), 100);
+                let locPt = xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
+                let locPt2 = new Point({x: locPt[0], y: locPt[1]});
+                this.geoLocator.locationToAddress(locPt2)
+                .then(function(response) {
+                    var location;
+                    if (response.address) {
+                        let address = response.address;
+                        let location = lngLatToXY(response.location.longitude, response.location.latitude);
+                        this.showClickResult(address);
+                        console.debug(location);
+                    } else {
+                        this.showClickResult(null);
+                    }
+
+                }).otherwise(function(err) {
+
+                });
+
              /*
                 // this.mphmap.infoWindow.setTitle("Coordinates");
                 // this.mphmap.infoWindow.setContent("lat/lon : " + fixedLL.lat + ", " + fixedLL.lon);
@@ -411,7 +434,7 @@ export class MapHosterArcGIS implements OnInit {
                 this.mphmap.infoWindow.show(this.screenPt, this.mphmap.getInfoWindowAnchor(this.screenPt));
 
                 this.btnShare = document.getElementById(shareBtnId);
-                this.btnShare.onclick () => {
+                this.btnShare.onclick = function() {
                     this.showSomething();
                 };
                   /*
@@ -471,8 +494,7 @@ export class MapHosterArcGIS implements OnInit {
                 this.showGlobals("After centerAndZoom");
 
                 this.initMap("mapDiv_layer0");
-                this.geoLocator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
-
+                this.geoLocator = new Locator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
                 // addInitialSymbols();
                 this.bounds = this.mphmap.geographicExtent;
                 this.userZoom = true;
@@ -499,14 +521,17 @@ export class MapHosterArcGIS implements OnInit {
                     }
                 });
                 this.mphmap.on('mouse-move', function (evt) {
-                    var ltln = webMercatorToGeographic(evt.mapPoint),
-                        fixedLL = this.utils.toFixedTwo(ltln.x, ltln.y, 4),
+
+
+                    var pnt = new Point({longitude : evt.mapPoint.x, latitude : evt.mapPoint.y}),
+                        ltln = xyToLngLat(evt.mapPoint.x, evt.mapPoint.y),
+                        fixedLL = this.utils.toFixedTwo(ltln[0], ltln[1], 4),
                         evlng = fixedLL.lon,
                         evlat = fixedLL.lat,
                         zm = this.mphmap.getLevel(),
                         xtntLoc = this.mphmap.extent,
-                        cntrLoc = webMercatorToGeographic(xtntLoc.getCenter()),
-                        fixedCntrLL = this.utils.toFixedTwo(cntrLoc.x, cntrLoc.y, 4),
+                        cntrLoc = xyToLngLat(xtntLoc.center.longitude, xtntLoc.center.latitude),
+                        fixedCntrLL = this.utils.toFixedTwo(cntrLoc[0], cntrLoc[1], 4),
                         cntrlng = fixedCntrLL.lon,
                         cntrlat = fixedCntrLL.lat;
                     //     view = "Zoom : " + zm + " Center : " + cntrlng + ", " + cntrlat + " Current  : " + evlng + ", " + evlat;      // + selectedWebMapId;
@@ -522,17 +547,6 @@ export class MapHosterArcGIS implements OnInit {
                 });
 
                 this.mphmap.on("click", this.onMapClick);
-                this.geoLocator.on("location-to-address-complete", (evt) => {
-                    var location;
-                    if (evt.address.address) {
-                        address = evt.address.address;
-                        location = geographicToWebMercator(evt.address.location);
-                        this.showClickResult(address.Address);
-                        console.debug(location);
-                    } else {
-                        this.showClickResult(null);
-                    }
-                });
                 window.addEventListener("resize", () => {
                     this.mphmap.resize();
 

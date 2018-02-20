@@ -1,19 +1,24 @@
 import {
-    Injectable,
-    Injector,
-    ComponentFactoryResolver,
-    EmbeddedViewRef,
-    ApplicationRef
-    // ComponentRef
+    Injectable
 } from '@angular/core';
-import {StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
-import { StartupArcGIS } from '../pages/mlcomponents/libs/StartupGoogle';
-import { StartupLeaflet } from '../pages/mlcomponents/libs/StartupGoogle';
-import { MapHosterGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
-import { MapHosterArcGIS } from '../pages/mlcomponents/libs/StartupGoogle';
-import { MapHosterLeaflet } from '../pages/mlcomponents/libs/StartupGoogle';
+import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
+import { StartupArcGIS } from '../pages/mlcomponents/libs/StartupArcGIS';
+import { StartupLeaflet } from '../pages/mlcomponents/libs/StartupLeaflet';
+import { MapHosterGoogle } from '../pages/mlcomponents/libs/MapHosterGoogle';
+import { MapHosterArcGIS } from '../pages/mlcomponents/libs/MapHosterArcGIS';
+import { MapHosterLeaflet } from '../pages/mlcomponents/libs/MapHosterLeaflet';
 
-// import {MultiCanvasGoogle} from '../MultiCanvas/multicanvasgoogle.component';
+interface Imapconfigs {
+    maptype : string,
+    title : string,
+    site : string,
+    content : string,
+    url : string,
+    imgSrc : string,
+    imgAlt : string,
+    active : boolean,
+    disabled : boolean
+};
 
 @Injectable()
 export class CurrentMapTypeService {
@@ -21,10 +26,10 @@ export class CurrentMapTypeService {
     //  StartupGoogle, StartupArcGIS, StartupLeaflet, MapHosterGoogle, MapHosterArcGIS, MapHosterLeaflet)
 
     private mapTypes = {
-                    'leaflet': MapHosterLeaflet,
-                    'google' : MapHosterGoogle,
-                    'arcgis' : MapHosterArcGIS
-                };
+        'leaflet': MapHosterLeaflet,
+        'google' : MapHosterGoogle,
+        'arcgis' : MapHosterArcGIS
+    };
     private mapStartups = {
         'leaflet': StartupLeaflet,
         'google' : StartupGoogle,
@@ -63,7 +68,7 @@ export class CurrentMapTypeService {
         'arcgis' : 1,
         'leaflet' : 2
     };
-    private mapconfigs = [
+    private mapconfigs : Imapconfigs[] = [
         {
             maptype : 'google',
             title : 'Google Maps',
@@ -98,6 +103,7 @@ export class CurrentMapTypeService {
             disabled : false
         }
     ];
+    private mapsvcScopes : any;
 
     constructor() {
     }
@@ -164,7 +170,7 @@ export class CurrentMapTypeService {
     }
 
     addScope (scope) {
-        mapsvcScopes.addScope(scope);
+        this.mapsvcScopes.addScope(scope);
     }
     forceAGO () {
     // Simulate a click on ArcGIS Ago mapSystem "Show the Map" buttons under the map system tabs.
@@ -176,7 +182,7 @@ export class CurrentMapTypeService {
             'whichsystem' : this.mapconfigs[this.mapSystemDct.arcgis],
             'newpath' : "/views/partials/arcgis"
         },
-            scp = mapsvcScopes.getScopes()[0];
+            scp = this.mapsvcScopes.getScopes()[0];
         if (scp) {
             scp.$broadcast('ForceAGOEvent', data);
         }
@@ -192,7 +198,7 @@ export class CurrentMapTypeService {
     // in the url
 
         var data = {'whichsystem' : this.mapconfigs[this.mapSystemDct[mapSystem]], 'newpath' : "/views/partials/" + mapSystem},
-            scp = mapsvcScopes.getScopes()[0];
+            scp = this.mapsvcScopes.getScopes()[0];
         if (scp) {
             scp.$broadcast('ForceMapSystemEvent', data);
         }

@@ -6,6 +6,8 @@ import { ImlBounds, xtntParams } from '../../../services/mlbounds.service';
 import { ConfigParams } from '../../../services/configparams.service';
 import * as L from "leaflet";
 import { GeoCoder } from './GeoCoder';
+import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
+import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { PusherEventHandler } from './PusherEventHandler';
 
 
@@ -34,7 +36,7 @@ export class MapHosterLeaflet {
 
 
     constructor(private mapNo: number, private mlconfig: MLConfig, private utils: utils,
-        private pusherConfig : PusherConfig, private geoCoder : GeoCoder) {
+        private pusherConfig : PusherConfig, private geoCoder : GeoCoder, private positionUpdateService : PositionUpdateService) {
             this.CustomControl =  L.Control.extend({
                 options: {
                     position: 'topright'
@@ -208,15 +210,19 @@ export class MapHosterLeaflet {
                     cntrlng = fixedCntrLL.lon,
                     cntrlat = fixedCntrLL.lat;
 
-                PositionViewCtrl.update('coords', {
-                    'zm' : zm,
-                    'scl' : this.scale2Level[zm].scale,
-                    'cntrlng' : cntrlng,
-                    'cntrlat': cntrlat,
-                    'evlng' : evlng,
-                    'evlat' : evlat
-                });
-            }
+
+
+            this.positionUpdateService.positionData.emit(
+                {'key' : 'zm',
+                  'val' : {
+                    'zm' : this.zmG,
+                    'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
+                    'cntrlng' : this.cntrxG,
+                    'cntrlat': this.cntryG,
+                    'evlng' : this.cntrxG,
+                    'evlat' : this.cntryG
+              }
+            });
 
             showClickResult(r) {
                 var cntr;
