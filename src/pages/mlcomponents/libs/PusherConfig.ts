@@ -2,9 +2,16 @@ import {
     Injectable,
 } from '@angular/core';
 
-console.log("loading PusherConfig");
+export interface IPusherConfigParams
+{
+      privateChannelMashover : string,
+      prevChannel : string,
+      userName : string,
+      prevUserName : string,
+      whichDismiss : string
+};
 
-interface IPusherConfig {
+export interface IPusherConfig {
     details : {
         masherChannel : string,
         masherChannelInitialized : boolean,
@@ -33,6 +40,8 @@ export class PusherConfig implements IPusherConfig {
         pusherPathPost : "", //".ngrok.io",
         search : '/'
     };
+    private APP_KEY : string = '5c6bad75dc0dd1cec1a6';
+    private APP_SECRET : string = '54546672d0196be97f6a';
     constructor() {
         console.log("entering PusherConfig");
 
@@ -95,5 +104,11 @@ export class PusherConfig implements IPusherConfig {
     }
     setSearch (searchDetails: string) {
         this.details.search = searchDetails;
+    }
+    getAppKey () : string {
+        return this.APP_KEY;
+    }
+    getSecretKey () : string {
+        return this.APP_SECRET;
     }
 }

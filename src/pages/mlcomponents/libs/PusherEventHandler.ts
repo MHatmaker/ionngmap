@@ -1,29 +1,35 @@
 import {Injectable} from '@angular/core';
 
+export interface IEventDct {
+    'client-MapXtntEvent' : any,
+    'client-MapClickEvent' : any,
+    'client-NewMapPosition' : any
+}
+
 @Injectable()
 export class PusherEventHandler {
-    eventDct : {
+    eventDct : IEventDct = {
         'client-MapXtntEvent' : null,
         'client-MapClickEvent' : null,
         'client-NewMapPosition' : null
     };
 
-    constructor (private mapNumber) {
+    constructor (private mapNumber : number) {
     }
 
-    getEventDct  () {
+    getEventDct  () : IEventDct {
         return this.eventDct;
     }
 
-    addEvent  (evt, handler) {
+    addEvent  (evt : string, handler : any) {
         this.eventDct[evt] = handler;
     }
 
-    getMapNumber  () {
+    getMapNumber  () : number {
         return this.mapNumber;
     }
 
-    getHandler  (evt) {
+    getHandler  (evt : string) : any{
         return this.eventDct[evt];
     }
 }
