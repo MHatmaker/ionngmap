@@ -7,6 +7,7 @@ import * as L from "leaflet";
 import { MapHosterLeaflet } from './MapHosterLeaflet'
 import { GeoCoder } from './GeoCoder';
 import { utils } from './utils';
+import { PusherClientService }from '../../../services/pusherclient.service';
 
 @Injectable()
 export class StartupLeaflet {
@@ -18,7 +19,7 @@ export class StartupLeaflet {
     private mapNumber = null;
 
     constructor(private mapNo: number, private mlconfig: MLConfig, private pusherConfig : PusherConfig,
-        private geoCoder : GeoCoder, private utils : utils) {
+        private geoCoder : GeoCoder, private utils : utils, private pusherClientService : PusherClientService) {
     this.mlconfig.setMapNumber(mapNo);
     this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNo);
     }
@@ -83,7 +84,7 @@ export class StartupLeaflet {
         this.mlconfig.setUserId(this.pusherConfig.getUserName() + this.mapNumber);
         this.pusherChannel = this.pusherConfig.masherChannel(false);
         console.debug(this.pusherChannel);
-        this.pusher = PusherSetupCtrl.createPusherClient(
+        this.pusher = this.pusherClientService.createPusherClient(
             this.mlconfig,
             (channel, userName) => {
                 this.pusherConfig.setUserName(userName);

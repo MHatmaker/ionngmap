@@ -10,7 +10,7 @@ import { IEventDct } from '../pages/mlcomponents/libs/PusherEventHandler';
 
 declare const Pusher: any;
 
-class PusherClient {
+export class PusherClient {
     private eventHandlers : Map<string, IEventDct> = new Map<string, IEventDct>();
     constructor(private evtDct : IEventDct, private clientName : string) {
         this.eventHandlers[clientName] = evtDct;
@@ -193,9 +193,9 @@ export class PusherClientService {
             }
             // this.PusherChannel(this.pusherConfig.getPusherChannel());
 
-            PusherClient(evtDct, clientName) {
-                this.eventHandlers[clientName] = evtDct;
-            }
+            // PusherClient(evtDct, clientName) {
+            //     this.eventHandlers[clientName] = evtDct;
+            // }
             createPusherClient(mlcfg, cbfn, nfo) : PusherClient {
                 console.log("PusherSetupCtrl.createPusherClient");
                 this.mlconfig = mlcfg;
@@ -219,7 +219,7 @@ export class PusherClientService {
                 var promise;
                 this.userName = this.pusherConfig.getUserName();
 
-                promise = getPusherDetails();
+                promise = this.getPusherDetails();
                 return promise.then(function (response) {
                     console.log('getPusherDetails resolve response ' + response);
                     resolve(response);

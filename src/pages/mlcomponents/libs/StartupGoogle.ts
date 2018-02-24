@@ -1,20 +1,29 @@
-/*global require, define, google, console, document, loading, window, dojo*/
-/*jslint unparam: true*/
+import {Injectable} from '@angular/core';
+import { MLConfig } from './MLConfig';
+import { PusherConfig } from './PusherConfig';
+import { PusherClientService } from '../../../services/pusherclient.service';
+import { utils } from './utils';
+import { MapHosterGoogle } from './MapHosterGoogle';
+import { GoogleMap } from '@agm/core/services/google-maps-types';
+import { MapInstanceService } from '../../../services/MapInstanceService';
+import { CurrentMapTypeService } from '../../../services/currentmaptypeservice';
 
-(function () {
-    "use strict";
-    console.log('StartupGoogle setup');
+@Injectable()
+export class StartupGoogle {
+    private hostName : string = "MapHosterGoogle";
+    private mapNumber : number = -1;
+    private mapHoster : MapHosterGoogle = null;
+    private gMap : google.maps.Map = null;
+    private newSelectedWebMapId : string = '';
+    private pusherChannel : string = '';
+    private pusher : any = null;
 
-    define([
-        'libs/MapHosterGoogle',
-        'controllers/PusherSetupCtrl',
-        'libs/MLConfig',
-        'libs/PusherConfig',
-        'libs/utils'
-    ], function (MapHosterGoogle, PusherSetupCtrl, MLConfig, PusherConfig, utils) {
-        console.log('StartupGoogle define');
-        var
-            StartupGoogle  (mapNo, mapconfig) {
+    constructor (private mapHosterGoogle : MapHosterGoogle, private pusherClientService : PusherClientService,
+        private mlConfig : MLConfig, private pusherConfig : PusherConfig, private utils : utils,
+        private mapInstanceService : MapInstanceService, private currentmaptypeservice : CurrentMapTypeService) {
+    }
+
+            startupGoogle  (mapNo, mapconfig) {
                 console.log("StartupGoogle ctor");
                 this.mapNumber = mapNo;
                 this.mapHoster = null;
@@ -22,28 +31,26 @@
                 this.newSelectedWebMapId = '';
                 this.pusherChannel = null;
                 this.pusher = null;
-                this.mlconfig = mapconfig;
-                this.mlconfig.setMapNumber(mapNo);
-                this.mlconfig.setUserId(PusherConfig.getUserName() + mapNo);
+                this.mlConfig = mapconfig;
+                this.mlConfig.setMapNumber(mapNo);
+                this.mlConfig.setUserId(this.pusherConfig.getUserName() + mapNo);
 
                 console.log("Setting mapNumber to " + this.mapNumber);
                 var self = this,
 
-                    getMap  () {
+                    getMap = function () {
                         return self.gMap;
                     },
 
-                    getMapNumber  () {
+                    getMapNumber = function () {
                         return self.mapNumber;
                     },
-                    getMapHosterInstance  (ndx) {
+                    getMapHosterInstance = function  (ndx) {
                         return self.mapHoster;
                     },
 
-                    configure  (newMapId, mapLocOpts) {
-                        var $inj,
-                            mapInstanceSvc,
-                            CurrentMapTypeService,
+                    configure = function (newMapId, mapLocOpts) {
+                        var
                             centerLatLng,
                             initZoom,
                             mapGoogleLocOpts = {};
@@ -55,8 +62,8 @@
                         console.log("StartupGoogle configure with map no. " + self.mapNumber);
                         self.newSelectedWebMapId = newMapId;
 
-                        window.loading = dojo.byId("loadingImg");
-                        utils.showLoading();
+                        // window.loading = dojo.byId("loadingImg");
+                        // utils.showLoading();
                         centerLatLng = new google.maps.LatLng(mapLocOpts.center.lat, mapLocOpts.center.lng);
                         initZoom = mapLocOpts.zoom;
 
@@ -78,20 +85,17 @@
 
                         self.gMap = new google.maps.Map(document.getElementById("map" + self.mapNumber), mapGoogleLocOpts);
                         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + self.mapNumber);
-                        self.mapHoster = new MapHosterGoogle.MapHosterGoogle();
-                        self.mapHoster.config(self.gMap, mapGoogleLocOpts, google, google.maps.places, self.mlconfig);
-                        self.mlconfig.setMapHosterInstance(self.mapHoster);
+                        self.mapHoster = new MapHosterGoogle();
+                        self.mapHoster.configureMap(self.gMap, mapGoogleLocOpts, google, google.maps.places, this.mlConfig);
+                        this.mlConfig.setMapHosterInstance(self.mapHoster);
 
-                        $inj = self.mlconfig.getInjector();
-                        mapInstanceSvc = $inj.get('MapInstanceService');
-                        mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
-                        CurrentMapTypeService = $inj.get('CurrentMapTypeService');
-                        CurrentMapTypeService.setCurrentMapType('google');
+                        this.mapInstanceService.setMapHosterInstance(self.mapNumber, self.mapHoster);
+                        this.currentMapTypeService.setCurrentMapType('google');
 
-                        self.pusher = PusherSetupCtrl.createPusherClient(
-                            self.mlconfig,
+                        self.pusher = this.pusherClientService.createPusherClient(
+                            this.mlConfig,
                             function (channel, userName) {
-                                PusherConfig.setUserName(userName);
+                                this.pusherConfig.setUserName(userName);
                             },
                             null
                         );
@@ -109,8 +113,4 @@
                 };
             };
 
-        return {
-            StartupGoogle: StartupGoogle
-        };
-    });
-}());
+}

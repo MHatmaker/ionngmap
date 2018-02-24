@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
+import { PusherClientService } from '../../../services/pusherclient.service';
 import { utils } from './utils';
 import { ImlBounds, xtntParams } from '../../../services/mlbounds.service';
 import { ConfigParams } from '../../../services/configparams.service';
@@ -54,7 +55,8 @@ export class MapHosterGoogle {
     // private geoCoder = createClient();
 
     constructor(private mapNo: number, private mlconfig: MLConfig, private utils: utils,
-        private pusherConfig : PusherConfig, private geoCoder : GeoCodingService, private positionUpdateService : PositionUpdateService) {
+        private pusherConfig : PusherConfig, private geoCoder : GeoCodingService,
+        private pusherClientService : PusherClientService, private positionUpdateService : PositionUpdateService) {
     }
 
     // MLConfig.showConfigDetails('MapHosterGoogle - startup');
@@ -147,7 +149,7 @@ export class MapHosterGoogle {
                     "referrerId" : referrerId, "referrerName" : referrerName,
                     'address' : marker.address, 'title' : marker.title };
                 console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                PusherSetupCtrl.publishClickEvent(pushLL);
+                this.pusherClientService.publishClickEvent(pushLL);
             };
 
 
@@ -318,7 +320,7 @@ export class MapHosterGoogle {
                     console.log("triggered?");
                     console.log(triggered);
                 }
-                PusherSetupCtrl.publishPanEvent(xtExt);
+                this.pusherClientService.publishPanEvent(xtExt);
                 this.updateGlobals("setBounds with cmp false", +xtExt.lon, +xtExt.lat, xtExt.zoom);
 
                 gBnds = this.mphmap.getBounds();
@@ -681,7 +683,7 @@ export class MapHosterGoogle {
             if (this.scale2Level.length > 0) {
                 // var view = "Zoom : " + zm + " Scale : " + this.scale2Level[zm].scale + " Center : " + cntrlng + ", " + cntrlat + " Current : " + evlng + ", " + evlat;
                 // document.getElementById("mppos").value = view;
-                PositionViewCtrl.update('coords',
+                this.positionUpdateService.update('coords',
                     {
                         'zm' : zm,
                         'scl' : this.scale2Level[zm].scale,

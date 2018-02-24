@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
+import { PusherClientService } from '../../../services/pusherclient.service';
 import { utils } from './utils';
 import { ImlBounds, xtntParams } from '../../../services/mlbounds.service';
 import { ConfigParams } from '../../../services/configparams.service';
@@ -36,7 +37,8 @@ export class MapHosterLeaflet {
 
 
     constructor(private mapNo: number, private mlconfig: MLConfig, private utils: utils,
-        private pusherConfig : PusherConfig, private geoCoder : GeoCoder, private positionUpdateService : PositionUpdateService) {
+        private pusherConfig : PusherConfig, private geoCoder : GeoCoder,
+        private pusherClientService : PusherClientService, private positionUpdateService : PositionUpdateService) {
             this.CustomControl =  L.Control.extend({
                 options: {
                     position: 'topright'
@@ -138,13 +140,14 @@ export class MapHosterLeaflet {
                         'address' : contextContent, 'title' : contextHint };
                     console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
 
-                    // PusherSetupCtrl.publishCLickEvent(pushLL);
+                    this.pusherClientService.publishCLickEvent(pushLL);
                 };
 
-                container = angular.element('<div />');
-                container.html(allContent);
-
-                this.popup = L.popup().setContent(container[0]);
+                // container = angular.element('<div />');
+                // container.html(allContent);
+                //
+                // this.popup = L.popup().setContent(container[0]);
+                this.popup = L.popup().setContent(allContent);
                 this.mrkr.bindPopup(this.popup);
                 this.markers.push(this.mrkr);
                 this.popups.push(this.popup);
@@ -212,17 +215,20 @@ export class MapHosterLeaflet {
 
 
 
-            this.positionUpdateService.positionData.emit(
-                {'key' : 'zm',
-                  'val' : {
-                    'zm' : this.zmG,
-                    'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
-                    'cntrlng' : this.cntrxG,
-                    'cntrlat': this.cntryG,
-                    'evlng' : this.cntrxG,
-                    'evlat' : this.cntryG
-              }
-            });
+                this.positionUpdateService.positionData.emit(
+                    {
+                      'key' : 'zm',
+                      'val' : {
+                        'zm' : this.zmG,
+                        'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
+                        'cntrlng' : this.cntrxG,
+                        'cntrlat': this.cntryG,
+                        'evlng' : this.cntrxG,
+                        'evlat' : this.cntryG
+                      }
+                    }
+                );
+          }
 
             showClickResult(r) {
                 var cntr;
@@ -247,7 +253,7 @@ export class MapHosterLeaflet {
                     });
             }
 
-            extractBounds(action) : xtntParams { // , latlng) {
+            extractBounds(action) : xtntParams {
                 var zm = this.mphmap.getZoom(),
                     // scale = mphmap.options.crs.scale(zm),
                     // oldMapCenter = mphmapCenter,
@@ -290,7 +296,7 @@ export class MapHosterLeaflet {
 
                 if (cmp === false) {
                     console.log("MapHoster Leaflet setBounds publishPanEvent");
-                    PusherSetupCtrl.publishPanEvent(xtExt);
+                    this.pusherClientService.publishPanEvent(xtExt);
                     this.updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                 }
             }
@@ -302,9 +308,9 @@ export class MapHosterLeaflet {
                     linkrSvc,
                     content = "Received Pushed Click from user " + clickPt.referrerName + ", " + clickPt.referrerId + " at " + latlng.toString();
 
-                $inj = PusherConfig.getInjector();
-                linkrSvc = $inj.get('LinkrService');
-                linkrSvc.hideLinkr();
+                // $inj = this.pusherConfig.getInjector();
+                // linkrSvc = $inj.get('LinkrService');
+                // linkrSvc.hideLinkr();
                 if (clickPt.title) {
                     content += '<br>' + clickPt.title;
                 }
@@ -367,17 +373,17 @@ export class MapHosterLeaflet {
             // });
 
             placeCustomControls() {
-                var $inj = PusherConfig.getInjector(),
-                    ctrlSvc = $inj.get('MapControllerService'),
-                    mapCtrl = ctrlSvc.getController();
-                mapCtrl.placeCustomControls();
+                // var $inj = PusherConfig.getInjector(),
+                //     ctrlSvc = $inj.get('MapControllerService'),
+                //     mapCtrl = ctrlSvc.getController();
+                // mapCtrl.placeCustomControls();
             }
 
             setupQueryListener() {
-                var $inj = PusherConfig.getInjector(),
-                    ctrlSvc = $inj.get('MapControllerService'),
-                    mapCtrl = ctrlSvc.getController();
-                mapCtrl.setupQueryListener('leaflet');
+                // var $inj = PusherConfig.getInjector(),
+                //     ctrlSvc = $inj.get('MapControllerService'),
+                //     mapCtrl = ctrlSvc.getController();
+                // mapCtrl.setupQueryListener('leaflet');
             }
 
             configureMap(lmap, mapOptions, config) {
@@ -537,7 +543,7 @@ export class MapHosterLeaflet {
                 bndsUrl = this.mlconfig.getBoundsForUrl();
                 pos.search += bnds;
 
-                PusherSetupCtrl.publishPosition(pos);
+                this.pusherClientService.publishPosition(pos);
             }
 
             getCenter() {

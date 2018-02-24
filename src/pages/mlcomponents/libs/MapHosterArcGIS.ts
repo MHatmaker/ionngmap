@@ -1,6 +1,7 @@
 import {Injectable, OnInit} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
+import { PusherClientService } from '../../../services/pusherclient.service';
 import { utils } from './utils';
 import { ConfigParams } from '../../../services/configparams.service';
 import { GeoCoder } from './GeoCoder';
@@ -64,7 +65,8 @@ export class MapHosterArcGIS implements OnInit {
 
     constructor(private mapNumber: number, private mlconfig: MLConfig, private utils: utils,
         private pusherConfig : PusherConfig, private pusherEventHandler : PusherEventHandler,
-        private geoCoder : GeoCoder, private positionUpdateService : PositionUpdateService) {
+        private geoCoder : GeoCoder, private positionUpdateService : PositionUpdateService,
+        private pusherClientService : PusherClientService) {
 
     }
 
@@ -188,7 +190,7 @@ export class MapHosterArcGIS implements OnInit {
                         // if (selfPusherDetails.pusher && selfPusherDetails.channelName) {
                         //     selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
                         // }
-                        PusherSetupCtrl.publishPanEvent(xtExt);
+                        this.pusherClientService.publishPanEvent(xtExt);
                         this.updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                         //console.debug(sendRet);
                     }
@@ -427,7 +429,7 @@ export class MapHosterArcGIS implements OnInit {
                         };
                         console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + this.fixedLLG.lat + ", " + this.fixedLLG.lon);
                         // selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
-                        PusherSetupCtrl.publishClickEvent(pushLL);
+                        this.pusherClientService.publishClickEvent(pushLL);
                     // }
                 }
 
@@ -536,7 +538,7 @@ export class MapHosterArcGIS implements OnInit {
                         cntrlat = fixedCntrLL.lat;
                     //     view = "Zoom : " + zm + " Center : " + cntrlng + ", " + cntrlat + " Current  : " + evlng + ", " + evlat;      // + selectedWebMapId;
                     // document.getElementById("mppos").value = view;
-                    PositionViewCtrl.update('coords', {
+                    this.positionUpdateService.update('coords', {
                         'zm' : zm,
                         'scl' : this.scale2Level[zm].scale,
                         'cntrlng' : cntrlng,
