@@ -5,11 +5,10 @@ import { PusherClientService } from '../../../services/pusherclient.service';
 import { utils } from './utils';
 import { MapHosterGoogle } from './MapHosterGoogle';
 import { GoogleMap } from '@agm/core/services/google-maps-types';
-import { MapInstanceService } from '../../../services/MapInstanceService';
-import { CurrentMapTypeService } from '../../../services/currentmaptypeservice';
+import { Startup } from './Startup';
 
 @Injectable()
-export class StartupGoogle {
+export class StartupGoogle extends Startup {
     private hostName : string = "MapHosterGoogle";
     private mapNumber : number = -1;
     private mapHoster : MapHosterGoogle = null;
@@ -18,9 +17,8 @@ export class StartupGoogle {
     private pusherChannel : string = '';
     private pusher : any = null;
 
-    constructor (private mapHosterGoogle : MapHosterGoogle, private pusherClientService : PusherClientService,
-        private mlConfig : MLConfig, private pusherConfig : PusherConfig, private utils : utils,
-        private mapInstanceService : MapInstanceService, private currentmaptypeservice : CurrentMapTypeService) {
+    constructor (private mapHosterGoogle : MapHosterGoogle, private mlconfig : MLConfig) {
+        super();
     }
 
             startupGoogle  (mapNo, mapconfig) {
@@ -31,9 +29,9 @@ export class StartupGoogle {
                 this.newSelectedWebMapId = '';
                 this.pusherChannel = null;
                 this.pusher = null;
-                this.mlConfig = mapconfig;
-                this.mlConfig.setMapNumber(mapNo);
-                this.mlConfig.setUserId(this.pusherConfig.getUserName() + mapNo);
+                this.mlconfig = mapconfig;
+                this.mlconfig.setMapNumber(mapNo);
+                this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNo);
 
                 console.log("Setting mapNumber to " + this.mapNumber);
                 var self = this,
@@ -85,7 +83,7 @@ export class StartupGoogle {
 
                         self.gMap = new google.maps.Map(document.getElementById("map" + self.mapNumber), mapGoogleLocOpts);
                         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + self.mapNumber);
-                        self.mapHoster = new MapHosterGoogle();
+                        self.mapHoster = new MapHosterGoogle(self.mapNumber, self.mlconfig, );
                         self.mapHoster.configureMap(self.gMap, mapGoogleLocOpts, google, google.maps.places, this.mlConfig);
                         this.mlConfig.setMapHosterInstance(self.mapHoster);
 

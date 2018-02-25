@@ -1,12 +1,14 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Output, EventEmitter, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
 import { PusherClientService } from '../../../services/pusherclient.service';
 import { utils } from './utils';
 import { MapHosterArcGIS } from './MapHosterArcGIS';
+import { Startup } from './Startup';
+import { loadModules } from 'esri-loader';
 
 @Injectable()
-export class StartupArcGIS {
+export class StartupArcGIS  extends Startup {
     private hostName : string = "MapHosterArcGIS";
     private mapNumber : number = -1;
     private aMap : any = null;
@@ -15,9 +17,42 @@ export class StartupArcGIS {
     private newSelectedWebMapId : string = '';
     private pusherChannel : string = '';
     private pusher : any = null;
+    private mapHosterSetupCallback : any = null;
+    private dojoEvent;
+    private esriLocator;
+    private dojoBaseFx;
+    private dojoEasing;
+    private esriMap;
+    private esriConfig;
+    private GeometryService;
+    private webmap;
+    private mapview;
+    private esriPoint;
+    private esriSpatialReference;
+    private viewCreated;
 
-    constructor (private mapHosterArcGIS : MapHosterArcGIS, private pusherClientService : PusherClientService,
-        private mlConfig : MLConfig, private pusherConfig : PusherConfig, private utils : utils) {
+    constructor (private mapHosterArcGIS : MapHosterArcGIS,
+        private mlConfig : MLConfig, private elementRef : ElementRef) {
+        super();
+        // @Output()
+            this.viewCreated = new EventEmitter();
+      loadModules(
+        ['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map', 'esri/config',
+            'esri/tasks/GeometryService', 'esri/WebMap', 'esri/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'])
+          .then(([dojoEvent, esriLocator, dojoBaseFx, dojoEasing, esriMap, esriConfig,
+              GeometrySvc, WebMap, MapView, Point, SpatialReference]) => {
+              this.dojoEvent = dojoEvent;
+              this.esriLocator = esriLocator;
+              this.dojoBaseFx = dojoBaseFx;
+              this.dojoEasing = dojoEasing;
+              this.esriMap = esriMap;
+              this.esriConfig = esriConfig;
+              this.GeometryService = GeometrySvc;
+              this.webmap = WebMap;
+              this.mapview = MapView;
+              this.esriPoint = Point;
+              this.esriSpatialReference = SpatialReference;
+          })
     }
 
         var
@@ -88,10 +123,6 @@ export class StartupArcGIS {
                         console.debug(self.aMap);
                         var
                             curmph = null,
-                            $inj,
-                            mapInstanceSvc,
-                            CurrentMapTypeSvc,
-                            // mapTypeSvc,
                             currentPusher,
                             currentChannel;
 
@@ -109,14 +140,12 @@ export class StartupArcGIS {
                             console.log("self.mapHoster is null");
                             // alert("StartupArcGIS.initUI : selfDetails.mph == null");
                             // placeCustomControls();
-                            self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS();
-                            self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, this.mlConfig);
-                            $inj = this.mlConfig.getInjector();
-                            mapInstanceSvc = $inj.get('MapInstanceService');
-                            mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
+                            self.mapHoster = new MapHosterArcGIS(self.mapNumber, self.aMap, this.mlconfig, this.elementRef);
+                            self.mapHoster.configureMap(self.aMap, zoomWebMap, pointWebMap, this.mlConfig);
+
+                            this.MapInstanceService.setMapHosterInstance(self.mapNumber, self.mapHoster);
                             this.mlConfig.setMapHosterInstance = self.mapHoster;
-                            CurrentMapTypeSvc = $inj.get('CurrentMapTypeService');
-                            CurrentMapTypeSvc.setCurrentMapType('arcgis');
+                            this.CurrentMapTypeService.setCurrentMapType('arcgis');
                             placeCustomControls();
                             setupQueryListener();
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
@@ -153,7 +182,7 @@ export class StartupArcGIS {
                             // curmph = mapTypeSvc.getSelectedMapType();
                             // console.log('selected map type is ' + curmph);
                             this.mlConfig.setMapHosterInstance = self.mapHoster;
-                            this.pusherChannel = PusherConfig.masherChannel(false);
+                            this.pusherChannel = this.pusherConfig.masherChannel(false);
                             pusher = this.pusherClientService.createPusherClient(
                                 this.mlConfig,
                                 function (callbackChannel, userName) {
@@ -166,7 +195,7 @@ export class StartupArcGIS {
                             );
                             currentPusher = pusher;
                             currentChannel = channel;
-                            self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, this.mlConfig);
+                            self.mapHoster.configureMap(self.aMap, zoomWebMap, pointWebMap, this.mlconfig);
 
                             // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
                             console.log("use current pusher - now setPusherClient");
@@ -180,13 +209,23 @@ export class StartupArcGIS {
                         var
                             mapDeferred,
                             aMap = null,
-                            mapInstanceSvc,
-                            $inj;
+                            geometrySvc,
+                            $inj,
+                            webMap = new this.webmap ({
+                                portalItem: { // autocasts as new PortalItem()
+                                  id: "f2e9b762544945f390ca4ac3671cfa72"
+                                }
+                            }),
+                            viewCreated;
+
+
                         //     mapOptions = {},
-                        window.loading = dojo.byId("loadingImg");
+                        // window.loading = dojo.byId("loadingImg");
                         //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
-                        esri.config.defaults.geometryService =
-                            new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
+                        // esri.config.defaults.geometryService =
+                        geometrySvc = new this.GeometryService('https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer');
+                        // this.esriConfig.GeometryService =
+                        //     new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
                         console.log("StartupArcGIS configure with map no. " + self.mapNumber);
                         console.log("configOptions.webmap will be " + selectedWebMapId);
@@ -203,12 +242,14 @@ export class StartupArcGIS {
                             bingMapsKey: "/*Please enter your own Bing Map key*/"
                         };
                         if(newSelectedWebMapId) {
-                            configOptions.webmap = newSelectedWebMapId;
+                            configOptions.webmap = this.webmap.portalItem = newSelectedWebMapId;
                         }
 
                         console.log('StartupArcGIS ready to instantiate Map Hoster with map no. ' + self.mapNumber);                        // return self.mapHoster;
-                        esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
-                        esri.config.defaults.io.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
+                        this.esriConfig.request.arcgisUrl = configOptions.sharingurl;                      // return self.mapHoster;
+                        // esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
+                        this.esriConfig.request.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
+                        // esri.config.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
 
                         //create the map using the web map id specified using configOptions or via the url parameter
                         // var cpn = new dijit.layout.ContentPane({}, "map_canvas").startup();
@@ -267,31 +308,19 @@ export class StartupArcGIS {
                                 console.error(error);
                             });
                             */
-                        try {
-                            mapDeferred = esri.arcgis.utils.createMap(configOptions.webmap, "map" + self.mapNumber, {
-                                mapOptions: {
-                                    slider: true,
-                                    nav: false,
-                                    wrapAround180: true
-
-                                },
-                                ignorePopups: false,
-                                bingMapsKey: configOptions.bingMapsKey,
-                                geometryServiceURL: "http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
-
+                        // try {
+                            this.mapView = new this.mapview({
+                              container: this.elementRef.nativeElement.firstChild,
+                              map: this.webMap, //this.mapService.map,
+                              center: new this.esriPoint({
+                                x: -87.620692,
+                                y: 41.888941,
+                                spatialReference: new this.esriSpatialReference({ wkid: 4326 })
+                              }),
+                              zoom: 15
                             });
-                        } catch (err) {
-                            console.log(err.message);
-                            alert(err.message);
-                        } finally {
-                            console.log("finally???????????????");
-                            //alert("why are we in finally?");
-                        }
-
-                        console.log("set up mapDeferred anonymous method");
-                        try {
-                            mapDeferred.then(function (response) {
-                                console.log("mapDeferred.then");
+                            this.mapView.when(function(){
+                                console.log("mapView.when");
                                 if (previousSelectedWebMapId !== selectedWebMapId) {
                                     previousSelectedWebMapId = selectedWebMapId;
                                     //dojo.destroy(map.container);
@@ -299,38 +328,18 @@ export class StartupArcGIS {
                                 if (aMap) {
                                     aMap.destroy();
                                 }
-                                self.aMap = aMap = response.map;
-                                console.log("in mapDeferred anonymous method");
-                                console.log("configOptions title " + configOptions.title);
-                                console.debug("ItemInfo object " + response.itemInfo);
-                                console.log("ItemInfo.item object " + response.itemInfo.item);
-                                console.log("response title " + response.itemInfo.item.title);
-                                dojo.connect(aMap, "onUpdateStart", showLoading);
-                                dojo.connect(aMap, "onUpdateEnd", hideLoading);
-                                dojo.connect(aMap, "onLoad", initUI);
+                                self.aMap = aMap = this.webMap;
+                                // dojo.connect(aMap, "onUpdateStart", showLoading);
+                                // dojo.connect(aMap, "onUpdateEnd", hideLoading);
+                                // dojo.connect(aMap, "onLoad", initUI);
+                                self.mapHoster = new MapHosterArcGIS(self.aMap, self.mapNumber, this.mlConfig, this.elementRef);
+                                self.mapHosterSetupCallback(self.mapHoster, self.aMap);
+                            },
+                              function(error){
 
-                                // self.mapHoster = new MapHosterArcGIS.MapHosterArcGIS();
-                                // // self.mapHosterSetupCallback(self.mapHoster, self.aMap);
-                                // self.mapHoster.config(self.aMap, zoomWebMap, pointWebMap, this.mlConfig);
-                                // $inj = this.mlConfig.getInjector();
-                                // mapInstanceSvc = $inj.get('MapInstanceService');
-                                // mapInstanceSvc.setMapHosterInstance(self.mapNumber, self.mapHoster);
-                                setTimeout(function () {
-                                    if (aMap.loaded) {
-                                        initUI();
-                                    } else {
-                                        dojo.connect(aMap, "onLoad", initUI);
-                                    }
-                                }, 300);
-                            }, function (error) {
-                                // alert("Create Map Failed ");
-                                console.log('Create Map Failed: ' + dojo.toJson(error));
-                                console.log("Error: ", error.code, " Message: ", error.message);
-                                mapDeferred.cancel();
-                            });
-                        } catch (err) {
-                            console.log("deferred failed with err " + err.message);
-                        }
+                              });
+                            this.viewCreated.next(this.mapView);
+
                     },
                     // function getMapHoster() {
                     //     console.log('StartupArcGIS return mapHoster with map no. ' + mapHoster.getMapNumber());
@@ -427,7 +436,8 @@ export class StartupArcGIS {
                             pointWebMap = [-87.620692, 41.888941];
                             zoomWebMap = 15;
                             // initialize(selectedWebMapId, '', '');   original from mlhybrid requires space after comma
-                            initialize(selectedWebMapId, {dstSel : 'no destination selection probably Same Window'});
+                            initialize(selectedWebMapId, {dstSel : 'no destination selection probably Same Window'},
+                                'Name Placeholder', null);
                         } else {
                             console.log("found idWebMap");
                             console.log("use " + idWebMap);
@@ -437,7 +447,8 @@ export class StartupArcGIS {
                                 llat = this.mlConfig.lat();
                                 pointWebMap = [llon, llat];
                             }
-                            initialize(idWebMap, {dstSel : 'no destination selection probably Same Window'});
+                            initialize(idWebMap, {dstSel : 'no destination selection probably Same Window'},
+                                'Name Placeholder', null);
                         }
                     };
                   }

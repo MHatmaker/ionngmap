@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable, OnInit, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
 import { PusherClientService } from '../../../services/pusherclient.service';
@@ -16,9 +16,10 @@ import * as proj4 from 'proj4';
 // import { toScreenGeometry } from 'esri/geometry/screenUtils';
 import { webMercatorToGeographic, geographicToWebMercator, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
 import * as Locator from 'esri/tasks/Locator';
+import { MapHoster } from './MapHoster';
 
 @Injectable()
-export class MapHosterArcGIS implements OnInit {
+export class MapHosterArcGIS extends MapHoster implements OnInit {
     hostName = "MapHosterArcGIS";
     scale2Level = [];
     zmG = -1;
@@ -33,7 +34,6 @@ export class MapHosterArcGIS implements OnInit {
     mapReady = true;
     popup = null;
     marker = null;
-    mphmap = null;
     markers = [];
     popups = [];
     mrkr = null;
@@ -50,6 +50,7 @@ export class MapHosterArcGIS implements OnInit {
         channel : null,
         pusher : null
     };
+    esriMapView : any;
     // require(['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map']);
     //
     // define([
@@ -63,18 +64,20 @@ export class MapHosterArcGIS implements OnInit {
     //     'dojo/_base/event'
     // ],
 
-    constructor(private mapNumber: number, private mlconfig: MLConfig, private utils: utils,
-        private pusherConfig : PusherConfig, private pusherEventHandler : PusherEventHandler,
-        private geoCoder : GeoCoder, private positionUpdateService : PositionUpdateService,
-        private pusherClientService : PusherClientService) {
-
+    constructor(private mphmap : any, private mapNumber: number, private mlconfig: MLConfig,
+        private elementRef : ElementRef) {
+        super();
     }
 
     ngOnInit () {
         loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/WebMercator',
-            'esri/geometry/Geometry', 'esri/tasks/Locator', 'esri/geometry/support/webMercatorUtils'
-          ]).then(([Point, SpatialReference, WebMercator, Geometry, Locator, webMercatorUtils]) => {});
+            'esri/geometry/Geometry', 'esri/tasks/Locator', 'esri/geometry/support/webMercatorUtils',
+            'esri/views/MapView'
+          ]).then(([Point, SpatialReference, WebMercator, Geometry, Locator,
+              webMercatorUtils, MapView]) => {
+                  this.esriMapView = MapView;
+              });
       }
             getMap() {
                 return this.mphmap;
@@ -239,11 +242,13 @@ export class MapHosterArcGIS implements OnInit {
                 console.debug(clickPt);
                 var
                     mpDiv = document.getElementById("map" + this.mlconfig.getMapNumber()),
-                    mpDivNG = angular.element(mpDiv),
+                    // mpDivNG = angular.element(mpDiv),
+                    mpDivNG = this.elementRef,
                     wdt = mpDivNG[0].clientWidth,
                     hgt = mpDivNG[0].clientHeight,
                     mppt = new Point({longitude : clickPt.x, latitude : clickPt.y}),
-                    screenGeo = new toScreenGeometry(this.mphmap.geographicExtent, wdt, hgt, mppt),
+                    // screenGeo = new toScreenGeometry(this.mphmap.geographicExtent, wdt, hgt, mppt),
+                    screenGeo = new this.esriMapView.toScreen(mppt),
                     fixedLL,
                     content,
                     $inj,
@@ -296,7 +301,8 @@ export class MapHosterArcGIS implements OnInit {
                     cntr;
 
                 if (document.getElementById("mppos") !== null) {
-                    document.getElementById("mppos").value = view;
+                    let elementVal = document.getElementById("mppos") as HTMLTextAreaElement;
+                    elementVal.innerHTML = view;
                 }
                 if (cmp === false) {
                     tmpLon = this.cntrxG;

@@ -8,9 +8,10 @@ import { MapHosterLeaflet } from './MapHosterLeaflet'
 import { GeoCoder } from './GeoCoder';
 import { utils } from './utils';
 import { PusherClientService }from '../../../services/pusherclient.service';
+import { Startup } from './Startup';
 
 @Injectable()
-export class StartupLeaflet {
+export class StartupLeaflet extends Startup {
     private mapHoster = null;
     private newSelectedWebMapId = '';
     private lMap = null;
@@ -18,10 +19,10 @@ export class StartupLeaflet {
     private pusher = null;
     private mapNumber = null;
 
-    constructor(private mapNo: number, private mlconfig: MLConfig, private pusherConfig : PusherConfig,
-        private geoCoder : GeoCoder, private utils : utils, private pusherClientService : PusherClientService) {
-    this.mlconfig.setMapNumber(mapNo);
-    this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNo);
+    constructor(private mapNo: number, private mlconfig: MLConfig, private geoCoderLflt : GeoCoder) {
+        super();
+        this.mlconfig.setMapNumber(mapNo);
+        this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNo);
     }
     getMap  () {
         return this.lMap;
@@ -49,8 +50,8 @@ export class StartupLeaflet {
             mapTypeSvc = $inj.get('CurrentMapTypeService');
         this.newSelectedWebMapId = newMapId;
         // mapInstanceSvc.setCurrentMapType('leaflet');
-        window.loading = dojo.byId("loadingImg");
-        console.log(window.loading);
+        // window.loading = dojo.byId("loadingImg");
+        // console.log(window.loading);
         console.log("newSelectedWebMapId " + newMapId);
         // if (this.newSelectedWebMapId !== null) {
         //     if (this.mlconfig.isChannelInitialized() === false) {
@@ -76,7 +77,7 @@ export class StartupLeaflet {
             this.lMap = new L.Map(document.getElementById("map" + this.mapNumber));
         }
 
-        this.mapHoster = new MapHosterLeaflet(this.mapNo, this.mlconfig, this.utils, this.pusherConfig, this.geoCoder);
+        this.mapHoster = new MapHosterLeaflet(this.mapNo, this.mlconfig, this.geoCoderLflt);
         this.mapHoster.config(this.lMap, mapLocOpts, this.mlconfig);
         mapInstanceSvc.setMapHosterInstance(this.mapNumber, this.mapHoster);
         mapInstanceSvc.setConfigInstanceForMap(this.mapNumber, this.mlconfig);

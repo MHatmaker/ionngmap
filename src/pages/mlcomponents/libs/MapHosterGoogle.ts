@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
 import { PusherClientService } from '../../../services/pusherclient.service';
+import { PusherEventHandler } from './PusherEventHandler';
 import { utils } from './utils';
 import { ImlBounds, xtntParams } from '../../../services/mlbounds.service';
 import { ConfigParams } from '../../../services/configparams.service';
@@ -11,10 +12,11 @@ import { createClient, GoogleMapsClient } from '@google/maps';
 import { GeoCodingService } from '../../../services/GeoCodingService';
 import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
 import { PositionUpdateService } from '../../../services/positionupdate.service';
-import { PusherEventHandler } from './PusherEventHandler';
+// import { PusherEventHandler } from './PusherEventHandler';
+import { MapHoster } from './MapHoster';
 
 @Injectable()
-export class MapHosterGoogle {
+export class MapHosterGoogle extends MapHoster {
     hostName = "MapHosterGoogle";
     scale2Level = [];
     mphmap : any;
@@ -36,7 +38,6 @@ export class MapHosterGoogle {
     mrkr = null;
     CustomControl = null;
     queryListenerLoaded = false;
-    pusherEvtHandler;
     searchBox = null;
     // searchInput = null,
     searchFiredFromUrl = false;
@@ -54,9 +55,8 @@ export class MapHosterGoogle {
     placesFromSearch = [];
     // private geoCoder = createClient();
 
-    constructor(private mapNo: number, private mlconfig: MLConfig, private utils: utils,
-        private pusherConfig : PusherConfig, private geoCoder : GeoCodingService,
-        private pusherClientService : PusherClientService, private positionUpdateService : PositionUpdateService) {
+    constructor(private mapNo: number, private mlconfig: MLConfig) {
+        super();
     }
 
     // MLConfig.showConfigDetails('MapHosterGoogle - startup');
@@ -301,7 +301,7 @@ export class MapHosterGoogle {
     }
 
     setBounds(action) {
-        console.log("MapHosterGoogle setBounds with  " + this.pusherEvtHandler.getMapNumber());
+        console.log("MapHosterGoogle setBounds with  " + this.pusherEventHandler.getMapNumber());
         if (this.mapReady === true) {
             // runs this code after you finishing the zoom
             var xtExt = this.extractBounds(action),
@@ -466,7 +466,7 @@ export class MapHosterGoogle {
         firstCntr = new google.maps.LatLng(this.cntryG, this.cntrxG);
         this.mphmap.panTo(firstCntr);
         this.mphmap.setCenter(firstCntr);
-        LocateSelfCtrl.setMap(goooogle, this.mphmap);
+        // LocateSelfCtrl.setMap(goooogle, this.mphmap);
 
         // this.updateGlobals("init", -0.09, 51.50, 13, 0.0);
         this.showGlobals("MapHosterGoogle - Prior to new Map");
@@ -584,9 +584,10 @@ export class MapHosterGoogle {
                 this.searchFiredFromUrl = false;
 
                 qtext = this.mlconfig.query();
-
+/* this is the previously functional location for accessing pac-input
                 pacinput = angular.element('pac-input' + this.mlconfig.getMapNumber());
                 pacinput.value = qtext;
+*/
                 // pacinput.focus();
                 this.queryPlaces.bounds = gBnds;
                 this.queryPlaces.query = qtext;
@@ -749,11 +750,11 @@ export class MapHosterGoogle {
             onMapClick(event);
         });
 
-        this.pusherEvtHandler = new PusherEventHandler(this.mlconfig.getMapNumber());
+        this.pusherEventHandler = new PusherEventHandler(this.mlconfig.getMapNumber());
         console.log("Add pusher event handler for MapHosterGoogle " + this.mlconfig.getMapNumber());
 
-        this.pusherEvtHandler.addEvent('client-MapXtntEvent', this.retrievedBoundsInternal);
-        this.pusherEvtHandler.addEvent('client-MapClickEvent',  this.retrievedClick);
+        this.pusherEventHandler.addEvent('client-MapXtntEvent', this.retrievedBoundsInternal);
+        this.pusherEventHandler.addEvent('client-MapClickEvent',  this.retrievedClick);
         /*
         createBounds() {
             var createdBounds = new google.maps.LatLngBounds(),
@@ -788,7 +789,7 @@ export class MapHosterGoogle {
     }
 
     getEventDictionary() {
-        var eventDct = this.pusherEvtHandler.getEventDct();
+        var eventDct = this.pusherEventHandler.getEventDct();
         return eventDct;
     }
 /*
@@ -932,7 +933,7 @@ export class MapHosterGoogle {
     }
 
     getPusherEventHandler() {
-        return this.pusherEvtHandler;
+        return this.pusherEventHandler;
     }
 
     getmlconfig() {

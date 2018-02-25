@@ -10,10 +10,11 @@ import { GeoCoder } from './GeoCoder';
 import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
 import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { PusherEventHandler } from './PusherEventHandler';
+import { MapHoster } from './MapHoster';
 
 
 @Injectable()
-export class MapHosterLeaflet {
+export class MapHosterLeaflet extends MapHoster {
     hostName = "MapHosterLeaflet";
     scale2Level = [];
     zmG = -1;
@@ -36,9 +37,8 @@ export class MapHosterLeaflet {
     pusherEvtHandler;
 
 
-    constructor(private mapNo: number, private mlconfig: MLConfig, private utils: utils,
-        private pusherConfig : PusherConfig, private geoCoder : GeoCoder,
-        private pusherClientService : PusherClientService, private positionUpdateService : PositionUpdateService) {
+    constructor(private mapNo: number, private mlconfig: MLConfig, private geoCoderLflt : GeoCoder) {
+            super();
             this.CustomControl =  L.Control.extend({
                 options: {
                     position: 'topright'
@@ -246,7 +246,7 @@ export class MapHosterLeaflet {
 
             onMapClick(e) {
                 var r;
-                this.geoCoder.reverse(e.latlng, this.mphmap.options.crs.scale(this.mphmap.getZoom())).
+                this.geoCoderLflt.reverse(e.latlng, this.mphmap.options.crs.scale(this.mphmap.getZoom())).
                     then((results) => {
                         r = results;
                         this.showClickResult(r);
@@ -398,7 +398,7 @@ export class MapHosterLeaflet {
                 console.debug(this.mphmap);
                 this.showLoading();
 
-                this.geoCoder =  new GeoCoder(); //.nominatim();
+                this.geoCoderLflt =  new GeoCoder(); //.nominatim();
 
                 if (this.mlconfig.testUrlArgs()) {
                     qlat = this.mlconfig.lat();
