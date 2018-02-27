@@ -20,4 +20,7 @@ export class ESRIMapService {
       });
     });
   }
+  getMap() : any {
+      return this.map;
+  }
 }

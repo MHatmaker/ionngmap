@@ -5,8 +5,8 @@ import { Nominatim } from "nominatim-geocoder";
 
 console.log("loading PusherConfig");
 
-interface IGeoCoder {
-}
+// interface IGeoCoder {
+// }
 
 @Injectable()
 export class GeoCoder {
@@ -32,8 +32,8 @@ export class GeoCoder {
 
     reverse (location, scale) : any {
         var zm = 18, //Math.round(Math.log(scale / 256) / Math.log(2)),
-            qstr = `{this.options.serviceUrl}reverse/?lat={location.lat}&lon={location.lng}
-                    &zoom={zm}&addressdetails=1&format=json`;
+            qstr = `${this.options.serviceUrl}reverse/?lat=${location.lat}&lon={location.lng}
+                    &zoom=${zm}&addressdetails=1&format=json`;
         console.log(qstr);
 
         this.geocoder.search(qstr)

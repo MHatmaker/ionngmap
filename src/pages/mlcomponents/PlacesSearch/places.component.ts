@@ -1,10 +1,10 @@
 
-import {} from 'google';
+// import {} from 'google';
 import { Component, NgZone, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
-import {FormsModule} from '@angular/forms'
+// import {FormsModule} from '@angular/forms'
 // import { Map } from '@agm/core';
 // import {} from '@types/googlemaps';
-import { MouseEvent } from '@agm/core';
+// import { MouseEvent } from '@agm/core';
 
 declare var google;
 

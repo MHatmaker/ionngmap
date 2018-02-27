@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
 import { MLConfig } from './MLConfig';
-import { PusherConfig } from './PusherConfig';
-import { PusherClientService } from '../../../services/pusherclient.service';
+// import { PusherConfig } from './PusherConfig';
+// import { PusherClientService } from '../../../services/pusherclient.service';
 import { PusherEventHandler } from './PusherEventHandler';
-import { utils } from './utils';
-import { ImlBounds, xtntParams } from '../../../services/mlbounds.service';
-import { ConfigParams } from '../../../services/configparams.service';
-import { GoogleMap, Size, Point, LatLngLiteral, LatLng, LatLngBounds } from '@agm/core/services/google-maps-types';
-import { createClient, GoogleMapsClient } from '@google/maps';
+// import { utils } from './utils';
+import { ImlBounds } from '../../../services/mlbounds.service';
+// import { ConfigParams } from '../../../services/configparams.service';
+// import { GoogleMap, Size, Point, LatLngLiteral, LatLng, LatLngBounds } from '@agm/core/services/google-maps-types';
+// import { createClient, GoogleMapsClient } from '@google/maps';
 // import { GeoCoder } from './GeoCoder';
-import { GeoCodingService } from '../../../services/GeoCodingService';
-import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
-import { PositionUpdateService } from '../../../services/positionupdate.service';
+// import { GeoCodingService } from '../../../services/GeoCodingService';
+// import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
+// import { PositionUpdateService } from '../../../services/positionupdate.service';
 // import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 
@@ -55,7 +55,7 @@ export class MapHosterGoogle extends MapHoster {
     placesFromSearch = [];
     // private geoCoder = createClient();
 
-    constructor(private mapNo: number, private mlconfig: MLConfig) {
+    constructor(mapNo: number, private mlconfig: MLConfig) {
         super();
     }
 
@@ -523,7 +523,7 @@ export class MapHosterGoogle extends MapHoster {
                 gBnds,
                 ll,
                 ur,
-                pacinput,
+                // pacinput,
                 qtext,
                 service;
             console.log(">>>>>>>>>>>>>> tiles loaded >>>>>>>>>>>>>>>>>>>>");
@@ -725,8 +725,8 @@ export class MapHosterGoogle extends MapHoster {
                 content = "You clicked the map at " + fixedLL.lat + ", " + fixedLL.lon;
 
             this.geoCoder.geocode({'latLng': popPt}).then((results) => {
-                const result = results[0],
-                    location = result.geometry.location;
+                const result = results[0];
+                    // location = result.geometry.location;
 
                 if(result) {
                     marker = new google.maps.Marker({

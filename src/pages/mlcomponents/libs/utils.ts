@@ -142,12 +142,13 @@ export class utils {
     }
 
     getElemById(id) {
-        return document.getElementById(id).nativeElement;
+        // return document.getElementById(id).nativeElement;
+        return null;
     }
 
     setVisible(itm, flexnone) {
         var elem = document.getElementById(itm);
-        elem.visible = flexnone === 'block' ? 'visible' : 'none';
+        // elem.visible = flexnone === 'block' ? 'visible' : 'none';
         elem.style.display = flexnone;
     }
 

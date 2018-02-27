@@ -22,7 +22,7 @@ export class EsriMapComponent implements OnInit {
       mapView:any = null;
   // mapView: any;
 
-  constructor(private mapService: ESRIMapService,
+  constructor(// private mapService: ESRIMapService,
     private elementRef: ElementRef) { }
 
   ngOnInit() {

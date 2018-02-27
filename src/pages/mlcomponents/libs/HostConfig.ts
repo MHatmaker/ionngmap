@@ -4,7 +4,7 @@ import {
     Injectable,
 } from '@angular/core';
 import { PusherConfig } from './PusherConfig';
-import { IPosition } from '../../../services/position.service'
+// import { IPosition } from '../../../services/position.service'
 
 console.log("loading HostConfig");
 

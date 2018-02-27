@@ -1,20 +1,20 @@
 import {Injectable, OnInit, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
-import { PusherConfig } from './PusherConfig';
-import { PusherClientService } from '../../../services/pusherclient.service';
-import { utils } from './utils';
-import { ConfigParams } from '../../../services/configparams.service';
-import { GeoCoder } from './GeoCoder';
-import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
-import { PositionUpdateService } from '../../../services/positionupdate.service';
+// import { PusherConfig } from './PusherConfig';
+// import { PusherClientService } from '../../../services/pusherclient.service';
+// import { utils } from './utils';
+// import { ConfigParams } from '../../../services/configparams.service';
+// import { GeoCoder } from './GeoCoder';
+// import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
+// import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { PusherEventHandler } from './PusherEventHandler';
 import { loadModules } from 'esri-loader';
-import { ImlBounds } from '../../../services/mlbounds.service'
+// import { ImlBounds } from '../../../services/mlbounds.service'
 import { SpatialReference } from 'esri/geometry';
 import { Point } from 'esri/geometry';
 import * as proj4 from 'proj4';
 // import { toScreenGeometry } from 'esri/geometry/screenUtils';
-import { webMercatorToGeographic, geographicToWebMercator, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
+import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
 import * as Locator from 'esri/tasks/Locator';
 import { MapHoster } from './MapHoster';
 
@@ -241,11 +241,11 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 // alert("You clicked the map at " + clickPt.x + ", " + clickPt.y);
                 console.debug(clickPt);
                 var
-                    mpDiv = document.getElementById("map" + this.mlconfig.getMapNumber()),
+                    // mpDiv = document.getElementById("map" + this.mlconfig.getMapNumber()),
                     // mpDivNG = angular.element(mpDiv),
                     mpDivNG = this.elementRef,
-                    wdt = mpDivNG[0].clientWidth,
-                    hgt = mpDivNG[0].clientHeight,
+                    // wdt = mpDivNG[0].clientWidth,
+                    // hgt = mpDivNG[0].clientHeight,
                     mppt = new Point({longitude : clickPt.x, latitude : clickPt.y}),
                     // screenGeo = new toScreenGeometry(this.mphmap.geographicExtent, wdt, hgt, mppt),
                     screenGeo = new this.esriMapView.toScreen(mppt),
@@ -352,7 +352,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 let locPt2 = new Point({x: locPt[0], y: locPt[1]});
                 this.geoLocator.locationToAddress(locPt2)
                 .then(function(response) {
-                    var location;
+                    // var location;
                     if (response.address) {
                         let address = response.address;
                         let location = lngLatToXY(response.location.longitude, response.location.latitude);
@@ -464,7 +464,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 this.mphmap = xtntMap;
                 this.mapReady = false;
                 this.mlconfig = mlcfg;
-                var qlat, qlon, qzoom, startCenter, cntr, xtnt, address,
+                var qlat, qlon, qzoom, startCenter,
                     // mpWrap = null,
                     // mpCan = null,
                     mpCanRoot = null;
@@ -531,7 +531,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 this.mphmap.on('mouse-move', function (evt) {
 
 
-                    var pnt = new Point({longitude : evt.mapPoint.x, latitude : evt.mapPoint.y}),
+                    var // pnt = new Point({longitude : evt.mapPoint.x, latitude : evt.mapPoint.y}),
                         ltln = xyToLngLat(evt.mapPoint.x, evt.mapPoint.y),
                         fixedLL = this.utils.toFixedTwo(ltln[0], ltln[1], 4),
                         evlng = fixedLL.lon,

@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Platform , MenuController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 
 import { MapsPage } from '../pages/maps/map.component';
 // Side Menu Component
@@ -10,9 +10,9 @@ import { SideMenuContentComponent } from './../side-menu-content/side-menu-conte
 import { SideMenuSettings } from './../side-menu-content/models/side-menu-settings';
 import { PageService } from './../services/pageservice';
 import { MenuOptionModel } from './../side-menu-content/models/menu-option-model';
-import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
+// import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
 import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
-import { Geolocation } from '@ionic-native/geolocation';
+// import { Geolocation } from '@ionic-native/geolocation';
 
 @Component({
   templateUrl: 'app.html',
@@ -46,7 +46,7 @@ export class MapLinkrApp {
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
       private menuCtrl: MenuController, private pageService : PageService,
-      private pusherConfig : PusherConfig, private hostConfig : HostConfig) {
+      private pusherConfig : PusherConfig, hostConfig : HostConfig) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation

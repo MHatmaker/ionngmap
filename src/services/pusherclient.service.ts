@@ -1,7 +1,7 @@
 import {
     Injectable
 } from '@angular/core';
-import { IPusherConfig, IPusherConfigParams, PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
+import {  PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
 import { MapInstanceService } from '../services/MapInstanceService';
 import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
 // import { Pusher } from 'pusher-client';
@@ -12,27 +12,27 @@ declare const Pusher: any;
 
 export class PusherClient {
     private eventHandlers : Map<string, IEventDct> = new Map<string, IEventDct>();
-    constructor(private evtDct : IEventDct, private clientName : string) {
+    constructor(evtDct : IEventDct, clientName : string) {
         this.eventHandlers[clientName] = evtDct;
     }
 }
 
 @Injectable()
 export class PusherClientService {
-    private ndx : number;
-    private evtDct : {};
-    private data : IPusherConfigParams;
+    // private ndx : number;
+    // private evtDct : {};
+    // private data : IPusherConfigParams;
     private userName : string = '';
     private channel : any = null;
     private CHANNELNAME : string = '';
-    private mph : null;
+    // private mph : null;
     private pusher : Pusher;
     private callbackFunction : null;
     private info : null;
-    private isInitialized : false;
-    private pusherClient : null;
-    private isInstantiated : false;
-    private serverUrl : string = 'https://maplinkr-simpleserver.herokuapp.com/';
+    // private isInitialized : false;
+    // private pusherClient : null;
+    // private isInstantiated : false;
+    // private serverUrl : string = 'https://maplinkr-simpleserver.herokuapp.com/';
     private clients : Map<string, PusherClient> = new Map<string, PusherClient>();
     private eventHandlers : Map<string, IEventDct>;
     private mapNumber : number;
@@ -89,7 +89,7 @@ export class PusherClientService {
 
 
             PusherChannel(chnl) {
-                var pusher,
+                var // pusher,
                     // APP_ID = '40938',
                     APP_KEY = this.pusherConfig.getAppKey(), //'5c6bad75dc0dd1cec1a6',
                     APP_SECRET = this.pusherConfig.getSecretKey(), //'54546672d0196be97f6a',
@@ -228,7 +228,7 @@ export class PusherClientService {
                     console.log('getPusherDetails error response ' + error);
                     return error;
                 });
-                return promise;
+                // return promise;
                 // this.displayPusherDialog();
             };
 

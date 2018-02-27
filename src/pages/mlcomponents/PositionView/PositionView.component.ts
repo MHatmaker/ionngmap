@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { utils } from '../libs/utils';
+import { Component } from '@angular/core';
+// import { utils } from '../libs/utils';
 import { PusherConfig } from '../libs/PusherConfig';
 import { CurrentMapTypeService } from '../../../services/currentmaptypeservice';
 import { IPositionData, IPositionParams } from '../../../services/positionupdate.interface'

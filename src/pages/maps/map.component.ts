@@ -2,7 +2,7 @@ import {
     Component,
     AfterViewInit} from '@angular/core';
 
-import { IPosition, MLPosition } from '../../services/position.service';
+import { IPosition } from '../../services/position.service';
 import { IConfigParams } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
 import { MapInstanceService} from '../../services/MapInstanceService';
@@ -26,7 +26,6 @@ export class MapsPage implements AfterViewInit {
   selectedMapType : string;
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
-    private self = this;
 
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService) {
@@ -70,11 +69,8 @@ export class MapsPage implements AfterViewInit {
   addCanvas (mapType, mlcfg, resolve) {
       console.log("in CanvasHolderCtrl.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
-          newCanvasItem,
           appendedElem,
           mapTypeToCreate,
-          newpos,
-          icfg,
           mlConfig;
       if (mlcfg) {
           mlConfig = mlcfg;

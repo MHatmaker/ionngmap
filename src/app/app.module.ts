@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule, NavController } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -43,6 +43,7 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
     PlacesSearchComponent,
     EsriMapComponent,
     GoogleMapComponent,
+    LeafletMapComponent,
     MultiCanvasEsri,
     MultiCanvasGoogle,
     MultiCanvasLeaflet,
@@ -66,6 +67,7 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
     MapsPage,
     MultiCanvasEsri,
     MultiCanvasGoogle,
+    MultiCanvasLeaflet,
     EsriMapComponent,
     GoogleMapComponent,
     LeafletMapComponent

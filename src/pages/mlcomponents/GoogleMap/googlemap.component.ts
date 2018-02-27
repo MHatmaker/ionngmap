@@ -1,10 +1,10 @@
-import { Component, Output, EventEmitter, ElementRef, OnInit, AfterViewInit, NgZone, ViewChild } from '@angular/core';
-import { AgmCoreModule, MapsAPILoader, AgmMap, MouseEvent, GoogleMapsAPIWrapper } from '@agm/core';
-import { GoogleMap, Size, Point, LatLngLiteral } from '@agm/core/services/google-maps-types';
+import { Component, Output, EventEmitter, OnInit, NgZone, ViewChild } from '@angular/core';
+import { AgmMap, MouseEvent } from '@agm/core';
+import { GoogleMap } from '@agm/core/services/google-maps-types';
 import { Geolocation } from '@ionic-native/geolocation';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
-import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
+import { MLBounds } from '../../../services/mlbounds.service';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 
@@ -14,27 +14,27 @@ import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
   // styles: [ './googlemap.component.css']
 })
 export class GoogleMapComponent implements OnInit {
-  @ViewChild(AgmMap)
-  private agmMap;
+  // @ViewChild(AgmMap)
+  // private agmMap;
   @Output()
   viewCreated = new EventEmitter();
   private gmap: GoogleMap;
   private glat: number;
   private glng: number;
   private zoom: number;
-  private map: GoogleMap;
+  // private map: GoogleMap;
   private mlconfig : MLConfig;
   private mlconfigSet : boolean = false;
   // private places : PlacesSearch;
 
-  constructor(private elementRef: ElementRef, private map_: GoogleMapsAPIWrapper,
-      private mapsAPILoader: MapsAPILoader, ngZone : NgZone, private mapInstanceService: MapInstanceService,
+  constructor(
+      ngZone : NgZone, private mapInstanceService: MapInstanceService,
       public geolocation : Geolocation) {
 
       console.log("ctor");
       this.geolocation.getCurrentPosition().then((position) => {
 
-      let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       this.glat = position.coords.latitude;
       this.glng = position.coords.longitude;
       console.log("geolocation center at " + this.glng + ", " + this.glat);
@@ -74,7 +74,7 @@ export class GoogleMapComponent implements OnInit {
   }
 
   onMapReady(map: GoogleMap) {
-      this.map = map;
+      this.gmap = map;
       // let ndx = this.mapInstanceService.getSlideCount();
       // let mlcfg = this.mapInstanceService.getConfigForMap(ndx);
       // mlcfg.setRawMap(map);
@@ -87,10 +87,10 @@ export class GoogleMapComponent implements OnInit {
           this.mlconfigSet = true;
           let ndx = this.mapInstanceService.getSlideCount();
           this.mlconfig = this.mapInstanceService.getConfigForMap(ndx - 1);
-          this.mlconfig.setRawMap(this.map);
+          this.mlconfig.setRawMap(this.gmap);
           this.addCenterMarker();
       }
-      let mp = this.map;
+      let mp = this.gmap;
 
       this.mlconfig.setBounds(new MLBounds(mp.getBounds().getSouthWest().lng(),
                                mp.getBounds().getSouthWest().lat(),

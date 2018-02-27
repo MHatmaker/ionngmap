@@ -1,6 +1,6 @@
-import { Component, ElementRef, Input } from '@angular/core';
-import { IPusherConfig, IPusherConfigParams, PusherConfig } from '../../pages/mlcomponents/libs/PusherConfig';
-import { MapInstanceService } from '../../services/MapInstanceService'
+import { Component, ElementRef } from '@angular/core';
+import { IPusherConfigParams, PusherConfig } from '../../pages/mlcomponents/libs/PusherConfig';
+// import { MapInstanceService } from '../../services/MapInstanceService'
 import { PusherClientService, PusherClient } from '../../services/pusherclient.service';
 import {MLConfig } from '../../pages/mlcomponents/libs/MLConfig'
 
@@ -12,24 +12,24 @@ import {MLConfig } from '../../pages/mlcomponents/libs/MLConfig'
 export class PushersetupComponent {
     private data : IPusherConfigParams;
     private userName : string = '';
-    private channel : string = '';
-    private mph : null;
-    private pusher : null;
+    // private channel : string = '';
+    // private mph : null;
+    // private pusher : null;
     private callbackFunction : null;
     private info : null;
-    private isInitialized : false;
-    private PusherClient : null;
-    private isInstantiated : false;
-    private serverUrl : string = 'https://maplinkr-simpleserver.herokuapp.com/';
+    // private isInitialized : false;
+    // private PusherClient : null;
+    // private isInstantiated : false;
+    // private serverUrl : string = 'https://maplinkr-simpleserver.herokuapp.com/';
     private clients : {};
-    private eventHandlers : {};
-    private displayPusherDialog : null;
+    // private eventHandlers : {};
+    // private displayPusherDialog : null;
     private element : any;
     private CHANNELNAME : string;
     private mapNumber : number;
 
-    constructor(private pusherConfig : PusherConfig, private mapInstanceService : MapInstanceService,
-        private pusherClientService : PusherClientService, private el: ElementRef, private mlconfig : MLConfig) {
+    constructor(private pusherConfig : PusherConfig,
+        private pusherClientService : PusherClientService, el: ElementRef, private mlconfig : MLConfig) {
         console.log('Hello PushersetupComponent Component');
         this.data.privateChannelMashover = this.pusherConfig.masherChannel(false),
         this.data.prevChannel = 'mashchannel',
@@ -56,6 +56,7 @@ export class PushersetupComponent {
        this.pusherClientService.cancel();
    }
     getPusherDetails() {
+      /*
         return new Promise(function (resolve, reject) {
             $scope.displayPusherDialog = function () {
                 console.log("displayPusherDialog");
@@ -107,6 +108,7 @@ export class PushersetupComponent {
             };
             $scope.displayPusherDialog();
         });
+        */
     }
 
     setupPusherClient  (resolve, reject) {
@@ -122,7 +124,7 @@ export class PushersetupComponent {
             console.log('getPusherDetails error response ' + error);
             return error;
         });
-        return promise;
+        // return promise;
     };
 
     getPusherChannel() {

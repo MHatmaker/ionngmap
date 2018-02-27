@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
-import { ConfigParams } from './configparams.service'
+// import { ConfigParams } from './configparams.service'
 
 // interface IHash {
 //     []

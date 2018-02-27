@@ -1,10 +1,10 @@
-import { Component, Output, EventEmitter, ElementRef, AfterViewInit, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import * as L from "leaflet";
 import { Map } from 'leaflet';
 // import { Geolocation } from '@ionic-native/geolocation';
-import { MapInstanceService} from '../../../services/MapInstanceService';
-import { MLConfig } from '../libs/MLConfig';
-import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
+// import { MapInstanceService} from '../../../services/MapInstanceService';
+// import { MLConfig } from '../libs/MLConfig';
+// import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 
