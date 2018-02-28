@@ -44,7 +44,7 @@ export class DomService {
   getId() {
       return this.id;
   }
-  appendComponentToElement(component: any) {
+  appendComponentToElement(component: any, parentId: string) {
       // Create a component reference from the component
       const componentRef = this.componentFactoryResolver
         .resolveComponentFactory(component)
@@ -58,20 +58,12 @@ export class DomService {
         .rootNodes[0] as HTMLElement;
 
       // Append DOM element to the body
-      let el = document.getElementById('elemId');
-      console.log(el);
-      // let newel = document.createElement(component);
+      let parentElement = document.getElementById(parentId);
 
       console.log(domElem);
       console.log('now append');
-      //document.body.insertBefore(el, domElem);
-      el.appendChild(domElem);
+      parentElement.appendChild(domElem);
 
-      // Wait some time and remove it from the component tree and from the DOM
-      setTimeout(() => {
-          this.appRef.detachView(componentRef.hostView);
-          componentRef.destroy();
-      }, 3000);
     }
 
 }

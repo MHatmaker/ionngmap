@@ -10,7 +10,7 @@ import { SideMenuContentComponent } from './../side-menu-content/side-menu-conte
 import { SideMenuSettings } from './../side-menu-content/models/side-menu-settings';
 import { PageService } from './../services/pageservice';
 import { MenuOptionModel } from './../side-menu-content/models/menu-option-model';
-// import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
+import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
 import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 // import { Geolocation } from '@ionic-native/geolocation';
 

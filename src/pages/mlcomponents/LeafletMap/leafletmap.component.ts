@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import * as L from "leaflet";
-import { Map } from 'leaflet';
+// import { Map } from 'leaflet';
 // import { Geolocation } from '@ionic-native/geolocation';
 // import { MapInstanceService} from '../../../services/MapInstanceService';
 // import { MLConfig } from '../libs/MLConfig';
@@ -29,7 +29,7 @@ export class LeafletMapComponent implements OnInit {
   // private agmMap;
   @Output()
   viewCreated = new EventEmitter();
-  private lmap: Map;
+  private lmap: L.Map;
   private params : ILeafletParams = {
        zoomControl: true,
        center: [32.9866, -96.9271],  // I live in Carrollton, TX
@@ -40,7 +40,13 @@ export class LeafletMapComponent implements OnInit {
 
   constructor () {
   }
+
+  // ionViewDidLoad() {
+  //     this.lmap =  L.map('leaflet-map-component', this.params);
+  //     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(this.lmap);
+  // }
   ngOnInit () {
       this.lmap =  L.map('leaflet-map-component', this.params);
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(this.lmap);
   }
 }
