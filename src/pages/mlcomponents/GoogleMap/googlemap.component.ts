@@ -22,7 +22,6 @@ export class GoogleMapComponent implements OnInit {
   private glat: number;
   private glng: number;
   private zoom: number;
-  // private map: GoogleMap;
   private mlconfig : MLConfig;
   private mlconfigSet : boolean = false;
   // private places : PlacesSearch;
@@ -152,7 +151,8 @@ export class GoogleMapComponent implements OnInit {
       map: this.mlconfig.getRawMap(),
       animation: google.maps.Animation.DROP,
       position: pos,
-      draggable: false
+      draggable: false,
+      label: 'Me!'
     });
 
     let content = "<h4>Information!</h4>";

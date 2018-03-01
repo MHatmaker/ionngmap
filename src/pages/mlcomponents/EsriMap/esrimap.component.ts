@@ -30,19 +30,21 @@ export class EsriMapComponent implements OnInit {
 
   // Load the mapping API modules
       loadModules([
-        'esri/Map', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'
-      ]).then(([Map, MapView, Point, SpatialReference]) => {
-      let map = new Map({
-        basemap: <any>'topo-vector'
-        });
+        'esri/WebMap', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'
+      ]).then(([WebMap, MapView, Point, SpatialReference]) => {
+      let map = new WebMap({
+        // basemap: <any>'topo-vector'
+        portalItem: { // autocasts as new PortalItem()
+          id: 'f2e9b762544945f390ca4ac3671cfa72'
+        }});
       this.mapView = new MapView({
         container: this.elementRef.nativeElement.firstChild,
         map: map, //this.mapService.map,
-        center: new Point({
-          x: -87.620692,
-          y: 41.888941,
-          spatialReference: new SpatialReference({ wkid: 4326 })
-        }),
+        // center: new Point({
+        //   x: -87.620692,
+        //   y: 41.888941,
+        //   spatialReference: new SpatialReference({ wkid: 4326 })
+        // }),
         zoom: 15
       });
       this.viewCreated.next(this.mapView);
