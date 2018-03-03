@@ -1,93 +1,104 @@
-import { Component, Output, EventEmitter, OnInit, NgZone, ViewChild } from '@angular/core';
-import { AgmMap, MouseEvent } from '@agm/core';
-import { GoogleMap } from '@agm/core/services/google-maps-types';
+import { Component, Output, EventEmitter, OnInit, Renderer2, AfterViewInit, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
 import { MLBounds } from '../../../services/mlbounds.service';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
+declare var google;
 
 @Component({
   selector: 'maplinkr-googlemap',
   templateUrl: './googlemap.component.html',
+  styles : ['width: 100%; height: 450px']
   // styles: [ './googlemap.component.css']
 })
-export class GoogleMapComponent implements OnInit {
-  // @ViewChild(AgmMap)
-  // private agmMap;
+export class GoogleMapComponent implements AfterViewInit, OnInit {
   @Output()
   viewCreated = new EventEmitter();
-  private gmap: GoogleMap;
+  private gmap: any;
+  private mapNumber : number;
+  private gmHeight : string = '550px';
   private glat: number;
   private glng: number;
   private zoom: number;
   private mlconfig : MLConfig;
   private mlconfigSet : boolean = false;
-  // private places : PlacesSearch;
+  private self = this;
+  //private places : PlacesSearch;
+
 
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService,
-      public geolocation : Geolocation) {
+      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2) {
 
-      console.log("ctor");
-      this.geolocation.getCurrentPosition().then((position) => {
-
-      // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      this.glat = position.coords.latitude;
-      this.glng = position.coords.longitude;
-      console.log("geolocation center at " + this.glng + ", " + this.glat);
-
-      }, (err) => {
-          console.log(err);
-      });
+      console.log("GoogleMapComponent ctor");
+      this.mapNumber = this.mapInstanceService.getSlideCount();
   }
 
-  ngAfterViewInit(){/*
-    const mapRef : google.maps.Map = null;
-  	this.agmMap.mapReady.subscribe(map => {
-      console.log("get corners");
-      // map.getNativeMap()
-      // .then(map => console.log('map: ', map))
-      // .catch(error => console.log('getNativeMap() Error: ', error));
-    let bnds = map.getBounds();
-      console.log('bounds: ', bnds);
-      // .catch(error => console.log('getBounds() Error: ', error));
-      let ne = bnds.getNorthEast();
-      console.log(ne);
+  ngAfterViewInit () {
+    let latLng = new google.maps.LatLng(-34.9290, 138.6010);
 
-      // map.getBounds()
-      //   .then((bounds) => {
-      //       console.log(bounds);
-      //       return bounds;
-      //     },
-      //     (err) => console.error(err)
-      //   ).
-      //   then((bounds) => bounds.getNorthEast()
-      //         .then((ne) => console.log(ne),
-      //         (err) => console.error(err))
-      //   );
-      // console.log(map.getBounds().getNorthEast());
-      // console.log(map.getBounds().getSouthWest());
-  	});*/
+    let mapOptions = {
+      center: latLng,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    // let mapElement = this.mapElement.nativeElement;
+    let mapElement = document.getElementById("google-map-component" + this.mapNumber);
+    this.gmHeight = '550px';
+
+    console.log(this.mapElement.nativeElement);
+    console.log(document.getElementById("google-map-component" + this.mapNumber));
+    this.geolocation.getCurrentPosition().then((position) => {
+
+        // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        this.glat = position.coords.latitude;
+        this.glng = position.coords.longitude;
+        latLng = new google.maps.LatLng(this.glat, this.glng);
+        mapOptions.center = latLng;
+        console.log(`geolocation center at ${this.glng}, ${this.glat}`);
+        this.gmap = new google.maps.Map(mapElement, mapOptions);
+        this.rndr.setAttribute(mapElement, "style", "height: 550px");
+        this.addCenterMarker();
+
+        this.gmap.addListener('click',  (evt)  => {
+            console.log("click just happened");
+            this.mapClicked(evt);
+        });
+        this.gmap.addListener('bounds_changed',  (evt) => {
+          console.log("bounds_changed just happened");
+            this.onBoundsChange(evt);
+        });
+        this.rndr.setAttribute(mapElement, "style", "height: 550px");
+
+        }, (err) => {
+            console.log(err);
+        });
   }
 
-  onMapReady(map: GoogleMap) {
-      this.gmap = map;
-      // let ndx = this.mapInstanceService.getSlideCount();
-      // let mlcfg = this.mapInstanceService.getConfigForMap(ndx);
-      // mlcfg.setRawMap(map);
-      // console.log(this.map);
-
+  ngOnInit() {
+    console.log("ngOnInit");
+    this.zoom = 14;
   }
-  onBoundsChange($event) {
+
+  mapClicked = function (evt: any) {
+    console.log(`mapClicked ${evt.latLng.lng()}, ${evt.latLng.lat()}`)
+    let mrkr = new google.maps.Marker({
+      position: evt.latLng,
+      draggable: true,
+      map : this.gmap,
+      label : 'hi'
+    });
+    this.addInfoWindow(mrkr, "what is in here.")
+  }
+  onBoundsChange = function (evt) {
       console.log("boundsChange");
       if (!this.mlconfigSet) {
           this.mlconfigSet = true;
           let ndx = this.mapInstanceService.getSlideCount();
           this.mlconfig = this.mapInstanceService.getConfigForMap(ndx - 1);
           this.mlconfig.setRawMap(this.gmap);
-          this.addCenterMarker();
       }
       let mp = this.gmap;
 
@@ -96,42 +107,13 @@ export class GoogleMapComponent implements OnInit {
                                mp.getBounds().getNorthEast().lng(),
                                mp.getBounds().getNorthEast().lat()));
   }
-  ngOnInit() {
-    console.log("ngOnInit");
-    this.zoom = 14;
-
-    // initial center position for the map
-    // this.glat = 41.888941;
-    // this.glng = -87.620692;
-    console.log('OnInit');
-      /*
-      this.map_.getNativeMap()
-        .then(map => console.log('OnInit: map: ', map))
-        .catch(error => console.log('OnInit: getNativeMap() Error: ', error));
-      this.map_.getBounds()
-        .then(bounds => console.log('OnInit: bounds: ', bounds))
-        .catch(error => console.log('OnInit: getBounds() Error: ', error));
-    let bnds = this.map_.getBounds(); //.getNativeMap().getBounds();
-    console.log(bnds);
-
-    // this.places = new PlacesSearch(this.elementRef.nativeElement);
-    */
-  }
-
   clickedMarker(label: string, index: number) {
     console.log(`clicked the marker: ${label || index}`)
   }
 
-  mapClicked($event: MouseEvent) {
-    this.markers.push({
-      lat: $event.coords.lat,
-      lng: $event.coords.lng,
-      draggable: true
-    });
-  }
 
-  markerDragEnd(m: marker, $event: MouseEvent) {
-    console.log('dragEnd', m, $event);
+  markerDragEnd(m: marker, evt: MouseEvent) {
+    console.log('dragEnd', m, evt);
   }
   addInfoWindow(marker, content){
       let infoWindow = new google.maps.InfoWindow({
@@ -139,47 +121,25 @@ export class GoogleMapComponent implements OnInit {
       });
 
       google.maps.event.addListener(marker, 'click', () => {
-          infoWindow.open(this.mlconfig.getRawMap(), marker);
+          infoWindow.open(this.gmap, marker);
       });
   }
   addCenterMarker(){
-    // var mp : GoogleMap = this.mlconfig.getRawMap();
-    // console.log("addMarker center at " + mp.getCenter().lng() + ", " + mp.getCenter().lat());
-    // console.log("addMarker center at " + position.coords.longitude + ", " + position.coords.glatitude);
     let pos = {lat: this.glat, lng: this.glng, label: 'C'};
     let marker = new google.maps.Marker({
-      map: this.mlconfig.getRawMap(),
+      map: this.gmap, // this.mlconfig.getRawMap(),
       animation: google.maps.Animation.DROP,
       position: pos,
       draggable: false,
       label: 'Me!'
     });
 
-    let content = "<h4>Information!</h4>";
+    let content = "<h4>Center of the world!</h4>";
 
     this.addInfoWindow(marker, content);
 
   }
-  markers: marker[] = [
-	  {
-		  lat: 41.888941,
-		  lng: -87.620692,
-		  label: 'A',
-		  draggable: true
-	  } /*,
-	  {
-		  lat: 51.373858,
-		  lng: 7.215982,
-		  label: 'B',
-		  draggable: false
-	  },
-	  {
-		  lat: 51.723858,
-		  lng: 7.895982,
-		  label: 'C',
-		  draggable: true
-	  }*/
-  ]
+
 }
 
 // just an interface for type safety.

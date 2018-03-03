@@ -1,5 +1,6 @@
 <li id="slide{{''+ndx}}" [style.height]="mapcolheight+'px'" [style.width]="'100%'" >
-    <div (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)">
+    <!-- <div (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)"> -->
+    <div (mousemove)="onMouseMove($event)" data-tap-disable="true">
         <maplinkr-googlemap></maplinkr-googlemap>
     </div>
 

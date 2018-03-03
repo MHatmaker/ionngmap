@@ -35,6 +35,7 @@ export class MultiCanvasGoogle {
         // event.cancelBubble=true;
         // event.stopPropagation();
     }
+
     onMouseMove (event) {
         //console.log('onMouseMove: ', this.el);
         event.preventDefault();
