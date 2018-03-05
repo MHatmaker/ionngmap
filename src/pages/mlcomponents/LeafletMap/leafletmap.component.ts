@@ -81,13 +81,14 @@ export class LeafletMapComponent implements AfterViewInit {
           let ndx = this.mapInstanceService.getSlideCount();
           this.mlconfig = this.mapInstanceService.getConfigForMap(ndx - 1);
           this.mlconfig.setRawMap(this.lmap);
-          if (lfltBounds) {
-              ne = lfltBounds.getNorthEast();
-              sw = lfltBounds.getSouthWest();
-              bnds = {'llx' : sw.lng, 'lly' : sw.lat,
-                           'urx' : ne.lng, 'ury' : ne.lat};
-              this.mlconfig.setBounds(bnds);
-          }
       }
+      if (lfltBounds) {
+          ne = lfltBounds.getNorthEast();
+          sw = lfltBounds.getSouthWest();
+          bnds = {'llx' : sw.lng, 'lly' : sw.lat,
+                       'urx' : ne.lng, 'ury' : ne.lat};
+          this.mlconfig.setBounds(bnds);
+      }
+
   }
 }

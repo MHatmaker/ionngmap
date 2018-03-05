@@ -1,14 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
+// import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Proj } from 'proj4';
 import "leaflet";
 
 // import { MapView } from 'esri/views/MapView';
-// import { Point } from 'esri/geometry/Point';
-// import { SpatialReference } from 'esri/geometry/SpatialReference';
+import { Point } from 'esri/geometry';
+import { SpatialReference } from 'esri/geometry';
+import { Geometry } from 'esri/geometry';
 
 import { MapLinkrApp } from './app.component';
 import { MapsPage } from '../pages/maps/map.component';
@@ -35,6 +37,8 @@ import { SlideShareService } from '../services/slideshare.service';
 import { PageService } from '../services/pageservice'
 import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig'
 import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
+import { utils } from '../pages/mlcomponents/libs/utils';
+
 @NgModule({
   declarations: [
     MapLinkrApp,
@@ -53,13 +57,14 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
     BrowserModule,
     IonicModule.forRoot(MapLinkrApp),
     NgbModule.forRoot(),
+    /*
     AgmCoreModule.forRoot({
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
       // url: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAwAOGAxY5PZ8MshDtaJFk2KgK7VYxArPA',
       apiKey: 'AIzaSyAwAOGAxY5PZ8MshDtaJFk2KgK7VYxArPA',
       libraries: ["places"]
-    })
+    }),*/
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -80,9 +85,9 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
     MapInstanceService,
     SlideShareService,
     PageService,
-    GoogleMapsAPIWrapper,
     PusherConfig,
     HostConfig,
+    utils,
     Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

@@ -15,7 +15,8 @@
     "allowJs": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "target": "es5"
+    "target": "es5",
+    "types": [ "arcgis-js-api", "googlemaps"]
   },
   "include": [
     "src/**/*.ts"
@@ -30,6 +31,7 @@
     "rewriteTsconfig": false
   },
   "types": [
-    "googlemaps"
+    "googlemaps",
+    "arcgis-js-api"
   ]
 }

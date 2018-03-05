@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { loadModules } from 'esri-loader';
+// import { loadModules } from 'esri-loader';
 
 // if (!String.prototype.format) {
 //     String.prototype.format = () {
@@ -12,12 +12,13 @@ import { loadModules } from 'esri-loader';
 //     };
 // }
 
+
 @Injectable()
 export class utils {
     constructor () {
-      loadModules([
-        'esri/core'
-      ]);
+      // loadModules([
+      //   'esri/core'
+      // ]);
     }
     // stringFormat() {
     //     var args = arguments;

@@ -15,6 +15,8 @@ import { ImlBounds } from '../../../services/mlbounds.service';
 // import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 
+declare var google;
+
 @Injectable()
 export class MapHosterGoogle extends MapHoster {
     hostName = "MapHosterGoogle";
