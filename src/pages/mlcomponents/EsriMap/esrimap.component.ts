@@ -2,7 +2,7 @@ import { Component, ElementRef, Output, EventEmitter, OnInit, ViewChild } from '
 import { ESRIMapService } from '../../../services/esrimap.service';
 import { loadModules } from 'esri-loader';
 import { Geolocation } from '@ionic-native/geolocation';
-import * as proj4 from 'proj4';
+// import * as proj4 from 'proj4';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
 import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
@@ -13,6 +13,8 @@ import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
 import { utils } from '../libs/utils';
 // import * as Locator from 'esri/tasks/Locator';
 // import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
+
+declare var proj4;
 
 @Component({
   selector: 'maplinkr-esrimap',
@@ -33,6 +35,7 @@ export class EsriMapComponent implements OnInit {
   private geoLocator : __esri.Locator;
   private esriPoint : __esri.Point;
   private screenPt : null;
+  // private mlProj4 : any;
 
   constructor(private mapService: ESRIMapService, private geolocation : Geolocation,
       private mapInstanceService: MapInstanceService,
@@ -44,12 +47,10 @@ export class EsriMapComponent implements OnInit {
   // Load the mapping API modules
       loadModules([
         'esri/WebMap', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference',
-        'esri/tasks/Locator', 'esri/geometry/support/webMercatorUtils', 'esri/geometry/Geometry'
-      ]).then(([WebMap, MapView, esriPoint, SpatialReference, esriLocator, esriwebMercatorUtils, esriGeometry]) => {
-      // loadModules([
-      //
-      // ]).then(([]) => {
-            this.esriPoint = esriPoint;
+        'esri/tasks/Locator', 'esri/geometry/support/webMercatorUtils', 'esri/geometry/Geometry',
+      ])
+      .then(([WebMap, MapView, esriPoint, SpatialReference, esriLocator, esriwebMercatorUtils, esriGeometry]) => {
+            this.esriPoint = esriPoint();
             this.geoLocator = new esriLocator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
             this.geolocation.getCurrentPosition().then((position) => {
 
@@ -71,50 +72,62 @@ export class EsriMapComponent implements OnInit {
                   }),
                   zoom: 15
                 });
-                if(this.mapView != null) {
+                this.mapView.when((instance) => {
                     console.log(`Centering map: ${this.mapNumber} at ${this.glng}, ${this.glat}`);
                     this.mapView.center = [this.glng, this.glat];
 
-                    amap.on('click', (evt) => {
-                        this.onMapClick(evt);
-                    })
-                  }
+                    this.mapView.on('click', (evt) => {
+                        evt.stopPropagation();
+                        this.onMapClick(evt, this.mapView);
+                    });
+                });
                 this.viewCreated.next(this.mapView);
             }
           )}
       )}
-    onMapClick(e) {
+    onMapClick(e, mpView) {
                 var mapPt = {x : e.mapPoint.x, y : e.mapPoint.y},
+                    rawMapPt = e.mapPoint,
                     source = proj4.Proj('GOOGLE'),
                     dest =  proj4.Proj('WGS84'),
                     p,
                     cntrpt;
+      loadModules([
+        'esri/geometry/Point', 'esri/geometry/SpatialReference',
+        'esri/geometry/support/webMercatorUtils'
+      ])
+      .then(([esriPoint, SpatialReference, esriwebMercatorUtils]) => {
                 this.screenPt = e.screenPoint;
                 console.log("e.screenPoint");
                 console.debug(e.screenPoint);
                 p = proj4.toPoint([e.mapPoint.x, e.mapPoint.y]);
                 proj4.transform(source, dest, p);
-                cntrpt = new __esri.Point({longitude : p.x, latitude : p.y, spatialReference : new __esri.SpatialReference({wkid: 4326})});
+                cntrpt = esriPoint({longitude : p.x, latitude : p.y, spatialReference : new SpatialReference({wkid: 4326})});
                 console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
                 console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
                 this.fixedLLG = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
-                let locPt = __esri.webMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
-                let locPt2 = new __esri.Point({x: locPt[0], y: locPt[1]});
-                this.geoLocator.locationToAddress(locPt2)
+                let locPt = esriwebMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
+                let locPt2 = new esriPoint({x: locPt[0], y: locPt[1]});
+                this.geoLocator.locationToAddress(rawMapPt) //locPt2)
                 .then(function(response) {
                     // var location;
+                    console.log(response);
                     if (response.address) {
                         let address = response.address;
-                        let location = __esri.webMercatorUtils.lngLatToXY(response.location.longitude, response.location.latitude);
-                        this.showClickResult(address);
+                        let location = esriwebMercatorUtils.lngLatToXY(response.location.longitude, response.location.latitude);
+                        // this.showClickResult(address);
+                        mpView.popup.content = address;
                         console.debug(location);
                     } else {
-                        this.showClickResult(null);
+                        mpView.popup.content = "whoops";
+                        // this.showClickResult(null);
                     }
+                    mpView.popup.open();
 
                 }).otherwise(function(err) {
-
+                    console.log(err);
                 });
+            });
 
     }
 }

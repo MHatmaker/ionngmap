@@ -16,7 +16,7 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "target": "es5",
-    "types": [ "arcgis-js-api", "googlemaps"]
+    "types": [ "arcgis-js-api", "googlemaps", "proj4"]
   },
   "include": [
     "src/**/*.ts"
