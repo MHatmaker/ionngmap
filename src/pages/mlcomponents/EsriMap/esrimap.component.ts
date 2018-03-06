@@ -122,7 +122,7 @@ export class EsriMapComponent implements OnInit {
                         mpView.popup.content = "whoops";
                         // this.showClickResult(null);
                     }
-                    mpView.popup.open();
+                    mpView.popup.open({title: "Address", location: rawMapPt});
 
                 }).otherwise(function(err) {
                     console.log(err);
