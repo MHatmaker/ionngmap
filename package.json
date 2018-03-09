@@ -55,6 +55,7 @@
     "@types/core-js": "0.9.39",
     "@types/dojo": "^1.9.38",
     "@types/googlemaps": "^3.30.4",
+    "gradle": "^1.0.9",
     "proj4": "^2.4.4",
     "typescript": "2.5.3",
     "webpack": "3.6.0",
