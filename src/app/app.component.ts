@@ -29,7 +29,7 @@ export class MapLinkrApp {
 	public options: Array<MenuOptionModel>;
   public channel: any;
   private userName : string;
-  // rootPage = MapsPage;
+  rootPage = MapsPage;
 
 	// Settings for the SideMenuComponent
 	public sideMenuSettings: SideMenuSettings = {
