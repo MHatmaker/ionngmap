@@ -10,13 +10,16 @@ import { MapInstanceService } from '../../../services/MapInstanceService';
 
 @Injectable()
 export class Startup {
-    protected utils : utils;
-    protected pusherConfig : PusherConfig;
-    protected geoCoder : GeoCodingService;
-    protected pusherClientService : PusherClientService;
-    protected positionUpdateService : PositionUpdateService;
-    protected pusherEventHandler : PusherEventHandler;
-    protected currentmaptypeservice : CurrentMapTypeService;
-    protected mapInstanceService : MapInstanceService;
-    constructor() {}
+    // protected utils : utils;
+    // protected pusherConfig : PusherConfig;
+    // protected geoCoder : GeoCodingService;
+    // protected pusherClientService : PusherClientService;
+    // protected positionUpdateService : PositionUpdateService;
+    // protected pusherEventHandler : PusherEventHandler;
+    // protected currentmaptypeservice : CurrentMapTypeService;
+    // protected mapInstanceService : MapInstanceService;
+    constructor(protected utils?: utils, protected pusherConfig?: PusherConfig, protected geoCoder?: GeoCodingService,
+        protected pusherClientService?: PusherClientService, protected positionUpdateService?: PositionUpdateService,
+        protected pusherEventHandler?: PusherEventHandler, protected currentmaptypeservice?: CurrentMapTypeService,
+        protected mapInstanceService?: MapInstanceService) {}
 }

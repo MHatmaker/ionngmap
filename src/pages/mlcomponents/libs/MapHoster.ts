@@ -10,13 +10,15 @@ import { PusherEventHandler } from './PusherEventHandler';
 
 @Injectable()
 export class MapHoster {
-    protected utils : utils;
-    protected pusherConfig : PusherConfig;
-    protected geoCoder : GeoCodingService;
-    protected pusherClientService : PusherClientService;
-    protected positionUpdateService : PositionUpdateService;
-    protected pusherEventHandler : PusherEventHandler;
-    constructor(
+    // protected utils : utils;
+    // protected pusherConfig : PusherConfig;
+    // protected geoCoder : GeoCodingService;
+    // protected pusherClientService : PusherClientService;
+    // protected positionUpdateService : PositionUpdateService;
+    // protected pusherEventHandler : PusherEventHandler;
+    constructor(protected utils?: utils, protected pusherConfig?: PusherConfig, protected geoCoder?: GeoCodingService,
+        protected pusherClientService?: PusherClientService, protected positionUpdateService?: PositionUpdateService,
+        protected pusherEventHandler?: PusherEventHandler
         ) {
     }
 }

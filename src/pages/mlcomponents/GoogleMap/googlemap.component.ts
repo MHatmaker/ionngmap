@@ -3,6 +3,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
 import { MLBounds } from '../../../services/mlbounds.service';
+import { StartupGoogle } from '../libs/StartupGoogle';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 declare var google;
@@ -30,10 +31,13 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
 
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService,
-      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2) {
+      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2,
+      private startup : StartupGoogle) {
 
       console.log("GoogleMapComponent ctor");
       this.mapNumber = this.mapInstanceService.getSlideCount();
+      this.startup = new StartupGoogle(this.mapNumber,
+          this.mapInstanceService.getConfigForMap(this.mapNumber - 1));
   }
 
   ngAfterViewInit () {
@@ -56,8 +60,9 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
         this.glat = position.coords.latitude;
         this.glng = position.coords.longitude;
         latLng = new google.maps.LatLng(this.glat, this.glng);
-        mapOptions.center = latLng;
+        mapOptions.center = {lng: this.glng, lat: this.glat};
         console.log(`geolocation center at ${this.glng}, ${this.glat}`);
+        this.startup.configure("google-map-component" + this.mapNumber, mapElement, mapOptions);
         this.gmap = new google.maps.Map(mapElement, mapOptions);
         this.rndr.setAttribute(mapElement, "style", "height: 550px");
         this.addCenterMarker();

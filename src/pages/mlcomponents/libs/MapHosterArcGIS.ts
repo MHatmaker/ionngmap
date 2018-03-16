@@ -10,12 +10,12 @@ import { MLConfig } from './MLConfig';
 import { PusherEventHandler } from './PusherEventHandler';
 import { loadModules } from 'esri-loader';
 // import { ImlBounds } from '../../../services/mlbounds.service'
-import { SpatialReference } from 'esri/geometry';
-import { Point } from 'esri/geometry';
+// import { SpatialReference } from 'esri/geometry';
+// import { Point } from 'esri/geometry';
 import * as proj4 from 'proj4';
 // import { toScreenGeometry } from 'esri/geometry/screenUtils';
-import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
-import * as Locator from 'esri/tasks/Locator';
+// import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
+// import * as Locator from 'esri/tasks/Locator';
 import { MapHoster } from './MapHoster';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     selectedMarkerId = 101;
     initialActionListHtml = '';
-    geoLocator : Locator;
+    geoLocator : __esri.Locator;
     screenPt = null;
     fixedLLG = null;
     btnShare;
@@ -51,6 +51,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         pusher : null
     };
     esriMapView : any;
+    esriwebMercatorUtils : any;
     // require(['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map']);
     //
     // define([
@@ -77,6 +78,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
           ]).then(([Point, SpatialReference, WebMercator, Geometry, Locator,
               webMercatorUtils, MapView]) => {
                   this.esriMapView = MapView;
+                  this.esriwebMercatorUtils = webMercatorUtils
               });
       }
             getMap() {
@@ -150,7 +152,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 }
                 console.log("ready to create ESRI pt with " + p.x + ", " + p.y);
 
-                cntrpt = new Point({longitude : p.x, latitude : p.y, spatialReference : new SpatialReference({wkid: 4326})});
+                cntrpt = new __esri.Point({longitude : p.x, latitude : p.y, spatialReference : new __esri.SpatialReference({wkid: 4326})});
                 console.log("cntr " + cntr.x + ", " + cntr.y);
                 console.log("cntrpt " + cntrpt.x + ", " + cntrpt.y);
                 fixedLL = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
@@ -246,7 +248,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     mpDivNG = this.elementRef,
                     // wdt = mpDivNG[0].clientWidth,
                     // hgt = mpDivNG[0].clientHeight,
-                    mppt = new Point({longitude : clickPt.x, latitude : clickPt.y}),
+                    mppt = new __esri.Point({longitude : clickPt.x, latitude : clickPt.y}),
                     // screenGeo = new toScreenGeometry(this.mphmap.geographicExtent, wdt, hgt, mppt),
                     screenGeo = new this.esriMapView.toScreen(mppt),
                     fixedLL,
@@ -312,7 +314,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     this.updateGlobals("retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
                     // this.userZoom = false;
                     console.log("retrievedBounds centerAndZoom at zm = " + zm);
-                    cntr = new Point({longitude : xj.lon, latitude : xj.lat, spatialReference : new SpatialReference({wkid: 4326})});
+                    cntr = new __esri.Point({longitude : xj.lon, latitude : xj.lat, spatialReference : new __esri.SpatialReference({wkid: 4326})});
 
                     this.userZoom = false;
                     if (xj.action === 'pan') {
@@ -344,18 +346,18 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 console.debug(e.screenPoint);
                 p = proj4.toPoint([e.mapPoint.x, e.mapPoint.y]);
                 proj4.transform(source, dest, p);
-                cntrpt = new Point({longitude : p.x, latitude : p.y, spatialReference : new SpatialReference({wkid: 4326})});
+                cntrpt = new __esri.Point({longitude : p.x, latitude : p.y, spatialReference : new __esri.SpatialReference({wkid: 4326})});
                 console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
                 console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
                 this.fixedLLG = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
-                let locPt = xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
-                let locPt2 = new Point({x: locPt[0], y: locPt[1]});
+                let locPt = this.esriwebMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
+                let locPt2 = new __esri.Point({x: locPt[0], y: locPt[1]});
                 this.geoLocator.locationToAddress(locPt2)
                 .then(function(response) {
                     // var location;
                     if (response.address) {
                         let address = response.address;
-                        let location = lngLatToXY(response.location.longitude, response.location.latitude);
+                        let location = this.esriwebMercatorUtils.lngLatToXY(response.location.longitude, response.location.latitude);
                         this.showClickResult(address);
                         console.debug(location);
                     } else {
@@ -494,7 +496,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 }
                 this.showGlobals("MapHosterArcGIS - Prior to new Map");
                 // alert("showed first globals");
-                startCenter = new Point({longitude : this.cntrxG, latitude : this.cntryG, spatialReference : new SpatialReference({wkid: 4326})});
+                startCenter = new __esri.Point({longitude : this.cntrxG, latitude : this.cntryG, spatialReference : new __esri.SpatialReference({wkid: 4326})});
 
                 this.updateGlobals("using startCenter", startCenter.x, startCenter.y, this.zmG);
                 this.showGlobals("Prior to startup centerAndZoom");
@@ -502,7 +504,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 this.showGlobals("After centerAndZoom");
 
                 this.initMap("mapDiv_layer0");
-                this.geoLocator = new Locator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
+                this.geoLocator = new __esri.Locator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
                 // addInitialSymbols();
                 this.bounds = this.mphmap.geographicExtent;
                 this.userZoom = true;
@@ -532,13 +534,13 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
 
                     var // pnt = new Point({longitude : evt.mapPoint.x, latitude : evt.mapPoint.y}),
-                        ltln = xyToLngLat(evt.mapPoint.x, evt.mapPoint.y),
+                        ltln = this.esriwebMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y),
                         fixedLL = this.utils.toFixedTwo(ltln[0], ltln[1], 4),
                         evlng = fixedLL.lon,
                         evlat = fixedLL.lat,
                         zm = this.mphmap.getLevel(),
                         xtntLoc = this.mphmap.extent,
-                        cntrLoc = xyToLngLat(xtntLoc.center.longitude, xtntLoc.center.latitude),
+                        cntrLoc = this.esriwebMercatorUtils.xyToLngLat(xtntLoc.center.longitude, xtntLoc.center.latitude),
                         fixedCntrLL = this.utils.toFixedTwo(cntrLoc[0], cntrLoc[1], 4),
                         cntrlng = fixedCntrLL.lon,
                         cntrlat = fixedCntrLL.lat;

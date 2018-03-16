@@ -38,6 +38,10 @@ import { PageService } from '../services/pageservice'
 import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig'
 import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
 import { utils } from '../pages/mlcomponents/libs/utils';
+import { Startup } from '../pages/mlcomponents/libs/Startup';
+import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
+import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
+import { MapHosterGoogle } from '../pages/mlcomponents/libs/MapHosterGoogle';
 
 @NgModule({
   declarations: [
@@ -88,6 +92,10 @@ import { utils } from '../pages/mlcomponents/libs/utils';
     PusherConfig,
     HostConfig,
     utils,
+    Startup,
+    StartupGoogle,
+    MapHoster,
+    MapHosterGoogle,
     Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

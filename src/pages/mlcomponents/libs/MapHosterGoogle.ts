@@ -57,7 +57,7 @@ export class MapHosterGoogle extends MapHoster {
     placesFromSearch = [];
     // private geoCoder = createClient();
 
-    constructor(mapNo: number, private mlconfig: MLConfig) {
+    constructor(private mapNumber: number, private mlconfig: MLConfig) {
         super();
     }
 

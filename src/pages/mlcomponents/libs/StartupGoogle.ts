@@ -7,6 +7,16 @@ import { MapHosterGoogle } from './MapHosterGoogle';
 // import { GoogleMap } from '@agm/core/services/google-maps-types';
 import { Startup } from './Startup';
 
+export interface MapLocCoords {
+    lat : number,
+    lng : number
+}
+
+export interface MapLocOptions {
+    center : MapLocCoords,
+    zoom : number
+}
+
 @Injectable()
 export class StartupGoogle extends Startup {
     // private hostName : string = "MapHosterGoogle";
@@ -15,8 +25,9 @@ export class StartupGoogle extends Startup {
     private newSelectedWebMapId : string = '';
     private pusherChannel : string = '';
     private pusher : any = null;
+    private mapHoster : MapHosterGoogle;
 
-    constructor (private mapNumber : number, private mapHoster : MapHosterGoogle, private mlconfig : MLConfig) {
+    constructor (private mapNumber : number, private mlconfig : MLConfig) {
         super();
         this.mlconfig.setMapNumber(mapNumber);
         this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNumber);
@@ -34,7 +45,7 @@ export class StartupGoogle extends Startup {
         return this.mapHoster;
     }
 
-    configure (newMapId, mapLocOpts) {
+    configure (newMapId : string, mapElement : HTMLElement, mapLocOpts : MapLocOptions) : google.maps.Map {
         var
             centerLatLng,
             initZoom,
@@ -68,7 +79,7 @@ export class StartupGoogle extends Startup {
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
-        this.gMap = new google.maps.Map(document.getElementById("map" + this.mapNumber), mapGoogleLocOpts);
+        this.gMap = new google.maps.Map(mapElement, mapGoogleLocOpts);
         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + this.mapNumber);
         this.mapHoster = new MapHosterGoogle(this.mapNumber, this.mlconfig, );
         this.mapHoster.configureMap(this.gMap, mapGoogleLocOpts, google, google.maps.places, this.mlconfig);
@@ -87,6 +98,6 @@ export class StartupGoogle extends Startup {
         if (!this.pusher) {
             console.log("failed to create Pusher in StartupGoogle");
         }
-
+        return this.gMap;
     };
 }

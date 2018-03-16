@@ -3,8 +3,8 @@ import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
 import { PusherClientService } from '../../../services/pusherclient.service';
 import { utils } from './utils';
-import { MapHosterArcGIS } from './MapHosterArcGIS';
 import { Startup } from './Startup';
+import { MapHosterArcGIS } from './MapHosterArcGIS';
 import { loadModules } from 'esri-loader';
 
 interface ConfigOptions {
