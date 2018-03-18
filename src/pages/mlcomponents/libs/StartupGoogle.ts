@@ -17,7 +17,7 @@ export interface MapLocOptions {
     zoom : number
 }
 
-@Injectable()
+// @Injectable()
 export class StartupGoogle extends Startup {
     // private hostName : string = "MapHosterGoogle";
 

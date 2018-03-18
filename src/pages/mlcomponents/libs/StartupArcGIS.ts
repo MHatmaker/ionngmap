@@ -18,7 +18,7 @@ interface ConfigOptions {
     bingMapsKey: string
   }
 
-@Injectable()
+// @Injectable()
 export class StartupArcGIS  extends Startup {
     // private hostName : string = "MapHosterArcGIS";
     private aMap : any = null;

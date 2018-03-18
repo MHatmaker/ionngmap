@@ -17,7 +17,7 @@ import { MapHoster } from './MapHoster';
 
 declare var google;
 
-@Injectable()
+// @Injectable()
 export class MapHosterGoogle extends MapHoster {
     hostName = "MapHosterGoogle";
     scale2Level = [];

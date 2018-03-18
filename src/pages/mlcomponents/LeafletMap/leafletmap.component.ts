@@ -4,6 +4,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
 import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
+import { StartupLeaflet } from '../libs/StartupLeaflet';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 
@@ -32,6 +33,7 @@ export class LeafletMapComponent implements AfterViewInit {
   private lmap: L.Map;
   private glat: number;
   private glng: number;
+  private startup : StartupLeaflet;
 
   private params : ILeafletParams = {
        zoomControl: true,

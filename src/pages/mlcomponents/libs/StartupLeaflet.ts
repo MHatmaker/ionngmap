@@ -10,7 +10,7 @@ import { GeoCoder } from './GeoCoder';
 // import { PusherClientService }from '../../../services/pusherclient.service';
 import { Startup } from './Startup';
 
-@Injectable()
+// @Injectable()
 export class StartupLeaflet extends Startup {
     private mapHoster = null;
     private newSelectedWebMapId = '';

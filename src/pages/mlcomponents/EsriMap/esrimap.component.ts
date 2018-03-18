@@ -11,6 +11,8 @@ import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
 // import * as Geometry from 'esri/geometry';
 // import { Point } from 'esri/geometry';
 import { utils } from '../libs/utils';
+import { StartupArcGIS } from '../libs/StartupArcGIS';
+
 // import * as Locator from 'esri/tasks/Locator';
 // import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
 
@@ -35,6 +37,7 @@ export class EsriMapComponent implements OnInit {
   private geoLocator : __esri.Locator;
   private esriPoint : __esri.Point;
   private screenPt : null;
+  private startup : StartupArcGIS;
   // private mlProj4 : any;
 
   constructor(private mapService: ESRIMapService, private geolocation : Geolocation,

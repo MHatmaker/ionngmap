@@ -1,5 +1,7 @@
+import { Injectable} from '@angular/core';
 import { createClient, GoogleMapsClient } from '@google/maps';
 
+@Injectable()
 export class GeoCodingService {
 
   private geoCoder: GoogleMapsClient;

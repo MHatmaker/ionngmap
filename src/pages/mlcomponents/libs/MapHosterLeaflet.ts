@@ -13,7 +13,7 @@ import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 
 
-@Injectable()
+// @Injectable()
 export class MapHosterLeaflet extends MapHoster {
     hostName = "MapHosterLeaflet";
     scale2Level = [];

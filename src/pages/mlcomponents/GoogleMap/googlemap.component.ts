@@ -26,18 +26,18 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   private mlconfig : MLConfig;
   private mlconfigSet : boolean = false;
   private self = this;
+  private startup : StartupGoogle;
   //private places : PlacesSearch;
 
 
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService,
-      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2,
-      private startup : StartupGoogle) {
+      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2) {
 
       console.log("GoogleMapComponent ctor");
       this.mapNumber = this.mapInstanceService.getSlideCount();
       this.startup = new StartupGoogle(this.mapNumber,
-          this.mapInstanceService.getConfigForMap(this.mapNumber - 1));
+          this.mapInstanceService.getConfigForMap(this.mapNumber));
   }
 
   ngAfterViewInit () {

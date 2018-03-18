@@ -18,7 +18,7 @@ import * as proj4 from 'proj4';
 // import * as Locator from 'esri/tasks/Locator';
 import { MapHoster } from './MapHoster';
 
-@Injectable()
+// @Injectable()
 export class MapHosterArcGIS extends MapHoster implements OnInit {
     hostName = "MapHosterArcGIS";
     scale2Level = [];

@@ -7,6 +7,8 @@ import { StartupLeaflet } from '../pages/mlcomponents/libs/StartupLeaflet';
 import { MapHosterGoogle } from '../pages/mlcomponents/libs/MapHosterGoogle';
 import { MapHosterArcGIS } from '../pages/mlcomponents/libs/MapHosterArcGIS';
 import { MapHosterLeaflet } from '../pages/mlcomponents/libs/MapHosterLeaflet';
+import { Startup } from '../pages/mlcomponents/libs/Startup';
+import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
 
 interface Imapconfigs {
     maptype : string,
@@ -26,33 +28,33 @@ export class CurrentMapTypeService {
     //  StartupGoogle, StartupArcGIS, StartupLeaflet, MapHosterGoogle, MapHosterArcGIS, MapHosterLeaflet)
 
     private mapTypes = {
-        'leaflet': MapHosterLeaflet,
-        'google' : MapHosterGoogle,
-        'arcgis' : MapHosterArcGIS
+        'google' : MapHoster,
+        'arcgis' : MapHoster,
+        'leaflet': MapHoster
     };
     private mapStartups = {
-        'leaflet': StartupLeaflet,
-        'google' : StartupGoogle,
-        'arcgis' : StartupArcGIS
+        'google' : Startup,
+        'arcgis' : Startup,
+        'leaflet': Startup
     };
     private currentMapType = 'google';
     private selectedMapType = 'google';
     private previousMapType = 'google';
 
     private mapRestUrl = {
-        'leaflet': 'leaflet',
         'google' : 'google',
         'arcgis' : 'arcgis',
-        'Leaflet': 'leaflet',
+        'leaflet': 'leaflet',
         'GoogleMap' : 'google',
-        'ArcGIS' : 'arcgis'
+        'ArcGIS' : 'arcgis',
+        'Leaflet': 'leaflet'
 
     };
 
     private mapType2Config = {
-        'leaflet': 2,
         'google' : 0,
-        'arcgis' : 1
+        'arcgis' : 1,
+        'leaflet': 2
     };
 
     private fillContentsText(title, map, content) {
