@@ -37,6 +37,7 @@ export class PusherClientService {
     private eventHandlers : Map<string, IEventDct>;
     private mapNumber : number;
     private clientName : string;
+    private mlconfig : MLConfig;
 
     private statedata = {
         privateChannelMashover : null, // PusherConfig.masherChannel(),
@@ -49,9 +50,12 @@ export class PusherClientService {
 
     constructor (
         private pusherConfig: PusherConfig,
-        private mapInstanceService: MapInstanceService,
-        private mlconfig : MLConfig
+        private mapInstanceService: MapInstanceService
       ){
+    }
+
+    setMLConfig(mlcfg : MLConfig) {
+        this.mlconfig = mlcfg;
     }
 
     preserveState () {

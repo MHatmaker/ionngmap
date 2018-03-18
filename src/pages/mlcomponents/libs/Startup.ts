@@ -7,6 +7,7 @@ import { GeoCodingService } from '../../../services/GeoCodingService';
 import { PusherEventHandler } from './PusherEventHandler';
 import { CurrentMapTypeService } from '../../../services/currentmaptypeservice';
 import { MapInstanceService } from '../../../services/MapInstanceService';
+import { GeoPusherSupport } from '../libs/geopushersupport';
 
 @Injectable()
 export class Startup {
@@ -18,8 +19,9 @@ export class Startup {
     // protected pusherEventHandler : PusherEventHandler;
     // protected currentmaptypeservice : CurrentMapTypeService;
     // protected mapInstanceService : MapInstanceService;
-    constructor(protected utils?: utils, protected pusherConfig?: PusherConfig, protected geoCoder?: GeoCodingService,
-        protected pusherClientService?: PusherClientService, protected positionUpdateService?: PositionUpdateService,
-        protected pusherEventHandler?: PusherEventHandler, protected currentmaptypeservice?: CurrentMapTypeService,
-        protected mapInstanceService?: MapInstanceService) {}
+    // constructor(protected utils?: utils, protected pusherConfig?: PusherConfig, protected geoCoder?: GeoCodingService,
+    //     protected pusherClientService?: PusherClientService, protected positionUpdateService?: PositionUpdateService,
+    //     protected pusherEventHandler?: PusherEventHandler, protected currentmaptypeservice?: CurrentMapTypeService,
+    //     protected mapInstanceService?: MapInstanceService) {}
+    constructor(protected geoPusherSupport : GeoPusherSupport) {}
 }

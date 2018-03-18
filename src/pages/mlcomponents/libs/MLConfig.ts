@@ -1,13 +1,13 @@
-import {
-    Injectable,
-} from '@angular/core';
+// import {
+//     Injectable,
+// } from '@angular/core';
 import { IPosition, MLPosition } from "../../../services/position.service";
 import { IConfigParams } from "../../../services/configparams.service";
 import { ImlBounds } from "../../../services/mlbounds.service";
 
 console.log("loading MLConfig");
 
-@Injectable()
+// @Injectable()
 export class MLConfig {
     private details = {
         mapId :  -1, //this.ndx,

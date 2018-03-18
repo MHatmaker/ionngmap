@@ -6,6 +6,7 @@ import { MLConfig } from './MLConfig';
 import { MapHosterGoogle } from './MapHosterGoogle';
 // import { GoogleMap } from '@agm/core/services/google-maps-types';
 import { Startup } from './Startup';
+import { GeoPusherSupport } from './geopushersupport';
 
 export interface MapLocCoords {
     lat : number,
@@ -26,11 +27,13 @@ export class StartupGoogle extends Startup {
     private pusherChannel : string = '';
     private pusher : any = null;
     private mapHoster : MapHosterGoogle;
+    private mlconfig : MLConfig;
 
-    constructor (private mapNumber : number, private mlconfig : MLConfig) {
-        super();
+    constructor (private mapNumber : number, mlconfig : MLConfig, private geopush : GeoPusherSupport) {
+        super(geopush);
+        this.mlconfig = mlconfig;
         this.mlconfig.setMapNumber(mapNumber);
-        this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNumber);
+        this.mlconfig.setUserId(this.geopush.getGeoPusherSupport().pusherConfig.getUserName() + mapNumber);
     }
 
 
@@ -81,14 +84,14 @@ export class StartupGoogle extends Startup {
 
         this.gMap = new google.maps.Map(mapElement, mapGoogleLocOpts);
         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + this.mapNumber);
-        this.mapHoster = new MapHosterGoogle(this.mapNumber, this.mlconfig, );
+        this.mapHoster = new MapHosterGoogle(this.mapNumber, this.mlconfig, this.geopush);
         this.mapHoster.configureMap(this.gMap, mapGoogleLocOpts, google, google.maps.places, this.mlconfig);
         this.mlconfig.setMapHosterInstance(this.mapHoster);
 
-        this.mapInstanceService.setMapHosterInstance(this.mapNumber, this.mlconfig);
-        this.currentmaptypeservice.setCurrentMapType('google');
+        this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mlconfig);
+        this.geopush.getGeoPusherSupport().currentMapTypeService.setCurrentMapType('google');
 
-        this.pusher = this.pusherClientService.createPusherClient(
+        this.pusher = this.geopush.getGeoPusherSupport().pusherClientService.createPusherClient(
             this.mlconfig,
             function (channel, userName) {
                 this.pusherConfig.setUserName(userName);

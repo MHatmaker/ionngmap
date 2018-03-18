@@ -17,6 +17,7 @@ import * as proj4 from 'proj4';
 // import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
 // import * as Locator from 'esri/tasks/Locator';
 import { MapHoster } from './MapHoster';
+import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
 
 // @Injectable()
 export class MapHosterArcGIS extends MapHoster implements OnInit {
@@ -52,6 +53,9 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     };
     esriMapView : any;
     esriwebMercatorUtils : any;
+    mlconfig : MLConfig;
+    geopushSup : IGeoPusher;
+    pusherEventHandler: PusherEventHandler;
     // require(['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map']);
     //
     // define([
@@ -65,9 +69,11 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     //     'dojo/_base/event'
     // ],
 
-    constructor(private mphmap : any, private mapNumber: number, private mlconfig: MLConfig,
+    constructor(private mphmap : any, private mapNumber: number,  mlconfig: MLConfig, protected geopush: GeoPusherSupport,
         private elementRef : ElementRef) {
-        super();
+        super(geopush);
+        this.mlconfig = mlconfig;
+        this.geopushSup = geopush.getGeoPusherSupport();
     }
 
     ngOnInit () {
@@ -102,7 +108,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     this.mlconfig.setBounds({'llx' : this.bounds.xmin, 'lly' : this.bounds.ymin, 'urx' : this.bounds.xmax, 'ury' : this.bounds.ymax});
                 }
                 console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
-                this.positionUpdateService.positionData.emit(
+                this.geopushSup.positionUpdateService.positionData.emit(
                     {'key' : 'zm',
                       'val' : {
                         'zm' : this.zmG,
@@ -155,7 +161,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 cntrpt = new __esri.Point({longitude : p.x, latitude : p.y, spatialReference : new __esri.SpatialReference({wkid: 4326})});
                 console.log("cntr " + cntr.x + ", " + cntr.y);
                 console.log("cntrpt " + cntrpt.x + ", " + cntrpt.y);
-                fixedLL = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
+                fixedLL = this.geopushSup.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
                 xtntDict = {
                     'src' : 'arcgis',
                     'zoom' : zm,
@@ -195,7 +201,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                         // if (selfPusherDetails.pusher && selfPusherDetails.channelName) {
                         //     selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
                         // }
-                        this.pusherClientService.publishPanEvent(xtExt);
+                        this.geopushSup.pusherClientService.publishPanEvent(xtExt);
                         this.updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                         //console.debug(sendRet);
                     }
@@ -203,7 +209,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             }
 
             setUserName(name) {
-                this.pusherConfig.setUserName(name);
+                this.geopushSup.pusherConfig.setUserName(name);
             }
             getEventDictionary() {
                 var eventDct = this.pusherEventHandler.getEventDct();
@@ -265,7 +271,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 //      screengraphic = new esri.geometry.toScreenGeometry(this.mphmap.extent,800,600,userdrawlayer.graphics[0].geometry);
 
                 if (clickPt.referrerId !== this.mlconfig.getUserId()) {
-                    fixedLL = this.utils.toFixedTwo(clickPt.x, clickPt.y, 6);
+                    fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 6);
                     content = "Map click at " + fixedLL.lat + ", " + fixedLL.lon;
                     if (clickPt.title) {
                         content += '<br>' + clickPt.title;
@@ -349,7 +355,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 cntrpt = new __esri.Point({longitude : p.x, latitude : p.y, spatialReference : new __esri.SpatialReference({wkid: 4326})});
                 console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
                 console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
-                this.fixedLLG = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
+                this.fixedLLG = this.geopushSup.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
                 let locPt = this.esriwebMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
                 let locPt2 = new __esri.Point({x: locPt[0], y: locPt[1]});
                 this.geoLocator.locationToAddress(locPt2)

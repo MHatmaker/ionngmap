@@ -4,6 +4,7 @@ import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
 import { MLBounds } from '../../../services/mlbounds.service';
 import { StartupGoogle } from '../libs/StartupGoogle';
+import { GeoPusherSupport } from '../libs/geopushersupport';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 declare var google;
@@ -32,12 +33,13 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
 
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService,
-      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2) {
+      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2,
+      private geopush: GeoPusherSupport) {
 
       console.log("GoogleMapComponent ctor");
       this.mapNumber = this.mapInstanceService.getSlideCount();
       this.startup = new StartupGoogle(this.mapNumber,
-          this.mapInstanceService.getConfigForMap(this.mapNumber));
+          this.mapInstanceService.getConfigForMap(this.mapNumber), geopush);
   }
 
   ngAfterViewInit () {

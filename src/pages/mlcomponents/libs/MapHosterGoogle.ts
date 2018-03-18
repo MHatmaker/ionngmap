@@ -14,6 +14,7 @@ import { ImlBounds } from '../../../services/mlbounds.service';
 // import { PositionUpdateService } from '../../../services/positionupdate.service';
 // import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
+import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 
 declare var google;
 
@@ -56,9 +57,14 @@ export class MapHosterGoogle extends MapHoster {
     };
     placesFromSearch = [];
     // private geoCoder = createClient();
+    mlconfig : MLConfig;
+    geopushSup : IGeoPusher;
+    pusherEventHandler : PusherEventHandler;
 
-    constructor(private mapNumber: number, private mlconfig: MLConfig) {
-        super();
+    constructor(private mapNumber: number, mlconfig: MLConfig, geopush: GeoPusherSupport) {
+        super(geopush);
+        this.mlconfig = mlconfig;
+        this.geopushSup = geopush.getGeoPusherSupport();
     }
 
     // MLConfig.showConfigDetails('MapHosterGoogle - startup');
@@ -82,7 +88,7 @@ export class MapHosterGoogle extends MapHoster {
         this.cntrxG = cntrx;
         this.cntryG = cntry;
         console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
-        this.positionUpdateService.positionData.emit(
+        this.geopushSup.positionUpdateService.positionData.emit(
             {'key' : 'zm',
               'val' : {
                 'zm' : this.zmG,
@@ -263,7 +269,7 @@ export class MapHosterGoogle extends MapHoster {
     extractBounds(action) {
         var zm = this.mphmap.getZoom(),
             cntr = this.mphmap.getCenter(),
-            fixedLL = this.utils.toFixedTwo(cntr.lng(), cntr.lat(), 6),
+            fixedLL = this.geopushSup.utils.toFixedTwo(cntr.lng(), cntr.lat(), 6),
             bnds = this.mphmap.getBounds(),
             xtntDict = {
                 'src' : 'google',
@@ -322,7 +328,7 @@ export class MapHosterGoogle extends MapHoster {
                     console.log("triggered?");
                     console.log(triggered);
                 }
-                this.pusherClientService.publishPanEvent(xtExt);
+                this.geopushSup.pusherClientService.publishPanEvent(xtExt);
                 this.updateGlobals("setBounds with cmp false", +xtExt.lon, +xtExt.lat, xtExt.zoom);
 
                 gBnds = this.mphmap.getBounds();
@@ -344,7 +350,7 @@ export class MapHosterGoogle extends MapHoster {
 
     hideLoading(error = null) {
         console.log("hide loading");
-        this.utils.hideLoading(error);
+        this.geopushSup.utils.hideLoading(error);
     }
 
     retrievedBoundsInternal(xj) {
@@ -402,7 +408,7 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     retrievedClick(clickPt) {
-        var fixedLL = this.utils.toFixedTwo(clickPt.x, clickPt.y, 6),
+        var fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 6),
             content,
             popPt,
             btnShare;
@@ -852,7 +858,7 @@ export class MapHosterGoogle extends MapHoster {
 
 
     setUserName(name) {
-        this.pusherConfig.setUserName(name);
+        this.geopushSup.pusherConfig.setUserName(name);
     }
 
     getGlobalsForUrl() {
@@ -867,7 +873,7 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     formatCoords(pos) {
-        var fixed = this.utils.toFixedTwo(pos.lng, pos.lat, 5),
+        var fixed = this.geopushSup.utils.toFixedTwo(pos.lng, pos.lat, 5),
             formatted  = '<div style="color: blue;">' + fixed.lon + ', ' + fixed.lat + '</div>';
         return formatted;
     }

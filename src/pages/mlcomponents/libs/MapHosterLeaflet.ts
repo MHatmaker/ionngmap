@@ -11,6 +11,7 @@ import { GeoCoder } from './GeoCoder';
 // import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
+import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
 
 
 // @Injectable()
@@ -35,26 +36,31 @@ export class MapHosterLeaflet extends MapHoster {
     CustomControl = null;
     queryListenerLoaded = false;
     pusherEvtHandler;
+    mlconfig : MLConfig;
+    geopushSup : IGeoPusher;
 
 
-    constructor(private mapNumber: number, private mlconfig: MLConfig, private geoCoderLflt : GeoCoder) {
-            super();
-            this.CustomControl =  L.Control.extend({
-                options: {
-                    position: 'topright'
-                },
+    constructor(private mapNumber: number, mlconfig: MLConfig, protected geopush: GeoPusherSupport,
+        private geoCoderLflt : GeoCoder) {
+        super(geopush);
+        this.mlconfig = mlconfig;
+        this.geopushSup = geopush.getGeoPusherSupport();
+        this.CustomControl =  L.Control.extend({
+            options: {
+                position: 'topright'
+            },
 
-                onAdd: function () { //map) {
-                    var container = document.getElementById('gmsearch' + this.mlconfig.getMapNumber());
-                    return container;
-                }
-            });
+            onAdd: function () { //map) {
+                var container = document.getElementById('gmsearch' + this.mlconfig.getMapNumber());
+                return container;
+            }
+        });
     }
     showLoading() {
-        this.utils.showLoading();
+        this.geopushSup.utils.showLoading();
     }
     hideLoading() {
-        this.utils.hideLoading(null);
+        this.geopushSup.utils.hideLoading(null);
     }
     // MapHosterLeaflet.prototype.updateGlobals (msg, this.cntrx, this.cntry, zm)
     updateGlobals(msg, cntrx, cntry, zm) {
@@ -203,18 +209,18 @@ export class MapHosterLeaflet extends MapHoster {
 
     onMouseMove(e) {
         var ltln = e.latlng,
-            fixedLL = this.utils.toFixedTwo(ltln.lng, ltln.lat, 4),
+            fixedLL = this.geopushSup.utils.toFixedTwo(ltln.lng, ltln.lat, 4),
             // evlng = fixedLL.lon,
             // evlat = fixedLL.lat,
             zm = this.mphmap.getZoom(),
             cntr = this.mphmap.getCenter(),
-            fixedCntrLL = this.utils.toFixedTwo(cntr.lng, cntr.lat, 4);
+            fixedCntrLL = this.geopushSup.utils.toFixedTwo(cntr.lng, cntr.lat, 4);
             // cntrlng = fixedCntrLL.lon,
             // cntrlat = fixedCntrLL.lat;
 
 
 
-        this.positionUpdateService.positionData.emit(
+        this.geopushSup.positionUpdateService.positionData.emit(
             {
               'key' : 'zm',
               'val' : {
@@ -266,7 +272,7 @@ export class MapHosterLeaflet extends MapHoster {
             // mphmapCenter = mphmap.getCenter();
         // var cntr = action == 'pan' ? latlng : mphmap.getCenter();
         cntr = this.mphmap.getCenter();
-        fixedLL = this.utils.toFixedTwo(cntr.lng, cntr.lat, 3);
+        fixedLL = this.geopushSup.utils.toFixedTwo(cntr.lng, cntr.lat, 3);
         xtntDict = {
             'src' : 'leaflet_osm',
             'zoom' : zm,
@@ -299,7 +305,7 @@ export class MapHosterLeaflet extends MapHoster {
 
         if (cmp === false) {
             console.log("MapHoster Leaflet setBounds publishPanEvent");
-            this.pusherClientService.publishPanEvent(xtExt);
+            this.geopushSup.pusherClientService.publishPanEvent(xtExt);
             this.updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
         }
     }
@@ -501,7 +507,7 @@ export class MapHosterLeaflet extends MapHoster {
     }
 
     formatCoords(pos) {
-        var fixed = this.utils.toFixedTwo(pos.lng, pos.lat, 5),
+        var fixed = this.geopushSup.utils.toFixedTwo(pos.lng, pos.lat, 5),
             formatted  = '<div style="color: blue;">' + fixed.lon + ', ' + fixed.lat + '</div>';
         return formatted;
     }
@@ -546,7 +552,7 @@ export class MapHosterLeaflet extends MapHoster {
         bndsUrl = this.mlconfig.getBoundsForUrl();
         pos.search += bnds;
 
-        this.pusherClientService.publishPosition(pos);
+        this.geopushSup.pusherClientService.publishPosition(pos);
     }
 
     getCenter() {

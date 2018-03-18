@@ -34,11 +34,16 @@ import { CarouselComponent } from '../pages/mlcomponents/Carousel/carousel.compo
 import { MapInstanceService } from '../services/MapInstanceService';
 import { CanvasService } from '../services/CanvasService';
 import { SlideShareService } from '../services/slideshare.service';
-import { PageService } from '../services/pageservice'
-import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig'
-import { HostConfig } from '../pages/mlcomponents/libs/HostConfig'
+import { PositionUpdateService } from '../services/positionupdate.service';
+import { PusherClientService } from '../services/pusherclient.service';
+import { PageService } from '../services/pageservice';
+import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
+import { PusherEventHandler } from '../pages/mlcomponents/libs/PusherEventHandler';
+import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 import { utils } from '../pages/mlcomponents/libs/utils';
 import { CurrentMapTypeService } from '../services/currentmaptypeservice';
+import {GeoCodingService } from '../services/GeoCodingService';
+import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -89,11 +94,16 @@ import { CurrentMapTypeService } from '../services/currentmaptypeservice';
     CanvasService,
     MapInstanceService,
     CurrentMapTypeService,
+    GeoCodingService,
     SlideShareService,
+    PositionUpdateService,
     PageService,
     PusherConfig,
+    PusherClientService,
+    PusherEventHandler,
     HostConfig,
     utils,
+    GeoPusherSupport,
     // Startup,
     // StartupGoogle,
     // MapHoster,

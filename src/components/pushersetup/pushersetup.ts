@@ -27,9 +27,10 @@ export class PushersetupComponent {
     private element : any;
     private CHANNELNAME : string;
     private mapNumber : number;
+    private mlconfig : MLConfig;
 
     constructor(private pusherConfig : PusherConfig,
-        private pusherClientService : PusherClientService, el: ElementRef, private mlconfig : MLConfig) {
+        private pusherClientService : PusherClientService, el: ElementRef, mlconfig : MLConfig) {
         console.log('Hello PushersetupComponent Component');
         this.data.privateChannelMashover = this.pusherConfig.masherChannel(false),
         this.data.prevChannel = 'mashchannel',
@@ -37,6 +38,7 @@ export class PushersetupComponent {
         this.data.prevUserName = this.userName,
         this.data.whichDismiss = "Cancel"
         this.element = el.nativeElement;
+        this.mlconfig = mlconfig;
     }
     // open modal
    open(): void {
