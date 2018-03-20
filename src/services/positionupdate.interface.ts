@@ -1,8 +1,8 @@
 export interface IPositionParams {
     zm : number,
     scl : number,
-    cntrlng : number,
-    cntrlat: number,
+    cntrlng : string,
+    cntrlat: string,
     evlng : string,
     evlat : string
 };

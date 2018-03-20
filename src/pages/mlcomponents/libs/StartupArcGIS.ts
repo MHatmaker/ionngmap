@@ -150,7 +150,7 @@ export class StartupArcGIS  extends Startup {
           this.mapHoster = new MapHosterArcGIS(this.mapNumber, this.aMap, this.mlconfig, this.geopush, this.elementRef);
           this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
 
-          this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mlconfig);
+          this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
           this.mlconfig.setMapHosterInstance(this.mapHoster);
           this.geopush.getGeoPusherSupport().currentMapTypeService.setCurrentMapType('arcgis');
           this.placeCustomControls();

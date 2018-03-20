@@ -6,7 +6,7 @@ import { MLConfig } from './MLConfig';
 import { MapHosterGoogle } from './MapHosterGoogle';
 // import { GoogleMap } from '@agm/core/services/google-maps-types';
 import { Startup } from './Startup';
-import { GeoPusherSupport } from './geopushersupport';
+import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 
 export interface MapLocCoords {
     lat : number,
@@ -28,12 +28,14 @@ export class StartupGoogle extends Startup {
     private pusher : any = null;
     private mapHoster : MapHosterGoogle;
     private mlconfig : MLConfig;
+    private geopushSup : IGeoPusher;
 
     constructor (private mapNumber : number, mlconfig : MLConfig, private geopush : GeoPusherSupport) {
         super(geopush);
         this.mlconfig = mlconfig;
         this.mlconfig.setMapNumber(mapNumber);
-        this.mlconfig.setUserId(this.geopush.getGeoPusherSupport().pusherConfig.getUserName() + mapNumber);
+        this.geopushSup = geopush.getGeoPusherSupport();
+        this.mlconfig.setUserId(this.geopushSup.pusherConfig.getUserName() + mapNumber);
     }
 
 
@@ -88,10 +90,10 @@ export class StartupGoogle extends Startup {
         this.mapHoster.configureMap(this.gMap, mapGoogleLocOpts, google, google.maps.places, this.mlconfig);
         this.mlconfig.setMapHosterInstance(this.mapHoster);
 
-        this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mlconfig);
-        this.geopush.getGeoPusherSupport().currentMapTypeService.setCurrentMapType('google');
+        this.geopushSup.mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
+        this.geopushSup.currentMapTypeService.setCurrentMapType('google');
 
-        this.pusher = this.geopush.getGeoPusherSupport().pusherClientService.createPusherClient(
+        this.pusher = this.geopushSup.pusherClientService.createPusherClient(
             this.mlconfig,
             function (channel, userName) {
                 this.pusherConfig.setUserName(userName);

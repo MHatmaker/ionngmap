@@ -11,7 +11,7 @@ import { ImlBounds } from '../../../services/mlbounds.service';
 // import { GeoCoder } from './GeoCoder';
 // import { GeoCodingService } from '../../../services/GeoCodingService';
 // import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
-// import { PositionUpdateService } from '../../../services/positionupdate.service';
+import { PositionUpdateService } from '../../../services/positionupdate.service';
 // import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
@@ -60,6 +60,8 @@ export class MapHosterGoogle extends MapHoster {
     mlconfig : MLConfig;
     geopushSup : IGeoPusher;
     pusherEventHandler : PusherEventHandler;
+    self : any;
+    boundsListenerHandle : any;
 
     constructor(private mapNumber: number, mlconfig: MLConfig, geopush: GeoPusherSupport) {
         super(geopush);
@@ -72,7 +74,7 @@ export class MapHosterGoogle extends MapHoster {
         console.log("updateGlobals ");
         let gmBounds = this.mphmap.getBounds();
         var
-            mapLinkrBounds : ImlBounds,
+            mapLinkrBounds : ImlBounds = {urx: -1, ury: -1, llx: -1, lly: -1},
             ne,
             sw;
         if (gmBounds) {
@@ -88,17 +90,17 @@ export class MapHosterGoogle extends MapHoster {
         this.cntrxG = cntrx;
         this.cntryG = cntry;
         console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
-        this.geopushSup.positionUpdateService.positionData.emit(
-            {'key' : 'zm',
-              'val' : {
-                'zm' : this.zmG,
-                'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
-                'cntrlng' : this.cntrxG,
-                'cntrlat': this.cntryG,
-                'evlng' : this.cntrxG,
-                'evlat' : this.cntryG
-          }
-        });
+        // this.geopushSup.positionUpdateService.positionData.emit(
+        //     {'key' : 'zm',
+        //       'val' : {
+        //         'zm' : this.zmG,
+        //         'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
+        //         'cntrlng' : this.cntrxG,
+        //         'cntrlat': this.cntryG,
+        //         'evlng' : this.cntrxG,
+        //         'evlat' : this.cntryG
+        //   }
+        // });
         this.mlconfig.setPosition({'lon' : this.cntrxG, 'lat' : this.cntryG, 'zoom' : this.zmG});
         this.mlconfig.setBounds(mapLinkrBounds);
     }
@@ -299,11 +301,13 @@ export class MapHosterGoogle extends MapHoster {
             cmp = xtnt.zoom === this.zmG;
             wdth = Math.abs(ne.lng() - sw.lng());
             hgt = Math.abs(ne.lat() - sw.lat());
-            lonDif = Math.abs((xtnt.lon - this.cntrxG) / wdth);
-            latDif =  Math.abs((xtnt.lat - this.cntryG) / hgt);
-            // cmp = ((cmp == true) && (xtnt.lon == this.cntrxG) && (xtnt.lat == this.cntryG));
-            cmp = ((cmp === true) && (lonDif < 0.0005) && (latDif < 0.0005));
-            console.log("compareExtents " + msg + " " + cmp);
+            if(!(wdth === 0 || hgt === 0)) {
+                lonDif = Math.abs((xtnt.lon - this.cntrxG) / wdth);
+                latDif =  Math.abs((xtnt.lat - this.cntryG) / hgt);
+                // cmp = ((cmp == true) && (xtnt.lon == this.cntrxG) && (xtnt.lat == this.cntryG));
+                cmp = ((cmp === true) && (lonDif < 0.0005) && (latDif < 0.0005));
+                console.log("compareExtents " + msg + " " + cmp);
+          }
         }
         return cmp;
     }
@@ -500,26 +504,32 @@ export class MapHosterGoogle extends MapHoster {
         */
 
         function placeCustomControls() {
+          /*
             var $inj = this.mlconfig.getInjector(),
                 ctrlSvc = $inj.get('MapControllerService'),
                 mapCtrl = ctrlSvc.getController();
             setTimeout(function () {
                 mapCtrl.placeCustomControls();
             }, 500);
+            */
         }
 
         function setupQueryListener() {
+          /*
             var $inj = this.mlconfig.getInjector(),
                 ctrlSvc = $inj.get('MapControllerService'),
                 mapCtrl = ctrlSvc.getController();
             mapCtrl.setupQueryListener('google');
+            */
         }
 
         function fillMapWithMarkers() {
+          /*
             var $inj = this.mlconfig.getInjector(),
                 ctrlSvc = $inj.get('MapControllerService'),
                 mapCtrl = ctrlSvc.getController();
             mapCtrl.fillMapWithMarkers();
+            */
         }
 
         google.maps.event.addListenerOnce(this.mphmap, 'tilesloaded', function () {
@@ -612,7 +622,8 @@ export class MapHosterGoogle extends MapHoster {
         setupQueryListener();
         // var bndsInit = createBounds();
         // this.mphmap.fitBounds(bndsInit);
-        listener = google.maps.event.addListener(this.mphmap, "idle", function () {
+        /*
+        listener = this.mphmap.addListener("idle",  () => {
             console.log("Entering idle listener");
             // var center = this.mphmap.getCenter();
             var idleFirstCntr = new google.maps.LatLng(this.cntryG, this.cntrxG);
@@ -621,8 +632,9 @@ export class MapHosterGoogle extends MapHoster {
             this.mphmap.setZoom(initZoom);
             console.log("bounds in idle");
             console.debug(this.mphmap.getBounds());
-            google.maps.event.removeListener(listener);
+            this.boundsListenerHandle.remove(listener);
         });
+        */
 
         // searchInput = (document.getElementById('pac-input' + this.mlconfig.getMapNumber()));
         // this.mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
@@ -633,7 +645,7 @@ export class MapHosterGoogle extends MapHoster {
 
         // Bias the SearchBox results towards places that are within the bounds of the
         // current map's viewport.
-        google.maps.event.addListener(this.mphmap, 'bounds_changed', function () {
+        this.boundsListenerHandle = this.mphmap.addListener('bounds_changed',  () => {
             var changedBounds = this.mphmap.getBounds(),
                 convertedBounds;
             // console.debug(changedBounds);
@@ -645,16 +657,16 @@ export class MapHosterGoogle extends MapHoster {
             this.mlconfig.setBounds(convertedBounds);
         });
 
-        google.maps.event.addListener(this.mphmap, 'dragend', function () {
+        this.mphmap.addListener('dragend',  () => {
             console.log("DRAG END");
             if (this.userZoom === true) {
                 this.setBounds('pan');
             }
         });
-        google.maps.event.addListener(this.mphmap, "zoom_changed", function () {
+        this.mphmap.addListener("zoom_changed", () => {
             if (this.userZoom === true) {
                 if (this.scale2Level.length > 0) {
-                    this.setBounds('zoom', null);
+                    this.setBounds('zoom');
                 }
             // this.userZoom = true;
             }
@@ -678,29 +690,29 @@ export class MapHosterGoogle extends MapHoster {
             // console.log(this.mphmap.getBounds());
         });
 
-        google.maps.event.addListener(this.mphmap, "mousemove", function (e) {
+        this.mphmap.addListener("mousemove", (e) => {
             var ltln = e.latLng,
-                fixedLL = this.utils.toFixedTwo(ltln.lng(), ltln.lat(), 4),
+                fixedLL = this.geopushSup.utils.toFixedTwo(ltln.lng(), ltln.lat(), 4),
                 evlng = fixedLL.lon,
                 evlat = fixedLL.lat,
                 zm = this.mphmap.getZoom(),
                 cntr = this.mphmap.getCenter(),
-                fixedCntrLL = this.utils.toFixedTwo(cntr.lng(), cntr.lat(), 4),
+                fixedCntrLL = this.geopushSup.utils.toFixedTwo(cntr.lng(), cntr.lat(), 4),
                 cntrlng = fixedCntrLL.lon,
                 cntrlat = fixedCntrLL.lat;
 
             if (this.scale2Level.length > 0) {
                 // var view = "Zoom : " + zm + " Scale : " + this.scale2Level[zm].scale + " Center : " + cntrlng + ", " + cntrlat + " Current : " + evlng + ", " + evlat;
                 // document.getElementById("mppos").value = view;
-                this.positionUpdateService.update('coords',
-                    {
+                this.geopushSup.positionUpdateService.positionData.emit({key: 'coords',
+                    val: {
                         'zm' : zm,
                         'scl' : this.scale2Level[zm].scale,
                         'cntrlng' : cntrlng,
                         'cntrlat': cntrlat,
                         'evlng' : evlng,
                         'evlat' : evlat
-                    });
+                    }});
             }
         });
 
@@ -754,7 +766,7 @@ export class MapHosterGoogle extends MapHoster {
             // showClickResult(content, popPt);
         }
 
-        google.maps.event.addListener(this.mphmap, 'click', function (event) {
+        this.mphmap.addListener('click', function (event) {
             onMapClick(event);
         });
 

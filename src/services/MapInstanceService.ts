@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
+import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
 // import { ConfigParams } from './configparams.service'
 
 // interface IHash {
@@ -62,7 +63,7 @@ export class MapInstanceService {
     getConfigForMap(ndx : number) : MLConfig {
         return this.configInstances["cfg" + ndx];
     }
-    setMapHosterInstance(ndx : number, inst : MLConfig) {
+    setMapHosterInstance(ndx : number, inst : MapHoster) {
         var cfgndx = "cfg" + ndx;
         this.configInstances[cfgndx].setMapHosterInstance(inst);
         // incrementMapNumber();

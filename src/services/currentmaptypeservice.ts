@@ -150,18 +150,18 @@ export class CurrentMapTypeService {
     setCurrentMapType (mpt) {
         var data = {
             'whichsystem' : this.mapconfigs[this.mapSystemDct[mpt]],
-        },
+        };
             // MapCtrl,
-            scp = this.mapsvcScopes.getScopes()[0];
+            // scp = this.mapsvcScopes.getScopes()[0];
         this.previousMapType = this.currentMapType;
         this.selectedMapType = mpt;
         this.currentMapType = mpt;
         console.log("selectedMapType set to " + this.selectedMapType);
         // MapCtrl = MapControllerService.getController();
         // MapCtrl.invalidateCurrentMapTypeConfigured();
-        if (scp) {
-            scp.$broadcast('SwitchedMapSystemEvent', data);
-        }
+        // if (scp) {
+        //     scp.$broadcast('SwitchedMapSystemEvent', data);
+        // }
     }
     getPreviousMapType () {
         return this.mapTypes[this.previousMapType];
