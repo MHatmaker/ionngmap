@@ -65,18 +65,6 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
         mapOptions.center = {lng: this.glng, lat: this.glat};
         console.log(`geolocation center at ${this.glng}, ${this.glat}`);
         this.startup.configure("google-map-component" + this.mapNumber, mapElement, mapOptions);
-        this.gmap = new google.maps.Map(mapElement, mapOptions);
-        this.rndr.setAttribute(mapElement, "style", "height: 550px");
-        this.addCenterMarker();
-
-        this.gmap.addListener('click',  (evt)  => {
-            console.log("click just happened");
-            this.mapClicked(evt);
-        });
-        this.gmap.addListener('bounds_changed',  (evt) => {
-          console.log("bounds_changed just happened");
-            this.onBoundsChange(evt);
-        });
         this.rndr.setAttribute(mapElement, "style", "height: 550px");
 
         }, (err) => {
@@ -89,16 +77,6 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     this.zoom = 14;
   }
 
-  mapClicked = function (evt: any) {
-    console.log(`mapClicked ${evt.latLng.lng()}, ${evt.latLng.lat()}`)
-    let mrkr = new google.maps.Marker({
-      position: evt.latLng,
-      draggable: true,
-      map : this.gmap,
-      label : 'hi'
-    });
-    this.addInfoWindow(mrkr, "what is in here.")
-  }
   onBoundsChange = function (evt) {
       console.log("boundsChange");
       if (!this.mlconfigSet) {
@@ -114,37 +92,9 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
                                mp.getBounds().getNorthEast().lng(),
                                mp.getBounds().getNorthEast().lat()));
   }
-  clickedMarker(label: string, index: number) {
-    console.log(`clicked the marker: ${label || index}`)
-  }
-
 
   markerDragEnd(m: marker, evt: MouseEvent) {
     console.log('dragEnd', m, evt);
-  }
-  addInfoWindow(marker, content){
-      let infoWindow = new google.maps.InfoWindow({
-          content: content
-      });
-
-      google.maps.event.addListener(marker, 'click', () => {
-          infoWindow.open(this.gmap, marker);
-      });
-  }
-  addCenterMarker(){
-    let pos = {lat: this.glat, lng: this.glng, label: 'C'};
-    let marker = new google.maps.Marker({
-      map: this.gmap, // this.mlconfig.getRawMap(),
-      animation: google.maps.Animation.DROP,
-      position: pos,
-      draggable: false,
-      label: 'Me!'
-    });
-
-    let content = "<h4>Center of the world!</h4>";
-
-    this.addInfoWindow(marker, content);
-
   }
 
 }

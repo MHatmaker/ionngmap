@@ -1,5 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import {HttpModule, Http, Response} from '@angular/http';
+
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 // import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -67,6 +71,9 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
     BrowserModule,
     IonicModule.forRoot(MapLinkrApp),
     NgbModule.forRoot(),
+    HttpClientModule,
+    HttpModule,
+    // HttpHandler,
     /*
     AgmCoreModule.forRoot({
       // please get your own API key here:
@@ -104,6 +111,9 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
     HostConfig,
     utils,
     GeoPusherSupport,
+    HttpClient,
+    HttpClientModule,
+    // HttpHandler,
     // Startup,
     // StartupGoogle,
     // MapHoster,

@@ -15,6 +15,8 @@ import { PositionUpdateService } from '../../../services/positionupdate.service'
 // import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
+import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService';
+import { Observable } from 'rxjs/Observable';
 
 declare var google;
 
@@ -49,7 +51,6 @@ export class MapHosterGoogle extends MapHoster {
         pusher : null
     };
     popDetails = null;
-    // selfMethods = {},
     queryPlaces = {
         location: null,
         bounds: null,
@@ -62,6 +63,7 @@ export class MapHosterGoogle extends MapHoster {
     pusherEventHandler : PusherEventHandler;
     self : any;
     boundsListenerHandle : any;
+    adrs : string;
 
     constructor(private mapNumber: number, mlconfig: MLConfig, geopush: GeoPusherSupport) {
         super(geopush);
@@ -69,7 +71,6 @@ export class MapHosterGoogle extends MapHoster {
         this.geopushSup = geopush.getGeoPusherSupport();
     }
 
-    // MLConfig.showConfigDetails('MapHosterGoogle - startup');
     updateGlobals(msg : string, cntrx : number, cntry : number, zm : number) {
         console.log("updateGlobals ");
         let gmBounds = this.mphmap.getBounds();
@@ -163,12 +164,13 @@ export class MapHosterGoogle extends MapHoster {
             };
 
 
-        google.maps.event.addListener(marker, 'click', function () {
+        google.maps.event.addListener(marker, 'click',  (event) => {
             var btnShare;
                 // referrerId,
                 // usrId;
             infowindow.setContent(contentString);
-            infowindow.open(this.mphmap, this);
+            infowindow.setPosition(event.latLng);
+            infowindow.open(this.mphmap, marker);
 
             btnShare = document.getElementById(shareBtnId);
             // referrerId = this.mlconfig.getReferrerId();
@@ -532,7 +534,7 @@ export class MapHosterGoogle extends MapHoster {
             */
         }
 
-        google.maps.event.addListenerOnce(this.mphmap, 'tilesloaded', function () {
+        google.maps.event.addListenerOnce(this.mphmap, 'tilesloaded', () => {
             var zsvc = new google.maps.MaxZoomService(),
                 cntr = new google.maps.LatLng(this.cntryG, this.cntrxG), // {lat: this.cntryG, lng: this.cntrxG}, //
                 center,
@@ -557,7 +559,7 @@ export class MapHosterGoogle extends MapHoster {
             gmQuery = this.mlconfig.query();
             console.log("getMaxZoomAtLatLng for " + cntr.lng() + ", " + cntr.lat());
 
-            zsvc.getMaxZoomAtLatLng(cntr, function (response) {
+            zsvc.getMaxZoomAtLatLng(cntr,  (response) => {
                 console.log("zsvc.getMaxZoomAtLatLng returned response:");
                 console.debug(response);
                 if (response && response.status === google.maps.MaxZoomStatus.OK) {
@@ -672,24 +674,17 @@ export class MapHosterGoogle extends MapHoster {
             }
         });
 
-        function gotResize() {
-            var center = this.mphmap.getCenter();
-            google.maps.event.trigger(this.mphmap, "resize");
-            this.mphmap.setCenter(center);
-            // console.log(this.mphmap.getBounds());
-        }
-
         // google.maps.event.addListener(this.mphmap, 'resize', gotResize); //function() {
             // console.log("resize event hit");
             // console.log(this.mphmap.getBounds());
         // });
-
+/*
         google.maps.event.addDomListener(window, 'resize', function () {
             gotResize();
             // console.log("resize event hit");
             // console.log(this.mphmap.getBounds());
         });
-
+*/
         this.mphmap.addListener("mousemove", (e) => {
             var ltln = e.latLng,
                 fixedLL = this.geopushSup.utils.toFixedTwo(ltln.lng(), ltln.lat(), 4),
@@ -716,58 +711,8 @@ export class MapHosterGoogle extends MapHoster {
             }
         });
 
-        function showClickResult(content, popPt, marker) {
-            if (this.popDetails !== null) {
-                this.popDetails.infoWnd.close();
-                this.popDetails.infoMarker.setMap(null);
-            }
-            this.popDetails = this.markerInfoPopup(popPt, content, "Ready to Push Click", marker);
-            // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
-            // if (this.selfPusherDetails.pusher)
-            // {
-                // var fixedLL = this.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6);
-                // var referrerId = this.mlconfig.getUserId();
-                // var referrerName = PusherConfig.getUserName();
-                // var pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
-                    // "referrerId" : referrerId, "referrerName" : referrerName };
-                // console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                // this.selfPusherDetails.pusher.channel(this.selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
-            // }
-        }
-
-
-
-        function onMapClick(e) {
-            var popPt = e.latLng,
-                popPtRaw = {lat: popPt.lat, lng: popPt.lng},
-                fixedLL = this.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6),
-                marker,
-                content = "You clicked the map at " + fixedLL.lat + ", " + fixedLL.lon;
-
-            this.geoCoder.geocode({'latLng': popPt}).then((results) => {
-                const result = results[0];
-                    // location = result.geometry.location;
-
-                if(result) {
-                    marker = new google.maps.Marker({
-                        map: this.mphmap,
-                        // title: "",
-                        title : result.formatted_address,
-                        position: popPtRaw
-                    });
-
-                    content = results.formatted_address;
-                    showClickResult(content, popPt, marker);
-                } else {
-                    showClickResult(content, popPt, null);
-                }
-
-            });
-            // showClickResult(content, popPt);
-        }
-
-        this.mphmap.addListener('click', function (event) {
-            onMapClick(event);
+        this.mphmap.addListener('click',  (event) => {
+            this.onMapClick(event);
         });
 
         this.pusherEventHandler = new PusherEventHandler(this.mlconfig.getMapNumber());
@@ -792,13 +737,85 @@ export class MapHosterGoogle extends MapHoster {
             return createdBounds;
         }
         */
-    }
+//    }
     /*
     gotDragEnd() {
         console.log("dragend event hit");
         setBounds('pan');
     }
     */
+
+    }
+       gotResize() {
+            var center = this.mphmap.getCenter();
+            google.maps.event.trigger(this.mphmap, "resize");
+            this.mphmap.setCenter(center);
+            // console.log(this.mphmap.getBounds());
+        }
+        showClickResult(content, popPt, marker) {
+            if (this.popDetails !== null) {
+                this.popDetails.infoWnd.close();
+                this.popDetails.infoMarker.setMap(null);
+            }
+            this.popDetails = this.markerInfoPopup(popPt, content, "Ready to Push Click", marker);
+            // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
+            // if (this.selfPusherDetails.pusher)
+            // {
+                // var fixedLL = this.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6);
+                // var referrerId = this.mlconfig.getUserId();
+                // var referrerName = PusherConfig.getUserName();
+                // var pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
+                    // "referrerId" : referrerId, "referrerName" : referrerName };
+                // console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
+                // this.selfPusherDetails.pusher.channel(this.selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
+            // }
+        }
+
+
+
+        onMapClick(e) {
+            var popPt = e.latLng,
+                popPtRaw = {lat: popPt.lat(), lng: popPt.lng()},
+                fixedLL = this.geopushSup.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6),
+                marker,
+                adrs : string,
+                content = "You clicked the map at " + fixedLL.lat + ", " + fixedLL.lon,
+                options = {
+                     method: 'GET',
+                     url: 'https://maps.googleapis.com/maps/api/geocode/json',
+                     qs: {
+                     latlng: popPt,
+                     key: 'AIzaSyAwAOGAxY5PZ8MshDtaJFk2KgK7VYxArPA'
+                     }
+                  };
+
+                  // this.geopushSup.geoCoder.GeocoderRequest
+                this.geopushSup.geoCoder.geocode({location: popPtRaw}).subscribe(data => {
+                    this.adrs = adrs = data.display_name
+                    console.log(this.adrs);
+
+                    // map((res: Observable<OSMAddress>) => Observable<OSMAddress>res.json().results.map()))
+                    const result = this.adrs; //s[0];
+                    console.log(result);
+                        // location = result.geometry.location;
+
+                    if(result) {
+                        marker = new google.maps.Marker({
+                            map: this.mphmap,
+                            // title: "",
+                            title : this.adrs,
+                            position: popPtRaw
+                        });
+
+                        content = this.adrs;
+                        this.showClickResult(content, popPt, marker);
+                    } else {
+                        this.showClickResult(content, popPt, null);
+                    }
+                });
+;
+            // showClickResult(content, popPt);
+        }
 
     getMapHosterName() {
         return "hostName is " + this.hostName;

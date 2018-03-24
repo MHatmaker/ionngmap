@@ -89,6 +89,7 @@ export class StartupGoogle extends Startup {
         this.mapHoster = new MapHosterGoogle(this.mapNumber, this.mlconfig, this.geopush);
         this.mapHoster.configureMap(this.gMap, mapGoogleLocOpts, google, google.maps.places, this.mlconfig);
         this.mlconfig.setMapHosterInstance(this.mapHoster);
+        this.mlconfig.setRawMap(this.gMap);
 
         this.geopushSup.mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
         this.geopushSup.currentMapTypeService.setCurrentMapType('google');
