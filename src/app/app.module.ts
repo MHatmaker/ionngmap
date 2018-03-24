@@ -1,20 +1,19 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { HttpClient, HttpHandler } from '@angular/common/http';
-import { HttpClientModule } from '@angular/common/http';
-import {HttpModule, Http, Response} from '@angular/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {HttpModule } from '@angular/http';
 
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 // import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { Geolocation } from '@ionic-native/geolocation';
-import { Proj } from 'proj4';
+// import { Proj } from 'proj4';
 import "leaflet";
 
 // import { MapView } from 'esri/views/MapView';
-import { Point } from 'esri/geometry';
-import { SpatialReference } from 'esri/geometry';
-import { Geometry } from 'esri/geometry';
+// import { Point } from 'esri/geometry';
+// import { SpatialReference } from 'esri/geometry';
+// import { Geometry } from 'esri/geometry';
 
 import { MapLinkrApp } from './app.component';
 import { MapsPage } from '../pages/maps/map.component';
@@ -24,6 +23,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';// Custom components
 import { SideMenuContentComponent } from '../side-menu-content/side-menu-content.component';
 
 import { PlacesSearchComponent } from '../pages/mlcomponents/PlacesSearch/places.component';
+import { PositionViewComponent } from '../pages/mlcomponents/PositionView/PositionView.component';
 import { EsriMapComponent } from '../pages/mlcomponents/EsriMap/esrimap.component';
 import { GoogleMapComponent } from '../pages/mlcomponents/GoogleMap/googlemap.component';
 import { LeafletMapComponent } from '../pages/mlcomponents/LeafletMap/leafletmap.component';
@@ -59,6 +59,7 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
     MapsPage,
     SideMenuContentComponent,
     PlacesSearchComponent,
+    PositionViewComponent,
     EsriMapComponent,
     GoogleMapComponent,
     LeafletMapComponent,
@@ -92,7 +93,8 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
     MultiCanvasLeaflet,
     EsriMapComponent,
     GoogleMapComponent,
-    LeafletMapComponent
+    LeafletMapComponent,
+    PositionViewComponent
   ],
   providers: [
     StatusBar,

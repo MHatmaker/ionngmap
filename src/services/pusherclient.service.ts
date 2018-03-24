@@ -220,7 +220,7 @@ export class PusherClientService {
     }
 
     setupPusherClient (resolve, reject) {
-        var promise;
+        // var promise;
         this.userName = this.pusherConfig.getUserName();
 /*
         promise = this.getPusherDetails();

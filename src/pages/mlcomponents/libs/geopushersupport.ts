@@ -17,9 +17,8 @@ export interface IGeoPusher {
     utils: utils,
     pusherConfig: PusherConfig,
     geoCoder: GeoCodingService,
-    pusherClientService: PusherClientService,
-    // pusherEventHandler: PusherEventHandler,
     positionUpdateService: PositionUpdateService,
+    pusherClientService: PusherClientService,
     currentMapTypeService: CurrentMapTypeService,
     mapInstanceService: MapInstanceService
 }
@@ -37,8 +36,8 @@ export class GeoPusherSupport {
             utils: utils,
             pusherConfig: pusherConfig,
             geoCoder: geoCoder,
-            pusherClientService: pusherClientService,
             positionUpdateService: positionUpdateService,
+            pusherClientService: pusherClientService,
             currentMapTypeService: currentmaptypeservice,
             mapInstanceService: mapInstanceService
         }

@@ -45,7 +45,7 @@ export class LeafletMapComponent implements AfterViewInit {
      };
 
   constructor (private mapInstanceService: MapInstanceService,
-      public geolocation : Geolocation, private geopush: GeoPusherSupport, ngZone : NgZone) {
+      public geolocation : Geolocation, geopush: GeoPusherSupport, ngZone : NgZone) {
       this.mapNumber = this.mapInstanceService.getSlideCount();
   }
 

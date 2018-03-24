@@ -1,12 +1,12 @@
 import {
     Injectable
 } from '@angular/core';
-import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
-import { StartupArcGIS } from '../pages/mlcomponents/libs/StartupArcGIS';
-import { StartupLeaflet } from '../pages/mlcomponents/libs/StartupLeaflet';
-import { MapHosterGoogle } from '../pages/mlcomponents/libs/MapHosterGoogle';
-import { MapHosterArcGIS } from '../pages/mlcomponents/libs/MapHosterArcGIS';
-import { MapHosterLeaflet } from '../pages/mlcomponents/libs/MapHosterLeaflet';
+// import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
+// import { StartupArcGIS } from '../pages/mlcomponents/libs/StartupArcGIS';
+// import { StartupLeaflet } from '../pages/mlcomponents/libs/StartupLeaflet';
+// import { MapHosterGoogle } from '../pages/mlcomponents/libs/MapHosterGoogle';
+// import { MapHosterArcGIS } from '../pages/mlcomponents/libs/MapHosterArcGIS';
+// import { MapHosterLeaflet } from '../pages/mlcomponents/libs/MapHosterLeaflet';
 import { Startup } from '../pages/mlcomponents/libs/Startup';
 import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
 

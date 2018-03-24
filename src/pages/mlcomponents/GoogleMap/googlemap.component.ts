@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, Renderer2, AfterViewInit, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, Renderer2, AfterViewInit, NgZone, ElementRef } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
@@ -26,7 +26,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   private zoom: number;
   private mlconfig : MLConfig;
   private mlconfigSet : boolean = false;
-  private self = this;
+  // private self = this;
   private startup : StartupGoogle;
   //private places : PlacesSearch;
 
@@ -34,7 +34,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService,
       public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2,
-      private geopush: GeoPusherSupport) {
+      geopush: GeoPusherSupport) {
 
       console.log("GoogleMapComponent ctor");
       this.mapNumber = this.mapInstanceService.getSlideCount();
@@ -77,7 +77,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     this.zoom = 14;
   }
 
-  onBoundsChange = function (evt) {
+  onBoundsChange = (evt) => {
       console.log("boundsChange");
       if (!this.mlconfigSet) {
           this.mlconfigSet = true;

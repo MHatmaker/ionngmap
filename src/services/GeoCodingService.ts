@@ -1,9 +1,8 @@
 import { Injectable} from '@angular/core';
 import { createClient, GoogleMapsClient } from '@google/maps';
-import { HttpClient } from '@angular/common/http';
-import {HttpModule, Http, Response} from '@angular/http';
+import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { map, tap, catchError } from 'rxjs/operators'
+// import { map, tap, catchError } from 'rxjs/operators'
 import 'rxjs/add/operator/map'
 
     /*
@@ -62,8 +61,7 @@ export class GeoCodingService {
             },
             zm = 18, //Math.round(Math.log(scale / 256) / Math.log(2)),
             qstr = options.serviceUrl + 'reverse/?lat=' + request.location.lat + '&lon=' + request.location.lng + '&zoom=' + zm +
-                '&addressdetails=1&format=json',
-            response : any;
+                '&addressdetails=1&format=json';
         console.log(qstr);
         return this.http.get(qstr).map((res) => {
             let item = res.json();
@@ -118,6 +116,7 @@ export class GeoCodingService {
         //       this.fakeError("bad bad bad"));
     }
     */
+    /*
     private fakeError(err: string) {
         return null;
     }
@@ -136,6 +135,7 @@ export class GeoCodingService {
         console.error(errMsg);
         return Observable.throw(errMsg);
       }
+      */
   /*
   public geocodeReverse(request : google.maps.GeocoderRequest ): Promise<google.maps.GeocoderResult[]> {
 
