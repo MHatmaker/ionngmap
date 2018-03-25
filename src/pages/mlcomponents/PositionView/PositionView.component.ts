@@ -78,7 +78,7 @@ export class PositionViewComponent  {
 
         this.positionUpdateService.positionData.subscribe(
           (data: IPositionData) => {
-            console.log(data);
+            // console.log(data);
             this.updatePosition(data.key, data.val);
           });
 

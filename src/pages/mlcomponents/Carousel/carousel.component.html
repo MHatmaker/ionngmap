@@ -1,24 +1,30 @@
 
     <div style="height: 100%;" class='icon-row'>
         <div class="carouselbox {{ActNoAct}}" style="margin: 0.2em;">
-            <div class="buttons icon-row" style="display: flex">
+            <form class="input-group">
+                <div class="buttons">
 
-                <div class="col-md-1 col-xs-1">
-                    <button class="chevron-prev" *ngIf="showNavButtons" (click)="onClickPrev()">
-                        <span class="offscreen">Previous</span>
-                    </button>
+                    <div>
+                        <button class="chevron-prev" *ngIf="showNavButtons" (click)="onClickPrev()">
+                            <span class="offscreen">Previous</span>
+                        </button>
+                    </div>
+                    <div  *ngIf="showMapText">{{MapName}}
+                    </div>
+                    <div>
+                        <button class="chevron-next" (click)="onClickNext()" *ngIf="showNavButtons">
+                            <span class="offscreen">Next</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-3 col-xs-3" *ngIf="showMapText">{{MapName}}
-                </div>
-                <div class="col-md-1 col-xs-1">
-                    <button class="chevron-next" (click)="onClickNext()" *ngIf="showNavButtons">
-                        <span class="offscreen">Next</span>
-                    </button>
-                </div>
-                <places-for-maplinkr></places-for-maplinkr>
-                <position-view></position-view>
+                <div class="input-group-append">
 
-            </div>
+                    <div class="input-group">
+                        <places-for-maplinkr></places-for-maplinkr>
+                        <position-view class="input-group-append"></position-view>
+                    </div>
+                </div>
+            </form>
 
             <!-- <ol class="MapContainer" [style.height] = "mapcolheight + 'px'" [style.width] = "'100%'"></ol> -->
             <ol class="MapContainer"></ol>
