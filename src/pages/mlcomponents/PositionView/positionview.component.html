@@ -1,12 +1,10 @@
 
-  <form style="padding-left: 1px;" class="form-inline">
-    <div class="form-group">
-      <div class="posViewVisible">
-        <ion-input type="text" [value]="positionView" [(ngModel)]="positionView" name="positionView" disabled="disabled">
+      <div class="posViewVisible postext">
+        <ion-input type="text"  [value]="positionView" [(ngModel)]="positionView" name="positionView" disabled="disabled">
             <!-- style="font-size:0.5rem;text-align:right;margin-right: 0.5em; padding: 0.01em 0.5em 0.01em 0.5em; color: blue;"> -->
         </ion-input>
       </div>
-      <div class="posViewVisible">
+      <div class="posViewVisible posselect">
          <ion-item>
           <ion-label>Position Option</ion-label>
           <ion-select [(ngModel)]="viewOptions" name="viewOptions">
@@ -16,5 +14,3 @@
           </ion-select>
         </ion-item>
       </div>
-    </div>
-</form>

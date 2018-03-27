@@ -110,3 +110,57 @@
 .icon-row {
      -webkit-align-items: center;
 }
+
+.wrapper {
+    display: grid;
+    grid-gap: 0.1em;
+    grid-template-rows: 50px auto;
+    grid-template-areas:
+     "mapheader"
+     "mapcontent"
+  }
+
+  .mapheader {
+     grid-area: mapheader;
+     display: grid;
+     grid-template-columns 300px 300px;
+     grid-template-areas:
+        "mapnavwrapper posviewwrapper"
+  }
+  .mapcontent {
+      grid-area: mapcontent;
+  }
+  .mapnametext {
+      grid-area mapnametext;
+  }
+  .navleft {
+      grid-area navleft;
+  }
+  .navright {
+      grid-area: navright;
+  }
+  .searchquery {
+      grid-area: searchquery;
+  }
+
+  .mapnavwrapper {
+      grid-area: mapnavwrapper;
+      display: grid;
+      grid-template-columns: 20px 40px 20px 320px 200px;
+      grid-template-areas:
+          "navleft mapnametext navright searchquery"
+  }
+
+  .postext {
+      grid-area: postext;
+  }
+  .posselect {
+      grid-area: posselect;
+  }
+  .posviewwrapper {
+      grid-area: posviewwrapper;
+      display: grid;
+      grid-template-columns: 150px 50px;
+      grid-template-areas:
+          "postext posselect"
+  }
