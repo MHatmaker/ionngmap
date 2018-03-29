@@ -114,53 +114,65 @@
 .wrapper {
     display: grid;
     grid-gap: 0.1em;
-    grid-template-rows: 50px auto;
-    grid-template-areas:
-     "mapheader"
-     "mapcontent"
+    grid-template-rows: 1fr 5fr;
+    grid-template-areas:"mapheaderarea"
+                        "mapcontentarea";
   }
 
   .mapheader {
-     grid-area: mapheader;
+     grid-area: mapheaderarea;
      display: grid;
-     grid-template-columns 300px 300px;
      grid-template-areas:
-        "mapnavwrapper posviewwrapper"
+        "mapnavwrapperarea"
+        "wrapper2area";
   }
+
+  @media only screen and (min-width: 700px)  {
+  .mapheader {
+     grid-area: mapheaderarea;
+     display: grid;
+     grid-template-columns: 30% auto;
+     grid-template-areas: "mapnavwrapperarea wrapper2area";
+  }
+}
   .mapcontent {
-      grid-area: mapcontent;
-  }
-  .mapnametext {
-      grid-area mapnametext;
+      grid-area: mapcontentarea;
   }
   .navleft {
-      grid-area navleft;
+      grid-area: navlefta;
+  }
+  .mapnametext {
+      grid-area: mapnametexta;
   }
   .navright {
-      grid-area: navright;
-  }
-  .searchquery {
-      grid-area: searchquery;
+      grid-area: navrighta;
   }
 
   .mapnavwrapper {
-      grid-area: mapnavwrapper;
+      grid-area: mapnavwrapperarea;
       display: grid;
-      grid-template-columns: 20px 40px 20px 320px 200px;
-      grid-template-areas:
-          "navleft mapnametext navright searchquery"
+      grid-template-columns: auto auto auto;
+      grid-template-areas: "navlefta mapnametexta navrighta";
   }
 
+  .searchquery {
+      grid-area: searchquerya;
+  }
   .postext {
-      grid-area: postext;
+      grid-area: postexta;
   }
   .posselect {
-      grid-area: posselect;
+      grid-area: posselecta;
+  }
+  .wrapper2 {
+      grid-area: wrapper2area;
+      display: grid;
+      grid-template-columns: 150px auto;
+      grid-template-areas: "searchquerya posviewwrapperarea"
   }
   .posviewwrapper {
-      grid-area: posviewwrapper;
+      grid-area: posviewwrapperarea;
       display: grid;
-      grid-template-columns: 150px 50px;
-      grid-template-areas:
-          "postext posselect"
+      grid-template-columns: auto auto;
+      grid-template-areas: "postexta posselecta";
   }

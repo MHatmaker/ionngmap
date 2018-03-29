@@ -1,4 +1,4 @@
-carousel {
+
     .carousel-active {
       position: absolute;
       top: 500px;
@@ -17,6 +17,7 @@ carousel {
       visibility: visible;
       left: 5px;
     }
+
     .carouselbox {
       font-family: helvetica,sans-serif;
       font-size: 14px;
@@ -46,8 +47,9 @@ carousel {
     }
     .active li {
       position: absolute;
+      top: 500px;
     }
-    .active current {
+    .active li.current {
       top: 30px;
     }
     .buttons {
@@ -55,7 +57,7 @@ carousel {
     }
     .active .buttons {
       display: block;
-      padding: 0 0;
+      padding: 5px 0;
       background: #eee;
       text-align: center;
       z-index: 10;
@@ -63,6 +65,10 @@ carousel {
     }
     .carouselbox button {
       border: none;
+      visibility: hidden;
+    }
+    .active button {
+      visibility: visible;
     }
     .mapsshowing button {
       visibility: visible;
@@ -84,7 +90,7 @@ carousel {
     .chevron-next {
         /*clip-path: inset(2px 2px 2px 2px);*/
         -webkit-clip-path: inset(2px 2px 2px 2px);
-        background-image: url(../../../assets/imgs/chevron-right.png);
+        background-image: url(../img/chevron-right.png);
         background-color: #6E9096;
         background-size: 100% 100%;
         width: 25px;
@@ -94,15 +100,81 @@ carousel {
     .chevron-prev {
         /*clip-path: inset(2px 2px 2px 2px);*/
         -webkit-clip-path: inset(2px 2px 2px 2px);
-        background-image: url(../../../assets/imgs/chevron-left.png);
+        background-image: url(../img/chevron-left.png);
         background-color: #6E9096;
         background-size: 100% 100%;
         width: 25px;
         height:25px;
     }
 
-    .icon-row {
-        display: flex;
-        align-items: flex-end;
-    }
+.icon-row {
+     -webkit-align-items: center;
 }
+
+.wrapper {
+    display: grid;
+    grid-gap: 0.1em;
+    grid-template-rows: 30px auto;
+    grid-template-areas:"mapheaderarea"
+                        "mapcontentarea";
+  }
+
+  .mapheader {
+     grid-area: mapheaderarea;
+     display: grid;
+     grid-template-areas:
+        "mapnavwrapperarea"
+        "wrapper2area";
+  }
+
+  @media only screen and (min-width: 700px)  {
+  .mapheader {
+     grid-area: mapheaderarea;
+     display: grid;
+     grid-template-columns: 30% auto;
+     grid-template-areas: "mapnavwrapperarea wrapper2area";
+  }
+}
+  .mapcontent {
+      grid-area: mapcontentarea;
+  }
+  .navleft {
+      grid-area: navlefta;
+  }
+  .mapnametext {
+      grid-area: mapnametexta;
+  }
+  .navright {
+      grid-area: navrighta;
+  }
+
+  .mapnavwrapper {
+      grid-area: mapnavwrapperarea;
+      display: grid;
+      grid-template-columns: auto auto auto;
+      grid-template-areas: "navlefta mapnametexta navrighta";
+  }
+
+  .searchquery {
+      grid-area: searchquerya;
+  }
+  .postext {
+      grid-area: postexta;
+  }
+  .posselect {
+      grid-area: posselecta;
+  }
+  .wrapper2 {
+      height: 30px;
+      grid-area: wrapper2area;
+      display: grid;
+      grid-template-columns: 200px auto;
+      grid-template-areas: "searchquerya posviewwrapperarea"
+  }
+  .posviewwrapper {
+      height: 30px;
+      grid-area: posviewwrapperarea;
+      display: grid;
+      grid-template-columns: 200px auto;
+      grid-template-areas: "postexta posselecta";
+  }
