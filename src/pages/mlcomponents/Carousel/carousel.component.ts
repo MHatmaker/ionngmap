@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import { MapInstanceService } from '../../../services/MapInstanceService';
 import { SlideShareService } from '../../../services/slideshare.service';
 import { ISlideData } from "../../../services/slidedata.interface";
@@ -7,6 +7,7 @@ import { ISlideData } from "../../../services/slidedata.interface";
 @Component({
   selector: 'carousel',
   templateUrl: './carousel.component.html'
+  // changeDetection: ChangeDetectionStrategy.OnPush
   // styleUrls: ['./carousel.component.scss']
 })
 export class CarouselComponent {
@@ -25,7 +26,8 @@ export class CarouselComponent {
     private showMapText : boolean = false;
     private ActNoAct : string = 'active';
 
-    constructor(private mapInstanceService: MapInstanceService, private slideshareService : SlideShareService) {
+  constructor(private mapInstanceService: MapInstanceService, private slideshareService : SlideShareService) {
+        // private ref: ChangeDetectorRef) {
         console.log("Carousel ctor");
         // this.currentSlide = this.items[0] || null;
         this.slideshareService.slideData.subscribe(
@@ -46,7 +48,9 @@ export class CarouselComponent {
     // navigate through the carousel
     private navigate(direction : number) {
         // hide the old currentSlide list item
-        this.currentSlide.classList.remove('carousel-current');
+        // this.currentSlide.classList.remove('carousel-current');
+        // this.currentSlide.classList.add('carousel-basic');
+        this.currentSlide.classList.remove('current');
 
         console.log("change activeSlideNumber from " +this. activeSlideNumber);
         // calculate the new position
@@ -58,7 +62,9 @@ export class CarouselComponent {
         this.currentSlide = this.items[this.activeSlideNumber].mapListItem;
         this.MapNo = this.activeSlideNumber;
         this.MapName = this.items[this.activeSlideNumber].mapName;
-        this.currentSlide.classList.add('carousel-current');
+        // this.currentSlide.classList.remove('carousel-basic');
+        // this.currentSlide.classList.add('carousel-current');
+        this.currentSlide.classList.add('current');
         this.mapInstanceService.setCurrentSlide(this.items[this.activeSlideNumber].slideNumber);
     }
 
@@ -67,7 +73,8 @@ export class CarouselComponent {
         console.debug(slideData);
         var multican;
         if (this.items.length > 0) {
-            this.currentSlide.classList.remove('carousel-current');
+            // this.currentSlide.classList.remove('carousel-current');
+            this.currentSlide.classList.remove('current');
         }
         this.items.push(slideData);
         this.currentSlide = this.items[this.items.length - 1].mapListItem;
@@ -75,8 +82,10 @@ export class CarouselComponent {
         this.nextSlideNumber += 1;
         this.MapName = slideData.mapName;
         multican = this.items[this.items.length - 1];
-        this.currentSlide.classList.add('carousel-basic');
-        this.currentSlide.classList.add('carousel-current');
+        // this.currentSlide.classList.add('carousel-basic');
+        // this.currentSlide.classList.add('carousel-current');
+        this.currentSlide.classList.add('current');
+        // this.ref.detectChanges();
 
         this.slidesCount = this.items.length;
         this.showNavButtons = this.slidesCount  > 1;

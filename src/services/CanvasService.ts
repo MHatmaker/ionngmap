@@ -42,7 +42,7 @@ export class CanvasService {
 
         // Append DOM element to the body
         mapParent.appendChild(domElem);
-        return domElem;
+        return domElem.firstChild;
     }
     /*
     makeCanvasSlideListItem (ndx) {

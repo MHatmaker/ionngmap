@@ -18,6 +18,18 @@
       left: 5px;
     }
 
+    .multi-can-active {
+      position: absolute;
+      top: 500px;
+    }
+    .multi-can-active current {
+      top: 30px;
+    }
+    .multi-can-current {
+      position: relative;
+      top: 30px;
+    }
+
     .carouselbox {
       font-family: helvetica,sans-serif;
       font-size: 14px;
@@ -46,8 +58,8 @@
       height: 100%;
     }
     .active li {
-      position: absolute;
       top: 500px;
+      position: absolute;
     }
     .active li.current {
       top: 30px;
@@ -90,7 +102,7 @@
     .chevron-next {
         /*clip-path: inset(2px 2px 2px 2px);*/
         -webkit-clip-path: inset(2px 2px 2px 2px);
-        background-image: url(../img/chevron-right.png);
+        background-image: url(/assets/imgs/chevron-right.png);
         background-color: #6E9096;
         background-size: 100% 100%;
         width: 25px;
@@ -100,7 +112,7 @@
     .chevron-prev {
         /*clip-path: inset(2px 2px 2px 2px);*/
         -webkit-clip-path: inset(2px 2px 2px 2px);
-        background-image: url(../img/chevron-left.png);
+        background-image: url(/assets/imgs/chevron-left.png);
         background-color: #6E9096;
         background-size: 100% 100%;
         width: 25px;

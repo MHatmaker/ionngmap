@@ -20,7 +20,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   viewCreated = new EventEmitter();
   private gmap: any;
   private mapNumber : number;
-  private gmHeight : string = '550px';
+  private gmHeight : string;
   private glat: number;
   private glng: number;
   private zoom: number;
@@ -40,6 +40,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
       this.mapNumber = this.mapInstanceService.getSlideCount();
       this.startup = new StartupGoogle(this.mapNumber,
           this.mapInstanceService.getConfigForMap(this.mapNumber), geopush);
+      this.gmHeight = '550px';
   }
 
   ngAfterViewInit () {
