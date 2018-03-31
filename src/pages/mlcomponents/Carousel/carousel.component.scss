@@ -46,6 +46,8 @@
       padding: 0;
     }
     .content li {
+      left: 1px;
+      top: 30px;
       font-size: 100px;
       margin: 0;
       padding: 0;
@@ -126,7 +128,7 @@
 .wrapper {
     display: grid;
     grid-gap: 0.1em;
-    grid-template-rows: 30px auto;
+    grid-template-rows: 30px 450px;
     grid-template-areas:"mapheaderarea"
                         "mapcontentarea";
   }

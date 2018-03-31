@@ -1,5 +1,5 @@
 
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, NgZone} from '@angular/core';
 import { MapInstanceService } from '../../../services/MapInstanceService';
 import { SlideShareService } from '../../../services/slideshare.service';
 import { ISlideData } from "../../../services/slidedata.interface";
@@ -26,8 +26,8 @@ export class CarouselComponent {
     private showMapText : boolean = false;
     private ActNoAct : string = 'active';
 
-  constructor(private mapInstanceService: MapInstanceService, private slideshareService : SlideShareService) {
-        // private ref: ChangeDetectorRef) {
+  constructor(private mapInstanceService: MapInstanceService, private slideshareService : SlideShareService,
+      private _ngZone: NgZone) {
         console.log("Carousel ctor");
         // this.currentSlide = this.items[0] || null;
         this.slideshareService.slideData.subscribe(
@@ -85,7 +85,10 @@ export class CarouselComponent {
         // this.currentSlide.classList.add('carousel-basic');
         // this.currentSlide.classList.add('carousel-current');
         this.currentSlide.classList.add('current');
-        // this.ref.detectChanges();
+        // this._ngZone.run(() => {
+        //   console.log('force update the screen');
+        // });
+        // this.ref.markForCheck();
 
         this.slidesCount = this.items.length;
         this.showNavButtons = this.slidesCount  > 1;

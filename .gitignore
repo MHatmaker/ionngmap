@@ -13,3 +13,4 @@ gitpass
 .idea/modules.xml
 .idea/workspace.xml
 out/
+npm-debug.log

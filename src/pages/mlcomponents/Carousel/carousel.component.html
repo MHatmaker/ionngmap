@@ -1,34 +1,36 @@
 
     <div style="height: 100%;">
-        <div class="carouselbox {{ActNoAct}} wrapper" style="margin: 0.2em;">
-            <div class="mapheader icon-row">
-                <div class="mapnavwrapper">
+        <div class="carouselbox {{ActNoAct}}"  style="margin: 0.2em;">
+            <div class="wrapper">
+                <div class="mapheader icon-row">
+                    <div class="mapnavwrapper">
 
-                    <div class="navleft">
-                        <button class="chevron-prev" *ngIf="showNavButtons" (click)="onClickPrev()">
-                            <span class="offscreen">Previous</span>
-                        </button>
+                        <div class="navleft">
+                            <button class="chevron-prev" *ngIf="showNavButtons" (click)="onClickPrev()">
+                                <span class="offscreen">Previous</span>
+                            </button>
+                        </div>
+                        <div class="mapnametext" *ngIf="showMapText">{{MapName}}
+                        </div>
+                        <div class="navright">
+                            <button class="chevron-next" (click)="onClickNext()" *ngIf="showNavButtons">
+                                <span class="offscreen">Next</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="mapnametext" *ngIf="showMapText">{{MapName}}
+
+                    <div class="wrapper2">
+                        <places-for-maplinkr class="searchquery" style="height: 25px"></places-for-maplinkr>
+                        <position-view class="posviewwrapper" style="height: 25px"></position-view>
                     </div>
-                    <div class="navright">
-                        <button class="chevron-next" (click)="onClickNext()" *ngIf="showNavButtons">
-                            <span class="offscreen">Next</span>
-                        </button>
-                    </div>
+
                 </div>
-
-                <div class="wrapper2">
-                    <places-for-maplinkr class="searchquery" style="height: 25px"></places-for-maplinkr>
-                    <position-view class="posviewwrapper" style="height: 25px"></position-view>
+                <!-- <ol class="MapContainer" [style.height] = "mapcolheight + 'px'" [style.width] = "'100%'"></ol> -->
+                <div class="mapcontent">
+                    <ol class="MapContainer"></ol>
                 </div>
 
             </div>
-            <!-- <ol class="MapContainer" [style.height] = "mapcolheight + 'px'" [style.width] = "'100%'"></ol> -->
-            <div class="mapcontent">
-                <ol class="MapContainer" style="height: 500px"></ol>
-            </div>
-
         </div>
         <!-- <img id="loadingImg" src="../img/loading.gif" style="position:absolute; right:200px; top:256px; z-index:100;" /> -->
     </div>
