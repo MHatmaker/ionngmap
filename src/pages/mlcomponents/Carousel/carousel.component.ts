@@ -51,6 +51,7 @@ export class CarouselComponent {
         // this.currentSlide.classList.remove('carousel-current');
         // this.currentSlide.classList.add('carousel-basic');
         this.currentSlide.classList.remove('current');
+        this.currentSlide.parentElement.classList.remove('current');
 
         console.log("change activeSlideNumber from " +this. activeSlideNumber);
         // calculate the new position
@@ -65,6 +66,7 @@ export class CarouselComponent {
         // this.currentSlide.classList.remove('carousel-basic');
         // this.currentSlide.classList.add('carousel-current');
         this.currentSlide.classList.add('current');
+        this.currentSlide.parentElement.classList.add('current');
         this.mapInstanceService.setCurrentSlide(this.items[this.activeSlideNumber].slideNumber);
     }
 
@@ -75,6 +77,7 @@ export class CarouselComponent {
         if (this.items.length > 0) {
             // this.currentSlide.classList.remove('carousel-current');
             this.currentSlide.classList.remove('current');
+            this.currentSlide.parentElement.classList.remove('current');
         }
         this.items.push(slideData);
         this.currentSlide = this.items[this.items.length - 1].mapListItem;
@@ -85,6 +88,7 @@ export class CarouselComponent {
         // this.currentSlide.classList.add('carousel-basic');
         // this.currentSlide.classList.add('carousel-current');
         this.currentSlide.classList.add('current');
+        this.currentSlide.parentElement.classList.add('current');
         // this._ngZone.run(() => {
         //   console.log('force update the screen');
         // });

@@ -17,7 +17,7 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 @Component({
   templateUrl: 'app.html',
   // styleUrls : ['src/app.css']
-  styles : [".custom-icon {src: '../assets/icon/map-w-marker-icon.png'}"]
+  // styles : [".custom-icon {src: '../assets/icon/map-w-marker-icon.png'}", ""]
   // background-image: url("https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/checkmark-24-24.png");
 
 })
@@ -94,6 +94,9 @@ export class MapLinkrApp {
       this.splashScreen.hide();
       // Initialize some options
 			this.initializeOptions();
+        let sc = document.getElementsByClassName('scroll-content');
+        sc[0].classList.add('padzero');
+        sc[1].classList.add('padzero');
     });
   }
 /*
