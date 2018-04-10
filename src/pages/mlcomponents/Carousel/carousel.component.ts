@@ -3,6 +3,7 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef, NgZone} from '@a
 import { MapInstanceService } from '../../../services/MapInstanceService';
 import { SlideShareService } from '../../../services/slideshare.service';
 import { ISlideData } from "../../../services/slidedata.interface";
+import { CanvasService } from "../../../services/CanvasService";
 
 @Component({
   selector: 'carousel',
@@ -27,7 +28,7 @@ export class CarouselComponent {
     private ActNoAct : string = 'active';
 
   constructor(private mapInstanceService: MapInstanceService, private slideshareService : SlideShareService,
-      private _ngZone: NgZone) {
+      private canvasService : CanvasService, private _ngZone: NgZone) {
         console.log("Carousel ctor");
         // this.currentSlide = this.items[0] || null;
         this.slideshareService.slideData.subscribe(
@@ -50,8 +51,6 @@ export class CarouselComponent {
         // hide the old currentSlide list item
         // this.currentSlide.classList.remove('carousel-current');
         // this.currentSlide.classList.add('carousel-basic');
-        this.currentSlide.classList.remove('current');
-        this.currentSlide.parentElement.classList.remove('current');
 
         console.log("change activeSlideNumber from " +this. activeSlideNumber);
         // calculate the new position
@@ -65,8 +64,7 @@ export class CarouselComponent {
         this.MapName = this.items[this.activeSlideNumber].mapName;
         // this.currentSlide.classList.remove('carousel-basic');
         // this.currentSlide.classList.add('carousel-current');
-        this.currentSlide.classList.add('current');
-        this.currentSlide.parentElement.classList.add('current');
+        this.canvasService.setCurrent.emit(this.activeSlideNumber);
         this.mapInstanceService.setCurrentSlide(this.items[this.activeSlideNumber].slideNumber);
     }
 
@@ -74,25 +72,13 @@ export class CarouselComponent {
         console.log("CarouselCtrl on addslide to array with length " + this.items.length);
         console.debug(slideData);
         var multican;
-        if (this.items.length > 0) {
-            // this.currentSlide.classList.remove('carousel-current');
-            this.currentSlide.classList.remove('current');
-            this.currentSlide.parentElement.classList.remove('current');
-        }
         this.items.push(slideData);
         this.currentSlide = this.items[this.items.length - 1].mapListItem;
         this.activeSlideNumber = this.MapNo = this.items.length - 1;
         this.nextSlideNumber += 1;
         this.MapName = slideData.mapName;
         multican = this.items[this.items.length - 1];
-        // this.currentSlide.classList.add('carousel-basic');
-        // this.currentSlide.classList.add('carousel-current');
-        this.currentSlide.classList.add('current');
-        this.currentSlide.parentElement.classList.add('current');
-        // this._ngZone.run(() => {
-        //   console.log('force update the screen');
-        // });
-        // this.ref.markForCheck();
+        this.canvasService.setCurrent.emit(this.activeSlideNumber);
 
         this.slidesCount = this.items.length;
         this.showNavButtons = this.slidesCount  > 1;

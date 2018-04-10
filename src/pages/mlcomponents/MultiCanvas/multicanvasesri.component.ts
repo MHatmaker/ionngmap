@@ -11,10 +11,19 @@ export class MultiCanvasEsri {
     // private el : string = null;
     private ndx : number = null;
     private mapcolheight : number = 510;
+    public slidevisibility : string = "multi-can-current";
 
     constructor(private canvasService: CanvasService) {
-        console.log("ndx is " + this.canvasService.getIndex());
         this.ndx = this.canvasService.getIndex();
+        console.log("ndx is " + this.ndx);
+        this.canvasService.setCurrent.subscribe((sn: number) =>{
+            console.log(`subscriber received id ${sn}`)
+            if(sn == this.ndx) {
+              this.slidevisibility = "multi-can-current";
+            } else {
+              this.slidevisibility = "multi-can-active";
+            }
+        });
     }
     /*
             Canvas.prototype.init = function () {

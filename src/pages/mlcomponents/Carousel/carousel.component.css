@@ -45,13 +45,6 @@
     .active {
       height: 100%;
     }
-    .active li {
-      position: absolute;
-      top: 500px;
-    }
-    .active li.current {
-      top: 30px;
-    }
     .buttons {
       display: none;
     }
@@ -114,7 +107,7 @@
 .wrapper {
     display: grid;
     grid-gap: 0.1em;
-    grid-template-rows: 1fr 5fr;
+    grid-template-rows: 30px 1fr;
     grid-template-areas:"mapheaderarea"
                         "mapcontentarea";
   }

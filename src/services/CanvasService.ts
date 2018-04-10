@@ -3,7 +3,8 @@ import {
     Injector,
     ComponentFactoryResolver,
     EmbeddedViewRef,
-    ApplicationRef
+    ApplicationRef,
+    EventEmitter
     // ComponentRef
 } from '@angular/core';
 
@@ -13,6 +14,7 @@ import {
 export class CanvasService {
     private ndx : number;
     private canvases : Array<any> = new Array<any>();
+    setCurrent = new EventEmitter<number>();
 
     constructor (
         private componentFactoryResolver: ComponentFactoryResolver,
@@ -42,7 +44,7 @@ export class CanvasService {
 
         // Append DOM element to the body
         mapParent.appendChild(domElem);
-        return domElem.firstChild;
+        return domElem;
     }
     /*
     makeCanvasSlideListItem (ndx) {
