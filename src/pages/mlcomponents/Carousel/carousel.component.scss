@@ -1,22 +1,4 @@
 
-    .carousel-active {
-      position: absolute;
-      top: 500px;
-    }
-    .carousel-active current {
-      top: 30px;
-    }
-    .carousel-basic {
-      position: absolute;
-      visibility: hidden;
-      width: 100%;
-      top: 500px;
-    }
-    .carousel-current {
-      top: 10px;
-      visibility: visible;
-      left: 5px;
-    }
 
     .multi-can-active {
       position: absolute;
@@ -32,11 +14,11 @@
     }
 
     .carouselbox {
-      top: 30px;
+      top: 0px;
       font-family: helvetica,sans-serif;
       font-size: 14px;
       width: 100%;
-      position: relative;
+      position: absolute;;
       margin: 1em;
       border: 1px solid #ccc;
       box-shadow: 2px 2px 10px #ccc;
@@ -112,7 +94,7 @@
 .wrapper {
     display: grid;
     grid-gap: 0.1em;
-    grid-template-rows: 70px 1fr;
+    grid-template-rows: 30px auto;
     grid-template-areas:"mapheaderarea"
                         "mapcontentarea";
     left: 1px;

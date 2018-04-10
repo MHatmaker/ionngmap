@@ -107,7 +107,7 @@
 .wrapper {
     display: grid;
     grid-gap: 0.1em;
-    grid-template-rows: 30px 1fr;
+    grid-template-rows: 30px auto;
     grid-template-areas:"mapheaderarea"
                         "mapcontentarea";
   }
@@ -130,6 +130,7 @@
 }
   .mapcontent {
       grid-area: mapcontentarea;
+      position: relative;
   }
   .navleft {
       grid-area: navlefta;

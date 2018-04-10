@@ -8,8 +8,6 @@ import { CanvasService } from "../../../services/CanvasService";
 @Component({
   selector: 'carousel',
   templateUrl: './carousel.component.html'
-  // changeDetection: ChangeDetectionStrategy.OnPush
-  // styleUrls: ['./carousel.component.scss']
 })
 export class CarouselComponent {
     //console.log("Carousel : ready to set up Carousel");
@@ -62,8 +60,6 @@ export class CarouselComponent {
         this.currentSlide = this.items[this.activeSlideNumber].mapListItem;
         this.MapNo = this.activeSlideNumber;
         this.MapName = this.items[this.activeSlideNumber].mapName;
-        // this.currentSlide.classList.remove('carousel-basic');
-        // this.currentSlide.classList.add('carousel-current');
         this.canvasService.setCurrent.emit(this.activeSlideNumber);
         this.mapInstanceService.setCurrentSlide(this.items[this.activeSlideNumber].slideNumber);
     }
