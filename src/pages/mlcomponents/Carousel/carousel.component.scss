@@ -2,23 +2,25 @@
 
     .multi-can-active {
       position: absolute;
+      display: block;
       top: 500px;
     }
     .multi-can-active current {
-      position: absolute;
+      position: relative;
+      display: block;
       top: 30px;
     }
     .multi-can-current {
       position: absolute;
+      display: block;
       top: 30px;
     }
 
     .carouselbox {
-      top: 0px;
       font-family: helvetica,sans-serif;
       font-size: 14px;
       width: 100%;
-      position: absolute;;
+      position: relative;
       margin: 1em;
       border: 1px solid #ccc;
       box-shadow: 2px 2px 10px #ccc;
@@ -28,6 +30,9 @@
         height: 480px;
     }
     .mapcontent {
+      position: absolute;
+      width: 100%;
+      top: 60px;
       margin: 0;
       padding: 0;
       grid-area: mapcontentarea;
@@ -92,7 +97,14 @@
 }
 
 .wrapper {
+  /*
+    display: block;
+    position: relative;
+    top: 30px;
+    */
+    width: 100%;
     display: grid;
+    position: relative;
     grid-gap: 0.1em;
     grid-template-rows: 30px auto;
     grid-template-areas:"mapheaderarea"
@@ -101,6 +113,7 @@
   }
 
   .mapheader {
+     position: absolute;
      grid-area: mapheaderarea;
      display: grid;
      grid-template-areas:
@@ -110,6 +123,7 @@
 
   @media only screen and (min-width: 700px)  {
   .mapheader {
+     position: absolute;
      grid-area: mapheaderarea;
      display: grid;
      grid-template-columns: 30% auto;

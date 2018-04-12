@@ -1,12 +1,3 @@
-agm-map {
-  height: 510px;
-}
-
-
-* {
-  font-family: Lato;
-}
-
-a {
-  color: darkblue;
+div {
+    position: relative;
 }

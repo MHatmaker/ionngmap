@@ -29,7 +29,7 @@ export class CanvasService {
     appendNewCanvasToContainer(component : any, ndx : number) {
         this.ndx = ndx;
         this.canvases.push(component);
-        var mapParent = document.getElementsByClassName('MapContainer')[0];
+        var mapParent = document.getElementsByClassName('mapcontent')[0];
         // Create a component reference from the component
         const componentRef = this.componentFactoryResolver
           .resolveComponentFactory(component)

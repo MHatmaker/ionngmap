@@ -1,8 +1,6 @@
-<li id="slide{{''+ndx}}" [className]="slidevisibility" [style.height]="mapcolheight+'px'" [style.width]="'100%'" >
-<!-- <li id="slide{{''+ndx}}" style="height: auto; width: auto;" > -->
+<div id="slide{{''+ndx}}" [className]="slidevisibility" [style.height]="mapcolheight+'px'" [style.width]="'100%'" >
     <div (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)">
         <maplinkr-esrimap></maplinkr-esrimap>
-        <!-- <maplinkr-esrimap #esriMap (viewCreated)="onViewCreated()"></maplinkr-esrimap> -->
     </div>
 
-</li>
+</div>

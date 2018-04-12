@@ -66,7 +66,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
         mapOptions.center = {lng: this.glng, lat: this.glat};
         console.log(`geolocation center at ${this.glng}, ${this.glat}`);
         this.startup.configure("google-map-component" + this.mapNumber, mapElement, mapOptions);
-        this.rndr.setAttribute(mapElement, "style", "height: 550px");
+        this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden");
 
         }, (err) => {
             console.log(err);
