@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, AfterViewInit, NgZone } from '@angular/core';
+import { Component, Output, EventEmitter, AfterViewInit, Renderer2, NgZone } from '@angular/core';
 import * as L from "leaflet";
 import { Geolocation } from '@ionic-native/geolocation';
 import { MapInstanceService} from '../../../services/MapInstanceService';
@@ -44,7 +44,7 @@ export class LeafletMapComponent implements AfterViewInit {
        maxZoom: 19
      };
 
-  constructor (private mapInstanceService: MapInstanceService,
+  constructor (private mapInstanceService: MapInstanceService, private rndr: Renderer2,
       public geolocation : Geolocation, geopush: GeoPusherSupport, ngZone : NgZone) {
       this.mapNumber = this.mapInstanceService.getSlideCount();
   }
@@ -57,6 +57,8 @@ export class LeafletMapComponent implements AfterViewInit {
         this.glng = position.coords.longitude;
       this.params.center = [this.glat, this.glng];
       this.lmap =  L.map('leaflet-map-component' + this.mapNumber, this.params);
+      let mapElement = document.getElementById("leaflet-map-component" + this.mapNumber);
+      this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(this.lmap);
       let mrkr = L.marker(this.params.center).addTo(this.lmap)
               .bindPopup(`You are at ${this.glng}, ${this.glat} `).openPopup();
