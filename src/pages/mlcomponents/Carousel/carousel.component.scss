@@ -114,6 +114,7 @@
 
   .mapheader {
      position: absolute;
+     width: 100%;
      grid-area: mapheaderarea;
      display: grid;
      grid-template-areas:
@@ -143,7 +144,7 @@
   .mapnavwrapper {
       grid-area: mapnavwrapperarea;
       display: grid;
-      grid-template-columns: auto auto auto;
+      grid-template-columns: 10% 50% 10%;
       grid-template-areas: "navlefta mapnametexta navrighta";
   }
 
