@@ -2,14 +2,14 @@
 
     .multi-can-active {
       position: absolute;
-      display: block;
+      display: none;
       top: 500px;
-    }
+    }/*
     .multi-can-active current {
       position: relative;
       display: block;
       top: 30px;
-    }
+    }*/
     .multi-can-current {
       position: absolute;
       display: block;
@@ -20,7 +20,8 @@
       font-family: helvetica,sans-serif;
       font-size: 14px;
       width: 100%;
-      position: relative;
+      position: absolute;
+      top: 30px;
       margin: 1em;
       border: 1px solid #ccc;
       box-shadow: 2px 2px 10px #ccc;
@@ -35,7 +36,6 @@
       top: 60px;
       margin: 0;
       padding: 0;
-      grid-area: mapcontentarea;
     }
     .buttons {
       display: none;
@@ -97,25 +97,14 @@
 }
 
 .wrapper {
-  /*
+    width: 100%;
     display: block;
     position: relative;
-    top: 30px;
-    */
-    width: 100%;
-    display: grid;
-    position: relative;
-    grid-gap: 0.1em;
-    grid-template-rows: 30px auto;
-    grid-template-areas:"mapheaderarea"
-                        "mapcontentarea";
-    left: 1px;
   }
 
   .mapheader {
      position: absolute;
      width: 100%;
-     grid-area: mapheaderarea;
      display: grid;
      grid-template-areas:
         "mapnavwrapperarea"
@@ -125,7 +114,6 @@
   @media only screen and (min-width: 700px)  {
   .mapheader {
      position: absolute;
-     grid-area: mapheaderarea;
      display: grid;
      grid-template-columns: 30% auto;
      grid-template-areas: "mapnavwrapperarea wrapper2area";

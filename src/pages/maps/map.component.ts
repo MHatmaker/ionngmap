@@ -1,7 +1,7 @@
 import {
     Component,
     AfterViewInit} from '@angular/core';
-
+import { IonicPage } from 'ionic-angular';
 import { IPosition } from '../../services/position.service';
 import { IConfigParams } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
@@ -16,7 +16,7 @@ import { SlideShareService } from '../../services/slideshare.service';
 import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
 import { PageService } from "../../services/pageservice"
 
-
+@IonicPage()
 @Component({
   selector: 'page-maps',
   templateUrl: './map.component.html'
