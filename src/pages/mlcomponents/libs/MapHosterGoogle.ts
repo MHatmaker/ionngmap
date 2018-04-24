@@ -68,6 +68,7 @@ export class MapHosterGoogle extends MapHoster {
     constructor(private mapNumber: number, mlconfig: MLConfig, geopush: GeoPusherSupport) {
         super(geopush);
         this.mlconfig = mlconfig;
+        this.self = this;
         this.geopushSup = geopush.getGeoPusherSupport();
     }
 
@@ -147,20 +148,20 @@ export class MapHosterGoogle extends MapHoster {
                 title: title
             }),
 
-            showSomething  = function () {
+            showSomething  = function (e: Event, self) {
                 var
                     fixedLL,
                     referrerId,
                     referrerName,
                     pushLL;
-                fixedLL = this.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 6);
-                referrerId = this.mlconfig.getUserId();
-                referrerName = this.pusherConfig.getUserName();
-                pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : this.zmG,
+                fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 6);
+                referrerId = self.mlconfig.getUserId();
+                referrerName = self.geopushSup.pusherConfig.getUserName();
+                pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
                     "referrerId" : referrerId, "referrerName" : referrerName,
                     'address' : marker.address, 'title' : marker.title };
                 console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                this.pusherClientService.publishClickEvent(pushLL);
+                self.geopushSup.pusherClientService.publishClickEvent(pushLL);
             };
 
 
@@ -181,9 +182,11 @@ export class MapHosterGoogle extends MapHoster {
                 //     btnShare.style.visibility = 'hidden';
                 // }
             // }
-            btnShare.onclick = function () {
-                showSomething();
-            };
+            // btnShare.onclick = function () {
+            //     showSomething();
+            // };
+
+            btnShare.addEventListener('click', (e:Event) => showSomething(e, this));
         });
         return { "infoWnd" : infowindow, "infoMarker" : marker};
     }
@@ -459,6 +462,7 @@ export class MapHosterGoogle extends MapHoster {
             listener : any;
 
         this.mlconfig = config;
+        this.self = this;
         this.mphmap = gMap;
         this.google = goooogle;
         // this.geoCoder = new google.maps.Geocoder();
@@ -718,8 +722,8 @@ export class MapHosterGoogle extends MapHoster {
         this.pusherEventHandler = new PusherEventHandler(this.mlconfig.getMapNumber());
         console.log("Add pusher event handler for MapHosterGoogle " + this.mlconfig.getMapNumber());
 
-        this.pusherEventHandler.addEvent('client-MapXtntEvent', this.retrievedBoundsInternal);
-        this.pusherEventHandler.addEvent('client-MapClickEvent',  this.retrievedClick);
+        this.pusherEventHandler.addEvent('client-MapXtntEvent', (xj) => this.retrievedBoundsInternal(xj));
+        this.pusherEventHandler.addEvent('client-MapClickEvent',  (clickPt) => this.retrievedClick(clickPt));
         /*
         createBounds() {
             var createdBounds = new google.maps.LatLngBounds(),

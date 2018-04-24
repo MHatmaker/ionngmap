@@ -11,9 +11,9 @@ import { IEventDct } from '../pages/mlcomponents/libs/PusherEventHandler';
 declare const Pusher: any;
 
 export class PusherClient {
-    private eventHandlers : Map<string, IEventDct> = new Map<string, IEventDct>();
+    public eventHandlers : IEventDct; // = new Map<string, IEventDct>();
     constructor(evtDct : IEventDct, clientName : string) {
-        this.eventHandlers[clientName] = evtDct;
+        this.eventHandlers = evtDct;
     }
 }
 
@@ -247,52 +247,68 @@ getPusherChannel() {
 
 publishPanEvent(frame) {
     console.log('frame is', frame);
-    var handler,
+    var handler, client : PusherClient,
+        clName,
         obj;
     if (frame.hasOwnProperty('x')) {
         frame.lat = frame.y;
         frame.lon = frame.x;
         frame.zoom = frame.z;
     }
-    for (handler in this.eventHandlers) {
-        if (this.eventHandlers.hasOwnProperty(handler)) {
-            obj = this.eventHandlers[handler];
-            console.log("publish pan event to map " + this.eventHandlers[handler]);
+    for (clName in this.clients) {
+        client = this.clients[clName];
+    // for (handler in this.clients.  eventHandlers) {
+        if (client.hasOwnProperty('eventHandlers')) {
+            obj = client.eventHandlers;
+            console.log("publish pan event to map " + client.eventHandlers);
             if (obj) {
                 obj['client-MapXtntEvent'](frame);
             }
         }
+        // if (this.eventHandlers.hasOwnProperty(handler)) {
+        //     obj = this.eventHandlers[handler];
+        //     console.log("publish pan event to map " + this.eventHandlers[handler]);
+        //     if (obj) {
+        //         obj['client-MapXtntEvent'](frame);
+        //     }
+        // }
     }
     // this.channel.trigger('client-MapXtntEvent', frame);
     // this.pusher.channels(this.CHANNELNAME).trigger('client-MapXtntEvent', frame);
 }
 publishClickEvent(frame) {
     console.log('frame is', frame);
-    var handler,
+    var handler, client: PusherClient,
+        clName,
         obj;
     if (frame.hasOwnProperty('x')) {
         frame.lat = frame.y;
         frame.lon = frame.x;
         frame.zoom = frame.z;
     }
-    for (handler in this.eventHandlers) {
-        if (this.eventHandlers.hasOwnProperty(handler)) {
-            obj = this.eventHandlers[handler];
-            console.log("publish click event to map " + this.eventHandlers[handler]);
+    for (clName in this.clients) {
+        client = this.clients[clName];
+    // for (handler in this.clients.  eventHandlers) {
+        if (client.hasOwnProperty('eventHandlers')) {
+            obj = client.eventHandlers;
+            console.log("publish click event to map " + client.eventHandlers);
             obj['client-MapClickEvent'](frame);
         }
     }
-    this.channel.trigger('client-MapClickEvent', frame);
+    // this.channel.trigger('client-MapClickEvent', frame);
     // this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
 }
 
 publishPosition(pos) {
-    var handler,
+    var handler, client : PusherClient,
+        clName,
         obj;
-    for (handler in this.eventHandlers) {
-        if (this.eventHandlers.hasOwnProperty(handler)) {
-            obj = this.eventHandlers[handler];
-            console.log("publish position event to map " + this.eventHandlers[handler]);
+    for (clName in this.clients) {
+        client = this.clients[clName];
+    // for (handler in this.clients.  eventHandlers) {
+        if (client.hasOwnProperty('eventHandlers')) {
+            obj = client.eventHandlers;
+            console.log("publish position event to map " + client.eventHandlers);
             obj['client-NewMapPosition'](pos);
         }
     }
