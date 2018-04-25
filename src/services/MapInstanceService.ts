@@ -13,6 +13,7 @@ export class MapInstanceService {
     isFirstInstance : boolean;
     currentSlideNumber : number;
     configInstances : Map<string, MLConfig> = new Map<string, MLConfig>();
+    mapHosterInstances : Map<string, MapHoster> = new Map<string, MapHoster>();
 
     constructor() {
         console.log("service to return slideCount");
@@ -65,13 +66,13 @@ export class MapInstanceService {
     }
     setMapHosterInstance(ndx : number, inst : MapHoster) {
         var cfgndx = "cfg" + ndx;
-        this.configInstances[cfgndx].setMapHosterInstance(inst);
+        this.mapHosterInstances[cfgndx] = inst; //setMapHosterInstance(inst);
         // incrementMapNumber();
     }
-    getMapHosterInstance(ndx : number) : MLConfig {
-        return this.configInstances["cfg" + ndx].getMapHosterInstance();
+    getMapHosterInstance(ndx : number) : MapHoster {
+        return this.mapHosterInstances["cfg" + ndx]; //.getMapHosterInstance();
     }
-    getMapHosterInstanceForCurrentSlide() : MLConfig {
-        return this.getMapHosterInstance(this.currentSlideNumber);
+    getMapHosterInstanceForCurrentSlide() : MapHoster {
+        return this.mapHosterInstances['cfg' + this.currentSlideNumber]; //getMapHosterInstance(this.currentSlideNumber);
     }
 }

@@ -5,6 +5,7 @@ import { Component, NgZone, AfterViewInit, ViewChild, ElementRef} from '@angular
 // import { Map } from '@agm/core';
 // import {} from '@types/googlemaps';
 // import { MouseEvent } from '@agm/core';
+import { MapInstanceService } from '../../../services/MapInstanceService';
 
 declare var google;
 
@@ -20,7 +21,7 @@ export class PlacesSearchComponent implements AfterViewInit {
     searchBoxRef: ElementRef;
 
   // constructor(private map : google.maps.Map, private _ngZone: NgZone)
-  constructor(private _ngZone: NgZone) {
+  constructor(private _ngZone: NgZone, private mapInstanceService : MapInstanceService) {
 
   }
 
@@ -33,10 +34,18 @@ export class PlacesSearchComponent implements AfterViewInit {
         this._ngZone.run(() => {
           console.log('listening');
           console.log(searchBox);
+          let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
+          let mphmap = mph.getMap();
+          searchBox.setBounds(mph.getSearchBounds());
+          // mphmap.addListener('bounds_changed', () => searchBox.setBounds(mph.getSearchBounds()));
           var places = searchBox.getPlaces();
           console.log(places);
           if (places.length == 0) {
             return;
+          }
+          else {
+              // this.placeMarkers(mphmap, places);
+              mph.placeMarkers(places);
           }
         })
       });

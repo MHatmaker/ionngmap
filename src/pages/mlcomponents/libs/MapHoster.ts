@@ -23,4 +23,14 @@ export class MapHoster {
     //     ) {
     // }
     constructor(protected geopush : GeoPusherSupport) {}
+    getMap() {
+        return null;
+    }
+    getSearchBounds() {
+        console.log("MapHoster base class getSearchBounds");
+        return null;
+    }
+    placeMarkers(places) {
+        console.log('MapHoster base class placeMarkers');
+    }
 }

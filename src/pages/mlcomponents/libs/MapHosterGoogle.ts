@@ -948,8 +948,9 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     getSearchBounds() {
+        console.log("MapHosterGoogle getSearchBounds");
         var bounds = this.mphmap.getBounds();
-        // console.debug(bounds);
+        console.debug(bounds);
         return bounds;
     }
 
