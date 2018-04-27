@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CanvasService } from '../../../services/CanvasService';
+import { SlideViewService } from '../../../services/slideview.service';
 
 @Component({
   selector: 'multi-canvas-google',
@@ -13,7 +14,8 @@ export class MultiCanvasGoogle {
     private mapcolheight : number = 510;
     public slidevisibility : string = "multi-can-current";
 
-    constructor(private canvasService: CanvasService) {
+    constructor(private canvasService: CanvasService, private slideViewService : SlideViewService) {
+        this.mapcolheight = slideViewService.getMapColHeight();
         this.ndx = this.canvasService.getIndex();
         console.log("ndx is " + this.ndx);
         this.canvasService.setCurrent.subscribe((sn: number) =>{

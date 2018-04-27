@@ -5,6 +5,7 @@ import { MLConfig } from '../libs/MLConfig';
 import { MLBounds } from '../../../services/mlbounds.service';
 import { StartupGoogle } from '../libs/StartupGoogle';
 import { GeoPusherSupport } from '../libs/geopushersupport';
+import { SlideViewService } from '../../../services/slideview.service';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 declare var google;
@@ -12,7 +13,7 @@ declare var google;
 @Component({
   selector: 'maplinkr-googlemap',
   templateUrl: './googlemap.component.html',
-  styles : ['width: 100%; height: 450px']
+  styles : ['width: 100%;']
   // styles: [ './googlemap.component.css']
 })
 export class GoogleMapComponent implements AfterViewInit, OnInit {
@@ -20,7 +21,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   viewCreated = new EventEmitter();
   private gmap: any;
   private mapNumber : number;
-  private gmHeight : string;
+  private gmHeight : string = '540px';
   private glat: number;
   private glng: number;
   private zoom: number;
@@ -34,16 +35,17 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService,
       public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2,
-      geopush: GeoPusherSupport) {
+      geopush: GeoPusherSupport, private slideViewService : SlideViewService) {
 
       console.log("GoogleMapComponent ctor");
       this.mapNumber = this.mapInstanceService.getSlideCount();
       this.startup = new StartupGoogle(this.mapNumber,
           this.mapInstanceService.getConfigForMap(this.mapNumber), geopush);
-      this.gmHeight = '550px';
+      this.gmHeight = slideViewService.getMapColHeight() + 'px';
   }
 
   ngAfterViewInit () {
+    // this.gmHeight = '380px';
     let latLng = new google.maps.LatLng(-34.9290, 138.6010);
 
     let mapOptions = {
@@ -53,7 +55,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     };
     // let mapElement = this.mapElement.nativeElement;
     let mapElement = document.getElementById("google-map-component" + this.mapNumber);
-    this.gmHeight = '550px';
+    // this.gmHeight = '370px';
 
     console.log(this.mapElement.nativeElement);
     console.log(document.getElementById("google-map-component" + this.mapNumber));
@@ -65,7 +67,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
         latLng = new google.maps.LatLng(this.glat, this.glng);
         mapOptions.center = {lng: this.glng, lat: this.glat};
         console.log(`geolocation center at ${this.glng}, ${this.glat}`);
-        this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
+        // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
         this.startup.configure("google-map-component" + this.mapNumber, mapElement, mapOptions);
 
         }, (err) => {

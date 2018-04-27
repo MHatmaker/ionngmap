@@ -1,20 +1,18 @@
 
 
-        <div class="carouselbox {{ActNoAct}}"  style="margin: 0.2em;">
+        <div class="carouselbox" [style.height]="mapcolheight+'px'"  style="margin: 0.2em;">
             <div class="wrapper">
                 <div class="mapheader icon-row">
                     <div class="mapnavwrapper">
 
                         <div class="navleft">
-                            <button class="chevron-prev" *ngIf="showNavButtons" (click)="onClickPrev()">
-                                <span class="offscreen">Previous</span>
+                            <button class="chevron-prev" *ngIf="showNavButtons==true" (click)="onClickPrev()">
                             </button>
                         </div>
                         <div class="mapnametext" *ngIf="showMapText">{{MapName}}
                         </div>
                         <div class="navright">
-                            <button class="chevron-next" (click)="onClickNext()" *ngIf="showNavButtons">
-                                <span class="offscreen">Next</span>
+                            <button class="chevron-next" (click)="onClickNext()" *ngIf="showNavButtons==true">
                             </button>
                         </div>
                     </div>

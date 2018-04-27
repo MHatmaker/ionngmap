@@ -38,6 +38,7 @@ import { CarouselComponent } from '../pages/mlcomponents/Carousel/carousel.compo
 import { MapInstanceService } from '../services/MapInstanceService';
 import { CanvasService } from '../services/CanvasService';
 import { SlideShareService } from '../services/slideshare.service';
+import { SlideViewService } from '../services/slideview.service';
 import { PositionUpdateService } from '../services/positionupdate.service';
 import { PusherClientService } from '../services/pusherclient.service';
 import { PageService } from '../services/pageservice';
@@ -105,6 +106,7 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
     CurrentMapTypeService,
     GeoCodingService,
     SlideShareService,
+    SlideViewService,
     PositionUpdateService,
     PageService,
     PusherConfig,

@@ -33,4 +33,7 @@ export class MapHoster {
     placeMarkers(places) {
         console.log('MapHoster base class placeMarkers');
     }
+    setSearchBox(b) {
+        console.log('MapHoster base class setSearchBox');
+    }
 }

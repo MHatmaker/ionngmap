@@ -4,6 +4,7 @@ import { MapInstanceService } from '../../../services/MapInstanceService';
 import { SlideShareService } from '../../../services/slideshare.service';
 import { ISlideData } from "../../../services/slidedata.interface";
 import { CanvasService } from "../../../services/CanvasService";
+import { SlideViewService } from "../../../services/slideview.service";
 
 @Component({
   selector: 'carousel',
@@ -26,8 +27,9 @@ export class CarouselComponent {
     private ActNoAct : string = 'active';
 
   constructor(private mapInstanceService: MapInstanceService, private slideshareService : SlideShareService,
-      private canvasService : CanvasService, private _ngZone: NgZone) {
+      private canvasService : CanvasService, private _ngZone: NgZone, private slideViewService : SlideViewService) {
         console.log("Carousel ctor");
+        this.mapcolheight = slideViewService.getMapColHeight();
         // this.currentSlide = this.items[0] || null;
         this.slideshareService.slideData.subscribe(
           (data: ISlideData) => {

@@ -35,6 +35,7 @@ export class PlacesSearchComponent implements AfterViewInit {
           console.log('listening');
           console.log(searchBox);
           let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
+          mph.setSearchBox(searchBox);
           let mphmap = mph.getMap();
           searchBox.setBounds(mph.getSearchBounds());
           // mphmap.addListener('bounds_changed', () => searchBox.setBounds(mph.getSearchBounds()));
