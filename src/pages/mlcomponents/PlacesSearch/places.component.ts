@@ -17,38 +17,58 @@ declare var google;
   // styles: [require('./places.component.css')]
 })
 export class PlacesSearchComponent implements AfterViewInit {
-    @ViewChild("searchBox")
-    searchBoxRef: ElementRef;
+    // @ViewChild("searchBox")
+    // searchBoxRef: ElementRef;
+    input: any;
+    searchBox: any;
 
   // constructor(private map : google.maps.Map, private _ngZone: NgZone)
   constructor(private _ngZone: NgZone, private mapInstanceService : MapInstanceService) {
 
   }
 
+  async placesAsync() {
+      return await new Promise((resolve, reject) => {
+          try {
+              let places = this.searchBox.getPlaces().toPromise();
+              if (!places) Promise.reject;
+              return places.json().data;
+              // Promise.resolve(places);
+              // return places;
+          } catch(ex) {
+              Promise.reject(ex);
+              return ex();
+          }
+      })
+  }
   ngAfterViewInit() {
-      let input: any = this.searchBoxRef.nativeElement;
-      console.log(this.searchBoxRef);
-
-      var searchBox = new google.maps.places.SearchBox(input);
-      searchBox.addListener("places_changed", () => {
-        this._ngZone.run(() => {
+      // this.input = this.searchBoxRef.nativeElement;
+      this.input = document.getElementById('searchBox');
+      // console.log(this.searchBoxRef);
+//
+      this.searchBox = new google.maps.places.SearchBox(this.input);
+      this.searchBox.addListener("places_changed", () => {
+        // this._ngZone.run(() => {
           console.log('listening');
-          console.log(searchBox);
+          console.log(this.searchBox);
           let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
-          mph.setSearchBox(searchBox);
+          mph.setSearchBox(this.searchBox);
           let mphmap = mph.getMap();
-          searchBox.setBounds(mph.getSearchBounds());
+          let bnds = mph.getSearchBounds();
+          console.log("latest bounds");
+          console.debug(bnds);
+          this.searchBox.setBounds(bnds);
           // mphmap.addListener('bounds_changed', () => searchBox.setBounds(mph.getSearchBounds()));
-          var places = searchBox.getPlaces();
+          let places = this.placesAsync(); //this.searchBox.getPlaces();
           console.log(places);
-          if (places.length == 0) {
+          if (places.json().length == 0) {
             return;
           }
           else {
               // this.placeMarkers(mphmap, places);
               mph.placeMarkers(places);
           }
-        })
+        // })
       });
 
     }

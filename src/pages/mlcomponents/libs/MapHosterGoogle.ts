@@ -679,16 +679,21 @@ export class MapHosterGoogle extends MapHoster {
         });
 
         // google.maps.event.addListener(this.mphmap, 'resize', gotResize); //function() {
+        //     console.log("resize event hit");
+        //     console.log(this.mphmap.getBounds());
+        // });
+
+        // google.maps.event.addDomListener(window, 'resize', function () {
+        //     gotResize();
             // console.log("resize event hit");
             // console.log(this.mphmap.getBounds());
         // });
-/*
-        google.maps.event.addDomListener(window, 'resize', function () {
-            gotResize();
-            // console.log("resize event hit");
-            // console.log(this.mphmap.getBounds());
-        });
-*/
+        google.maps.event.addDomListener(window, 'resize', () => {
+            var center = this.mphmap.getCenter();
+            google.maps.event.trigger(this.mphmap, "resize");
+            this.mphmap.setCenter(center);
+        })
+
         this.mphmap.addListener("mousemove", (e) => {
             var ltln = e.latLng,
                 fixedLL = this.geopushSup.utils.toFixedTwo(ltln.lng(), ltln.lat(), 4),
