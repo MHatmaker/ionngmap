@@ -101,6 +101,7 @@ export class MapsPage implements AfterViewInit {
       appendedElem = this.canvasService.appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
       this.mapInstanceService.incrementMapNumber();
+      this.mapInstanceService.setCurrentSlide(currIndex);
       this.slideshareService.slideData.emit({
                   mapListItem: appendedElem,
                   slideNumber: currIndex,

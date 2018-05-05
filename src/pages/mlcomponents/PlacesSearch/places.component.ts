@@ -20,10 +20,6 @@ export class PlacesSearchComponent implements AfterViewInit {
 
   }
 
-  handleError(error) {
-      console.log(error);
-  }
-
   ngAfterViewInit() {
       this.input = this.searchBoxRef.nativeElement;
 
@@ -41,7 +37,7 @@ export class PlacesSearchComponent implements AfterViewInit {
           let mphmap = mph.getMap();
           let bnds = mph.getSearchBounds();
           console.log("searchBox latest bounds");
-          console.debug(bnds);
+          console.log(bnds);
 
           queryPlaces.bounds = bnds;
           queryPlaces.location = mphmap.getCenter();

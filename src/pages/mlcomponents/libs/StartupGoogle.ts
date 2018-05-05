@@ -89,10 +89,6 @@ export class StartupGoogle extends Startup {
         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + this.mapNumber);
         this.mapHoster = new MapHosterGoogle(this.mapNumber, this.mlconfig, this.geopush);
         this.mapHoster.configureMap(this.gMap, mapGoogleLocOpts, google, google.maps.places, this.mlconfig);
-        let divId = "google-map-component" + this.mapNumber;
-        let hgt = this.geopush.getGeoPusherSupport().utils.getElementDimension(divId, 'width');
-        this.geopush.getGeoPusherSupport().utils.setElementWidth(divId, hgt+1, 'px');
-        this.geopush.getGeoPusherSupport().utils.setElementWidth(divId, hgt, 'px');
         google.maps.event.trigger(mapElement, 'resize');
         this.mlconfig.setMapHosterInstance(this.mapHoster);
         this.mlconfig.setRawMap(this.gMap);
