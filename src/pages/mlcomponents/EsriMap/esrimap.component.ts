@@ -12,6 +12,7 @@ import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
 // import { Point } from 'esri/geometry';
 import { utils } from '../libs/utils';
 import { StartupArcGIS } from '../libs/StartupArcGIS';
+import { GeoPusherSupport } from '../libs/geopushersupport';
 
 // import * as Locator from 'esri/tasks/Locator';
 // import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
@@ -38,28 +39,44 @@ export class EsriMapComponent implements OnInit {
   private esriPoint : __esri.Point;
   private screenPt : null;
   private startup : StartupArcGIS;
+  private mlconfig : MLConfig;
   // private mlProj4 : any;
 
   constructor(private mapService: ESRIMapService, private geolocation : Geolocation,
       private mapInstanceService: MapInstanceService,
-      private elementRef: ElementRef, private utils : utils) {
+      private elementRef: ElementRef, private utils : utils, private geopush: GeoPusherSupport) {
       this.mapNumber = this.mapInstanceService.getSlideCount();
+      this.startup = new StartupArcGIS(this.mapNumber,
+          this.mapInstanceService.getConfigForMap(this.mapNumber), geopush);
   }
 
   ngOnInit() {
   // Load the mapping API modules
       loadModules([
-        'esri/WebMap', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference',
-        'esri/tasks/Locator', 'esri/geometry/support/webMercatorUtils', 'esri/geometry/Geometry',
+        'esri/geometry/Point', 'esri/geometry/SpatialReference',
+        'esri/tasks/Locator'
       ])
-      .then(([WebMap, MapView, esriPoint, SpatialReference, esriLocator, esriwebMercatorUtils, esriGeometry]) => {
+      .then(([esriPoint, SpatialReference, esriLocator]) => {
             this.esriPoint = esriPoint();
             this.geoLocator = new esriLocator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
+            let mapOptions = {
+              center: new esriPoint({
+                x: -87.620692,
+                y: 41.888941,
+                spatialReference: SpatialReference({ wkid: 4326 })
+              }),
+              zoom: 15
+            };
             this.geolocation.getCurrentPosition().then((position) => {
 
                 // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 this.glat = position.coords.latitude;
                 this.glng = position.coords.longitude;
+                mapOptions.center.x = this.glng;
+                mapOptions.center.y = this.glat;
+                this.startup.configure('esri-map-component' + this.mapNumber, mapOptions, this.elementRef.nativeElement.firstChild);
+              }
+                /*
                 let amap = new WebMap({
                   // basemap: <any>'topo-vector'
                   portalItem: { // autocasts as new PortalItem()
@@ -85,7 +102,7 @@ export class EsriMapComponent implements OnInit {
                     });
                 });
                 this.viewCreated.next(this.mapView);
-            }
+            }*/
           )}
       )}
     onMapClick(e, mpView) {

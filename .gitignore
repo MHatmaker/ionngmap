@@ -14,3 +14,4 @@ gitpass
 .idea/workspace.xml
 out/
 npm-debug.log
+proxy/

@@ -29,6 +29,9 @@ export class StartupArcGIS  extends Startup {
     // private newSelectedWebMapId : string = '';
     // private pusherChannel : string = '';
     selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0"; // Requires a space after map ID
+    previousSelectedWebMapId = this.selectedWebMapId;
+
+    private newSelectedWebMapId : string = '';
     private pusher : any = null;
     private pusherChannel = null;
     private channel = null;
@@ -37,7 +40,6 @@ export class StartupArcGIS  extends Startup {
     private esriLocator;
     private dojoBaseFx;
     private dojoEasing;
-    private esriMap;
     private esriConfig;
     private GeometryService;
     private esriwebmap;
@@ -49,22 +51,23 @@ export class StartupArcGIS  extends Startup {
     private zoomWebMap = null;
     private mapView : any = null;
     private mlconfig : MLConfig;
+    private elementRef : ElementRef;
+    private mapOptions : any;
 
-    constructor (private mapNumber : number, mlconfig : MLConfig, private elementRef : ElementRef,
+    constructor (private mapNumber : number, mlconfig : MLConfig,
         private geopush: GeoPusherSupport) {
         super(geopush);
         // @Output()
             this.viewCreated = new EventEmitter();
       loadModules(
-        ['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map', 'esri/config',
-            'esri/tasks/GeometryService', 'esri/WebMap', 'esri/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'])
-          .then(([dojoEvent, esriLocator, dojoBaseFx, dojoEasing, esriMap, esriConfig,
+        ['dojo/_base/event','esri/tasks/Locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/config',
+            'esri/tasks/GeometryService', 'esri/WebMap', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'])
+          .then(([dojoEvent, esriLocator, dojoBaseFx, dojoEasing, esriConfig,
               GeometrySvc, WebMap, MapView, Point, SpatialReference]) => {
               this.dojoEvent = dojoEvent;
               this.esriLocator = esriLocator;
               this.dojoBaseFx = dojoBaseFx;
               this.dojoEasing = dojoEasing;
-              this.esriMap = esriMap;
               this.esriConfig = esriConfig;
               this.GeometryService = GeometrySvc;
               this.esriwebmap = WebMap;
@@ -77,14 +80,14 @@ export class StartupArcGIS  extends Startup {
         this.mlconfig.setUserId(this.geopush.getGeoPusherSupport().pusherConfig.getUserName() + mapNumber);
     }
 
-  configure  (newMapId, mapLocOpts) {
-      var
-          selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0", // Requires a space after map ID
-          previousSelectedWebMapId = selectedWebMapId,
-          channel = null,
-          pusher = null,
+  configure  (newMapId, mapLocOpts, elementRef) {
 
-          configOptions;
+    this.elementRef = elementRef;
+    this.mapOptions = mapLocOpts;
+    this.newSelectedWebMapId = newMapId;
+    this.mlconfig.setMapId(newMapId);
+    this.mlconfig.setWebmapId('a4bb8a91ecfb4131aa544eddfbc2f1d0');
+    this.initializePreProc();
   }
 
   showLoading () {
@@ -316,8 +319,8 @@ export class StartupArcGIS  extends Startup {
           */
       // try {
           this.mapView = new this.esrimapview({
-            container: this.elementRef.nativeElement.firstChild,
-            map: this.esriwebmap, //this.mapService.map,
+            container: this.elementRef,
+            map: webMap, //this.mapService.map,
             center: new this.esriPoint({
               x: -87.620692,
               y: 41.888941,
@@ -325,7 +328,7 @@ export class StartupArcGIS  extends Startup {
             }),
             zoom: 15
           });
-          this.mapView.when(function(){
+          this.mapView.when((instance) => {
               console.log("mapView.when");
               if (this.previousSelectedWebMapId !== this.selectedWebMapId) {
                   this.previousSelectedWebMapId = this.selectedWebMapId;
@@ -334,7 +337,7 @@ export class StartupArcGIS  extends Startup {
               if (aMap) {
                   aMap.destroy();
               }
-              this.aMap = aMap = this.webMap;
+              this.aMap = aMap = webMap;
               // dojo.connect(aMap, "onUpdateStart", showLoading);
               // dojo.connect(aMap, "onUpdateEnd", hideLoading);
               // dojo.connect(aMap, "onLoad", initUI);
