@@ -49,6 +49,7 @@ import { utils } from '../pages/mlcomponents/libs/utils';
 import { CurrentMapTypeService } from '../services/currentmaptypeservice';
 import {GeoCodingService } from '../services/GeoCodingService';
 import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
+import { NewsComponent } from '../components/news/news'
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -67,14 +68,15 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
     MultiCanvasEsri,
     MultiCanvasGoogle,
     MultiCanvasLeaflet,
-    CarouselComponent
+    CarouselComponent,
+    NewsComponent
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MapLinkrApp),
     NgbModule.forRoot(),
     HttpClientModule,
-    HttpModule,
+    HttpModule
     // HttpHandler,
     /*
     AgmCoreModule.forRoot({
@@ -95,7 +97,8 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
     EsriMapComponent,
     GoogleMapComponent,
     LeafletMapComponent,
-    PositionViewComponent
+    PositionViewComponent,
+    NewsComponent
   ],
   providers: [
     StatusBar,

@@ -1,7 +1,7 @@
 import {
     Component,
     AfterViewInit} from '@angular/core';
-import { IonicPage } from 'ionic-angular';
+import { IonicPage, ModalController } from 'ionic-angular';
 import { IPosition } from '../../services/position.service';
 import { IConfigParams } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
@@ -15,6 +15,7 @@ import { CanvasService } from '../../services/CanvasService';
 import { SlideShareService } from '../../services/slideshare.service';
 import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
 import { PageService } from "../../services/pageservice"
+import { NewsComponent } from "../../components/news/news";
 
 @IonicPage()
 @Component({
@@ -26,21 +27,67 @@ export class MapsPage implements AfterViewInit {
   selectedMapType : string;
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
+    private menuActions = {};
 
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
-              private slideshareService : SlideShareService, pageService : PageService) {
+              private slideshareService : SlideShareService, pageService : PageService,
+              private modalCtrl : ModalController) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
+    this.menuActions = {
+        'Latest News' : function() {
+          let modal = modalCtrl.create(NewsComponent);
+          modal.present();
+            // this.news.showNews();
+        },
+        'Using MapLinkr' : function() {
+            this.showUsing();
+        },
+        'Locate Self' : function() {
+            this.showLocate();
+        },
+        'Search Group' : function() {
+            this.showSearchGroup();
+        },
+        'Search Map' : function() {
+            this.showSearchMap();
+        },
+        'Sharing Instructions' : function() {
+            this.showSharingHelp();
+        },
+        'Share Map' : function() {
+            this.showSharing();
+        },
+        'Pusher Setup' : function() {
+            this.showPusher();
+        },
+        'google' : function() {
+            this.addCanvas('google');
+        },
+        'arcgis' : function() {
+            this.addCanvas('arcgis');
+        },
+        'leaflet' : function() {
+            this.addCanvas('leaflet');
+        }
+    };
     console.log("fire up ConfigParams");
     var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
         cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
         mlconfig = new MLConfig(cfgparams);
+    const mapSystemSet = new Set(['google', 'arcgis', 'leaflet']);
     this.mlconfig = mlconfig;
     mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
     pageService.menuOption.subscribe(
       (data: MenuOptionModel) => {
         console.log(data);
+        if(mapSystemSet.has(data.displayName)) {
+            this.onsetMap(data);
+        } else {
+            this.menuActions[data.displayName]();
+        }
+        /*
         if ( data.displayName === 'MapLinkr') {
             // alert("MapLinkr!");
             let mp = this.mlconfig.getRawMap();
@@ -49,6 +96,7 @@ export class MapsPage implements AfterViewInit {
         } else {
             this.onsetMap(data);
         }
+        */
       });
   }
 
@@ -59,6 +107,31 @@ export class MapsPage implements AfterViewInit {
   ionViewDidLoad() {
     console.log('ionViewDidLoad MapsPage');
   }
+  showNews() {
+      console.log('show news');
+  }
+  showUsing() {
+      console.log('show using');
+  }
+  showLocate() {
+      console.log('show locate');
+  }
+  showSearchGroup() {
+      console.log('show search group');
+  }
+  showSearchMap() {
+      console.log('show map group');
+  }
+  showSharingHelp() {
+      console.log('show sharing help');
+  }
+  showSharing() {
+      console.log('show sharing');
+  }
+  showPusher() {
+      console.log('show pusher');
+  }
+
   openPage(p) {
       console.log("selected map type " + p);
   }

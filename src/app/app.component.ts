@@ -133,7 +133,48 @@ export class MapLinkrApp {
 		this.options.push({
 			iconName: 'link',
 			displayName: 'MapLinkr',
-      component: MapsPage
+      subItems: [
+        {
+          iconName: 'news-icon',
+          displayName: 'Latest News',
+          component: MapsPage
+        },
+        {
+          iconName: 'using-icon',
+          displayName: 'Using MapLinkr',
+          component: MapsPage
+        },
+        {
+          iconName: 'locate-self-icon',
+          displayName: 'Locate Self',
+          component: MapsPage
+        },
+        {
+          iconName: 'searchgroup-icon',
+          displayName: 'Search Group',
+          component: MapsPage
+        },
+        {
+          iconName: 'searchmap-icon',
+          displayName: 'Search Map',
+          component: MapsPage
+        },
+        {
+          iconName: 'share-inst-icon',
+          displayName: 'Sharing Instructions',
+          component: MapsPage
+        },
+        {
+          iconName: 'sharing-icon',
+          displayName: 'Share Map',
+          component: MapsPage
+        },
+        {
+          iconName: 'pusher-icon',
+          displayName: 'Pusher Setup',
+          component: MapsPage
+        }
+      ]
     });
 
 /*
