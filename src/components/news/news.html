@@ -1,11 +1,34 @@
-<!-- Generated template for the NewsComponent component -->
-<div>
-  {{text}}
+<ion-header>
+  <ion-navbar>
+    <ion-title>Latest News</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="cards-bg social-cards">
+    <ion-card id="idLatestNewsCard" role="tabpanel" aria-labelledby="idLatestNews">
+        <ion-card-content>
+            <div style="font-size:1.25em;border:2px solid red;margin:1px;padding:2px;">
+              <h4 style="color:red">Latest Release</h4>
+              <h5 style="color:red">Release notes will appear here as new features are added to the MapLinkr plug-in.</h5>
+              <h5>Select the MapLinkr Instruction accordion pane below for step-by-step help.</h5>
+            </div>
+            <h4>OTHER GREAT STUFF</h4>
+            <br>
+            <img src="assets/imgs/WindowWashers.png" width="95%" height="95%"><br>
+            <h5>Wallace and Gromit Use MapLinkr.</h5>
+            <p style="font-size: 1.2em;color: #333333; border:2px solid green;margin:1px;padding:2px;">
+              Wallace and Gromit have improved the efficiency of their window washing service by incorporating community maps of reported dirty windows.
+            </p>
+            <br>
+        </ion-card-content>
+    </ion-card>
 
     <ion-buttons start>
-      <button ion-button (click)="dismiss()">
+      <button ion-button (click)="dismiss()">dismiss
+    <!--
         <span ion-text color="primary" showWhen="ios">Cancel</span>
         <ion-icon name="md-close" showWhen="android, windows"></ion-icon>
+    -->
       </button>
     </ion-buttons>
-</div>
+</ion-content>

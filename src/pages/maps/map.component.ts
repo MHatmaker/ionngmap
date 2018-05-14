@@ -16,6 +16,7 @@ import { SlideShareService } from '../../services/slideshare.service';
 import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
 import { PageService } from "../../services/pageservice"
 import { NewsComponent } from "../../components/news/news";
+import { PushersetupComponent } from "../../components/pushersetup/pushersetup";
 
 @IonicPage()
 @Component({
@@ -60,7 +61,8 @@ export class MapsPage implements AfterViewInit {
             this.showSharing();
         },
         'Pusher Setup' : function() {
-            this.showPusher();
+          let modal = modalCtrl.create(PushersetupComponent);
+          modal.present();
         },
         'google' : function() {
             this.addCanvas('google');

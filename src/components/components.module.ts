@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { PushersetupComponent } from './pushersetup/pushersetup';
-import { MaplinkrpluginComponent } from './maplinkrplugin/maplinkrplugin';
 import { NewsComponent } from './news/news';
 @NgModule({
 	declarations: [PushersetupComponent,
-    MaplinkrpluginComponent,
-    NewsComponent],
+    NewsComponent,
+    PushersetupComponent],
 	imports: [],
 	exports: [PushersetupComponent,
-    MaplinkrpluginComponent,
-    NewsComponent]
+    NewsComponent,
+    PushersetupComponent]
 })
 export class ComponentsModule {}

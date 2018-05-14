@@ -13,14 +13,8 @@ import { ViewController } from 'ionic-angular';
 })
 export class NewsComponent {
 
-  text: string;
-
   constructor(public viewCtrl: ViewController) {
     console.log('Hello NewsComponent Component');
-    this.text = 'Hello World';
-  }
-  showNews() {
-      console.log("Yay!  show news");
   }
   dismiss() {
       this.viewCtrl.dismiss();
