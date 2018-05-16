@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { PusherConfig } from '../../pages/mlcomponents/libs/PusherConfig';
+import { PusherClientService } from '../../services/pusherclient.service';
 
 @Component({
   selector: 'pushersetup',
@@ -12,12 +14,13 @@ export class PushersetupComponent {
   // privateChannelMashover : string;
   private pushergroup : FormGroup;
 
-  constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder) {
+  constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder,
+    private pusherClientService : PusherClientService, private pusherConfig: PusherConfig) {
     console.log('Hello PushersetupComponent Component');
     // this.privateChannelMashover = 'Hello World';
     this.pushergroup = this.formBuilder.group({
-      privateChannelMashover: [''], //, Validators.required],
-      userName: [''],
+      privateChannelMashover: [pusherConfig.getPusherChannel()], //, Validators.required],
+      userName: [pusherConfig.getUserName()],
     });
   }
 
@@ -27,7 +30,7 @@ export class PushersetupComponent {
   logForm(){
     console.log(this.pushergroup.value)
   }
-  dismiss() {
+  cancel() {
       this.viewCtrl.dismiss();
   }
 }
