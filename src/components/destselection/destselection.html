@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Sharing Setup</ion-title>
+    <ion-title>New Map Destination</ion-title>
     <ion-buttons start>
       <button ion-button (click)="cancel()">
         <span ion-text color="primary" showWhen="ios">Cancel</span>
@@ -11,17 +11,19 @@
 </ion-header>
 
 <ion-content class="cards-bg social-cards">
-    <ion-card id="idPusherSetupCard">
+    <ion-card id="idDestinationSetupCard">
       <ion-card-content>
-          <form [formGroup]="pushergroup" (ngSubmit)="logForm()">
-            <h4>Create a Pusher Channel ID :</h4>
-            <ion-item>
-                <ion-label>Channel Name</ion-label>
-                <ion-input type="text" formControlName="privateChannelMashover"></ion-input>
+          <ion-list>
+              <ion-item *ngFor="let dest of destinations; let i=index" (click)="toggleGroup(i)" [ngClass]="{active: isGroupShown(i)}">
+                {{dest.title}}
+                <ion-icon color="success" item-right [name]="isGroupShown(i) ? 'arrow-dropdown' : 'arrow-right'"></ion-icon>
+                <div *ngIf="isGroupShown(i)">{{d.description}}</div>
             </ion-item>
+          </ion-list>
+          <form [formGroup]="destselgroup" (ngSubmit)="logForm()">
             <ion-item>
-                <ion-label>User Name</ion-label>
-                <ion-input type="text" formControlName="userName"></ion-input>
+                <ion-label>Selected Destination</ion-label>
+                <ion-input type="text" formControlName="selectedDestination"></ion-input>
             </ion-item>
               <ion-row>
                 <ion-col>
@@ -32,6 +34,6 @@
                 </ion-col>
               </ion-row>
           </form>
-        </ion-card-content>
-    </ion-card>
-  </ion-content>
+      </ion-card-content>
+    <ion-card>
+<ion-content>

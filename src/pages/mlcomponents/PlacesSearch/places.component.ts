@@ -1,7 +1,9 @@
 
 // import {} from 'google';
 import { Component, NgZone, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
+import { ModalController } from 'ionic-angular';
 import { MapInstanceService } from '../../../services/MapInstanceService';
+import { DestselectionComponent } from '../../../components/destselection/destselection';
 
 declare var google;
 
@@ -16,7 +18,7 @@ export class PlacesSearchComponent implements AfterViewInit {
     input: any;
     searchBox: any;
 
-  constructor(private _ngZone: NgZone, private mapInstanceService : MapInstanceService) {
+  constructor(private _ngZone: NgZone, private mapInstanceService : MapInstanceService, private modalCtrl : ModalController) {
 
   }
 
@@ -45,6 +47,9 @@ export class PlacesSearchComponent implements AfterViewInit {
           let service = new google.maps.places.PlacesService(mphmap);
               service.textSearch(queryPlaces, (p) => {
                   if (p.length != 0) {
+
+          let modal = this.modalCtrl.create(DestselectionComponent);
+          modal.present();
                     mph.placeMarkers(p);
                   } else {
                       return;

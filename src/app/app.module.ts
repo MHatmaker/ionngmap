@@ -51,6 +51,7 @@ import {GeoCodingService } from '../services/GeoCodingService';
 import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
 import { NewsComponent } from '../components/news/news';
 import { PushersetupComponent } from '../components/pushersetup/pushersetup';
+import { DestselectionComponent } from '../components/destselection/destselection';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -71,7 +72,8 @@ import { PushersetupComponent } from '../components/pushersetup/pushersetup';
     MultiCanvasLeaflet,
     CarouselComponent,
     NewsComponent,
-    PushersetupComponent
+    PushersetupComponent,
+    DestselectionComponent
   ],
   imports: [
     BrowserModule,
@@ -101,7 +103,8 @@ import { PushersetupComponent } from '../components/pushersetup/pushersetup';
     LeafletMapComponent,
     PositionViewComponent,
     NewsComponent,
-    PushersetupComponent
+    PushersetupComponent,
+    DestselectionComponent
   ],
   providers: [
     StatusBar,
