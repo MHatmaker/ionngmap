@@ -7,32 +7,28 @@ import { FormGroup, FormBuilder } from '@angular/forms';
   templateUrl: 'destselection.html'
 })
 export class DestselectionComponent {
-
-  private destselgroup : FormGroup;
-  shownGroup = null;
+  public selectedDestination : string = 'Same Window';
+  public destselgroup : FormGroup;
   destinations = [
-    {title : "Same Window"},
-    {title : "New Tab"},
-    {title : " New Window"}
+    {title : "Same Window", description: "Replace the map in the current window"},
+    {title : "New Tab", description: "Open the new map in a new tab/slide"},
+    {title : " New Window", description: "Open the new map in a new window"}
   ];
 
   constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder) {
     console.log('Hello DestselectionComponent Component');
     this.destselgroup = this.formBuilder.group({
-      selectedDestination : "Same Window"
+      selectedDestination : this.selectedDestination,
+      dests : this.destinations
     });
   }
 
-    toggleGroup(group) {
-        if (this.isGroupShown(group)) {
-            this.shownGroup = null;
-        } else {
-            this.shownGroup = group;
-        }
-    };
-    isGroupShown(group) {
-        return this.shownGroup === group;
-    };
+  checkDestination(item) {
+      this.selectedDestination = item.title;
+      console.log(this.destselgroup);
+      this.destselgroup.value['selectedDestination'] = item.title;
+      console.log("checkDestination - item " + this.selectedDestination);
+  }
 
   accept() {
       this.viewCtrl.dismiss();

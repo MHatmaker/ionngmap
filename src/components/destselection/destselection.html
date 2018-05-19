@@ -13,14 +13,14 @@
 <ion-content class="cards-bg social-cards">
     <ion-card id="idDestinationSetupCard">
       <ion-card-content>
-          <ion-list>
-              <ion-item *ngFor="let dest of destinations; let i=index" (click)="toggleGroup(i)" [ngClass]="{active: isGroupShown(i)}">
+        <form [formGroup]="destselgroup" (ngSubmit)="logForm()">
+          <ion-list radio-group formControlName="dests">
+              <ion-item *ngFor="let dest of destinations;">
                 {{dest.title}}
-                <ion-icon color="success" item-right [name]="isGroupShown(i) ? 'arrow-dropdown' : 'arrow-right'"></ion-icon>
-                <div *ngIf="isGroupShown(i)">{{d.description}}</div>
+                <ion-label>{{dest.title}}</ion-label>
+                <ion-radio (ionSelect)="checkDestination(dest)" [value]></ion-radio>
             </ion-item>
           </ion-list>
-          <form [formGroup]="destselgroup" (ngSubmit)="logForm()">
             <ion-item>
                 <ion-label>Selected Destination</ion-label>
                 <ion-input type="text" formControlName="selectedDestination"></ion-input>
