@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'destselection',
   templateUrl: 'destselection.html'
 })
 export class DestselectionComponent {
-  public selectedDestination : string = 'Same Window';
+  public selectedDestination : any;
   public destselgroup : FormGroup;
   destinations = [
     {title : "Same Window", description: "Replace the map in the current window"},
@@ -15,19 +15,24 @@ export class DestselectionComponent {
     {title : " New Window", description: "Open the new map in a new window"}
   ];
 
-  constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder) {
+  constructor(public viewCtrl: ViewController, public formBuilder : FormBuilder) {
     console.log('Hello DestselectionComponent Component');
-    this.destselgroup = this.formBuilder.group({
+    this.destselgroup = formBuilder.group({
       selectedDestination : this.selectedDestination,
-      dests : this.destinations
+      dests : this.destinations,
+      destTitle : "Same Window"
     });
+    // this.destselgroup.value = {title:  "Same Window", description : "never mind";}
   }
 
   checkDestination(item) {
-      this.selectedDestination = item.title;
+      this.selectedDestination = item;
       console.log(this.destselgroup);
+      this.destselgroup.value['destTitle'] = item.title;
       this.destselgroup.value['selectedDestination'] = item.title;
+      this.destselgroup.patchValue({selectedDestination : item.title});
       console.log("checkDestination - item " + this.selectedDestination);
+      console.log(this.destselgroup.value);
   }
 
   accept() {

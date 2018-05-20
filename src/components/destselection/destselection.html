@@ -13,17 +13,16 @@
 <ion-content class="cards-bg social-cards">
     <ion-card id="idDestinationSetupCard">
       <ion-card-content>
-        <form [formGroup]="destselgroup" (ngSubmit)="logForm()">
+        <form [formGroup]="destselgroup">
           <ion-list radio-group formControlName="dests">
               <ion-item *ngFor="let dest of destinations;">
-                {{dest.title}}
                 <ion-label>{{dest.title}}</ion-label>
-                <ion-radio (ionSelect)="checkDestination(dest)" [value]></ion-radio>
+                <ion-radio (ionSelect)="checkDestination(dest)" [value]="dest"></ion-radio>
             </ion-item>
           </ion-list>
             <ion-item>
-                <ion-label>Selected Destination</ion-label>
-                <ion-input type="text" formControlName="selectedDestination"></ion-input>
+                <!-- <ion-label>Selected Destination</ion-label> -->
+                <ion-input formControlName="selectedDestination" type="text"></ion-input>
             </ion-item>
               <ion-row>
                 <ion-col>
