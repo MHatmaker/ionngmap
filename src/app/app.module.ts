@@ -52,6 +52,7 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
 import { NewsComponent } from '../components/news/news';
 import { PushersetupComponent } from '../components/pushersetup/pushersetup';
 import { DestselectionComponent } from '../components/destselection/destselection';
+import { DestinationsProvider } from '../providers/destinations/destinations';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -132,7 +133,8 @@ import { DestselectionComponent } from '../components/destselection/destselectio
     // MapHoster,
     // MapHosterGoogle,
     Geolocation,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    DestinationsProvider
   ]
 })
 export class AppModule {}

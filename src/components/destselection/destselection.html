@@ -17,12 +17,12 @@
           <ion-list radio-group formControlName="dests">
               <ion-item *ngFor="let dest of destinations;">
                 <ion-label>{{dest.title}}</ion-label>
-                <ion-radio (ionSelect)="checkDestination(dest)" [value]="dest"></ion-radio>
+                <ion-radio (ionSelect)="checkDestination(dest)" [value]="dest" [checked]="dest.id==selectedDestination.id"></ion-radio>
             </ion-item>
           </ion-list>
             <ion-item>
                 <!-- <ion-label>Selected Destination</ion-label> -->
-                <ion-input formControlName="selectedDestination" type="text"></ion-input>
+                <ion-input formControlName="useDestination" type="text"></ion-input>
             </ion-item>
               <ion-row>
                 <ion-col>
