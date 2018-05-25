@@ -48,9 +48,13 @@ export class PlacesSearchComponent implements AfterViewInit {
               service.textSearch(queryPlaces, (p) => {
                   if (p.length != 0) {
 
-          let modal = this.modalCtrl.create(DestselectionComponent);
-          modal.present();
-                    mph.placeMarkers(p);
+                      let modal = this.modalCtrl.create(DestselectionComponent);
+                      modal.onDidDismiss(data => {
+                          console.log(data.destination.title);
+                          mph.placeMarkers(p);
+                      })
+                      modal.present();
+
                   } else {
                       return;
                   }

@@ -48,12 +48,13 @@ export class DestselectionComponent {
 
   accept() {
       this.destinationsProvider.preserveDestination(this.destselgroup.value['selectedDestination'])
-      this.viewCtrl.dismiss();
+      this.viewCtrl.dismiss({destination : this.destselgroup.value['selectedDestination']});
+      // this.viewCtrl.dismiss({destination : this.selectedDestination.title});
   }
   logForm(){
     console.log(this.destselgroup.value)
   }
   cancel() {
-      this.viewCtrl.dismiss();
+      this.viewCtrl.dismiss({destination : "cancel"});
   }
 }

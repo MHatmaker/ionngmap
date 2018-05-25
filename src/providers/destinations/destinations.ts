@@ -36,6 +36,8 @@ export class DestinationsProvider {
   }
   preserveDestination(dest : Destination) {
       this.currentDestination = dest;
+      console.log("preserveDestination");
+      console.log(dest);
       for (let i in this.destinations) {
          if(this.destinations[i].id == dest.id){
             this.destinations[i].isChecked = true;
