@@ -13,6 +13,7 @@ import { MultiCanvasLeaflet } from '../mlcomponents/MultiCanvas/multicanvasleafl
 import { CanvasService } from '../../services/CanvasService';
 // import { ISlideData } from "../../services/slidedata.interface";
 import { SlideShareService } from '../../services/slideshare.service';
+import { SlideViewService } from '../../services/slideview.service';
 import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
 import { PageService } from "../../services/pageservice"
 import { NewsComponent } from "../../components/news/news";
@@ -32,7 +33,7 @@ export class MapsPage implements AfterViewInit {
 
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
-              private modalCtrl : ModalController) {
+              private slideViewService : SlideViewService, private modalCtrl : ModalController) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
@@ -67,7 +68,7 @@ export class MapsPage implements AfterViewInit {
         'google' : function() {
             this.addCanvas('google');
         },
-        'arcgis' : function() {
+        'esri' : function() {
             this.addCanvas('arcgis');
         },
         'leaflet' : function() {
@@ -78,7 +79,7 @@ export class MapsPage implements AfterViewInit {
     var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
         cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
         mlconfig = new MLConfig(cfgparams);
-    const mapSystemSet = new Set(['google', 'arcgis', 'leaflet']);
+    const mapSystemSet = new Set(['google', 'esri', 'leaflet']);
     this.mlconfig = mlconfig;
     mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
     pageService.menuOption.subscribe(
@@ -165,23 +166,23 @@ export class MapsPage implements AfterViewInit {
           }
       }
       if (mapType === 'google') {
-          mapTypeToCreate = MultiCanvasGoogle;
+          mapTypeToCreate = MultiCanvasGoogle; //new MultiCanvasGoogle(this.canvasService, this.slideViewService);
       } else if (mapType === 'esri') {
-          mapTypeToCreate = MultiCanvasEsri;
+          mapTypeToCreate = MultiCanvasEsri; // new MultiCanvasEsri(this.canvasService);
 
       } else if (mapType === 'leaflet') {
-          mapTypeToCreate = MultiCanvasLeaflet;
+          mapTypeToCreate = MultiCanvasLeaflet; //new MultiCanvasLeaflet(this.canvasService);
       }
 
-      appendedElem = this.canvasService.appendNewCanvasToContainer(mapTypeToCreate, currIndex);
+      appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, null, null); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
-      this.mapInstanceService.incrementMapNumber();
-      this.mapInstanceService.setCurrentSlide(currIndex);
-      this.slideshareService.slideData.emit({
-                  mapListItem: appendedElem,
-                  slideNumber: currIndex,
-                  mapName: "Map " + currIndex
-              });
+      // this.mapInstanceService.incrementMapNumber();
+      // this.mapInstanceService.setCurrentSlide(currIndex);
+      // this.slideshareService.slideData.emit({
+      //             mapListItem: appendedElem,
+      //             slideNumber: currIndex,
+      //             mapName: "Map " + currIndex
+      //         });
   }
   removeCanvas (clickedItem) {
       console.log("removeCanvas");
