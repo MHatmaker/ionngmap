@@ -45,7 +45,6 @@ export class CanvasService {
       console.log("in CanvasHolderCtrl.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
           appendedElem,
-          // mapTypeToCreate,
           mlConfig;
       if (mlcfg) {
           mlConfig = mlcfg;
@@ -64,14 +63,6 @@ export class CanvasService {
               this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig); //angular.copy(mlConfig));
           }
       }
-      // if (mapType === 'google') {
-      //     mapTypeToCreate = mapType; //new MultiCanvasGoogle(this, this.slideViewService);
-      // } else if (mapType === 'esri') {
-      //     mapTypeToCreate = mapType;
-      //
-      // } else if (mapType === 'leaflet') {
-      //     mapTypeToCreate = mapType;
-      // }
 
       appendedElem = this.appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 

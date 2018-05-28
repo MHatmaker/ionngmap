@@ -30,6 +30,11 @@ export class MapsPage implements AfterViewInit {
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
     private menuActions = {};
+    private mapHosterDict : Map<string, any> = new Map<string, any>([
+        ['google', MultiCanvasGoogle],
+        ['esri', MultiCanvasEsri],
+        ['leaflet', MultiCanvasLeaflet]
+    ]);
 
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
@@ -79,13 +84,12 @@ export class MapsPage implements AfterViewInit {
     var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
         cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
         mlconfig = new MLConfig(cfgparams);
-    const mapSystemSet = new Set(['google', 'esri', 'leaflet']);
     this.mlconfig = mlconfig;
     mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
     pageService.menuOption.subscribe(
       (data: MenuOptionModel) => {
         console.log(data);
-        if(mapSystemSet.has(data.displayName)) {
+        if(this.mapHosterDict.has(data.displayName)) {
             this.onsetMap(data);
         } else {
             this.menuActions[data.displayName]();
@@ -143,7 +147,7 @@ export class MapsPage implements AfterViewInit {
   }
 
   addCanvas (mapType, mlcfg, resolve) {
-      console.log("in CanvasHolderCtrl.addCanvas");
+      console.log("in map.component.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
           appendedElem,
           mapTypeToCreate,
@@ -165,14 +169,7 @@ export class MapsPage implements AfterViewInit {
               this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig); //angular.copy(mlConfig));
           }
       }
-      if (mapType === 'google') {
-          mapTypeToCreate = MultiCanvasGoogle; //new MultiCanvasGoogle(this.canvasService, this.slideViewService);
-      } else if (mapType === 'esri') {
-          mapTypeToCreate = MultiCanvasEsri; // new MultiCanvasEsri(this.canvasService);
-
-      } else if (mapType === 'leaflet') {
-          mapTypeToCreate = MultiCanvasLeaflet; //new MultiCanvasLeaflet(this.canvasService);
-      }
+      mapTypeToCreate = this.mapHosterDict.get(mapType);
 
       appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, null, null); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
