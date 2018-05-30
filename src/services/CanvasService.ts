@@ -16,6 +16,8 @@ import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
 import { MultiCanvasEsri } from '../pages/mlcomponents/MultiCanvas/multicanvasesri.component';
 import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvasgoogle.component';
 import { MultiCanvasLeaflet } from '../pages/mlcomponents/MultiCanvas/multicanvasleaflet.component';
+import { Geolocation } from '@ionic-native/geolocation';
+import { MapLocCoords, MapLocOptions } from './positionupdate.interface';
 
 // import {MultiCanvasGoogle} from '../MultiCanvas/multicanvasgoogle.component';
 
@@ -25,6 +27,7 @@ export class CanvasService {
     private canvases : Array<any> = new Array<any>();
     private outerMapNumber : number = 0;
     private selectedMapType : string;
+    private initialLoc : MapLocOptions;
     setCurrent = new EventEmitter<number>();
 
     constructor (
@@ -33,12 +36,31 @@ export class CanvasService {
         private injector: Injector,
         private mapInstanceService : MapInstanceService,
         private slideshareService : SlideShareService,
-        private slideViewService : SlideViewService
+        private slideViewService : SlideViewService,
+        private geoLocation : Geolocation
       ){
+    this.geoLocation.getCurrentPosition().then((position) => {
+
+        // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        let glat = position.coords.latitude;
+        let glng = position.coords.longitude;
+        let latLng = new google.maps.LatLng(glat, glng);
+        this.initialLoc = {
+          center: {'lng' : glng, 'lat' : glat},
+          zoom: 15
+          //mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        console.log(`geolocation center at ${glng}, ${glat}`);
+        }, (err) => {
+            console.log(err);
+        });
     }
 
     getIndex () {
         return this.ndx;
+    }
+    getInitialLocation() : MapLocOptions {
+        return this.initialLoc;
     }
 
   addCanvas (mapType, mapTypeToCreate, mlcfg, resolve) {

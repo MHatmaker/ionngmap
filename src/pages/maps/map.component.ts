@@ -101,7 +101,7 @@ export class MapsPage implements AfterViewInit {
       });
       mapOpener.openMap.subscribe(
           (data : MapLocOptions) => {
-            this.addCanvas('google', data, null)
+            this.addCanvas('google', null, data)
       });
   }
 
@@ -144,17 +144,25 @@ export class MapsPage implements AfterViewInit {
       this.addCanvas( menuOption.displayName, null, null);
   }
 
-  addCanvas (mapType, mlcfg, resolve) {
+  addCanvas (mapType : string, mlcfg : MLConfig, maploc : MapLocOptions) {
       console.log("in map.component.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
           appendedElem,
           mapTypeToCreate,
+          ipos,
           mlConfig;
       if (mlcfg) {
           mlConfig = mlcfg;
       } else {
           if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
-              var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
+              if ( maploc) {
+                  ipos = <IPosition>{'lon' : maploc.center.lng, 'lat' : maploc.center.lat, 'zoom' : maploc.zoom};
+              } else {
+                  let initialMaploc = this.canvasService.getInitialLocation();
+                  ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
+                  // let ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15};
+              }
+              var
                   cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
                   mlconfig = new MLConfig(cfgparams);
               // newpos = new MLPosition(-1, -1, -1);

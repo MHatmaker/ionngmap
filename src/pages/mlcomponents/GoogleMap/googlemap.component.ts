@@ -6,6 +6,7 @@ import { MLBounds } from '../../../services/mlbounds.service';
 import { StartupGoogle } from '../libs/StartupGoogle';
 import { GeoPusherSupport } from '../libs/geopushersupport';
 import { SlideViewService } from '../../../services/slideview.service';
+import { CanvasService } from '../../../services/CanvasService'
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 declare var google;
@@ -33,7 +34,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
 
 
   constructor(
-      ngZone : NgZone, private mapInstanceService: MapInstanceService,
+      ngZone : NgZone, private mapInstanceService: MapInstanceService, private canvasService : CanvasService,
       public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2,
       geopush: GeoPusherSupport, private slideViewService : SlideViewService) {
 
@@ -59,20 +60,23 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
 
     console.log(this.mapElement.nativeElement);
     console.log(document.getElementById("google-map-component" + this.mapNumber));
-    this.geolocation.getCurrentPosition().then((position) => {
+
+    //this.geolocation.getCurrentPosition().then((position) => {
+    let position = this.canvasService.getInitialLocation()
 
         // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        this.glat = position.coords.latitude;
-        this.glng = position.coords.longitude;
+        this.glat = position.center.lat;
+        this.glng = position.center.lng;
         latLng = new google.maps.LatLng(this.glat, this.glng);
         mapOptions.center = {lng: this.glng, lat: this.glat};
         console.log(`geolocation center at ${this.glng}, ${this.glat}`);
         // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
         this.startup.configure("google-map-component" + this.mapNumber, mapElement, mapOptions);
-
+        /*
         }, (err) => {
             console.log(err);
         });
+      */
   }
 
   ngOnInit() {

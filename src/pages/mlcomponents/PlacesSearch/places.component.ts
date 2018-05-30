@@ -58,8 +58,9 @@ export class PlacesSearchComponent implements AfterViewInit {
                       modal.onDidDismiss(data => {
                           console.log(data.destination.title);
                           if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
-                              let coords : MapLocCoords = queryPlaces.location;
-                              let opts: MapLocOptions = { center :  coords, zoom : mlcfg.getZoom()}
+                              let coords : any = queryPlaces.location;
+                              let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
+                              let opts: MapLocOptions = { center :  cntr, zoom : mlcfg.getZoom()}
                               // let opts = new MaplocoptsProvider(queryPlaces.location, mlcfg.getZoom());
                               this.mapopener.openMap.emit(opts);
                           }
