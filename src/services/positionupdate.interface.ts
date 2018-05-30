@@ -10,3 +10,13 @@ export interface IPositionData {
     key : string,
     val : IPositionParams
 };
+
+export interface MapLocCoords {
+    lat : number,
+    lng : number
+}
+
+export interface MapLocOptions {
+    center : MapLocCoords,
+    zoom : number
+}

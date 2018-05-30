@@ -8,16 +8,7 @@ import { MapHosterGoogle } from './MapHosterGoogle';
 import { Startup } from './Startup';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 import { utils } from './utils';
-
-export interface MapLocCoords {
-    lat : number,
-    lng : number
-}
-
-export interface MapLocOptions {
-    center : MapLocCoords,
-    zoom : number
-}
+import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface';
 
 // @Injectable()
 export class StartupGoogle extends Startup {

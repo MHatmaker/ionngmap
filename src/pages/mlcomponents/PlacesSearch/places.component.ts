@@ -4,6 +4,10 @@ import { Component, NgZone, AfterViewInit, ViewChild, ElementRef} from '@angular
 import { ModalController } from 'ionic-angular';
 import { MapInstanceService } from '../../../services/MapInstanceService';
 import { DestselectionComponent } from '../../../components/destselection/destselection';
+import { MapopenerProvider } from '../../../providers/mapopener/mapopener';
+// import { MaplocoptsProvider } from '../../../providers/maplocopts/maplocopts';
+import { MLConfig } from '../../../pages/mlcomponents/libs/MLConfig';
+import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface'
 
 declare var google;
 
@@ -18,7 +22,8 @@ export class PlacesSearchComponent implements AfterViewInit {
     input: any;
     searchBox: any;
 
-  constructor(private _ngZone: NgZone, private mapInstanceService : MapInstanceService, private modalCtrl : ModalController) {
+  constructor(private _ngZone: NgZone, private mapInstanceService : MapInstanceService,
+      private mapopener : MapopenerProvider, private modalCtrl : ModalController) {
 
   }
 
@@ -37,6 +42,7 @@ export class PlacesSearchComponent implements AfterViewInit {
           console.log(this.searchBox);
           let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
           let mphmap = mph.getMap();
+          let mlcfg : MLConfig = mph.getmlconfig();
           let bnds = mph.getSearchBounds();
           console.log("searchBox latest bounds");
           console.log(bnds);
@@ -51,6 +57,12 @@ export class PlacesSearchComponent implements AfterViewInit {
                       let modal = this.modalCtrl.create(DestselectionComponent);
                       modal.onDidDismiss(data => {
                           console.log(data.destination.title);
+                          if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
+                              let coords : MapLocCoords = queryPlaces.location;
+                              let opts: MapLocOptions = { center :  coords, zoom : mlcfg.getZoom()}
+                              // let opts = new MaplocoptsProvider(queryPlaces.location, mlcfg.getZoom());
+                              this.mapopener.openMap.emit(opts);
+                          }
                           mph.placeMarkers(p);
                       })
                       modal.present();

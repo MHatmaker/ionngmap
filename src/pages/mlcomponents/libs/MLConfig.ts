@@ -258,6 +258,11 @@ export class MLConfig {
     getStartupView () {
         return this.details.startupView;
     }
+
+    getZoom() {
+        return this.details.mlposition.zoom;
+    }
+  
     showConfigdetails (msg : string ) {
         console.log(msg);
         console.log(

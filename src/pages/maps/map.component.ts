@@ -18,6 +18,8 @@ import { MenuOptionModel } from './../../side-menu-content/models/menu-option-mo
 import { PageService } from "../../services/pageservice"
 import { NewsComponent } from "../../components/news/news";
 import { PushersetupComponent } from "../../components/pushersetup/pushersetup";
+import { MapopenerProvider } from "../../providers/mapopener/mapopener";
+import { MapLocOptions } from '../../services/positionupdate.interface';
 
 @IonicPage()
 @Component({
@@ -38,7 +40,8 @@ export class MapsPage implements AfterViewInit {
 
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
-              private slideViewService : SlideViewService, private modalCtrl : ModalController) {
+              private slideViewService : SlideViewService, private modalCtrl : ModalController,
+              private mapOpener : MapopenerProvider) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
@@ -69,15 +72,6 @@ export class MapsPage implements AfterViewInit {
         'Pusher Setup' : function() {
           let modal = modalCtrl.create(PushersetupComponent);
           modal.present();
-        },
-        'google' : function() {
-            this.addCanvas('google');
-        },
-        'esri' : function() {
-            this.addCanvas('arcgis');
-        },
-        'leaflet' : function() {
-            this.addCanvas('leaflet');
         }
     };
     console.log("fire up ConfigParams");
@@ -104,6 +98,10 @@ export class MapsPage implements AfterViewInit {
             this.onsetMap(data);
         }
         */
+      });
+      mapOpener.openMap.subscribe(
+          (data : MapLocOptions) => {
+            this.addCanvas('google', data, null)
       });
   }
 

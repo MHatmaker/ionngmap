@@ -983,7 +983,7 @@ export class MapHosterGoogle extends MapHoster {
         return this.pusherEventHandler;
     }
 
-    getmlconfig() {
+    getmlconfig() : MLConfig {
         return this.mlconfig;
     }
 }

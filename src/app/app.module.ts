@@ -47,12 +47,14 @@ import { PusherEventHandler } from '../pages/mlcomponents/libs/PusherEventHandle
 import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 import { utils } from '../pages/mlcomponents/libs/utils';
 import { CurrentMapTypeService } from '../services/currentmaptypeservice';
-import {GeoCodingService } from '../services/GeoCodingService';
+import { GeoCodingService } from '../services/GeoCodingService';
 import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
 import { NewsComponent } from '../components/news/news';
 import { PushersetupComponent } from '../components/pushersetup/pushersetup';
 import { DestselectionComponent } from '../components/destselection/destselection';
 import { DestinationsProvider } from '../providers/destinations/destinations';
+// import { MaplocoptsProvider } from '../providers/maplocopts/maplocopts';
+import { MapopenerProvider } from '../providers/mapopener/mapopener';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -134,7 +136,9 @@ import { DestinationsProvider } from '../providers/destinations/destinations';
     // MapHosterGoogle,
     Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    DestinationsProvider
+    DestinationsProvider,
+    // MaplocoptsProvider,
+    MapopenerProvider
   ]
 })
 export class AppModule {}
