@@ -60,11 +60,12 @@ export class PlacesSearchComponent implements AfterViewInit {
                           if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
                               let coords : any = queryPlaces.location;
                               let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
-                              let opts: MapLocOptions = { center :  cntr, zoom : mlcfg.getZoom()}
+                              let opts: MapLocOptions = { center :  cntr, zoom : mlcfg.getZoom(), places : p};
                               // let opts = new MaplocoptsProvider(queryPlaces.location, mlcfg.getZoom());
                               this.mapopener.openMap.emit(opts);
+                          } else {
+                              mph.placeMarkers(p);
                           }
-                          mph.placeMarkers(p);
                       })
                       modal.present();
 

@@ -47,7 +47,8 @@ export class CanvasService {
         let latLng = new google.maps.LatLng(glat, glng);
         this.initialLoc = {
           center: {'lng' : glng, 'lat' : glat},
-          zoom: 15
+          zoom: 15,
+          places : null
           //mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         console.log(`geolocation center at ${glng}, ${glat}`);
@@ -63,7 +64,7 @@ export class CanvasService {
         return this.initialLoc;
     }
 
-  addCanvas (mapType, mapTypeToCreate, mlcfg, resolve) {
+  addCanvas (mapType, mapTypeToCreate, mlcfg, maploc) {
       console.log("in CanvasHolderCtrl.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
           appendedElem,

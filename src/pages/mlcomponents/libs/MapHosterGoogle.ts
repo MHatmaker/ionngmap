@@ -529,7 +529,10 @@ export class MapHosterGoogle extends MapHoster {
             */
         }
 
-        function fillMapWithMarkers() {
+        function fillMapWithMarkers(places) {
+            if(places) {
+                this.placeMarkers(places);
+            }
           /*
             var $inj = this.mlconfig.getInjector(),
                 ctrlSvc = $inj.get('MapControllerService'),
@@ -622,7 +625,10 @@ export class MapHosterGoogle extends MapHoster {
 
             // setupQueryListener();
             placeCustomControls();
-            fillMapWithMarkers();
+            let initialPlaces = this.mlconfig.getInitialPlaces();
+            if( initialPlaces) {
+                this.placeMarkers(initialPlaces);
+              }
         });
 
         setupQueryListener();

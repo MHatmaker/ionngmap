@@ -165,6 +165,7 @@ export class MapsPage implements AfterViewInit {
               var
                   cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
                   mlconfig = new MLConfig(cfgparams);
+                  mlconfig.setInitialPlaces(maploc.places);
               // newpos = new MLPosition(-1, -1, -1);
               // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
               // mlConfig = new MLConfig(icfg);
@@ -177,7 +178,7 @@ export class MapsPage implements AfterViewInit {
       }
       mapTypeToCreate = this.mapHosterDict.get(mapType);
 
-      appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, null, null); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
+      appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, null, maploc); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
       // this.mapInstanceService.incrementMapNumber();
       // this.mapInstanceService.setCurrentSlide(currIndex);

@@ -18,5 +18,6 @@ export interface MapLocCoords {
 
 export interface MapLocOptions {
     center : MapLocCoords,
-    zoom : number
+    zoom : number,
+    places : any
 }

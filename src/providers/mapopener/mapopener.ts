@@ -8,6 +8,7 @@ export class MapopenerProvider implements MapLocOptions {
     openMap = new EventEmitter<MapLocOptions>();
     center : MapLocCoords;
     zoom : number;
+    places : any;
     mapLocOpts : MapLocOptions;
 
   // constructor(private mapLocOpts : MapLocOptions) {

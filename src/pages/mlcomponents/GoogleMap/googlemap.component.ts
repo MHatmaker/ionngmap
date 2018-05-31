@@ -52,7 +52,8 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     let mapOptions = {
       center: latLng,
       zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      places : null
     };
     // let mapElement = this.mapElement.nativeElement;
     let mapElement = document.getElementById("google-map-component" + this.mapNumber);

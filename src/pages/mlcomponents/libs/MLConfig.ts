@@ -21,6 +21,7 @@ export class MLConfig {
         maphost : "",
         masherChannel : "",
         query : "",
+        places : null,
         bounds : {llx : -1, lly : -1, urx : -1, ury : -1},
         mapType : 'google',
         rawMap : null,
@@ -216,6 +217,12 @@ export class MLConfig {
         // this.details.query.push(this.getParameterByName('gmquery'));
         return this.details.query;
     }
+    setInitialPlaces (p) {
+        this.details.places = p;
+    }
+    getInitialPlaces() {
+        return this.details.places;
+    }
     getBoundsForUrl () : string {
         var bnds = this.details.bounds,
             bndsUrl = "&llx=" + bnds.llx + "&lly=" + bnds.lly + "&urx=" + bnds.urx + "&ury=" + bnds.ury;
@@ -262,7 +269,7 @@ export class MLConfig {
     getZoom() {
         return this.details.mlposition.zoom;
     }
-  
+
     showConfigdetails (msg : string ) {
         console.log(msg);
         console.log(
