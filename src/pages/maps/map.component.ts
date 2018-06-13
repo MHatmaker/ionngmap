@@ -159,6 +159,7 @@ export class MapsPage implements AfterViewInit {
                   ipos = <IPosition>{'lon' : maploc.center.lng, 'lat' : maploc.center.lat, 'zoom' : maploc.zoom};
               } else {
                   let initialMaploc = this.canvasService.getInitialLocation();
+                  maploc = initialMaploc;
                   ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
                   // let ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15};
               }

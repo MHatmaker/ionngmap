@@ -52,10 +52,13 @@ export class EsriMapComponent implements OnInit {
 
   ngOnInit() {
   // Load the mapping API modules
+      const options = {
+        url: 'https://js.arcgis.com/4.7/'
+      };
       loadModules([
         'esri/geometry/Point', 'esri/geometry/SpatialReference',
         'esri/tasks/Locator'
-      ])
+      ], options)
       .then(([esriPoint, SpatialReference, esriLocator]) => {
             this.esriPoint = esriPoint();
             this.geoLocator = new esriLocator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});

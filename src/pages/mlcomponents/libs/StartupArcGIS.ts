@@ -36,10 +36,7 @@ export class StartupArcGIS  extends Startup {
     private pusherChannel = null;
     private channel = null;
     private mapHosterSetupCallback : any = null;
-    private dojoEvent;
     private esriLocator;
-    private dojoBaseFx;
-    private dojoEasing;
     private esriConfig;
     private GeometryService;
     private esriwebmap;
@@ -54,20 +51,40 @@ export class StartupArcGIS  extends Startup {
     private elementRef : ElementRef;
     private mapOptions : any;
 
+    async loadEsriModules() {
+      const options = {
+        url: 'https://js.arcgis.com/4.7/'
+      };
+      const [ esriLocator, esriConfig,
+              GeometrySvc, WebMap, MapView, Point, SpatialReference] = await loadModules(
+        ['dojo/_base/event','esri/tasks/Locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/config',
+            'esri/tasks/GeometryService', 'esri/WebMap', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'], options);
+
+              this.esriLocator = esriLocator;
+              this.esriConfig = esriConfig;
+              this.GeometryService = GeometrySvc;
+              this.esriwebmap = WebMap;
+              this.esrimapview = MapView;
+              this.esriPoint = Point;
+              this.esriSpatialReference = SpatialReference;
+    }
+
     constructor (private mapNumber : number, mlconfig : MLConfig,
         private geopush: GeoPusherSupport) {
         super(geopush);
         // @Output()
             this.viewCreated = new EventEmitter();
-      loadModules(
+            // this.loadEsriModules();
+          /*
+        loadModules(
         ['dojo/_base/event','esri/tasks/Locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/config',
             'esri/tasks/GeometryService', 'esri/WebMap', 'esri/views/MapView', 'esri/geometry/Point', 'esri/geometry/SpatialReference'])
-          .then(([dojoEvent, esriLocator, dojoBaseFx, dojoEasing, esriConfig,
-              GeometrySvc, WebMap, MapView, Point, SpatialReference]) => {
-              this.dojoEvent = dojoEvent;
+          .then(([ esriLocator, esriConfig,
+              GeometrySvc, WebMap, MapView, Point, SpatialReference] :
+            [__esri.LocatorConstructor, __esri.config,
+             __esri.geometry, __esri.WebMapConstructor, __esri.MapViewConstructor, __esri.PointConstructor, __esri.SpatialReferenceConstructor]) => {
+
               this.esriLocator = esriLocator;
-              this.dojoBaseFx = dojoBaseFx;
-              this.dojoEasing = dojoEasing;
               this.esriConfig = esriConfig;
               this.GeometryService = GeometrySvc;
               this.esriwebmap = WebMap;
@@ -75,6 +92,7 @@ export class StartupArcGIS  extends Startup {
               this.esriPoint = Point;
               this.esriSpatialReference = SpatialReference;
           });
+          */
         this.mlconfig = mlconfig;
         this.mlconfig.setMapNumber(mapNumber);
         this.mlconfig.setUserId(this.geopush.getGeoPusherSupport().pusherConfig.getUserName() + mapNumber);
@@ -127,7 +145,7 @@ export class StartupArcGIS  extends Startup {
       return this.mapHoster;
   }
 
-  initUI () {
+  async initUI () {
     //add scalebar or other components like a legend, overview map etc
       // dojo.parser.parse();
       console.debug(this.aMap);
@@ -150,14 +168,14 @@ export class StartupArcGIS  extends Startup {
           console.log("this.mapHoster is null");
           // alert("StartupArcGIS.initUI : thisDetails.mph == null");
           // placeCustomControls();
-          this.mapHoster = new MapHosterArcGIS(this.mapNumber, this.aMap, this.mlconfig, this.geopush, this.elementRef);
-          this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
+          this.mapHoster = new MapHosterArcGIS(this.aMap, this.mapNumber, this.mlconfig, this.geopush, this.elementRef);
 
           this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
           this.mlconfig.setMapHosterInstance(this.mapHoster);
           this.geopush.getGeoPusherSupport().currentMapTypeService.setCurrentMapType('arcgis');
-          this.placeCustomControls();
-          this.setupQueryListener();
+          await this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
+          // this.placeCustomControls();
+          // this.setupQueryListener();
           // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
           console.log("StartupArcGIS.initUI : thisDetails.mph as initially null and should now be set");
           // console.debug(MapHosterArcGIS);
@@ -187,52 +205,73 @@ export class StartupArcGIS  extends Startup {
 
       } else {
           console.log("this.mapHoster is something or other");
+          this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
+          this.mlconfig.setMapHosterInstance(this.mapHoster);
           // $inj = this.mlconfig.getInjector();
           // mapTypeSvc = $inj.get('CurrentMapTypeService');
           // curmph = mapTypeSvc.getSelectedMapType();
           // console.log('selected map type is ' + curmph);
-          this.mlconfig.setMapHosterInstance(this.mapHoster);
+          await this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
           this.pusherChannel = this.geopush.getGeoPusherSupport().pusherConfig.masherChannel(false);
           this.pusher = this.geopush.getGeoPusherSupport().pusherClientService.createPusherClient(
               this.mlconfig,
               function (callbackChannel, userName) {
                   console.log("callback - don't need to setPusherClient");
                   console.log("It was a side effect of the createPusherClient:PusherClient process");
-                  this.usherConfig.setUserName(userName);
+                  this.pusherConfig.setUserName(userName);
                   // MapHosterArcGIS.prototype.setPusherClient(pusher, callbackChannel);
               },
               {'destination' : "destPlaceHolder", 'currentMapHolder' : curmph, 'newWindowId' : "windowIdPlaceholder"}
           );
           currentPusher = this.pusher;
           currentChannel = this.channel;
-          this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
+          // await this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
 
           // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
           console.log("use current pusher - now setPusherClient");
           this.mapHoster.setPusherClient(currentPusher, currentChannel);
-          this.placeCustomControls();  // MOVED TEMPORARILY on 3/15
-          this.setupQueryListener();
+          // this.placeCustomControls();  // MOVED TEMPORARILY on 3/15
+          // this.setupQueryListener();
       }
   }
 
-  initializePostProc (newSelectedWebMapId) {
+  async initializePostProc (newSelectedWebMapId) {
+      const options = {
+        url: 'https://js.arcgis.com/4.7/'
+      };
+      const [
+              esriGeometrySvc, esriWebMap, esriMapView, esriPoint, esriSpatialReference, esriConfig, TileInfo, MapImageLayer] = await loadModules(
+        [
+            'esri/tasks/GeometryService', 'esri/WebMap', 'esri/views/MapView', 'esri/geometry/Point',
+            'esri/geometry/SpatialReference', 'esri/config', 'esri/layers/support/TileInfo', 'esri/layers/MapImageLayer'
+        ], options);
       var
           mapDeferred,
           aMap = null,
           geometrySvc,
-          webMap = new this.esriwebmap ({
+          layer = new MapImageLayer({
+              url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer"
+            }),
+          webMap = new esriWebMap ({
               portalItem: { // autocasts as new PortalItem()
                 id: "f2e9b762544945f390ca4ac3671cfa72"
-              }
+              },
+              basemap : 'streets'
           });
+
+          webMap.add(layer);  // adds the layer to the map
           // viewCreated;
+          webMap.load()
+            .then(function(){
+              return webMap.basemap.load();
+            });
 
 
       //     mapOptions = {},
       // window.loading = dojo.byId("loadingImg");
       //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
       // esri.config.defaults.geometryService =
-      geometrySvc = new this.GeometryService('https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer');
+      geometrySvc = new esriGeometrySvc('https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer');
       // this.esriConfig.GeometryService =
       //     new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
@@ -251,13 +290,13 @@ export class StartupArcGIS  extends Startup {
           bingMapsKey: "/*Please enter your own Bing Map key*/"
       };
       if(newSelectedWebMapId){
-          this.configOptions.webmap = this.esriwebmap.portalItem = newSelectedWebMapId;
+          this.configOptions.webmap = esriWebMap.portalItem = newSelectedWebMapId;
       }
 
       console.log('StartupArcGIS ready to instantiate Map Hoster with map no. ' + this.mapNumber);                        // return this.mapHoster;
-      this.esriConfig.request.arcgisUrl = this.configOptions.sharingurl;                      // return this.mapHoster;
+      esriConfig.request.arcgisUrl = this.configOptions.sharingurl;                      // return this.mapHoster;
       // esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
-      this.esriConfig.request.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
+      esriConfig.request.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
       // esri.config.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
 
       //create the map using the web map id specified using configOptions or via the url parameter
@@ -276,7 +315,7 @@ export class StartupArcGIS  extends Startup {
       //     zoom : 14,
       //     center : [-87.620692, 41.888941]
       // });
-      // initUI();
+      // this.initUI();
       /*
       this.aMap.load()
           .then(function () {
@@ -318,15 +357,17 @@ export class StartupArcGIS  extends Startup {
           });
           */
       // try {
-          this.mapView = new this.esrimapview({
+          this.mapView = new esriMapView({
             container: this.elementRef,
-            map: webMap, //this.mapService.map,
-            center: new this.esriPoint({
+            map: webMap, //this.mapService.map,,
+            // constraints: {
+            //   lods: TileInfo.create().lods
+            // },
+            center: new esriPoint({
               x: -87.620692,
               y: 41.888941,
-              spatialReference: new this.esriSpatialReference({ wkid: 4326 })
-            }),
-            zoom: 15
+              spatialReference: new esriSpatialReference({ wkid: 4326 })
+            })
           });
           this.mapView.when((instance) => {
               console.log("mapView.when");
@@ -337,11 +378,13 @@ export class StartupArcGIS  extends Startup {
               if (aMap) {
                   aMap.destroy();
               }
-              this.aMap = aMap = webMap;
+              // this.aMap = aMap = webMap;
+              this.aMap = this.mapView;
               // dojo.connect(aMap, "onUpdateStart", showLoading);
               // dojo.connect(aMap, "onUpdateEnd", hideLoading);
               // dojo.connect(aMap, "onLoad", initUI);
-              this.mapHoster = new MapHosterArcGIS(this.aMap, this.mapNumber, this.mlconfig, this.geopush, this.elementRef);
+              this.mapHoster = new MapHosterArcGIS(this.mapView, this.mapNumber, this.mlconfig, this.geopush, this.elementRef);
+              this.initUI();
               this.mapHosterSetupCallback(this.mapHoster, this.aMap);
           },
             function(error){

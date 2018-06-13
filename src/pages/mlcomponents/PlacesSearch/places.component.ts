@@ -48,7 +48,7 @@ export class PlacesSearchComponent implements AfterViewInit {
           console.log(bnds);
 
           queryPlaces.bounds = bnds;
-          queryPlaces.location = mphmap.getCenter();
+          queryPlaces.location = mphmap.center;
           queryPlaces.query = this.input.value;
           let service = new google.maps.places.PlacesService(mphmap);
               service.textSearch(queryPlaces, (p) => {
