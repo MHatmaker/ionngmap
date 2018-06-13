@@ -18,6 +18,7 @@ import * as proj4x from 'proj4';
 // import * as Locator from 'esri/tasks/Locator';
 import { MapHoster } from './MapHoster';
 import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
+import { ImlBounds, xtntParams } from '../../../services/mlbounds.service';
 
 const proj4 = (proj4x as any).default;
 
@@ -172,33 +173,33 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 console.log("zoom levels : " + this.zoomLevels);
             }
 
-            async extractBounds(zm, cntr, action) {
+            async extractBounds(zm, cntr, action) : Promise<xtntParams> {
                 const options = {
                   url: 'https://js.arcgis.com/4.7/'
                 };
-                const [esriPoint, esriSpatialReference] = await loadModules([
-                    'esri/geometry/Point', 'esri/geometry/SpatialReference',
+                const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
+                    'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
                   ], options)
-                var source = proj4.Proj('GOOGLE'),
-                    dest = proj4.Proj('WGS84'),
-                    p = proj4.toPoint([cntr.x, cntr.y]),
-                    cntrpt,
-                    fixedLL,
-                    xtntDict = {};
+                // var source = proj4.Proj('GOOGLE'),
+                //     dest = proj4.Proj('WGS84'),
+                //     p = proj4.toPoint([cntr.x, cntr.y]),
+                var cntrpt,
+                    fixedLL;
 
-                console.log("proj4.transform " + p.x + ", " + p.y);
-                try {
-                    proj4.transform(source, dest, p);
-                } catch (err) {
-                    alert("proj4.transform threw up");
-                }
-                console.log("ready to create ESRI pt with " + p.x + ", " + p.y);
+                // console.log("proj4.transform " + p.x + ", " + p.y);
+                // try {
+                //     proj4.transform(source, dest, p);
+                // } catch (err) {
+                //     alert("proj4.transform threw up");
+                // }
+                // console.log("ready to create ESRI pt with " + p.x + ", " + p.y);
 
                 cntrpt = new esriPoint({longitude : cntr.x, latitude : cntr.y, spatialReference : new esriSpatialReference({wkid: 4326})});
                 console.log("cntr " + cntr.x + ", " + cntr.y);
                 console.log("cntrpt " + cntrpt.x + ", " + cntrpt.y);
-                fixedLL = this.geopushSup.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
-                xtntDict = {
+                let ltln = esriwebMercatorUtils.geographicToWebMercator(cntrpt);
+                fixedLL = this.geopushSup.utils.toFixedTwo(ltln.longitude, ltln.latitude, 3);
+                return {
                     'src' : 'arcgis',
                     'zoom' : zm,
                     'lon' : fixedLL.lon,
@@ -206,7 +207,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     'scale': this.scale2Level[zm].scale,
                     'action': action
                 };
-                return xtntDict;
             }
 
             compareExtents(msg, xtnt) {
@@ -601,8 +601,11 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     if (evt.action == 'end') {
                     if (this.userZoom === true) {
                         let mapPt = this.mphmap.toMap({x : evt.x, y : evt.y});
-                        this.setBounds(this.extractBounds(this.mphmap.zoom, mapPt, 'pan'));
-                    }
+                        let xtExt = this.extractBounds(this.mphmap.zoom, mapPt, 'pan');
+                        xtExt.then( (xtExt) => {
+                          this.setBounds(xtExt);
+                      }
+                    )}
                   }
                 });
 

@@ -249,9 +249,9 @@ export class StartupArcGIS  extends Startup {
           mapDeferred,
           aMap = null,
           geometrySvc,
-          layer = new MapImageLayer({
-              url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer"
-            }),
+          // layer = new MapImageLayer({
+          //     url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer"
+          //   }),
           webMap = new esriWebMap ({
               portalItem: { // autocasts as new PortalItem()
                 id: "f2e9b762544945f390ca4ac3671cfa72"
@@ -259,7 +259,7 @@ export class StartupArcGIS  extends Startup {
               basemap : 'streets'
           });
 
-          webMap.add(layer);  // adds the layer to the map
+          // webMap.add(layer);  // adds the layer to the map
           // viewCreated;
           webMap.load()
             .then(function(){
