@@ -79,6 +79,7 @@ export class MapsPage implements AfterViewInit {
         cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
         mlconfig = new MLConfig(cfgparams);
     this.mlconfig = mlconfig;
+    mlconfig.setHardInitialized(true);
     mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
     pageService.menuOption.subscribe(
       (data: MenuOptionModel) => {
@@ -166,6 +167,7 @@ export class MapsPage implements AfterViewInit {
               var
                   cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
                   mlconfig = new MLConfig(cfgparams);
+                  mlconfig.setHardInitialized(true);
                   mlconfig.setInitialPlaces(maploc.places);
               // newpos = new MLPosition(-1, -1, -1);
               // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}

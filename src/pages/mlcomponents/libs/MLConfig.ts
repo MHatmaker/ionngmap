@@ -37,7 +37,8 @@ export class MLConfig {
         href : '', //"http://localhost",
         search: '/',
         startupView : {'summaryShowing' : true, 'websiteDisplayMode' : true},
-        smallFormDimensions : { 'top' : 1, 'left' : 1, 'width' : 450, 'height' : 570}
+        smallFormDimensions : { 'top' : 1, 'left' : 1, 'width' : 450, 'height' : 570},
+        isHardInitialized : false
     };
 
     constructor (cfgparams : IConfigParams) {
@@ -53,6 +54,12 @@ export class MLConfig {
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(this.details.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    setHardInitialized(tf : boolean) {
+        this.details.isHardInitialized = tf;
+    }
+    isHardInitialized() : boolean {
+        return this.details.isHardInitialized;
     }
     setMapId (id : number) {
         console.log("MLConfig setMapId to " + id);
@@ -161,7 +168,7 @@ export class MLConfig {
     }
     hasCoordinates () : boolean {
         var result = "";
-        result = this.getParameterByName('zoom', this.details.mlposition);
+        result = this.details.mlposition.zoom || this.getParameterByName('zoom', this.details.mlposition);
         return result === "" ? false : true;
     }
     lon () : string{
@@ -204,7 +211,7 @@ export class MLConfig {
     //             "lat" : this.details.mlposition.lat,
     //             "zoom" : this.details.mlposition.zoom
     //         })
-            return new MLPosition(this.details.mlposition.lon, this.details.mlposition.details.lat, this.details.mlposition.details.zoom);
+            return new MLPosition(this.details.mlposition.lon, this.details.mlposition.lat, this.details.mlposition.zoom);
     }
 
     setQuery (q : string) {

@@ -477,7 +477,7 @@ export class StartupArcGIS  extends Startup {
 
       console.debug(idWebMap);
       // initUI();
-      if (!idWebMap) {
+      if (!idWebMap || idWebMap === '') {
           console.log("no idWebMap");
           // selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 "; //"e68ab88371e145198215a792c2d3c794";
           this.selectedWebMapId = 'a4bb8a91ecfb4131aa544eddfbc2f1d0'; //'f2e9b762544945f390ca4ac3671cfa72'/
@@ -492,7 +492,11 @@ export class StartupArcGIS  extends Startup {
       } else {
           console.log("found idWebMap");
           console.log("use " + idWebMap);
-          if (this.mlconfig.hasCoordinates()) {
+          if(this.mlconfig.isHardInitialized()) {
+              let pos = this.mlconfig.getPosition();
+              this.zoomWebMap = pos.zoom;
+              this.pointWebMap = [pos.lon, pos.lat];
+          } else if (this.mlconfig.hasCoordinates()) {
               this.zoomWebMap = this.mlconfig.zoom();
               llon = this.mlconfig.lon();
               llat = this.mlconfig.lat();

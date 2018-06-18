@@ -76,6 +76,7 @@ export class CanvasService {
               var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
                   cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
                   mlconfig = new MLConfig(cfgparams);
+                  mlconfig.setHardInitialized(true);
               // newpos = new MLPosition(-1, -1, -1);
               // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
               // mlConfig = new MLConfig(icfg);

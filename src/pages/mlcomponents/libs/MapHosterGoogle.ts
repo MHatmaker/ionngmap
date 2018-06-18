@@ -338,7 +338,7 @@ export class MapHosterGoogle extends MapHoster {
                     console.log(triggered);
                 }
                 this.geopushSup.pusherClientService.publishPanEvent(xtExt);
-                this.updateGlobals("setBounds with cmp false", +xtExt.lon, +xtExt.lat, xtExt.zoom);
+                this.updateGlobals("in setBounds with cmp false", +xtExt.lon, +xtExt.lat, xtExt.zoom);
 
                 gBnds = this.mphmap.getBounds();
                 console.debug(gBnds);
@@ -383,7 +383,7 @@ export class MapHosterGoogle extends MapHoster {
             tmpLat = this.cntryG;
             tmpZm = this.zmG;
 
-            this.updateGlobals("retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
+            this.updateGlobals("in retrievedBounds with cmp false", xj.lon, xj.lat, xj.zoom);
             this.userZoom = false;
             cntr = new google.maps.LatLng(xj.lat, xj.lon);
             // this.userZoom = true;
@@ -473,12 +473,12 @@ export class MapHosterGoogle extends MapHoster {
             qlon = this.mlconfig.lon();
             qzoom = this.mlconfig.zoom();
             initZoom = qzoom; //parseInt(qzoom, 10);
-            this.updateGlobals("init with qlon, qlat", +qlon, +qlat, +qzoom);
+            this.updateGlobals("iin configureMap - nit with qlon, qlat", +qlon, +qlat, +qzoom);
         } else {
             if (mapOptions) {
-                this.updateGlobals("MapHosterGoogle init with passed in mapOptions", mapOptions.center.lng(), mapOptions.center.lat(), +initZoom);
+                this.updateGlobals("in configureMap - MapHosterGoogle init with passed in mapOptions", mapOptions.center.lng(), mapOptions.center.lat(), +initZoom);
             } else {
-                this.updateGlobals("MapHosterGoogle init with hard-coded values", +qlon, +qlat, +initZoom);
+                this.updateGlobals("in configureMap - MapHosterGoogle init with hard-coded values", +qlon, +qlat, +initZoom);
             }
         }
         firstCntr = new google.maps.LatLng(this.cntryG, this.cntrxG);

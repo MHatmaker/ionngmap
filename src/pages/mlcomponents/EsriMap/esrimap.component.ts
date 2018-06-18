@@ -56,12 +56,11 @@ export class EsriMapComponent implements OnInit {
         url: 'https://js.arcgis.com/4.7/'
       };
       loadModules([
-        'esri/geometry/Point', 'esri/geometry/SpatialReference',
-        'esri/tasks/Locator'
+        'esri/geometry/Point', 'esri/geometry/SpatialReference'
       ], options)
-      .then(([esriPoint, SpatialReference, esriLocator]) => {
+      .then(([esriPoint, SpatialReference]) => {
             this.esriPoint = esriPoint();
-            this.geoLocator = new esriLocator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
+
             let mapOptions = {
               center: new esriPoint({
                 x: -87.620692,
@@ -70,87 +69,7 @@ export class EsriMapComponent implements OnInit {
               }),
               zoom: 15
             };
-            this.geolocation.getCurrentPosition().then((position) => {
+            this.startup.configure('esri-map-component' + this.mapNumber, mapOptions, this.elementRef.nativeElement.firstChild);
 
-                // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                this.glat = position.coords.latitude;
-                this.glng = position.coords.longitude;
-                mapOptions.center.x = this.glng;
-                mapOptions.center.y = this.glat;
-                this.startup.configure('esri-map-component' + this.mapNumber, mapOptions, this.elementRef.nativeElement.firstChild);
-              }
-                /*
-                let amap = new WebMap({
-                  // basemap: <any>'topo-vector'
-                  portalItem: { // autocasts as new PortalItem()
-                    id: 'f2e9b762544945f390ca4ac3671cfa72'
-                  }});
-                this.mapView = new MapView({
-                  container: this.elementRef.nativeElement.firstChild,
-                  map: amap,
-                  center: new esriPoint({
-                    x: this.glng,
-                    y: this.glat,
-                    spatialReference: new SpatialReference({ wkid: 4326 })
-                  }),
-                  zoom: 15
-                });
-                this.mapView.when((instance) => {
-                    console.log(`Centering map: ${this.mapNumber} at ${this.glng}, ${this.glat}`);
-                    this.mapView.center = [this.glng, this.glat];
-
-                    this.mapView.on('click', (evt) => {
-                        evt.stopPropagation();
-                        this.onMapClick(evt, this.mapView);
-                    });
-                });
-                this.viewCreated.next(this.mapView);
-            }*/
-          )}
-      )}
-    onMapClick(e, mpView) {
-                var mapPt = {x : e.mapPoint.x, y : e.mapPoint.y},
-                    rawMapPt = e.mapPoint,
-                    source = proj4.Proj('GOOGLE'),
-                    dest =  proj4.Proj('WGS84'),
-                    p,
-                    cntrpt;
-      loadModules([
-        'esri/geometry/Point', 'esri/geometry/SpatialReference',
-        'esri/geometry/support/webMercatorUtils'
-      ])
-      .then(([esriPoint, SpatialReference, esriwebMercatorUtils]) => {
-                this.screenPt = e.screenPoint;
-                console.log("e.screenPoint");
-                console.debug(e.screenPoint);
-                p = proj4.toPoint([e.mapPoint.x, e.mapPoint.y]);
-                proj4.transform(source, dest, p);
-                cntrpt = esriPoint({longitude : p.x, latitude : p.y, spatialReference : new SpatialReference({wkid: 4326})});
-                console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
-                console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
-                this.fixedLLG = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
-                let locPt = esriwebMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
-                let locPt2 = new esriPoint({x: locPt[0], y: locPt[1]});
-                this.geoLocator.locationToAddress(rawMapPt) //locPt2)
-                .then(function(response) {
-                    // var location;
-                    console.log(response);
-                    if (response.address) {
-                        let address = response.address;
-                        let location = esriwebMercatorUtils.lngLatToXY(response.location.longitude, response.location.latitude);
-                        // this.showClickResult(address);
-                        mpView.popup.content = address;
-                        console.debug(location);
-                    } else {
-                        mpView.popup.content = "whoops";
-                        // this.showClickResult(null);
-                    }
-                    mpView.popup.open({title: "Address", location: rawMapPt});
-
-                }).otherwise(function(err) {
-                    console.log(err);
-                });
-            });
-
-    }
-}
+});
+}}
