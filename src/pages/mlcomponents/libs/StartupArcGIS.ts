@@ -28,7 +28,7 @@ export class StartupArcGIS  extends Startup {
     private mapHoster : MapHosterArcGIS = null;
     // private newSelectedWebMapId : string = '';
     // private pusherChannel : string = '';
-    selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0"; // Requires a space after map ID
+    selectedWebMapId = "f52bc3aee47749c380ddb0cd89337349"; // Requires a space after map ID
     previousSelectedWebMapId = this.selectedWebMapId;
 
     private newSelectedWebMapId : string = '';
@@ -104,8 +104,9 @@ export class StartupArcGIS  extends Startup {
     this.mapOptions = mapLocOpts;
     this.newSelectedWebMapId = newMapId;
     this.mlconfig.setMapId(newMapId);
-    this.mlconfig.setWebmapId('a4bb8a91ecfb4131aa544eddfbc2f1d0');
+    this.mlconfig.setWebmapId('f52bc3aee47749c380ddb0cd89337349');
     this.initializePreProc();
+    console.log("Finished configure/initialize sequence");
   }
 
   showLoading () {
@@ -254,7 +255,7 @@ export class StartupArcGIS  extends Startup {
           //   }),
           webMap = new esriWebMap ({
               portalItem: { // autocasts as new PortalItem()
-                id: "f2e9b762544945f390ca4ac3671cfa72"
+                id: "f52bc3aee47749c380ddb0cd89337349"
               },
               basemap : 'streets'
           });
@@ -480,7 +481,7 @@ export class StartupArcGIS  extends Startup {
       if (!idWebMap || idWebMap === '') {
           console.log("no idWebMap");
           // selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 "; //"e68ab88371e145198215a792c2d3c794";
-          this.selectedWebMapId = 'a4bb8a91ecfb4131aa544eddfbc2f1d0'; //'f2e9b762544945f390ca4ac3671cfa72'/
+          this.selectedWebMapId = 'f52bc3aee47749c380ddb0cd89337349'; //'f2e9b762544945f390ca4ac3671cfa72'/
           this.mlconfig.setWebmapId(this.selectedWebMapId);
           console.log("use " + this.selectedWebMapId);
           // pointWebMap = [-87.7, lat=41.8];  [-89.381388, 43.07493];
@@ -494,8 +495,10 @@ export class StartupArcGIS  extends Startup {
           console.log("use " + idWebMap);
           if(this.mlconfig.isHardInitialized()) {
               let pos = this.mlconfig.getPosition();
-              this.zoomWebMap = pos.zoom;
-              this.pointWebMap = [pos.lon, pos.lat];
+              // this.zoomWebMap = pos.zoom;
+              // this.pointWebMap = [pos.lon, pos.lat];
+              this.pointWebMap = [-87.620692, 41.888941];
+              this.zoomWebMap = 15;
           } else if (this.mlconfig.hasCoordinates()) {
               this.zoomWebMap = this.mlconfig.zoom();
               llon = this.mlconfig.lon();

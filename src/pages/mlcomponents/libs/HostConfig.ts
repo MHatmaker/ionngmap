@@ -46,7 +46,7 @@ export interface IHostConfigDetails {
 @Injectable()
 export class HostConfig implements IHostConfigDetails {
     public details = {
-        webmapId : "a4bb8a91ecfb4131aa544eddfbc2f1d0",
+        webmapId : "f52bc3aee47749c380ddb0cd89337349",
         lat : '',
         lon : '',
         zoom : '',

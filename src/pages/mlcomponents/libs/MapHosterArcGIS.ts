@@ -655,12 +655,14 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 });
 
                 this.mphmap.on("click", this.onMapClick);
+                /*
                 window.addEventListener("resize", () => {
                     // this.mphmap.resize();                         //********* resize not yet fixed
 
                     mpCanRoot.style.width = "100%";
                     mpCanRoot.style.height = "100%";
                 });
+                */
                 this.mapReady = true;
                 this.userZoom = true;
 
