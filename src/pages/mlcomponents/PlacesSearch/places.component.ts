@@ -44,11 +44,13 @@ export class PlacesSearchComponent implements AfterViewInit {
           let mphmap = mph.getMap();
           let mlcfg : MLConfig = mph.getmlconfig();
           let bnds = mph.getSearchBounds();
+          let cntr = mph.getCenter();
+          let googlecntr = new google.maps.LatLng(cntr.lat, cntr.lon);
           console.log("searchBox latest bounds");
           console.log(bnds);
 
           queryPlaces.bounds = bnds;
-          queryPlaces.location = mphmap.center;
+          queryPlaces.location = googlecntr;
           queryPlaces.query = this.input.value;
           let service = new google.maps.places.PlacesService(mphmap);
               service.textSearch(queryPlaces, (p) => {

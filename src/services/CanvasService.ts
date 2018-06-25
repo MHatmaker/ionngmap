@@ -85,6 +85,10 @@ export class CanvasService {
               mlconfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
                   currIndex === 0 ? currIndex : currIndex - 1).getConfigParams());
               this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig); //angular.copy(mlConfig));
+          } else {
+              let mlcfg = this.mapInstanceService.getConfigForMap(currIndex > 0? currIndex - 1 : 0);
+              let ipos = mlcfg.getPosition();
+              mlcfg.setPosition(ipos);
           }
       }
 

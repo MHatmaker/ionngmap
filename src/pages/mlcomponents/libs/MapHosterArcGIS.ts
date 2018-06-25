@@ -615,6 +615,11 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                       if (this.userZoom === true) {
                           // let mapPt = this.mphmap.toMap({x : evt.x, y : evt.y});
                           let mapPt = this.mphmap.extent.center;
+                    let ll = esriwebMercatorUtils.xyToLngLat(this.mphmap.extent.xmin, this.mphmap.extent.ymin);
+                    let ur = esriwebMercatorUtils.xyToLngLat(this.mphmap.extent.xmax, this.mphmap.extent.ymax);
+                    this.bounds = new MLBounds(ll[0], ll[1], ur[0], ur[1]);
+                    // this.bounds = this.mphmap.extent;
+                    this.mlconfig.setBounds(this.bounds);
                           let xtExt = this.extractBounds(this.mphmap.zoom, mapPt, 'pan');
                           xtExt.then( (xtExt) => {
                             this.setBounds(xtExt);

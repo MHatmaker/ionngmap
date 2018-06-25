@@ -46,7 +46,9 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit () {
+
     // this.gmHeight = '380px';
+    var position;
     let latLng = new google.maps.LatLng(-34.9290, 138.6010);
 
     let mapOptions = {
@@ -63,11 +65,20 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     console.log(document.getElementById("google-map-component" + this.mapNumber));
 
     //this.geolocation.getCurrentPosition().then((position) => {
-    let position = this.canvasService.getInitialLocation()
-
-        // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    // let position = this.canvasService.getInitialLocation();
+    let mlcfg = this.mapInstanceService.getConfigForMap(this.mapNumber);
+    if (this.mapNumber == 0) {
+      position = this.canvasService.getInitialLocation();
         this.glat = position.center.lat;
         this.glng = position.center.lng;
+    } else {
+      position = mlcfg.getPosition();
+        this.glat = position.lat;
+        this.glng = position.lon;
+    }
+
+
+        // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         latLng = new google.maps.LatLng(this.glat, this.glng);
         mapOptions.center = {lng: this.glng, lat: this.glat};
         console.log(`geolocation center at ${this.glng}, ${this.glat}`);

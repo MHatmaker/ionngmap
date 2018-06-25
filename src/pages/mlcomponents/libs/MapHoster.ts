@@ -31,6 +31,10 @@ export class MapHoster {
         console.log("MapHoster base class getSearchBounds");
         return null;
     }
+    getCenter() {
+        console.log("MapHoster base class getCenter");
+        return null;
+    }
     placeMarkers(places) {
         console.log('MapHoster base class placeMarkers');
     }
