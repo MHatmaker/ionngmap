@@ -108,6 +108,7 @@ export class MapsPage implements AfterViewInit {
 
   ngAfterViewInit() {
     // this.addCanvas(this.selectedMapType, this.mlconfig, null);
+    // this.addCanvas('google', null, null);
   }
 
   ionViewDidLoad() {
@@ -164,20 +165,25 @@ export class MapsPage implements AfterViewInit {
                   ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
                   // let ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15};
               }
-              var
-                  cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
-                  mlconfig = new MLConfig(cfgparams);
-                  mlconfig.setHardInitialized(true);
-                  mlconfig.setInitialPlaces(maploc.places);
-              // newpos = new MLPosition(-1, -1, -1);
-              // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
-              // mlConfig = new MLConfig(icfg);
-              console.log("addCanvas with index " + currIndex);
-              console.debug(mlConfig);
-              mlconfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
-                  currIndex === 0 ? currIndex : currIndex - 1).getConfigParams());
-              this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig); //angular.copy(mlConfig));
-          }
+            } else {
+                  let initialMaploc = this.canvasService.getInitialLocation();
+                  maploc = initialMaploc;
+                  ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
+            }
+
+              let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
+              mlconfig = new MLConfig(cfgparams);
+              mlconfig.setHardInitialized(true);
+              mlconfig.setInitialPlaces(maploc.places);
+          // newpos = new MLPosition(-1, -1, -1);
+          // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
+          // mlConfig = new MLConfig(icfg);
+          console.log("addCanvas with index " + currIndex);
+          console.debug(mlConfig);
+          mlconfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
+              currIndex === 0 ? currIndex : currIndex - 1).getConfigParams());
+          this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig); //angular.copy(mlConfig));
+
       }
       mapTypeToCreate = this.mapHosterDict.get(mapType);
 

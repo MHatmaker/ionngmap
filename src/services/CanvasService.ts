@@ -18,6 +18,7 @@ import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvas
 import { MultiCanvasLeaflet } from '../pages/mlcomponents/MultiCanvas/multicanvasleaflet.component';
 import { Geolocation } from '@ionic-native/geolocation';
 import { MapLocCoords, MapLocOptions } from './positionupdate.interface';
+import { MapopenerProvider } from '../providers/mapopener/mapopener';
 
 // import {MultiCanvasGoogle} from '../MultiCanvas/multicanvasgoogle.component';
 
@@ -37,7 +38,8 @@ export class CanvasService {
         private mapInstanceService : MapInstanceService,
         private slideshareService : SlideShareService,
         private slideViewService : SlideViewService,
-        private geoLocation : Geolocation
+        private geoLocation : Geolocation,
+        private mapOpener : MapopenerProvider
       ){
     this.geoLocation.getCurrentPosition().then((position) => {
 
@@ -52,6 +54,7 @@ export class CanvasService {
           //mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         console.log(`geolocation center at ${glng}, ${glat}`);
+        this.mapOpener.openMap.emit(this.initialLoc);
         }, (err) => {
             console.log(err);
         });
