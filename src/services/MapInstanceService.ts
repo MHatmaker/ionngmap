@@ -14,6 +14,7 @@ export class MapInstanceService {
     currentSlideNumber : number;
     configInstances : Map<string, MLConfig> = new Map<string, MLConfig>();
     mapHosterInstances : Map<string, MapHoster> = new Map<string, MapHoster>();
+    hiddenMap : any;
 
     constructor() {
         console.log("service to return slideCount");
@@ -74,5 +75,11 @@ export class MapInstanceService {
     }
     getMapHosterInstanceForCurrentSlide() : MapHoster {
         return this.mapHosterInstances['cfg' + this.currentSlideNumber]; //getMapHosterInstance(this.currentSlideNumber);
+    }
+    setHiddenMap(map : any) {
+        this.hiddenMap = map;
+    }
+    getHiddenMap() {
+        return this.hiddenMap;
     }
 }

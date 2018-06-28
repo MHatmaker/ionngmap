@@ -41,9 +41,8 @@ export class PlacesSearchComponent implements AfterViewInit {
         // this._ngZone.run(() => {
           console.log(this.searchBox);
           let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
-          let mphmap = mph.getMap();
-          let mlcfg : MLConfig = mph.getmlconfig();
-          let bnds = mph.getSearchBounds();
+          let gmap = this.mapInstanceService.getHiddenMap();
+          let bnds = gmap.getBounds();
           let cntr = mph.getCenter();
           let googlecntr = new google.maps.LatLng(cntr.lat, cntr.lon);
           console.log("searchBox latest bounds");
@@ -52,7 +51,7 @@ export class PlacesSearchComponent implements AfterViewInit {
           queryPlaces.bounds = bnds;
           queryPlaces.location = googlecntr;
           queryPlaces.query = this.input.value;
-          let service = new google.maps.places.PlacesService(mphmap);
+          let service = new google.maps.places.PlacesService(gmap);
               service.textSearch(queryPlaces, (p) => {
                   if (p.length != 0) {
 
@@ -62,8 +61,7 @@ export class PlacesSearchComponent implements AfterViewInit {
                           if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
                               let coords : any = queryPlaces.location;
                               let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
-                              let opts: MapLocOptions = { center :  cntr, zoom : mlcfg.getZoom(), places : p};
-                              // let opts = new MaplocoptsProvider(queryPlaces.location, mlcfg.getZoom());
+                              let opts: MapLocOptions = { center :  cntr, zoom : gmap.getZoom(), places : p};
                               this.mapopener.openMap.emit(opts);
                           } else {
                               mph.placeMarkers(p);

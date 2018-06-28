@@ -28,7 +28,7 @@ import { MapLocOptions } from '../../services/positionupdate.interface';
   // styleUrls: ['./map.component.scss']
 })
 export class MapsPage implements AfterViewInit {
-  selectedMapType : string;
+    private selectedMapType : string;
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
     private menuActions = {};

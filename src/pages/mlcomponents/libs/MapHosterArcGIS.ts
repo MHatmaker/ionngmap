@@ -587,6 +587,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 // this.mphmap.centerAndZoom(startCenter, this.zmG);
                 this.mphmap.goTo({target : startCenter, zoom : this.zmG});
                 this.showGlobals("After centerAndZoom");
+                this.geopushSup.pusherClientService.publishPanEvent({lat : startCenter.y, lon : startCenter.x, zoom : this.zmG});
 
                 this.initMap("mapDiv_layer0");
                 this.geoLocator = new esriLocator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
