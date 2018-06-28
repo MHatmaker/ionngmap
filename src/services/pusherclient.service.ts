@@ -219,6 +219,10 @@ export class PusherClientService {
         return this.clients[clientName];
     }
 
+    createHiddenPusherClient(evtDct : IEventDct) {
+        this.clients['hiddenmap'] = new PusherClient(evtDct, 'hiddenmap');
+    }
+
     setupPusherClient (resolve, reject) {
         // var promise;
         this.userName = this.pusherConfig.getUserName();

@@ -55,6 +55,7 @@ import { DestselectionComponent } from '../components/destselection/destselectio
 import { DestinationsProvider } from '../providers/destinations/destinations';
 // import { MaplocoptsProvider } from '../providers/maplocopts/maplocopts';
 import { MapopenerProvider } from '../providers/mapopener/mapopener';
+import { HiddenmapComponent } from '../components/hiddenmap/hiddenmap';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -76,7 +77,8 @@ import { MapopenerProvider } from '../providers/mapopener/mapopener';
     CarouselComponent,
     NewsComponent,
     PushersetupComponent,
-    DestselectionComponent
+    DestselectionComponent,
+    HiddenmapComponent
   ],
   imports: [
     BrowserModule,
@@ -107,7 +109,8 @@ import { MapopenerProvider } from '../providers/mapopener/mapopener';
     PositionViewComponent,
     NewsComponent,
     PushersetupComponent,
-    DestselectionComponent
+    DestselectionComponent,
+    HiddenmapComponent
   ],
   providers: [
     StatusBar,
