@@ -542,8 +542,9 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 url: 'https://js.arcgis.com/4.7/'
               };
               const [esriPoint, esriSpatialReference, esriLocator,
-                      esriwebMercatorUtils] = await loadModules([
-                    'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/tasks/Locator', 'esri/geometry/support/webMercatorUtils'
+                      esriwebMercatorUtils, watchUtils] = await loadModules([
+                    'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/tasks/Locator',
+                    'esri/geometry/support/webMercatorUtils', 'esri/core/watchUtils'
                   ], options)
                 console.log("MapHosterArcGIS configureMap");
                 this.mphmap = xtntMap;
@@ -604,6 +605,15 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                         this.setBounds(this.extractBounds(this.mphmap.getLevel(), evt.extent.getCenter(), 'zoom'));
                     }
                     // this.userZoom = true;
+                });
+
+                watchUtils.whenTrue(this.mphmap, 'stationary', async (evt) => {
+                  if (this.mphmap.extent) {
+                    if (this.userZoom === true) {
+                        let bnds = await this.extractBounds(this.mphmap.zoom, this.mphmap.center, 'zoom');
+                        this.setBounds(bnds);
+                    }
+                  }
                 });
 
                 this.mphmap.on('pan-start', function (evt) {
