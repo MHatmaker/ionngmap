@@ -26,6 +26,7 @@ export class PushersetupComponent {
 
   accept() {
       this.viewCtrl.dismiss();
+      this.pusherConfig.setChannel(this.pushergroup['privateChannelMashover']);
   }
   logForm(){
     console.log(this.pushergroup.value)

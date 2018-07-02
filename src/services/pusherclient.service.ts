@@ -201,7 +201,7 @@ export class PusherClientService {
     //     this.eventHandlers[clientName] = evtDct;
     // }
     createPusherClient(mlcfg, cbfn, nfo) : PusherClient {
-        console.log("PusherSetupCtrl.createPusherClient");
+        console.log("pusherClientService.createPusherClient");
         this.mlconfig = mlcfg;
         var
             mapHoster = this.mlconfig.getMapHosterInstance(),

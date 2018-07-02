@@ -27,7 +27,7 @@ export class HiddenmapComponent {
           (data : MapLocOptions) => {
             if (this.hiddenMapCreated == false) {
               this.hiddenMapCreated = true;
-              this.addHiddenCanvas()
+              this.addHiddenCanvas();
             }
       });
   }
