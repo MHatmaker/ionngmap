@@ -20,12 +20,13 @@
                 <ion-input type="text" formControlName="searchTermGrp"></ion-input>
             </ion-item>
             <button ion-button type="button" (click)="groupFinderSubmit()">Submit Query</button>
-            <ion-list>
+            <ion-list fromControlName="agoGroups">
               <ion-item *ngFor="let g of agoGroups">
-                  <ion-avatar item-left>
+                  <ion-thumbnail item-left>
                     <img src="{{g.thumbnailUrl}}">
-                  </ion-avatar>
+                </ion-thumbnail>
                   <h2>{{g.title}}</h2>
+                  <h2>{{g.snippet}}</h2>
               </ion-item>
             </ion-list>
             <ion-row>
