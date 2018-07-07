@@ -51,11 +51,13 @@ import { GeoCodingService } from '../services/GeoCodingService';
 import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
 import { NewsComponent } from '../components/news/news';
 import { PushersetupComponent } from '../components/pushersetup/pushersetup';
+import { AgogroupComponent } from '../components/agogroup/agogroup';
 import { DestselectionComponent } from '../components/destselection/destselection';
 import { DestinationsProvider } from '../providers/destinations/destinations';
 // import { MaplocoptsProvider } from '../providers/maplocopts/maplocopts';
 import { MapopenerProvider } from '../providers/mapopener/mapopener';
 import { HiddenmapComponent } from '../components/hiddenmap/hiddenmap';
+import { AgoqueryProvider } from '../providers/agoquery/agoquery';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -77,6 +79,7 @@ import { HiddenmapComponent } from '../components/hiddenmap/hiddenmap';
     CarouselComponent,
     NewsComponent,
     PushersetupComponent,
+    AgogroupComponent,
     DestselectionComponent,
     HiddenmapComponent
   ],
@@ -109,6 +112,7 @@ import { HiddenmapComponent } from '../components/hiddenmap/hiddenmap';
     PositionViewComponent,
     NewsComponent,
     PushersetupComponent,
+    AgogroupComponent,
     DestselectionComponent,
     HiddenmapComponent
   ],
@@ -141,7 +145,8 @@ import { HiddenmapComponent } from '../components/hiddenmap/hiddenmap';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     DestinationsProvider,
     // MaplocoptsProvider,
-    MapopenerProvider
+    MapopenerProvider,
+    AgoqueryProvider
   ]
 })
 export class AppModule {}

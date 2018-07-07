@@ -18,6 +18,7 @@ import { MenuOptionModel } from './../../side-menu-content/models/menu-option-mo
 import { PageService } from "../../services/pageservice"
 import { NewsComponent } from "../../components/news/news";
 import { PushersetupComponent } from "../../components/pushersetup/pushersetup";
+import { AgogroupComponent } from "../../components/agogroup/agogroup";
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions } from '../../services/positionupdate.interface';
 
@@ -58,7 +59,8 @@ export class MapsPage implements AfterViewInit {
             this.showLocate();
         },
         'Search Group' : function() {
-            this.showSearchGroup();
+          let modal = modalCtrl.create(AgogroupComponent);
+          modal.present();
         },
         'Search Map' : function() {
             this.showSearchMap();
