@@ -14,13 +14,15 @@ export interface IAgoItem {
   title : string,
   snippet : string,
   thumbnailUrl : string,
-  itemUrl : string
+  itemUrl : string,
+  defaultExtent : __esri.Extent
 }
 
 @Injectable()
 export class AgoGroupItem implements IAgoGroupItem {
 
-    constructor( public id : string,  public title : string,  public snippet : string, public thumbnailUrl : string) {
+    constructor( public id : string,  public title : string,  public snippet : string,
+      public thumbnailUrl : string) {
     }
 };
 
@@ -28,7 +30,7 @@ export class AgoGroupItem implements IAgoGroupItem {
 export class AgoItem implements IAgoItem {
 
     constructor( public id : string,  public title : string,  public snippet : string,
-      public thumbnailUrl : string, public itemUrl : string) {
+      public thumbnailUrl : string, public itemUrl : string, public defaultExtent : __esri.Extent) {
     }
 };
 
@@ -66,7 +68,7 @@ export class AgoqueryProvider {
   simplifyItemResults(d) {
     let items : Array<IAgoItem> = new Array<IAgoItem>()
     d.forEach((itm) => {
-      items.push(new AgoItem(itm.id, itm.title, itm.snippet, itm.thumbnailUrl, itm.itemUrl));
+      items.push(new AgoItem(itm.id, itm.title, itm.snippet, itm.thumbnailUrl, itm.itemUrl, itm.extent));
     });
     return items;
   }

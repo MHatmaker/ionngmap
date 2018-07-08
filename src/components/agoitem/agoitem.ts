@@ -30,8 +30,8 @@ export class AgoitemComponent {
       console.log(this.agoItems);
   }
   selectAgoItem(itm) {
-      console.log(itm.title);
-      this.selectedItem = itm.id;
+      console.log(`selected map item ${itm.title}`);
+      this.selectedItem = itm;
   }
   accept() {
       this.viewCtrl.dismiss(this.selectedItem);

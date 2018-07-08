@@ -22,6 +22,7 @@ import { AgogroupComponent } from "../../components/agogroup/agogroup";
 import { AgoitemComponent } from "../../components/agoitem/agoitem";
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions, MapLocCoords } from '../../services/positionupdate.interface';
+import { MLBounds } from '../../services/mlbounds.service';
 
 @IonicPage()
 @Component({
@@ -51,7 +52,6 @@ export class MapsPage implements AfterViewInit {
         'Latest News' : () => {
           let modal = modalCtrl.create(NewsComponent);
           modal.present();
-            // this.news.showNews();
         },
         'Using MapLinkr' : () => {
             this.showUsing();
@@ -67,11 +67,15 @@ export class MapsPage implements AfterViewInit {
           let modal = modalCtrl.create(AgoitemComponent);
           modal.onDidDismiss((data) => {
               console.log(data);
-              let cntr : IPosition = new MLPosition(-1, -1, 15);
-              let mlcfg = new MLConfig({mapId : -1, mapType : 'esri', webmapId : data,
-                mlposition : cntr});
-              let mplocCoords : MapLocCoords = {lat: -1, lng: -1};
+              let xtnt : __esri.Extent = data.defaultExtent;
+              let xcntr : __esri.Point = xtnt.center;
+              let cntr : IPosition = new MLPosition(xcntr.longitude, xcntr.latitude, 15);
+              let mplocCoords : MapLocCoords = {lat: xcntr.latitude, lng: xcntr.longitude};
               let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null};
+              let bnds : MLBounds = new MLBounds(xtnt.xmin, xtnt.ymin, xtnt.xmax, xtnt.ymax);
+              let mlcfg = new MLConfig({mapId : -1, mapType : 'esri', webmapId : data.id,
+                mlposition : cntr});
+              mlcfg.setBounds(bnds);
               this.addCanvas('esri', mlcfg, mploc);
 
           });
@@ -128,20 +132,11 @@ export class MapsPage implements AfterViewInit {
   ionViewDidLoad() {
     console.log('ionViewDidLoad MapsPage');
   }
-  showNews() {
-      console.log('show news');
-  }
   showUsing() {
       console.log('show using');
   }
   showLocate() {
       console.log('show locate');
-  }
-  showSearchGroup() {
-      console.log('show search group');
-  }
-  showSearchMap() {
-      console.log('show map group');
   }
   showSharingHelp() {
       console.log('show sharing help');
@@ -149,13 +144,7 @@ export class MapsPage implements AfterViewInit {
   showSharing() {
       console.log('show sharing');
   }
-  showPusher() {
-      console.log('show pusher');
-  }
 
-  openPage(p) {
-      console.log("selected map type " + p);
-  }
   onsetMap (menuOption : MenuOptionModel) {
       this.addCanvas( menuOption.displayName, null, null);
   }
@@ -169,6 +158,10 @@ export class MapsPage implements AfterViewInit {
           mlConfig;
       if (mlcfg) {
           mlConfig = mlcfg;
+          mlConfig.setMapId(currIndex);
+          mlConfig.setHardInitialized(true);
+          mlConfig.setInitialPlaces(maploc.places);
+          this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
       } else {
           if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
               if ( maploc) {
@@ -201,7 +194,7 @@ export class MapsPage implements AfterViewInit {
       }
       mapTypeToCreate = this.mapHosterDict.get(mapType);
 
-      appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, null, maploc); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
+      appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, mlConfig, maploc); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
       // this.mapInstanceService.incrementMapNumber();
       // this.mapInstanceService.setCurrentSlide(currIndex);
