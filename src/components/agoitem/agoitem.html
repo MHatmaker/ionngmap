@@ -1,6 +1,6 @@
  <ion-header>
   <ion-toolbar>
-    <ion-title>ArcGIS Online Group</ion-title>
+    <ion-title>ArcGIS Online Item</ion-title>
     <ion-buttons start>
       <button ion-button (click)="cancel()">
         <span ion-text color="primary" showWhen="ios">Cancel</span>
@@ -11,17 +11,17 @@
 </ion-header>
 
 <ion-content class="cards-bg social-cards">
-    <ion-card id="idAgoGroupSetupCard">
+    <ion-card id="idAgoItemSetupCard">
       <ion-card-content>
-          <form [formGroup]="agogroupgroup" (ngSubmit)="logForm()">
-            <h4>Find group ids based on search term. Sign-in to search for private groups.</h4>
+          <form [formGroup]="agoitemgroup" (ngSubmit)="logForm()">
+            <h4>Find map items based on search term. Sign-in to search for private groups.</h4>
             <ion-item>
-                <ion-label>Group:</ion-label>
-                <ion-input type="text" formControlName="searchTermGrp"></ion-input>
+                <ion-label>Item:</ion-label>
+                <ion-input type="text" formControlName="searchTermItem"></ion-input>
             </ion-item>
-            <button ion-button type="button" (click)="groupFinderSubmit()">Submit Query</button>
-            <ion-list fromControlName="agoGroups">
-              <ion-item *ngFor="let g of agoGroups" (click)="selectAgoItem(g)">
+            <button ion-button type="button" (click)="itemFinderSubmit()">Submit Query</button>
+            <ion-list fromControlName="agoItems">
+              <ion-item *ngFor="let g of agoItems" (click)="selectAgoItem(g)">
                   <ion-thumbnail item-left>
                     <img src="{{g.thumbnailUrl}}">
                 </ion-thumbnail>

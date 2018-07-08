@@ -52,6 +52,7 @@ import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
 import { NewsComponent } from '../components/news/news';
 import { PushersetupComponent } from '../components/pushersetup/pushersetup';
 import { AgogroupComponent } from '../components/agogroup/agogroup';
+import { AgoitemComponent } from '../components/agoitem/agoitem';
 import { DestselectionComponent } from '../components/destselection/destselection';
 import { DestinationsProvider } from '../providers/destinations/destinations';
 // import { MaplocoptsProvider } from '../providers/maplocopts/maplocopts';
@@ -80,6 +81,7 @@ import { AgoqueryProvider } from '../providers/agoquery/agoquery';
     NewsComponent,
     PushersetupComponent,
     AgogroupComponent,
+    AgoitemComponent,
     DestselectionComponent,
     HiddenmapComponent
   ],
@@ -113,6 +115,7 @@ import { AgoqueryProvider } from '../providers/agoquery/agoquery';
     NewsComponent,
     PushersetupComponent,
     AgogroupComponent,
+    AgoitemComponent,
     DestselectionComponent,
     HiddenmapComponent
   ],
