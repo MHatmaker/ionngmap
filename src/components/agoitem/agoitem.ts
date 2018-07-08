@@ -12,6 +12,7 @@ export class AgoitemComponent {
   searchTermItem: string;
   private agoitemgroup : FormGroup;
   private agoItems : any;
+  private selectedItem : string;
 
   constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder,
     private agoqp : AgoqueryProvider) {
@@ -30,9 +31,10 @@ export class AgoitemComponent {
   }
   selectAgoItem(itm) {
       console.log(itm.title);
+      this.selectedItem = itm.id;
   }
   accept() {
-      this.viewCtrl.dismiss();
+      this.viewCtrl.dismiss(this.selectedItem);
   }
   logForm(){
     console.log(this.agoitemgroup.value)

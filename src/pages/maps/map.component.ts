@@ -2,7 +2,7 @@ import {
     Component,
     AfterViewInit} from '@angular/core';
 import { IonicPage, ModalController } from 'ionic-angular';
-import { IPosition } from '../../services/position.service';
+import { IPosition, MLPosition } from '../../services/position.service';
 import { IConfigParams } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
 import { MapInstanceService} from '../../services/MapInstanceService';
@@ -21,7 +21,7 @@ import { PushersetupComponent } from "../../components/pushersetup/pushersetup";
 import { AgogroupComponent } from "../../components/agogroup/agogroup";
 import { AgoitemComponent } from "../../components/agoitem/agoitem";
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
-import { MapLocOptions } from '../../services/positionupdate.interface';
+import { MapLocOptions, MapLocCoords } from '../../services/positionupdate.interface';
 
 @IonicPage()
 @Component({
@@ -48,32 +48,42 @@ export class MapsPage implements AfterViewInit {
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
     this.menuActions = {
-        'Latest News' : function() {
+        'Latest News' : () => {
           let modal = modalCtrl.create(NewsComponent);
           modal.present();
             // this.news.showNews();
         },
-        'Using MapLinkr' : function() {
+        'Using MapLinkr' : () => {
             this.showUsing();
         },
-        'Locate Self' : function() {
+        'Locate Self' : () => {
             this.showLocate();
         },
-        'Search Group' : function() {
+        'Search Group' : () => {
           let modal = modalCtrl.create(AgogroupComponent);
           modal.present();
         },
-        'Search Map' : function() {
+        'Search Map' : () => {
           let modal = modalCtrl.create(AgoitemComponent);
+          modal.onDidDismiss((data) => {
+              console.log(data);
+              let cntr : IPosition = new MLPosition(-1, -1, 15);
+              let mlcfg = new MLConfig({mapId : -1, mapType : 'esri', webmapId : data,
+                mlposition : cntr});
+              let mplocCoords : MapLocCoords = {lat: -1, lng: -1};
+              let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null};
+              this.addCanvas('esri', mlcfg, mploc);
+
+          });
           modal.present();
         },
-        'Sharing Instructions' : function() {
+        'Sharing Instructions' : () => {
             this.showSharingHelp();
         },
-        'Share Map' : function() {
+        'Share Map' : () => {
             this.showSharing();
         },
-        'Pusher Setup' : function() {
+        'Pusher Setup' : () => {
           let modal = modalCtrl.create(PushersetupComponent);
           modal.present();
         }
