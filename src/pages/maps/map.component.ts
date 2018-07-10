@@ -3,7 +3,7 @@ import {
     AfterViewInit} from '@angular/core';
 import { IonicPage, ModalController } from 'ionic-angular';
 import { IPosition, MLPosition } from '../../services/position.service';
-import { IConfigParams } from '../../services/configparams.service';
+import { IConfigParams, EMapSource } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
 import { MapInstanceService} from '../../services/MapInstanceService';
 // import { CarouselComponent} from '../mlcomponents/Carousel/carousel.component';
@@ -74,7 +74,7 @@ export class MapsPage implements AfterViewInit {
               let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null};
               let bnds : MLBounds = new MLBounds(xtnt.xmin, xtnt.ymin, xtnt.xmax, xtnt.ymax);
               let mlcfg = new MLConfig({mapId : -1, mapType : 'esri', webmapId : data.id,
-                mlposition : cntr});
+                mlposition : cntr, source : EMapSource.srcagonline});
               mlcfg.setBounds(bnds);
               this.addCanvas('esri', mlcfg, mploc);
 
@@ -94,7 +94,8 @@ export class MapsPage implements AfterViewInit {
     };
     console.log("fire up ConfigParams");
     var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
-        cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
+        cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType,
+            webmapId : "nowebmap", mlposition : ipos, source : EMapSource.srcmenu },
         mlconfig = new MLConfig(cfgparams);
     this.mlconfig = mlconfig;
     mlconfig.setHardInitialized(true);
@@ -159,7 +160,7 @@ export class MapsPage implements AfterViewInit {
       if (mlcfg) {
           mlConfig = mlcfg;
           mlConfig.setMapId(currIndex);
-          mlConfig.setHardInitialized(true);
+          // mlConfig.setHardInitialized(true);
           mlConfig.setInitialPlaces(maploc.places);
           this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
       } else {
@@ -178,7 +179,8 @@ export class MapsPage implements AfterViewInit {
                   ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
             }
 
-              let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
+              let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType,
+                  webmapId : "nowebmap", mlposition :ipos, source : EMapSource.srcgoogle},
               mlconfig = new MLConfig(cfgparams);
               mlconfig.setHardInitialized(true);
               mlconfig.setInitialPlaces(maploc.places);

@@ -1,11 +1,22 @@
 import { Injectable } from '@angular/core';
 import { IPosition } from './position.service';
 
+export enum EMapSource {
+  srcmenu,
+  srcagonline,
+  srcgoogle,
+  srcleaflet,
+  urlagonline,
+  urlgoogle,
+  urlleaflet
+}
+
 export interface IConfigParams {
     mapId : number;
     mapType : string;
     webmapId : string;
     mlposition : IPosition;
+    source : EMapSource
 }
 
 console.log("loading ConfigParams");
@@ -17,7 +28,8 @@ export class ConfigParams implements IConfigParams{
          public mapId : number  = -1,
          public mapType : string,
          public webmapId : string,
-         public mlposition : IPosition) {
+         public mlposition : IPosition,
+         public source : EMapSource) {
 
     }
 };

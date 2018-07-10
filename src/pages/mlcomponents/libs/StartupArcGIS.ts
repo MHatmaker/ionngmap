@@ -1,5 +1,6 @@
 import {Injectable, Output, EventEmitter, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
+import { ConfigParams, EMapSource } from '../../../services/configparams.service';
 // import { PusherConfig } from './PusherConfig';
 // import { PusherClientService } from '../../../services/pusherclient.service';
 // import { utils } from './utils';
@@ -104,7 +105,7 @@ export class StartupArcGIS  extends Startup {
     this.mapOptions = mapLocOpts;
     this.newSelectedWebMapId = newMapId;
     this.mlconfig.setMapId(newMapId);
-    this.mlconfig.setWebmapId('f52bc3aee47749c380ddb0cd89337349');
+    // this.mlconfig.setWebmapId('f52bc3aee47749c380ddb0cd89337349');
     this.initializePreProc();
     console.log("Finished configure/initialize sequence");
   }
@@ -255,9 +256,10 @@ export class StartupArcGIS  extends Startup {
           //   }),
           webMap = new esriWebMap ({
               portalItem: { // autocasts as new PortalItem()
-                id: "f52bc3aee47749c380ddb0cd89337349"
-              },
-              basemap : 'streets'
+                // id: "f52bc3aee47749c380ddb0cd89337349"
+                id: this.mlconfig.getWebmapId(false)
+              }
+              // basemap : 'streets'
           });
 
           // webMap.add(layer);  // adds the layer to the map
@@ -499,10 +501,14 @@ export class StartupArcGIS  extends Startup {
               // this.pointWebMap = [pos.lon, pos.lat];
               this.pointWebMap = [-87.620692, 41.888941];
               this.zoomWebMap = 15;
-          } else if (this.mlconfig.hasCoordinates()) {
+          } else if (this.mlconfig.getConfigParams().source == EMapSource.urlagonline) {
               this.zoomWebMap = this.mlconfig.zoom();
               llon = this.mlconfig.lon();
               llat = this.mlconfig.lat();
+          } else if (this.mlconfig.getConfigParams().source == EMapSource.srcagonline) {
+              this.zoomWebMap = this.mlconfig.getPosition().zoom;
+              llon = this.mlconfig.getPosition().lon;
+              llat = this.mlconfig.getPosition().lat;
               this.pointWebMap = [llon, llat];
           }
           this.initialize(idWebMap, {dstSel : 'no destination selection probably Same Window'},

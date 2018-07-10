@@ -15,6 +15,7 @@ export class MLConfig {
         userName : "",
         referrerId : "",
         referrerName : "",
+        source : 0,
         isInitialUser : true,
         url : "",
         locationPath : "",
@@ -46,6 +47,7 @@ export class MLConfig {
         this.details.mapId = cfgparams.mapId;
         this.details.mapType = cfgparams.mapType;
         this.details.webmapId = cfgparams.webmapId;
+        this.details.source = cfgparams.source;
     }
 
     getParameterByName (name : string, details? : any) {
@@ -187,6 +189,7 @@ export class MLConfig {
         this.details.mapId = config.mapId;
         this.details.mapType = config.mapType;
         this.details.webmapId = config.webmapId;
+        this.details.source = config.source;
     }
     getConfigParams () : IConfigParams {
         return {
@@ -196,7 +199,8 @@ export class MLConfig {
             "mlposition" : {
                 "lon" : this.details.mlposition.lon,
                 "lat" : this.details.mlposition.lat,
-                "zoom" : this.details.mlposition.zoom}
+                "zoom" : this.details.mlposition.zoom},
+            "source" : this.details.source
             }
     }
 
