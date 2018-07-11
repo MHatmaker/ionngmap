@@ -23,4 +23,9 @@ export class MLBounds implements ImlBounds {
 
     constructor( public llx : number,  public lly : number,  public urx : number, public ury : number) {
     }
+    getCenter() : {x : number, y : number}{
+      let x = this.llx + 0.5 * (this.urx - this.llx);
+      let y = this.lly + 0.5 * (this.ury - this.lly);
+      return {x, y};
+    }
 };

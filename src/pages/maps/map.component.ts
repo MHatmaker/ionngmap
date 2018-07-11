@@ -22,7 +22,7 @@ import { AgogroupComponent } from "../../components/agogroup/agogroup";
 import { AgoitemComponent } from "../../components/agoitem/agoitem";
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions, MapLocCoords } from '../../services/positionupdate.interface';
-import { MLBounds } from '../../services/mlbounds.service';
+import { MLBounds, ImlBounds } from '../../services/mlbounds.service';
 
 @IonicPage()
 @Component({
@@ -66,16 +66,16 @@ export class MapsPage implements AfterViewInit {
         'Search Map' : () => {
           let modal = modalCtrl.create(AgoitemComponent);
           modal.onDidDismiss((data) => {
+              console.log("Ago dialog dismissed processing");
               console.log(data);
-              let xtnt : __esri.Extent = data.defaultExtent;
-              let xcntr : __esri.Point = xtnt.center;
-              let cntr : IPosition = new MLPosition(xcntr.longitude, xcntr.latitude, 15);
-              let mplocCoords : MapLocCoords = {lat: xcntr.latitude, lng: xcntr.longitude};
+              let xtnt : MLBounds = data.defaultExtent;
+              let xcntr = xtnt.getCenter();
+              let cntr : IPosition = new MLPosition(xcntr.x, xcntr.y, 15);
+              let mplocCoords : MapLocCoords = {lat: xcntr.y, lng: xcntr.x};
               let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null};
-              let bnds : MLBounds = new MLBounds(xtnt.xmin, xtnt.ymin, xtnt.xmax, xtnt.ymax);
               let mlcfg = new MLConfig({mapId : -1, mapType : 'esri', webmapId : data.id,
                 mlposition : cntr, source : EMapSource.srcagonline});
-              mlcfg.setBounds(bnds);
+              mlcfg.setBounds(xtnt);
               this.addCanvas('esri', mlcfg, mploc);
 
           });

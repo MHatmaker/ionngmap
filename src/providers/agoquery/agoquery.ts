@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { utils } from '../../pages/mlcomponents/libs/utils';
 import { loadModules } from 'esri-loader';
+import { MLBounds, ImlBounds } from '../../services/mlbounds.service';
 
 export interface IAgoGroupItem {
   id : string,
@@ -15,7 +16,7 @@ export interface IAgoItem {
   snippet : string,
   thumbnailUrl : string,
   itemUrl : string,
-  defaultExtent : __esri.Extent
+  defaultExtent : ImlBounds
 }
 
 @Injectable()
@@ -30,7 +31,7 @@ export class AgoGroupItem implements IAgoGroupItem {
 export class AgoItem implements IAgoItem {
 
     constructor( public id : string,  public title : string,  public snippet : string,
-      public thumbnailUrl : string, public itemUrl : string, public defaultExtent : __esri.Extent) {
+      public thumbnailUrl : string, public itemUrl : string, public defaultExtent : ImlBounds) {
     }
 };
 
@@ -68,7 +69,11 @@ export class AgoqueryProvider {
   simplifyItemResults(d) {
     let items : Array<IAgoItem> = new Array<IAgoItem>()
     d.forEach((itm) => {
-      items.push(new AgoItem(itm.id, itm.title, itm.snippet, itm.thumbnailUrl, itm.itemUrl, itm.extent));
+      if (itm.extent) {
+        let xtnt = itm.extent;
+        let bnds = new MLBounds(xtnt.xmin, xtnt.ymin, xtnt.xmax, xtnt.ymax)
+        items.push(new AgoItem(itm.id, itm.title, itm.snippet, itm.thumbnailUrl, itm.itemUrl, bnds));
+      }
     });
     return items;
   }
