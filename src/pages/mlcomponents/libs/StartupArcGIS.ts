@@ -32,7 +32,7 @@ export class StartupArcGIS  extends Startup {
     selectedWebMapId = "f52bc3aee47749c380ddb0cd89337349"; // Requires a space after map ID
     previousSelectedWebMapId = this.selectedWebMapId;
 
-    private newSelectedWebMapId : string = '';
+    // private newSelectedWebMapId : string = '';
     private pusher : any = null;
     private pusherChannel = null;
     private channel = null;
@@ -103,7 +103,7 @@ export class StartupArcGIS  extends Startup {
 
     this.elementRef = elementRef;
     this.mapOptions = mapLocOpts;
-    this.newSelectedWebMapId = newMapId;
+    // this.newSelectedWebMapId = newMapId;
     this.mlconfig.setMapId(newMapId);
     // this.mlconfig.setWebmapId('f52bc3aee47749c380ddb0cd89337349');
     this.initializePreProc();
@@ -237,7 +237,7 @@ export class StartupArcGIS  extends Startup {
       }
   }
 
-  async initializePostProc (newSelectedWebMapId) {
+  async initializePostProc (idAgoItem) {
       const options = {
         url: 'https://js.arcgis.com/4.7/'
       };
@@ -292,8 +292,8 @@ export class StartupArcGIS  extends Startup {
           //enter the bing maps key for your organization if you want to display bing maps
           bingMapsKey: "/*Please enter your own Bing Map key*/"
       };
-      if(newSelectedWebMapId){
-          this.configOptions.webmap = esriWebMap.portalItem = newSelectedWebMapId;
+      if(idAgoItem){
+          this.configOptions.webmap = esriWebMap.portalItem = idAgoItem;
       }
 
       console.log('StartupArcGIS ready to instantiate Map Hoster with map no. ' + this.mapNumber);                        // return this.mapHoster;
@@ -386,6 +386,7 @@ export class StartupArcGIS  extends Startup {
               // dojo.connect(aMap, "onUpdateStart", showLoading);
               // dojo.connect(aMap, "onUpdateEnd", hideLoading);
               // dojo.connect(aMap, "onLoad", initUI);
+              this.mlconfig.setPosition({lat : this.mapView.center.latitude, lon : this.mapView.center.longitude, zoom : this.mapView.zoom});
               this.mapHoster = new MapHosterArcGIS(this.mapView, this.mapNumber, this.mlconfig, this.geopush, this.elementRef);
               this.initUI();
               this.mapHosterSetupCallback(this.mapHoster, this.aMap);
@@ -401,7 +402,7 @@ export class StartupArcGIS  extends Startup {
   //     return mapHoster;
   // }
 
-  prepareWindow (newSelectedWebMapId, referringMph, displayDestination) {
+  prepareWindow (idAgoItem, referringMph, displayDestination) {
 
       var curmph = this.mapHoster,
           url,
@@ -409,11 +410,11 @@ export class StartupArcGIS  extends Startup {
           openNewDisplay;
 
       openNewDisplay = function (channel, userName) {
-          url = "?id=" + newSelectedWebMapId + this.mapHoster.getGlobalsForUrl() +
+          url = "?id=" + idAgoItem + this.mapHoster.getGlobalsForUrl() +
               "&channel=" + channel + "&userName=" + userName +
               "&maphost=ArcGIS" + "&referrerId=" + this.mlconfig.getUserId();
           if (referringMph) {
-              url = "?id=" + newSelectedWebMapId + referringMph.getGlobalsForUrl() +
+              url = "?id=" + idAgoItem + referringMph.getGlobalsForUrl() +
                   "&channel=" + channel + "&userName=" + userName +
                   "&maphost=ArcGIS" + "&referrerId=" + this.mlconfig.getUserId();
           }
@@ -425,7 +426,7 @@ export class StartupArcGIS  extends Startup {
           this.mlconfig.setUserId(userName + this.mapNumber);
           if (displayDestination === 'New Pop-up Window') {
               baseUrl = this.mlconfig.getbaseurl();
-              window.open(baseUrl + "/arcgis/" + url, newSelectedWebMapId, this.mlconfig.getSmallFormDimensions());
+              window.open(baseUrl + "/arcgis/" + url, idAgoItem, this.mlconfig.getSmallFormDimensions());
           } else {
               baseUrl = this.mlconfig.getbaseurl();
               window.open(baseUrl + "arcgis/" + url, '_blank');
@@ -435,14 +436,14 @@ export class StartupArcGIS  extends Startup {
 
       if (this.geopush.getGeoPusherSupport().pusherConfig.isNameChannelAccepted() === false) {
           this.geopush.getGeoPusherSupport().pusherClientService.setupPusherClient(openNewDisplay,
-                  {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : newSelectedWebMapId});
+                  {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : idAgoItem});
       } else {
           openNewDisplay(this.geopush.getGeoPusherSupport().pusherConfig.masherChannel(false),
               this.geopush.getGeoPusherSupport().pusherConfig.getUserName());
       }
   }
 
-  initialize (newSelectedWebMapId, destDetails, selectedMapTitle, referringMph) {
+  initialize (idAgoItem, destDetails, selectedMapTitle, referringMph) {
       var displayDestination = destDetails.dstSel;
       //     $inj,
       // CurrentMapTypeService;
@@ -451,16 +452,16 @@ export class StartupArcGIS  extends Startup {
       The user desires to open a new popup or tab related to the current map view, without yet publishing the new map environment.
        */
       if (displayDestination === 'New Pop-up Window') {
-          this.prepareWindow(newSelectedWebMapId, referringMph, displayDestination);
+          this.prepareWindow(idAgoItem, referringMph, displayDestination);
       } else if (displayDestination === 'New Tab') {
-          this.prepareWindow(newSelectedWebMapId, referringMph, displayDestination);
+          this.prepareWindow(idAgoItem, referringMph, displayDestination);
       } else {
           /*
           This branch handles a new ArcGIS Online webmap presentation from either selecting the ArcGIS tab in the master
           site or opening the webmap from a url sent through a publish event.
            */
 
-          this.initializePostProc(newSelectedWebMapId);
+          this.initializePostProc(idAgoItem);
 
           // $inj = this.mlconfig.getInjector();
           // CurrentMapTypeService = $inj.get('CurrentMapTypeService');
@@ -474,14 +475,14 @@ export class StartupArcGIS  extends Startup {
       // var urlparams=dojo.queryToObject(window.location.search);
       // console.debug(urlparams);
       // var idWebMap=urlparams['?id'];
-      var idWebMap = this.mlconfig.getWebmapId(true),
+      var idAgoItem = this.mlconfig.getWebmapId(true),
           llon,
           llat;
 
-      console.debug(idWebMap);
+      console.debug(idAgoItem);
       // initUI();
-      if (!idWebMap || idWebMap === '') {
-          console.log("no idWebMap");
+      if (!idAgoItem || idAgoItem === '') {
+          console.log("no idAgoItem");
           // selectedWebMapId = "a4bb8a91ecfb4131aa544eddfbc2f1d0 "; //"e68ab88371e145198215a792c2d3c794";
           this.selectedWebMapId = 'f52bc3aee47749c380ddb0cd89337349'; //'f2e9b762544945f390ca4ac3671cfa72'/
           this.mlconfig.setWebmapId(this.selectedWebMapId);
@@ -493,8 +494,8 @@ export class StartupArcGIS  extends Startup {
           this.initialize(this.selectedWebMapId, {dstSel : 'no destination selection probably Same Window'},
               'Name Placeholder', null);
       } else {
-          console.log("found idWebMap");
-          console.log("use " + idWebMap);
+          console.log("found idAgoItem");
+          console.log("use " + idAgoItem);
           if(this.mlconfig.isHardInitialized()) {
               let pos = this.mlconfig.getPosition();
               // this.zoomWebMap = pos.zoom;
@@ -505,13 +506,14 @@ export class StartupArcGIS  extends Startup {
               this.zoomWebMap = this.mlconfig.zoom();
               llon = this.mlconfig.lon();
               llat = this.mlconfig.lat();
+              this.pointWebMap = [llon, llat];
           } else if (this.mlconfig.getConfigParams().source == EMapSource.srcagonline) {
               this.zoomWebMap = this.mlconfig.getPosition().zoom;
               llon = this.mlconfig.getPosition().lon;
               llat = this.mlconfig.getPosition().lat;
               this.pointWebMap = [llon, llat];
           }
-          this.initialize(idWebMap, {dstSel : 'no destination selection probably Same Window'},
+          this.initialize(idAgoItem, {dstSel : 'no destination selection probably Same Window'},
               'Name Placeholder', null);
       }
   };

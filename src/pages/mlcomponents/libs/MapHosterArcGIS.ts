@@ -32,7 +32,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     // this.mphmapCenter;
     cntrxG = null;
     cntryG = null;
-    bounds = null;
+    bounds : ImlBounds = null;
     minZoom = null;
     maxZoom = null;
     zoomLevels = null;
@@ -223,8 +223,8 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
             compareExtents(msg, xtnt) {
                 var cmp = xtnt.zoom === this.zmG,
-                    wdth = Math.abs(this.bounds.xmax - this.bounds.xmin),
-                    hgt = Math.abs(this.bounds.ymax - this.bounds.ymin),
+                    wdth = Math.abs(this.bounds.urx - this.bounds.llx),
+                    hgt = Math.abs(this.bounds.ury - this.bounds.lly),
                     lonDif = Math.abs((xtnt.lon - this.cntrxG) / wdth),
                     latDif =  Math.abs((xtnt.lat - this.cntryG) / hgt);
                 // cmp = ((cmp == true) && (xtnt.lon == this.cntrxG) && (xtnt.lat == this.cntryG));
@@ -318,9 +318,9 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
                 // console.log("screenGeo");
                 // console.debug(screenGeo);
-                $inj = this.mlconfig.getInjector();
-                linkrSvc = $inj.get('LinkrService');
-                linkrSvc.hideLinkr();
+                // $inj = this.mlconfig.getInjector();
+                // linkrSvc = $inj.get('LinkrService');
+                // linkrSvc.hideLinkr();
 
                 //      screengraphic = new esri.geometry.toScreenGeometry(this.mphmap.extent,800,600,userdrawlayer.graphics[0].geometry);
 
@@ -356,12 +356,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     xj.zoom = this.zmG;
                 }
                 var zm = xj.zoom,
-                    x = esriwebMercatorUtils.lngLatToXY(xj.lon, xj.lat),
+                    // x = esriwebMercatorUtils.lngLatToXY(xj.lon, xj.lat),
                     cmp = this.compareExtents("retrievedBounds",
                         {
                             'zoom' : xj.zoom,
-                            'lon' : x[0],
-                            'lat' : x[1]
+                            'lon' : xj.lon, //x[0],
+                            'lat' : xj.lat  //x[1]
                         }),
                     view = xj.lon + ", " + xj.lat + " : " + zm + " " + this.scale2Level[zm].scale,
                     tmpLon,
@@ -564,7 +564,8 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 this.pusherEventHandler.addEvent('client-MapClickEvent', () => this.retrievedClick);
 
                 if (zoomWebMap !== null) {
-                    await this.updateGlobals("in configureMap - init with attributes in args", pointWebMap[0], pointWebMap[1], zoomWebMap);
+                    await this.updateGlobals("in configureMap - init with attributes in args",
+                        xtntMap.center.longitude, xtntMap.center.latitude, xtntMap.zoom);
                 } else {
 
                     qlat = this.mlconfig.lat();
@@ -593,7 +594,9 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 this.initMap("mapDiv_layer0");
                 this.geoLocator = new esriLocator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
                 // addInitialSymbols();
-                this.bounds = this.mphmap.extent;
+                let ll = esriwebMercatorUtils.xyToLngLat(this.mphmap.extent.xmin, this.mphmap.extent.ymin);
+                let ur = esriwebMercatorUtils.xyToLngLat(this.mphmap.extent.xmax, this.mphmap.extent.ymax);
+                this.bounds = new MLBounds(ll[0], ll[1], ur[0], ur[1]);
                 this.userZoom = true;
 
                 this.mphmap.on('zoom-start', function (evt) {
