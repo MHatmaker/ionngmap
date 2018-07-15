@@ -17,9 +17,9 @@ export class AgoitemComponent {
   constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder,
     private agoqp : AgoqueryProvider) {
     console.log('Hello AgoItemComponent Component');
-    this.searchTermItem = 'search terms';
+    this.searchTermItem = 'Chicago Crime';
     this.agoitemgroup = this.formBuilder.group({
-      searchTermItem: 'search terms',
+      searchTermItem: 'Chicago Crime',
       agoItems : Array<AgoItem[]>()
     });
   }

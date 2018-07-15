@@ -50,7 +50,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     geoLocator : __esri.Locator;
     screenPt = null;
     fixedLLG = null;
-    btnShare;
+    // btnShare;
     selfPusherDetails = {
         channel : null,
         pusher : null
@@ -406,30 +406,31 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             }
 
             async onMapClick(e) {
+              try {
               const options = {
                 url: 'https://js.arcgis.com/4.7/'
               };
               const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
-                    'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/WebMercator'
+                    'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
                   ], options)
                 var mapPt = {x : e.mapPoint.x, y : e.mapPoint.y},
                     source = proj4.Proj('GOOGLE'),
                     dest =  proj4.Proj('WGS84'),
                     p,
                     cntrpt;
-                this.screenPt = e.mapPoint;
-                console.log("e.screenPoint");
-                console.debug(e.screenPoint);
-                p = proj4.toPoint([e.mapPoint.x, e.mapPoint.y]);
-                proj4.transform(source, dest, p);
-                cntrpt = new esriPoint({longitude : p.x, latitude : p.y, spatialReference : new esriSpatialReference({wkid: 4326})});
-                console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
-                console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
-                this.fixedLLG = this.geopushSup.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
-                let locPt = esriwebMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
-                let locPt2 = new __esri.Point({x: locPt[0], y: locPt[1]});
-                this.geoLocator.locationToAddress(locPt2)
-                .then(function(response) {
+                // this.screenPt = e.mapPoint;
+                // console.log("e.screenPoint");
+                // console.debug(e.screenPoint);
+                // p = proj4.toPoint([e.mapPoint.x, e.mapPoint.y]);
+                // proj4.transform(source, dest, p);
+                // cntrpt = new esriPoint({longitude : p.x, latitude : p.y, spatialReference : new esriSpatialReference({wkid: 4326})});
+                // console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
+                // console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
+                // this.fixedLLG = this.geopushSup.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
+                // let locPt = esriwebMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
+                // let locPt2 = new esriPoint({longitude: locPt[0], latitude: locPt[1], spatialReference : new esriSpatialReference({wkid: 4326})});
+                this.geoLocator.locationToAddress(e.mapPoint)
+                .then((response) => {
                     // var location;
                     if (response.address) {
                         let address = response.address;
@@ -441,7 +442,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     }
 
                 }).otherwise(function(err) {
-
+                  console.log(err);
                 });
 
              /*
@@ -457,6 +458,10 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', latlng);
                 }
                  */
+      }
+      catch(error) {
+        console.log('We have an error: ' + error);
+      }
             }
 
             // this.pusherEventHandler = new PusherEventHandler.PusherEventHandler(this.mlconfig.getMapNumber());
@@ -466,12 +471,13 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
             showClickResult(content) {
                 var contextContent = content,
-                    actionList = document.getElementsByClassName('actionList')[0],
-                    contentNode = document.getElementsByClassName('contentPane')[0],
+                    actionList = document.getElementsByClassName('esri-popup__actions')[0],
+                    contentNode = document.getElementsByClassName('esri-popup__actions')[0],
                     shareBtnId = 'shareSomethingId' + this.selectedMarkerId,
                     addedShareBtn = '<button class="btn-primary" id="' + shareBtnId + '" >Share</button>',
                     addedContent,
                     showSomething,
+                    btnShare,
                     addedContentNode;
 
                 console.debug(actionList);
@@ -519,9 +525,9 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
                 this.mphmap.popup.open({location : this.screenPt}); //, this.mphmap.getInfoWindowAnchor(this.screenPt));
 
-                this.btnShare = document.getElementById(shareBtnId);
-                this.btnShare.onclick = function() {
-                    this.showSomething();
+                btnShare = document.getElementById(shareBtnId);
+                btnShare.onclick = function () {
+                    showSomething();
                 };
                   /*
                 if (selfPusherDetails.pusher)
@@ -673,7 +679,9 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     });
                 });
 
-                this.mphmap.on("click", this.onMapClick);
+                this.mphmap.on("click", (evt) => {
+                  this.onMapClick(evt);
+                });
                 /*
                 window.addEventListener("resize", () => {
                     // this.mphmap.resize();                         //********* resize not yet fixed

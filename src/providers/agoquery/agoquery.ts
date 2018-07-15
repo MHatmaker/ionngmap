@@ -69,9 +69,10 @@ export class AgoqueryProvider {
   simplifyItemResults(d) {
     let items : Array<IAgoItem> = new Array<IAgoItem>()
     d.forEach((itm) => {
-      if (itm.extent) {
+      if (itm.type == 'Web Map') {
         let xtnt = itm.extent;
-        let bnds = new MLBounds(xtnt.xmin, xtnt.ymin, xtnt.xmax, xtnt.ymax)
+        let bnds = new MLBounds(xtnt.xmin, xtnt.ymin, xtnt.xmax, xtnt.ymax);
+        console.log(`item name : ${itm.title}, type : ${itm.type}, isLayer : ${itm.isLayer}`);
         items.push(new AgoItem(itm.id, itm.title, itm.snippet, itm.thumbnailUrl, itm.itemUrl, bnds));
       }
     });
