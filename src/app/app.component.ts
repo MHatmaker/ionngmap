@@ -13,6 +13,8 @@ import { MenuOptionModel } from './../side-menu-content/models/menu-option-model
 import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
 import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 // import { Geolocation } from '@ionic-native/geolocation';
+import { DomService } from '../services/dom.service';
+import { CommonToNG } from '../pages/mlcomponents/libs/CommonToNG';
 
 @Component({
   templateUrl: 'app.html',
@@ -45,7 +47,7 @@ export class MapLinkrApp {
   pages: Array<{title: string, component: any}>;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
-      private menuCtrl: MenuController, private pageService : PageService,
+      private menuCtrl: MenuController, private pageService : PageService, private domsvc : DomService,
       private pusherConfig : PusherConfig, hostConfig : HostConfig) {
     this.initializeApp();
 
@@ -66,6 +68,8 @@ export class MapLinkrApp {
     hostConfig.sethost(location.host);
     hostConfig.sethostport(location.port);
     hostConfig.sethref(location.href);
+
+    CommonToNG.setLibs(this.domsvc);
 
     if (location.search === '') {
         hostConfig.setInitialUserStatus(true);

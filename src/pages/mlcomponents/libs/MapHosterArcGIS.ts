@@ -19,6 +19,10 @@ import * as proj4x from 'proj4';
 import { MapHoster } from './MapHoster';
 import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
 import { ImlBounds, MLBounds, xtntParams } from '../../../services/mlbounds.service';
+import { DomService } from '../../../services/dom.service';
+import { SharemapComponent } from '../../../components/sharemap/sharemap'
+import { ReflectiveInjector } from '@angular/core';
+import { CommonToNG } from '../libs/CommonToNG';
 
 const proj4 = (proj4x as any).default;
 
@@ -474,19 +478,18 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     actionList = document.getElementsByClassName('esri-popup__actions')[0],
                     contentNode = document.getElementsByClassName('esri-popup__actions')[0],
                     shareBtnId = 'shareSomethingId' + this.selectedMarkerId,
-                    addedShareBtn = '<button class="btn-primary" id="' + shareBtnId + '" >Share</button>',
+                    addedShareBtn = 'sharemap',
                     addedContent,
                     showSomething,
                     btnShare,
                     addedContentNode;
 
-                console.debug(actionList);
-                if (this.selectedMarkerId === 101) {
-                    this.initialActionListHtml = actionList.innerHTML;
-                }
-                this.selectedMarkerId += 1;
-                actionList.innerHTML = this.initialActionListHtml + addedShareBtn;
-
+                let shareElement = document.createElement(addedShareBtn);
+                // let injector = ReflectiveInjector.resolveAndCreate([DomService]);
+                // let domsvc = injector.get(DomService);
+                let domsvc = CommonToNG.getLibs();
+                domsvc.appendComponentToElement(SharemapComponent, actionList);
+                /*
                 if (content === null) {
                     addedContent = "Share lat/lon : " + this.fixedLLG.lat + ", " + this.fixedLLG.lon;
                     this.mphmap.popup.title = "Ready to Push Click";
@@ -500,6 +503,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     contentNode.appendChild(addedContentNode);
                     // this.mphmap.infoWindow.setContent(content);
                 }
+                */
 
                 showSomething = function() {
                     var referrerId,
@@ -523,12 +527,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     // }
                 }
 
-                this.mphmap.popup.open({location : this.screenPt}); //, this.mphmap.getInfoWindowAnchor(this.screenPt));
+                // this.mphmap.popup.open({location : this.screenPt}); //, this.mphmap.getInfoWindowAnchor(this.screenPt));
 
-                btnShare = document.getElementById(shareBtnId);
-                btnShare.onclick = function () {
-                    showSomething();
-                };
+                // btnShare = document.getElementById(shareBtnId);
+                // btnShare.onclick = function () {
+                //     showSomething();
+                // };
                   /*
                 if (selfPusherDetails.pusher)
                 {

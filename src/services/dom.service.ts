@@ -44,7 +44,8 @@ export class DomService {
   getId() {
       return this.id;
   }
-  appendComponentToElement(component: any, parentId: string) {
+  // appendComponentToElement(component: any, parentId: string) {
+  appendComponentToElement(component: any, parentElement : Element) {
       // Create a component reference from the component
       const componentRef = this.componentFactoryResolver
         .resolveComponentFactory(component)
@@ -58,7 +59,7 @@ export class DomService {
         .rootNodes[0] as HTMLElement;
 
       // Append DOM element to the body
-      let parentElement = document.getElementById(parentId);
+      // let parentElement = document.getElementById(parentId);
 
       console.log(domElem);
       console.log('now append');

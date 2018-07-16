@@ -34,7 +34,7 @@ import { MultiCanvasLeaflet } from '../pages/mlcomponents/MultiCanvas/multicanva
 
 // import { CoordinateComponent } from '../pages/mlcomponents/coordinate/coordinate.component';
 import { CarouselComponent } from '../pages/mlcomponents/Carousel/carousel.component';
-// import { DomService } from '../services/dom.service';
+import { DomService } from '../services/dom.service';
 import { MapInstanceService } from '../services/MapInstanceService';
 import { CanvasService } from '../services/CanvasService';
 import { SlideShareService } from '../services/slideshare.service';
@@ -59,6 +59,7 @@ import { DestinationsProvider } from '../providers/destinations/destinations';
 import { MapopenerProvider } from '../providers/mapopener/mapopener';
 import { HiddenmapComponent } from '../components/hiddenmap/hiddenmap';
 import { AgoqueryProvider } from '../providers/agoquery/agoquery';
+import { SharemapComponent } from '../components/sharemap/sharemap'
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -83,7 +84,8 @@ import { AgoqueryProvider } from '../providers/agoquery/agoquery';
     AgogroupComponent,
     AgoitemComponent,
     DestselectionComponent,
-    HiddenmapComponent
+    HiddenmapComponent,
+    SharemapComponent
   ],
   imports: [
     BrowserModule,
@@ -117,7 +119,8 @@ import { AgoqueryProvider } from '../providers/agoquery/agoquery';
     AgogroupComponent,
     AgoitemComponent,
     DestselectionComponent,
-    HiddenmapComponent
+    HiddenmapComponent,
+    SharemapComponent
   ],
   providers: [
     StatusBar,
@@ -149,7 +152,8 @@ import { AgoqueryProvider } from '../providers/agoquery/agoquery';
     DestinationsProvider,
     // MaplocoptsProvider,
     MapopenerProvider,
-    AgoqueryProvider
+    AgoqueryProvider,
+    DomService
   ]
 })
 export class AppModule {}
