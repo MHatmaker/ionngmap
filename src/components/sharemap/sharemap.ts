@@ -9,8 +9,11 @@ export class SharemapComponent {
   text: string;
 
   constructor() {
-    console.log('Hello SharemapComponent Component');
-    this.text = 'Share the item with other maps';
+    this.text = 'Share with other maps';
+  }
+
+  showInfo() {
+    alert("showInfo");
   }
 
 }
