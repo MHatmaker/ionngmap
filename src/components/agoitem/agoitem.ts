@@ -32,6 +32,7 @@ export class AgoitemComponent {
   selectAgoItem(itm) {
       console.log(`selected map item ${itm.title}`);
       this.selectedItem = itm;
+      this.accept();
   }
   accept() {
       this.viewCtrl.dismiss(this.selectedItem);

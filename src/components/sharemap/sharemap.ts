@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SharemapProvider } from '../../providers/sharemap/sharemap';
 
 @Component({
   selector: 'sharemap',
@@ -8,12 +9,12 @@ export class SharemapComponent {
 
   text: string;
 
-  constructor() {
+  constructor(private sharemapProvider : SharemapProvider) {
     this.text = 'Share with other maps';
   }
 
-  showInfo() {
-    alert("showInfo");
+  shareInfo() {
+    this.sharemapProvider.shareInfo();
   }
 
 }

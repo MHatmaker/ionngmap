@@ -60,6 +60,7 @@ import { MapopenerProvider } from '../providers/mapopener/mapopener';
 import { HiddenmapComponent } from '../components/hiddenmap/hiddenmap';
 import { AgoqueryProvider } from '../providers/agoquery/agoquery';
 import { SharemapComponent } from '../components/sharemap/sharemap'
+import { SharemapProvider } from '../providers/sharemap/sharemap';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -153,7 +154,8 @@ import { SharemapComponent } from '../components/sharemap/sharemap'
     // MaplocoptsProvider,
     MapopenerProvider,
     AgoqueryProvider,
-    DomService
+    DomService,
+    SharemapProvider
   ]
 })
 export class AppModule {}

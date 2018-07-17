@@ -15,6 +15,7 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 // import { Geolocation } from '@ionic-native/geolocation';
 import { DomService } from '../services/dom.service';
 import { CommonToNG } from '../pages/mlcomponents/libs/CommonToNG';
+import { SharemapProvider } from '../providers/sharemap/sharemap';
 
 @Component({
   templateUrl: 'app.html',
@@ -48,7 +49,7 @@ export class MapLinkrApp {
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
       private menuCtrl: MenuController, private pageService : PageService, private domsvc : DomService,
-      private pusherConfig : PusherConfig, hostConfig : HostConfig) {
+      private shareMapInfoSvc : SharemapProvider, private pusherConfig : PusherConfig, hostConfig : HostConfig) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -69,7 +70,7 @@ export class MapLinkrApp {
     hostConfig.sethostport(location.port);
     hostConfig.sethref(location.href);
 
-    CommonToNG.setLibs(this.domsvc);
+    CommonToNG.setLibs({ 'domsvc' : this.domsvc, 'shareInfoSvc' : this.shareMapInfoSvc} );
 
     if (location.search === '') {
         hostConfig.setInitialUserStatus(true);

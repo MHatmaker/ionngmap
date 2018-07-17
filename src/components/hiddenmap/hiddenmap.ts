@@ -41,6 +41,7 @@ export class HiddenmapComponent {
 
     this.pusherEventHandler = new PusherEventHandler(-1);
     this.pusherEventHandler.addEvent('client-MapXtntEvent', (xj) => this.onPan(xj));
+    this.pusherEventHandler.addEvent('client-MapClickEvent', (pt) => {});
     this.geopush.IgeoPusher.pusherClientService.createHiddenPusherClient(this.pusherEventHandler.getEventDct());
   }
   onPan(xj){

@@ -1,12 +1,23 @@
+import { DomService } from '../../../services/dom.service';
+import { SharemapProvider } from '../../../providers/sharemap/sharemap';
 
-export class CommonToNG {
-  static libs = {
-    svc : null
+export interface ICommonToNG {
+     domSvc : DomService,
+     shareInfoSvc : SharemapProvider
+}
+
+export class CommonToNG  implements ICommonToNG {
+  static libs : ICommonToNG;
+  domSvc : DomService;
+  shareInfoSvc : SharemapProvider;
+
+  // constructor(libs : ICommonToNG) {
+  //
+  // }
+  static setLibs(s : ICommonToNG) {
+    CommonToNG.libs = s;
   }
-  static setLibs(s) {
-    CommonToNG.libs.svc = s;
-  }
-  static getLibs()
+  static getLibs() : ICommonToNG
 {
-  return CommonToNG.libs.svc;
+  return CommonToNG.libs;
 }}
