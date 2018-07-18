@@ -6,6 +6,7 @@ import { HiddenmapComponent } from './hiddenmap/hiddenmap';
 import { AgogroupComponent } from './agogroup/agogroup';
 import { AgoitemComponent } from './agoitem/agoitem';
 import { SharemapComponent } from './sharemap/sharemap';
+import { InfopopupComponent } from './infopopup/infopopup';
 @NgModule({
 	declarations: [PushersetupComponent,
     NewsComponent,
@@ -14,7 +15,8 @@ import { SharemapComponent } from './sharemap/sharemap';
     HiddenmapComponent,
     AgogroupComponent,
     AgoitemComponent,
-    SharemapComponent],
+    SharemapComponent,
+    InfopopupComponent],
 	imports: [],
 	exports: [PushersetupComponent,
     NewsComponent,
@@ -23,6 +25,7 @@ import { SharemapComponent } from './sharemap/sharemap';
     HiddenmapComponent,
     AgogroupComponent,
     AgoitemComponent,
-    SharemapComponent]
+    SharemapComponent,
+    InfopopupComponent]
 })
 export class ComponentsModule {}

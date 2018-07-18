@@ -20,10 +20,9 @@ import { MapHoster } from './MapHoster';
 import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
 import { ImlBounds, MLBounds, xtntParams } from '../../../services/mlbounds.service';
 import { DomService } from '../../../services/dom.service';
-import { SharemapComponent } from '../../../components/sharemap/sharemap'
+import { SharemapComponent } from '../../../components/sharemap/sharemap';
 import { ReflectiveInjector } from '@angular/core';
 import { CommonToNG } from '../libs/CommonToNG';
-import { SharemapProvider } from '../../../providers/sharemap/sharemap';
 
 const proj4 = (proj4x as any).default;
 
@@ -488,10 +487,15 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 let shareElement = document.createElement(addedShareBtn);
                 // let injector = ReflectiveInjector.resolveAndCreate([DomService]);
                 // let domsvc = injector.get(DomService);
-                let domsvc = CommonToNG.getLibs().domSvc;
-                let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
-                domsvc.appendComponentToElement(SharemapComponent, actionList);
-                shareMapInfoSvc.setInfo(content);
+                if( actionList) {
+                    let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
+                    shareMapInfoSvc.setInfo(content);
+                    let domsvc = CommonToNG.getLibs().domSvc;
+                    domsvc.appendComponentToElement(SharemapComponent, actionList);
+                } else {
+                    let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
+                    shareMapInfoSvc.showInfo(content);
+              }
                 /*
                 if (content === null) {
                     addedContent = "Share lat/lon : " + this.fixedLLG.lat + ", " + this.fixedLLG.lon;

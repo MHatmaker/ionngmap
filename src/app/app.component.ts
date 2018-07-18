@@ -70,7 +70,7 @@ export class MapLinkrApp {
     hostConfig.sethostport(location.port);
     hostConfig.sethref(location.href);
 
-    CommonToNG.setLibs({ 'domsvc' : this.domsvc, 'shareInfoSvc' : this.shareMapInfoSvc} );
+    CommonToNG.setLibs({ 'domSvc' : this.domsvc, 'shareInfoSvc' : this.shareMapInfoSvc} );
 
     if (location.search === '') {
         hostConfig.setInitialUserStatus(true);

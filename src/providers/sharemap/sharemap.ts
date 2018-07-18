@@ -1,5 +1,7 @@
 
 import { Injectable,Output, EventEmitter } from '@angular/core';
+import { InfopopupComponent } from '../../components/infopopup/infopopup';
+import { ModalController } from 'ionic-angular';
 
 @Injectable()
 export class SharemapProvider {
@@ -7,7 +9,7 @@ export class SharemapProvider {
   @Output() change: EventEmitter<boolean> = new EventEmitter();
   private info : any;
 
-  constructor() {
+  constructor(private modalCtrl : ModalController) {
     console.log('Hello SharemapProvider Provider');
   }
 
@@ -15,9 +17,17 @@ export class SharemapProvider {
     this.info = nfo;
   }
 
-  shareInfo() {
-    this.change.emit(this.info);
+  shareInfo(nfo) {
+    this.change.emit(nfo);
   }
 
+  getInfo() {
+    return this.info;
+  }
+  showInfo(nfo) {
+
+    let modal = this.modalCtrl.create(InfopopupComponent, {'address' : nfo});
+    modal.present();
+  }
 
 }

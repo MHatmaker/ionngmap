@@ -13,8 +13,8 @@ export class SharemapComponent {
     this.text = 'Share with other maps';
   }
 
-  shareInfo() {
-    this.sharemapProvider.shareInfo();
+  shareInfo(nfo) {
+    this.sharemapProvider.shareInfo(nfo);
   }
 
 }
