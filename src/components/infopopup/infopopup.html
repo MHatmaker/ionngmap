@@ -15,11 +15,13 @@
       <ion-card-content>
             <h4>Info on clicked point</h4>
             <ion-item>
-                {{itemContent}}
+                {{itemContent.address}}
+                {{itemContent.x}}
+                {{itemContent.y}}
             </ion-item>
             <ion-row>
               <ion-col>
-                <button ion-button color="btn-primary" (click)="accept()">Accept</button>
+                <button ion-button color="btn-primary" (click)="publishInfo()">Accept</button>
               </ion-col>
               <ion-col>
                 <button ion-button color="btn-secondary" (click)="cancel()">Cancel</button>

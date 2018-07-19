@@ -314,7 +314,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     // hgt = mpDivNG[0].clientHeight,
                     mppt = new esriPoint({longitude : clickPt.x, latitude : clickPt.y}),
                     // screenGeo = new toScreenGeometry(this.mphmap.extent, wdt, hgt, mppt),
-                    screenGeo = esriMapView.toScreen(mppt),
+                    screenGeo = this.mphmap.toScreen(mppt),
                     fixedLL,
                     content,
                     $inj,
@@ -328,7 +328,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
                 //      screengraphic = new esri.geometry.toScreenGeometry(this.mphmap.extent,800,600,userdrawlayer.graphics[0].geometry);
 
-                if (clickPt.referrerId !== this.mlconfig.getUserId()) {
+                // if (clickPt.referrerId !== this.mlconfig.getUserId()) {
                     fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 6);
                     content = "Map click at " + fixedLL.lat + ", " + fixedLL.lon;
                     if (clickPt.title) {
@@ -339,7 +339,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     }
                     this.mphmap.popup.title = "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId;
                     this.mphmap.popup.content = content;
-                }
+                // }
 
                 this.mphmap.popup.open({location : mppt}); // this.mphmap.getInfoWindowAnchor(screenGeo));
                 // popup
@@ -430,7 +430,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 // cntrpt = new esriPoint({longitude : p.x, latitude : p.y, spatialReference : new esriSpatialReference({wkid: 4326})});
                 // console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
                 // console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
-                // this.fixedLLG = this.geopushSup.utils.toFixedTwo(cntrpt.x, cntrpt.y, 3);
+                this.fixedLLG = this.geopushSup.utils.toFixedTwo(e.mapPoint.longitude , e.mapPoint.latitude, 3);
                 // let locPt = esriwebMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
                 // let locPt2 = new esriPoint({longitude: locPt[0], latitude: locPt[1], spatialReference : new esriSpatialReference({wkid: 4326})});
                 this.geoLocator.locationToAddress(e.mapPoint)
@@ -474,13 +474,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             // this.pusherEventHandler.addEvent('client-MapClickEvent',  retrievedClick);
 
             showClickResult(content) {
-                var contextContent = content,
+                var
                     actionList = document.getElementsByClassName('esri-popup__actions')[0],
                     contentNode = document.getElementsByClassName('esri-popup__actions')[0],
                     shareBtnId = 'shareSomethingId' + this.selectedMarkerId,
                     addedShareBtn = 'sharemap',
                     addedContent,
-                    showSomething,
                     btnShare,
                     addedContentNode;
 
@@ -489,12 +488,15 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 // let domsvc = injector.get(DomService);
                 if( actionList) {
                     let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
-                    shareMapInfoSvc.setInfo(content);
+                    let pushContent = this.configForPusher(content);
+                    shareMapInfoSvc.setInfo(pushContent);
                     let domsvc = CommonToNG.getLibs().domSvc;
                     domsvc.appendComponentToElement(SharemapComponent, actionList);
                 } else {
                     let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
-                    shareMapInfoSvc.showInfo(content);
+                    let pushContent = this.configForPusher(content);
+
+                    shareMapInfoSvc.showInfo(pushContent);
               }
                 /*
                 if (content === null) {
@@ -512,27 +514,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 }
                 */
 
-                showSomething = function() {
-                    var referrerId,
-                        referrerName,
-                        pushLL = {};
 
-                    // if (selfPusherDetails.pusher) {
-                        referrerId = this.mlconfig.getUserId();
-                        referrerName = this.pusherConfig.getUserName();
-                        pushLL = {
-                            "x" : this.fixedLLG.lon,
-                            "y" : this.fixedLLG.lat,
-                            "z" : this.zmG,
-                            "referrerId" : referrerId,
-                            "referrerName" : referrerName,
-                            'address' : contextContent
-                        };
-                        console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + this.fixedLLG.lat + ", " + this.fixedLLG.lon);
-                        // selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
-                        this.pusherClientService.publishClickEvent(pushLL);
-                    // }
-                }
 
                 // this.mphmap.popup.open({location : this.screenPt}); //, this.mphmap.getInfoWindowAnchor(this.screenPt));
 
@@ -552,6 +534,28 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
                 }
                 */
+            }
+            configForPusher(content) {
+                var referrerId,
+                    referrerName,
+                    pushLL = {};
+
+                // if (selfPusherDetails.pusher) {
+                    referrerId = this.mlconfig.getUserId();
+                    referrerName = this.geopushSup.pusherConfig.getUserName();
+                    pushLL = {
+                        "x" : this.fixedLLG.lon,
+                        "y" : this.fixedLLG.lat,
+                        "z" : this.zmG,
+                        "referrerId" : referrerId,
+                        "referrerName" : referrerName,
+                        'address' : content
+                    };
+                    console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + this.fixedLLG.lat + ", " + this.fixedLLG.lon);
+                    // selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
+                    // this.pusherClientService.publishClickEvent(pushLL);
+                    return pushLL;
+                // }
             }
 
             async configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
@@ -578,7 +582,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
                 this.pusherEventHandler.addEvent('client-MapXtntEvent', (xj) => this.retrievedBounds(xj));
                 // this.pusherEventHandler.addEvent('client-MapXtntEvent', this.retrievedBounds);
-                this.pusherEventHandler.addEvent('client-MapClickEvent', () => this.retrievedClick);
+                this.pusherEventHandler.addEvent('client-MapClickEvent', (clickPt) => this.retrievedClick(clickPt));
 
                 if (zoomWebMap !== null) {
                     await this.updateGlobals("in configureMap - init with attributes in args",
