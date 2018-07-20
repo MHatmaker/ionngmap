@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class SlideViewService {
-    mapcolheight = 400;
+    mapcolheight = 550;
 
     setMapColHeight(h : number) {
         this.mapcolheight = h;
