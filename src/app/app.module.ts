@@ -62,6 +62,7 @@ import { AgoqueryProvider } from '../providers/agoquery/agoquery';
 import { SharemapComponent } from '../components/sharemap/sharemap'
 import { SharemapProvider } from '../providers/sharemap/sharemap';
 import { InfopopupComponent } from '../components/infopopup/infopopup';
+import { AgodetailComponent } from '../components/agodetail/agodetail';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -88,7 +89,8 @@ import { InfopopupComponent } from '../components/infopopup/infopopup';
     DestselectionComponent,
     HiddenmapComponent,
     SharemapComponent,
-    InfopopupComponent
+    InfopopupComponent,
+    AgodetailComponent
   ],
   imports: [
     BrowserModule,
@@ -124,7 +126,8 @@ import { InfopopupComponent } from '../components/infopopup/infopopup';
     DestselectionComponent,
     HiddenmapComponent,
     SharemapComponent,
-    InfopopupComponent
+    InfopopupComponent,
+    AgodetailComponent
   ],
   providers: [
     StatusBar,

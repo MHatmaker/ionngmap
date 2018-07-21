@@ -7,6 +7,7 @@ import { AgogroupComponent } from './agogroup/agogroup';
 import { AgoitemComponent } from './agoitem/agoitem';
 import { SharemapComponent } from './sharemap/sharemap';
 import { InfopopupComponent } from './infopopup/infopopup';
+import { AgodetailComponent } from './agodetail/agodetail';
 @NgModule({
 	declarations: [PushersetupComponent,
     NewsComponent,
@@ -16,7 +17,8 @@ import { InfopopupComponent } from './infopopup/infopopup';
     AgogroupComponent,
     AgoitemComponent,
     SharemapComponent,
-    InfopopupComponent],
+    InfopopupComponent,
+    AgodetailComponent],
 	imports: [],
 	exports: [PushersetupComponent,
     NewsComponent,
@@ -26,6 +28,7 @@ import { InfopopupComponent } from './infopopup/infopopup';
     AgogroupComponent,
     AgoitemComponent,
     SharemapComponent,
-    InfopopupComponent]
+    InfopopupComponent,
+    AgodetailComponent]
 })
 export class ComponentsModule {}

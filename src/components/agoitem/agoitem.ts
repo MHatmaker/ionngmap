@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { AgoqueryProvider, AgoItem, IAgoItem } from '../../providers/agoquery/agoquery';
+import { AgodetailComponent } from '../agodetail/agodetail';
+import { ModalController } from 'ionic-angular';
 
 @Component({
   selector: 'agoitem',
@@ -15,7 +17,7 @@ export class AgoitemComponent {
   private selectedItem : string;
 
   constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder,
-    private agoqp : AgoqueryProvider) {
+    private agoqp : AgoqueryProvider, private modalCtrl : ModalController) {
     console.log('Hello AgoItemComponent Component');
     this.searchTermItem = 'Chicago Crime';
     this.agoitemgroup = this.formBuilder.group({
@@ -32,7 +34,11 @@ export class AgoitemComponent {
   selectAgoItem(itm) {
       console.log(`selected map item ${itm.title}`);
       this.selectedItem = itm;
-      this.accept();
+      let agodtl = this.modalCtrl.create(AgodetailComponent, {title : itm.title});
+      agodtl.onDidDismiss(data => {
+        data.selected == true ? this.accept() : this.cancel();
+      });
+      agodtl.present();
   }
   accept() {
       this.viewCtrl.dismiss(this.selectedItem);
@@ -41,7 +47,8 @@ export class AgoitemComponent {
     console.log(this.agoitemgroup.value)
   }
   cancel() {
-      this.viewCtrl.dismiss();
+      // this.viewCtrl.dismiss();
+      console.log("agoitem got cancel from agodetail");
   }
 
 }
