@@ -161,7 +161,7 @@
   .wrapper2 {
       grid-area: wrapper2area;
       display: grid;
-      grid-template-columns: 150px auto;
+      grid-template-columns: auto auto;
       grid-template-areas: "searchquerya posviewwrapperarea"
   }
   .posviewwrapper {

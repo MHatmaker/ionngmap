@@ -18,7 +18,7 @@
 
     .carouselbox {
       font-family: helvetica,sans-serif;
-      font-size: 14px;
+      font-size: 18px;
       width: 100%;
       position: absolute;
       top: 1px;
@@ -33,10 +33,20 @@
     .mapcontent {
       position: absolute;
       width: 100%;
-      top: 3px;
+      top: 30px;
       margin: 0;
       padding: 0;
     }
+    @media only screen and (min-width: 700px)  {
+      .mapcontent {
+        position: absolute;
+        width: 100%;
+        top: 3px;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
     .buttons {
       display: none;
     }
@@ -78,8 +88,8 @@
         background-image: url(/assets/imgs/chevron-right.png);
         background-color: #6E9096;
         background-size: 100% 100%;
-        width: 25px;
-        height:25px;
+        width: 30px;
+        height:30px;
     }
 
     .chevron-prev {
@@ -88,8 +98,8 @@
         background-image: url(/assets/imgs/chevron-left.png);
         background-color: #6E9096;
         background-size: 100% 100%;
-        width: 25px;
-        height:25px;
+        width: 30px;
+        height:30px;
     }
 
 .icon-row {
@@ -132,9 +142,17 @@
   .mapnavwrapper {
       grid-area: mapnavwrapperarea;
       display: grid;
-      grid-template-columns: 10% 50% 10%;
+      grid-template-columns: 5% 40%5%;
       grid-template-areas: "navlefta mapnametexta navrighta";
   }
+  @media only screen and (min-width: 350px)  {
+  .mapnavwrapper {
+      grid-area: mapnavwrapperarea;
+      display: grid;
+      grid-template-columns: 5% auto 5%;
+      grid-template-areas: "navlefta mapnametexta navrighta";
+  }
+}
 
   .searchquery {
       grid-area: searchquerya;
@@ -146,7 +164,7 @@
       grid-area: posselecta;
   }
   .wrapper2 {
-      height: 30px;
+      /*height: 30px;*/
       grid-area: wrapper2area;
       display: grid;
       grid-template-columns: 200px auto;
