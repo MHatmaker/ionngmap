@@ -1,35 +1,46 @@
 
 
-        <div class="carouselbox" [style.height]="mapcolheight+'px'"  style="margin: 0.2em;">
-            <div class="wrapper">
-                <div class="mapheader icon-row">
-                    <div class="mapnavwrapper">
 
-                        <div class="navleft">
-                            <button class="chevron-prev" *ngIf="showNavButtons==true" (click)="onClickPrev()">
-                            </button>
-                        </div>
-                        <div class="mapnametext" *ngIf="showMapText">{{MapName}}
-                        </div>
-                        <div class="navright">
-                            <button class="chevron-next" (click)="onClickNext()" *ngIf="showNavButtons==true">
-                            </button>
-                        </div>
-                    </div>
+            <ion-grid>
+                <ion-row>
+                    <ion-col col-12 col-sm>
+                        <ion-grid>
+                            <ion-row>
+                                <ion-col>
+                                    <button class="chevron-prev" *ngIf="showNavButtons==true" (click)="onClickPrev()">
+                                    </button>
+                                </ion-col>
+                                <ion-col col-8 *ngIf="showMapText">{{MapName}}
+                                </ion-col>
+                                <ion-col>
+                                    <button class="chevron-next" (click)="onClickNext()" *ngIf="showNavButtons==true">
+                                    </button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                    </ion-col>
 
-                    <div class="wrapper2">
-                        <places-for-maplinkr class="searchquery" style="height: 25px"></places-for-maplinkr>
-                        <position-view class="posviewwrapper" style="height: 25px"></position-view>
-                    </div>
+                    <ion-col col-12 col-sm>
+                        <ion-grid>
+                            <ion-row>
+                                <ion-col>
+                                    <places-for-maplinkr class="searchquery" style="height: 25px"></places-for-maplinkr>
+                                </ion-col>
+                                <ion-col>
+                                    <position-view style="height: 25px"></position-view>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                    </ion-col>
 
-                </div>
+                </ion-row>
                 <!-- <ol class="MapContainer" [style.height] = "mapcolheight + 'px'" [style.width] = "'100%'"></ol> -->
-                <div class="mapcontent">
+                <ion-row class="mapcontent">
                     <!-- <div class="MapContainer"></div> -->
-                </div>
+                </ion-row>
 
 
-            </div>
-        </div>
+            </ion-grid>
+
         <hiddenmap></hiddenmap>
         <!-- <img id="loadingImg" src="../img/loading.gif" style="position:absolute; right:200px; top:256px; z-index:100;" /> -->

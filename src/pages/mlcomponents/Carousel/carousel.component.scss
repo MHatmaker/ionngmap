@@ -3,7 +3,6 @@
     .multi-can-active {
       position: absolute;
       display: none;
-      top: 500px;
     }/*
     .multi-can-active current {
       position: relative;
@@ -12,8 +11,6 @@
     }*/
     .multi-can-current {
       position: absolute;
-      display: block;
-      top: 30px;
     }
 
     .carouselbox {
@@ -31,9 +28,6 @@
         height: 480px;
     }
     .mapcontent {
-      position: absolute;
-      width: 100%;
-      top: 3px;
       margin: 0;
       padding: 0;
     }
