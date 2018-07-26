@@ -16,6 +16,8 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 import { DomService } from '../services/dom.service';
 import { CommonToNG } from '../pages/mlcomponents/libs/CommonToNG';
 import { SharemapProvider } from '../providers/sharemap/sharemap';
+// import { IPosition, MLPosition } from '../services/position.service';
+import { Geolocation } from '@ionic-native/geolocation';
 
 @Component({
   templateUrl: 'app.html',
@@ -49,7 +51,8 @@ export class MapLinkrApp {
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
       private menuCtrl: MenuController, private pageService : PageService, private domsvc : DomService,
-      private shareMapInfoSvc : SharemapProvider, private pusherConfig : PusherConfig, hostConfig : HostConfig) {
+      private shareMapInfoSvc : SharemapProvider, hostConfig : HostConfig,
+      private geolocation : Geolocation, pusherConfig : PusherConfig) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -92,6 +95,9 @@ export class MapLinkrApp {
   }
 
   initializeApp() {
+    var options = {
+           timeout: 1000 //sorry I use this much milliseconds
+       }
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -102,6 +108,17 @@ export class MapLinkrApp {
         let sc = document.getElementsByClassName('scroll-content');
         sc[0].classList.add('padzero');
         sc[1].classList.add('padzero');
+
+        console.log("app.component -- getCurrentPosition()")
+        this.geolocation.getCurrentPosition(options).then(data=>{
+          let lon = data.coords.longitude;
+          let lat = data.coords.latitude;
+          console.log("initial position ${lon}, ${lat}");
+          // this.initialPosition.setInitialPosition(lon, lat);
+         }).catch((err)=>{
+             console.log("Error", err);
+           });
+        //});
     });
   }
 /*

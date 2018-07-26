@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+
 import { MLConfig } from './MLConfig';
 // import { PusherConfig } from './PusherConfig';
 // import { PusherClientService } from '../../../services/pusherclient.service';
@@ -11,16 +11,14 @@ import { ImlBounds } from '../../../services/mlbounds.service';
 // import { GeoCoder } from './GeoCoder';
 // import { GeoCodingService } from '../../../services/GeoCodingService';
 // import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
-import { PositionUpdateService } from '../../../services/positionupdate.service';
+
 // import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService';
-import { Observable } from 'rxjs/Observable';
 
 declare var google;
 
-// @Injectable()
 export class MapHosterGoogle extends MapHoster {
     hostName = "MapHosterGoogle";
     scale2Level = [];

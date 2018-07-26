@@ -148,9 +148,9 @@ export class CurrentMapTypeService {
         return this.mapRestUrl[tp];
     }
     setCurrentMapType (mpt) {
-        var data = {
-            'whichsystem' : this.mapconfigs[this.mapSystemDct[mpt]],
-        };
+        // var data = {
+        //     'whichsystem' : this.mapconfigs[this.mapSystemDct[mpt]],
+        // };
             // MapCtrl,
             // scp = this.mapsvcScopes.getScopes()[0];
         this.previousMapType = this.currentMapType;

@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, Renderer2, AfterViewInit, NgZone, ElementRef } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, AfterViewInit, NgZone, ElementRef } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
@@ -35,8 +35,8 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
 
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService, private canvasService : CanvasService,
-      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2,
-      geopush: GeoPusherSupport, private slideViewService : SlideViewService) {
+      public geolocation : Geolocation, public mapElement : ElementRef,
+      geopush: GeoPusherSupport, slideViewService : SlideViewService) {
 
       console.log("GoogleMapComponent ctor");
       this.mapNumber = this.mapInstanceService.getSlideCount();

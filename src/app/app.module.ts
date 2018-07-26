@@ -43,9 +43,10 @@ import { PositionUpdateService } from '../services/positionupdate.service';
 import { PusherClientService } from '../services/pusherclient.service';
 import { PageService } from '../services/pageservice';
 import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
-import { PusherEventHandler } from '../pages/mlcomponents/libs/PusherEventHandler';
+// import { PusherEventHandler } from '../pages/mlcomponents/libs/PusherEventHandler';
 import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 import { utils } from '../pages/mlcomponents/libs/utils';
+import { MLPosition } from '../services/position.service';
 import { CurrentMapTypeService } from '../services/currentmaptypeservice';
 import { GeoCodingService } from '../services/GeoCodingService';
 import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
@@ -143,9 +144,10 @@ import { AgodetailComponent } from '../components/agodetail/agodetail';
     PageService,
     PusherConfig,
     PusherClientService,
-    PusherEventHandler,
+    // PusherEventHandler,
     HostConfig,
     utils,
+    MLPosition,
     GeoPusherSupport,
     HttpClient,
     HttpClientModule,

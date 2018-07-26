@@ -10,14 +10,14 @@ import {
 import { MapInstanceService } from './MapInstanceService';
 import { SlideShareService } from './/slideshare.service';
 import { SlideViewService } from './/slideview.service';
-import { IPosition } from './position.service';
+import { IPosition, MLPosition } from './position.service';
 import { IConfigParams } from './/configparams.service';
 import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
 import { MultiCanvasEsri } from '../pages/mlcomponents/MultiCanvas/multicanvasesri.component';
-import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvasgoogle.component';
-import { MultiCanvasLeaflet } from '../pages/mlcomponents/MultiCanvas/multicanvasleaflet.component';
+// import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvasgoogle.component';
+// import { MultiCanvasLeaflet } from '../pages/mlcomponents/MultiCanvas/multicanvasleaflet.component';
 import { Geolocation } from '@ionic-native/geolocation';
-import { MapLocCoords, MapLocOptions } from './positionupdate.interface';
+import { MapLocOptions } from './positionupdate.interface';
 import { MapopenerProvider } from '../providers/mapopener/mapopener';
 
 // import {MultiCanvasGoogle} from '../MultiCanvas/multicanvasgoogle.component';
@@ -39,8 +39,22 @@ export class CanvasService {
         private slideshareService : SlideShareService,
         private slideViewService : SlideViewService,
         private geoLocation : Geolocation,
-        private mapOpener : MapopenerProvider
+        private mapOpener : MapopenerProvider,
+        private initialPosition : MLPosition
       ){
+        let glat = initialPosition.lat;
+        let glng = initialPosition.lon;
+        let latLng = new google.maps.LatLng(glat, glng);
+        this.initialLoc = {
+          center: {'lng' : glng, 'lat' : glat},
+          zoom: 15,
+          places : null
+          //mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        console.log(`geolocation center at ${glng}, ${glat}`);
+        this.mapOpener.openMap.emit(this.initialLoc);
+    }
+    /*
     this.geoLocation.getCurrentPosition().then((position) => {
 
         // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -58,7 +72,7 @@ export class CanvasService {
         }, (err) => {
             console.log(err);
         });
-    }
+    }*/
 
     getIndex () {
         return this.ndx;

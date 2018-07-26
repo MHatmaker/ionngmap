@@ -7,8 +7,7 @@ import { MapHosterGoogle } from './MapHosterGoogle';
 // import { GoogleMap } from '@agm/core/services/google-maps-types';
 import { Startup } from './Startup';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
-import { utils } from './utils';
-import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface';
+import { MapLocOptions } from '../../../services/positionupdate.interface';
 
 // @Injectable()
 export class StartupGoogle extends Startup {
@@ -16,7 +15,6 @@ export class StartupGoogle extends Startup {
 
     private gMap : google.maps.Map = null;
     private newSelectedWebMapId : string = '';
-    private pusherChannel : string = '';
     private pusher : any = null;
     private mapHoster : MapHosterGoogle;
     private mlconfig : MLConfig;

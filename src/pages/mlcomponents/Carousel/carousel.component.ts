@@ -1,5 +1,5 @@
 
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, NgZone} from '@angular/core';
+import { Component} from '@angular/core';
 import { MapInstanceService } from '../../../services/MapInstanceService';
 import { SlideShareService } from '../../../services/slideshare.service';
 import { ISlideData } from "../../../services/slidedata.interface";
@@ -20,14 +20,14 @@ export class CarouselComponent {
     private MapName : string = "";
     // scope template variables
     private mapcolheight : number = 510;
-    private mapcolWidth : number = window.innerWidth;
+    // private mapcolWidth : number = window.innerWidth;
     private slidesCount : number = 0;
     private showNavButtons : boolean = false;
     private showMapText : boolean = false;
-    private ActNoAct : string = 'active';
+    // private ActNoAct : string = 'active';
 
   constructor(private mapInstanceService: MapInstanceService, private slideshareService : SlideShareService,
-      private canvasService : CanvasService, private _ngZone: NgZone, private slideViewService : SlideViewService) {
+      private canvasService : CanvasService, slideViewService : SlideViewService) {
         console.log("Carousel ctor");
         this.mapcolheight = slideViewService.getMapColHeight();
         // this.currentSlide = this.items[0] || null;

@@ -251,7 +251,7 @@ getPusherChannel() {
 
 publishPanEvent(frame) {
     console.log('frame is', frame);
-    var handler, client : PusherClient,
+    var client : PusherClient,
         clName,
         obj;
     if (frame.hasOwnProperty('x')) {
@@ -282,7 +282,7 @@ publishPanEvent(frame) {
 }
 publishClickEvent(frame) {
     console.log('frame is', frame);
-    var handler, client: PusherClient,
+    var client: PusherClient,
         clName,
         obj;
     if (frame.hasOwnProperty('x')) {
@@ -304,7 +304,7 @@ publishClickEvent(frame) {
 }
 
 publishPosition(pos) {
-    var handler, client : PusherClient,
+    var client : PusherClient,
         clName,
         obj;
     for (clName in this.clients) {

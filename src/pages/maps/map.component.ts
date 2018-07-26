@@ -13,7 +13,7 @@ import { MultiCanvasLeaflet } from '../mlcomponents/MultiCanvas/multicanvasleafl
 import { CanvasService } from '../../services/CanvasService';
 // import { ISlideData } from "../../services/slidedata.interface";
 import { SlideShareService } from '../../services/slideshare.service';
-import { SlideViewService } from '../../services/slideview.service';
+// import { SlideViewService } from '../../services/slideview.service';
 import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
 import { PageService } from "../../services/pageservice"
 import { NewsComponent } from "../../components/news/news";
@@ -22,7 +22,7 @@ import { AgogroupComponent } from "../../components/agogroup/agogroup";
 import { AgoitemComponent } from "../../components/agoitem/agoitem";
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions, MapLocCoords } from '../../services/positionupdate.interface';
-import { MLBounds, ImlBounds } from '../../services/mlbounds.service';
+import { MLBounds } from '../../services/mlbounds.service';
 
 @IonicPage()
 @Component({
@@ -43,8 +43,7 @@ export class MapsPage implements AfterViewInit {
 
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
-              private slideViewService : SlideViewService, private modalCtrl : ModalController,
-              private mapOpener : MapopenerProvider) {
+              mapOpener : MapopenerProvider, modalCtrl : ModalController) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
