@@ -108,12 +108,12 @@
     display: grid;
     grid-gap: 0.1em;
     grid-template-rows: 30px auto;
-    grid-template-areas:"mapheaderarea"
+    grid-template-areas:"maptoolbararea"
                         "mapcontentarea";
   }
 
-  .mapheader {
-     grid-area: mapheaderarea;
+  .maptoolbar {
+     grid-area: maptoolbararea;
      display: grid;
      grid-template-areas:
         "mapnavwrapperarea"
@@ -121,8 +121,8 @@
   }
 
   @media only screen and (min-width: 700px)  {
-  .mapheader {
-     grid-area: mapheaderarea;
+  .maptoolbar {
+     grid-area: maptoolbararea;
      display: grid;
      grid-template-columns: 30% auto;
      grid-template-areas: "mapnavwrapperarea wrapper2area";

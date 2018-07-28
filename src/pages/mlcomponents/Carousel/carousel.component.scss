@@ -106,27 +106,27 @@
      -webkit-align-items: center;
 }
 
-.wrapper {
+.mapandtools {
     width: 100%;
     display: block;
     position: relative;
   }
 
-  .mapheader {
+  .maptoolbar {
      position: absolute;
      width: 100%;
      display: grid;
      grid-template-areas:
         "mapnavwrapperarea"
-        "wrapper2area";
+        "searchandposarea";
   }
 
   @media only screen and (min-width: 700px)  {
-  .mapheader {
+  .maptoolbar {
      position: absolute;
      display: grid;
      grid-template-columns: 30% auto;
-     grid-template-areas: "mapnavwrapperarea wrapper2area";
+     grid-template-areas: "mapnavwrapperarea searchandposarea";
   }
 }
   .navleft {
@@ -142,14 +142,14 @@
   .mapnavwrapper {
       grid-area: mapnavwrapperarea;
       display: grid;
-      grid-template-columns: 5% 40%5%;
+      grid-template-columns: 30px minmax(min-content, max-content) 30px;
       grid-template-areas: "navlefta mapnametexta navrighta";
   }
-  @media only screen and (min-width: 350px)  {
+  @media only screen and (min-width: 700px)  {
   .mapnavwrapper {
       grid-area: mapnavwrapperarea;
       display: grid;
-      grid-template-columns: 5% auto 5%;
+      grid-template-columns: 30px minmax(min-content, max-content) 30px;
       grid-template-areas: "navlefta mapnametexta navrighta";
   }
 }
@@ -163,13 +163,22 @@
   .posselect {
       grid-area: posselecta;
   }
-  .wrapper2 {
+  .searchandpos {
       /*height: 30px;*/
-      grid-area: wrapper2area;
+      grid-area: searchandposarea;
       display: grid;
       grid-template-columns: 200px auto;
       grid-template-areas: "searchquerya posviewwrapperarea"
   }
+  @media not all and (hover: none) {
+  .searchandpos {
+      /*height: 30px;*/
+      grid-area: searchandposarea;
+      display: grid;
+      grid-template-columns: 200px 0px;
+      grid-template-areas: "searchquerya posviewwrapperarea"
+  }}
+
   .posviewwrapper {
       height: 30px;
       grid-area: posviewwrapperarea;
