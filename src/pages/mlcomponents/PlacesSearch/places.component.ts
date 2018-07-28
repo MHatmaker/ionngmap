@@ -13,8 +13,8 @@ declare var google;
 
 @Component({
   selector: 'places-for-maplinkr',
-  templateUrl: './places.component.html',
-  styles: [ './places.component.css']
+  templateUrl: './places.component.html'
+  // styles: [ './places.component.css']
 })
 export class PlacesSearchComponent implements AfterViewInit {
     @ViewChild("searchBox")

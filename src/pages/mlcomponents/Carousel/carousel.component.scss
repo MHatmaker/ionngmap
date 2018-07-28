@@ -156,6 +156,8 @@
 
   .searchquery {
       grid-area: searchquerya;
+      border-width: 5px;
+      border-color: red;
   }
   .postext {
       grid-area: postexta;
@@ -163,22 +165,6 @@
   .posselect {
       grid-area: posselecta;
   }
-  .searchandpos {
-      /*height: 30px;*/
-      grid-area: searchandposarea;
-      display: grid;
-      grid-template-columns: 200px auto;
-      grid-template-areas: "searchquerya posviewwrapperarea"
-  }
-  @media not all and (hover: none) {
-  .searchandpos {
-      /*height: 30px;*/
-      grid-area: searchandposarea;
-      display: grid;
-      grid-template-columns: 200px 0px;
-      grid-template-areas: "searchquerya posviewwrapperarea"
-  }}
-
   .posviewwrapper {
       height: 30px;
       grid-area: posviewwrapperarea;
@@ -186,3 +172,18 @@
       grid-template-columns: 200px auto;
       grid-template-areas: "postexta posselecta";
   }
+  .searchandpos {
+      /*height: 30px;*/
+      grid-area: searchandposarea;
+      display: grid;
+      grid-template-columns: 100% 0px;
+      grid-template-areas: "searchquerya posviewwrapperarea"
+  }
+  @media only screen and (min-width: 700px) {
+  .searchandpos {
+      /*height: 30px;*/
+      grid-area: searchandposarea;
+      display: grid;
+      grid-template-columns: 50% 50%;
+      grid-template-areas: "searchquerya posviewwrapperarea"
+  }}
