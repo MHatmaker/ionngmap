@@ -1,17 +1,14 @@
 
 
-        <ion-input class="posViewVisible postext" type="text"  [value]="positionView" [(ngModel)]="positionView" name="positionView" disabled="disabled"
-                style="height: 25px;
-                    font-size:1.2rem;text-align:right;margin-right: 0.5em; padding: 0.01em 0.5em 0.01em 0.5em; color: blue;">
-        </ion-input>
+        <ion-input type="text" [value]="positionView" [(ngModel)]="positionView" name="positionView" disabled="disabled" class="pos-view-info posViewVisible postext" ></ion-input>
 
-      <div class="posViewVisible posselect" style="font-size: 0.5rem">
-         <ion-item style="height: 25px; font-size: 1.2rem; min-height: 25px;">
-          <ion-label>Position Option</ion-label>
-          <ion-select [(ngModel)]="viewOptions" name="viewOptions" style="height: 25px">
-            <ion-option value="z" style="height: 25px">zoom level</ion-option>
-            <ion-option value="c" style="height: 25px">map center</ion-option>
-            <ion-option value="m" style="height: 25px">mouse coords</ion-option>
+      <div class="posViewVisible">
+         <ion-item class="select=group">
+          <!-- <ion-label>Where Am I</ion-label> -->
+          <ion-select [(ngModel)]="selectedOption" class="select-choice" [selectOptions]="selectOptions">
+            <ion-option value="zm" class="pos-option">zoom level</ion-option>
+            <ion-option value="cntr" class="pos-option">map center</ion-option>
+            <ion-option checked="true" value="coords" class="pos-option">coordinates</ion-option>
           </ion-select>
         </ion-item>
       </div>

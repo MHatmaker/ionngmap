@@ -15,13 +15,16 @@ interface IViewOption  {
 
 @Component({
   selector: 'position-view',
-  templateUrl: './positionview.component.html'
+  templateUrl: './positionview.component.html',
+  styles: [ './positionview.component.scss']
 })
 export class PositionViewComponent  {
     private currentTab : string;
     private currentViewOption : IViewOption;
     public positionView : string;
     private expBtnHeight : number;
+    public selectedOption : string;
+    public selectOptions : any;
     public curDetails = {
         zm : 'zm',
         scl : 'scl',
@@ -83,6 +86,10 @@ export class PositionViewComponent  {
           });
 
         this.currentViewOption = this.viewOptions[2];
+        this.selectedOption = this.viewOptions[2].key;
+        this.selectOptions = {
+          mode : 'Popover'
+        }
         this.positionView = "position info";
         this.expBtnHeight = 1.2; // utils.getButtonHeight(1.5); //'verbageExpandCollapseImgId');
     }
