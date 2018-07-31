@@ -13,8 +13,7 @@ declare var google;
 
 @Component({
   selector: 'maplinkr-googlemap',
-  templateUrl: './googlemap.component.html',
-  styles : ['width: 100%;']
+  templateUrl: './googlemap.component.html'
   // styles: [ './googlemap.component.css']
 })
 export class GoogleMapComponent implements AfterViewInit, OnInit {

@@ -19,11 +19,7 @@ interface ILeafletParams {
 
 @Component({
   selector: 'maplinkr-leafletmap',
-  templateUrl: './leafletmap.component.html',
-  styles: [ `.leafletMapComponent {
-              width: 100%;
-              height: 550px;
-             }`]
+  templateUrl: './leafletmap.component.html'
 })
 export class LeafletMapComponent implements AfterViewInit {
   @Output()
