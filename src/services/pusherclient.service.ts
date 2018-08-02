@@ -10,7 +10,7 @@ import { IEventDct } from '../pages/mlcomponents/libs/PusherEventHandler';
 
 declare const Pusher: any;
 
-export class PusherClient {
+class PusherClient {
     public eventHandlers : IEventDct; // = new Map<string, IEventDct>();
     constructor(evtDct : IEventDct, clientName : string) {
         this.eventHandlers = evtDct;
@@ -194,12 +194,12 @@ export class PusherClientService {
         channelBind.bind('pusher:subscription_succeeded', function () {
             console.log('Successfully subscribed to "' + this.CHANNELNAME); // + 'r"');
         });
-    }
     // this.PusherChannel(this.pusherConfig.getPusherChannel());
 
     // PusherClient(evtDct, clientName) {
     //     this.eventHandlers[clientName] = evtDct;
     // }
+    }
     createPusherClient(mlcfg, cbfn, nfo) : PusherClient {
         console.log("pusherClientService.createPusherClient");
         this.mlconfig = mlcfg;
@@ -215,6 +215,7 @@ export class PusherClientService {
         this.info = nfo;
         console.log("createPusherClient for map " + clientName);
         this.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), clientName);
+        this.PusherChannel(this.CHANNELNAME);
 
         return this.clients[clientName];
     }
@@ -277,8 +278,8 @@ publishPanEvent(frame) {
         //     }
         // }
     }
-    // this.channel.trigger('client-MapXtntEvent', frame);
-    // this.pusher.channels(this.CHANNELNAME).trigger('client-MapXtntEvent', frame);
+    this.channel.trigger('client-MapXtntEvent', frame);
+    // this.pusher.channels[this.CHANNELNAME].trigger('client-MapXtntEvent', frame);
 }
 publishClickEvent(frame) {
     console.log('frame is', frame);
@@ -299,8 +300,8 @@ publishClickEvent(frame) {
             obj['client-MapClickEvent'](frame);
         }
     }
-    // this.channel.trigger('client-MapClickEvent', frame);
-    // this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
+    this.channel.trigger('client-MapClickEvent', frame);
+    this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
 }
 
 publishPosition(pos) {
@@ -316,6 +317,6 @@ publishPosition(pos) {
             obj['client-NewMapPosition'](pos);
         }
     }
-    // this.pusher.channel(this.channel).trigger('client-NewMapPosition', pos);
+    this.pusher.channel(this.channel).trigger('client-NewMapPosition', pos);
 }
 }
