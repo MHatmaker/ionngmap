@@ -439,7 +439,7 @@ export class MapHosterGoogle extends MapHoster {
             this.popDetails.infoWnd.close();
             this.popDetails.infoMarker.setMap(null);
         }
-        if (clickPt.referrerId !== this.mlconfig.getUserId()) {
+        if (clickPt.referrerId) {  // !== this.mlconfig.getUserId()) {
             this.popDetails = this.markerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId);
             this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
 

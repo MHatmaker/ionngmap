@@ -151,7 +151,7 @@ export class PusherClientService {
 
         console.log("BIND to client-MapXtntEvent");
 
-        channelBind.bind('client-MapXtntEvent', function (frame) {
+        channelBind.bind('client-MapXtntEvent',  (frame) => {
             console.log('frame is', frame);
             if (frame.hasOwnProperty('x')) {
                 frame.lat = frame.y;
@@ -159,17 +159,24 @@ export class PusherClientService {
                 frame.zoom = frame.z;
             }
             var handlerkey : string,
-                obj : IEventDct;
-            for (handlerkey in this.eventHandlers) {
-                if (this.eventHandlers.hasOwnProperty(handlerkey)) {
-                    obj = this.eventHandlers[handlerkey];
-                    obj['client-MapXtntEvent'](frame);
+                obj : IEventDct,
+                clientName,
+                client;
+
+            for(clientName in this.clients){
+              if (this.clients[clientName]) {
+                    client = this.clients[clientName]
+                    if (client.eventHandlers.hasOwnProperty('client-MapXtntEvent')) {
+                        client.eventHandlers['client-MapXtntEvent'](frame);
+                    }
                 }
             }
+
+
             console.log("back from boundsRetriever");
         });
 
-        channelBind.bind('client-MapClickEvent', function (frame) {
+        channelBind.bind('client-MapClickEvent', (frame) => {
             console.log('frame is', frame);
             if (frame.hasOwnProperty('x')) {
                 frame.lat = frame.y;
@@ -177,13 +184,23 @@ export class PusherClientService {
                 frame.zoom = frame.z;
             }
             var handlerkey,
+                clientName,
+                client,
                 obj;
-            for (handlerkey in this.eventHandlers) {
-                if (this.eventHandlers.hasOwnProperty(handlerkey)) {
-                    obj = this.eventHandlers[handlerkey];
-                    obj['client-MapClickEvent'](frame);
+            for(clientName in this.clients){
+              if (this.clients[clientName]) {
+                    client = this.clients[clientName]
+                    if (client.eventHandlers.hasOwnProperty('client-MapClickEvent')) {
+                        client.eventHandlers['client-MapClickEvent'](frame);
+                    }
                 }
             }
+            // for (handlerkey in this.eventHandlers) {
+            //     if (this.eventHandlers.hasOwnProperty(handlerkey)) {
+            //         obj = this.eventHandlers[handlerkey];
+            //         obj['client-MapClickEvent'](frame);
+            //     }
+            // }
             console.log("back from clickRetriever");
         });
 
@@ -301,7 +318,7 @@ publishClickEvent(frame) {
         }
     }
     this.channel.trigger('client-MapClickEvent', frame);
-    this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
+    // this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
 }
 
 publishPosition(pos) {
