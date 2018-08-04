@@ -17,6 +17,7 @@ import { MapHoster } from './MapHoster';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService';
 import { Observable } from 'rxjs/Observable';
+import { MapLocOptions } from '../../../services/positionupdate.interface';
 
 declare var google;
 
@@ -64,6 +65,7 @@ export class MapHosterGoogle extends MapHoster {
     self : any;
     boundsListenerHandle : any;
     adrs : string;
+    im : 'http://www.robotwoods.com/dev/misc/bluecircle.png';
 
     constructor(private mapNumber: number, mlconfig: MLConfig, geopush: GeoPusherSupport) {
         super(geopush);
@@ -449,6 +451,18 @@ export class MapHosterGoogle extends MapHoster {
                 btnShare.style.visibility = 'hidden';
             }
         }
+    }
+
+    setCurrentLocation( loc : MapLocOptions) {
+      let cntr = new google.maps.LatLng(loc.center.lat, loc.center.lng);
+      // this.updateGlobals("setCurrentLocation", loc.center.lng, loc.center.lat, this.zmG);
+      this.mphmap.panTo(cntr);
+      var userMarker = new google.maps.Marker({
+            position: cntr,
+            map: this.mphmap,
+            icon: this.im
+        });
+      this.setBounds('pan');
     }
 
     configureMap(gMap, mapOptions, goooogle, googPlaces, config) {

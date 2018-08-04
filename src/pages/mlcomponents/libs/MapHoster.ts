@@ -7,7 +7,8 @@ import { PositionUpdateService } from '../../../services/positionupdate.service'
 import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService';
 import { PusherEventHandler } from './PusherEventHandler';
 import { GeoPusherSupport } from './geopushersupport';
-import { MLConfig } from './MLConfig'
+import { MLConfig } from './MLConfig';
+import { MapLocOptions } from '../../../services/positionupdate.interface';
 
 
 @Injectable()
@@ -44,5 +45,9 @@ export class MapHoster {
     getmlconfig() : MLConfig{
         console.log("MapHoster base class getmlconfig");
         return null;
+    }
+    setCurrentLocation(loc : MapLocOptions) {
+      console.log("MapHoster base class for getCurrentLocation");
+      return null;
     }
 }

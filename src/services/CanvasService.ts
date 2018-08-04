@@ -29,6 +29,7 @@ export class CanvasService {
     private outerMapNumber : number = 0;
     private selectedMapType : string;
     private initialLoc : MapLocOptions;
+    private currentLoc : MapLocOptions;
     setCurrent = new EventEmitter<number>();
 
     constructor (
@@ -57,6 +58,24 @@ export class CanvasService {
         this.mapOpener.openMap.emit(this.initialLoc);
         }, (err) => {
             console.log(err);
+        });
+    }
+
+    getCurrentLocation() {
+      this.geoLocation.getCurrentPosition().then((position) => {
+
+          // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          let glat = position.coords.latitude;
+          let glng = position.coords.longitude;
+          let latLng = new google.maps.LatLng(glat, glng);
+          this.currentLoc = {
+            center: {'lng' : glng, 'lat' : glat},
+            zoom: 15,
+            places : null
+            //mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          let maphoster = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
+          maphoster.setCurrentLocation(this.currentLoc);
         });
     }
 

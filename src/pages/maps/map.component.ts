@@ -138,6 +138,7 @@ export class MapsPage implements AfterViewInit {
   }
   showLocate() {
       console.log('show locate');
+      this.canvasService.getCurrentLocation();
   }
   showSharingHelp() {
       console.log('show sharing help');

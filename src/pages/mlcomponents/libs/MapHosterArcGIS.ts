@@ -23,6 +23,7 @@ import { DomService } from '../../../services/dom.service';
 import { SharemapComponent } from '../../../components/sharemap/sharemap';
 import { ReflectiveInjector } from '@angular/core';
 import { CommonToNG } from '../libs/CommonToNG';
+import { MapLocOptions } from '../../../services/positionupdate.interface';
 
 const proj4 = (proj4x as any).default;
 
@@ -558,6 +559,47 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 // }
             }
 
+            async setCurrentLocation( loc : MapLocOptions) {
+              const options = {
+                url: 'https://js.arcgis.com/4.7/'
+              };
+              const [esriPoint, esriSpatialReference, esriLocator,
+                      esriwebMercatorUtils, watchUtils] = await loadModules([
+                    'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/tasks/Locator',
+                    'esri/geometry/support/webMercatorUtils', 'esri/core/watchUtils'
+                  ], options)
+              let cntr = new esriPoint({longitude : loc.center.lng, latitude : loc.center.lat, spatialReference : new esriSpatialReference({wkid: 4326})});
+              this.mphmap.goTo({target : cntr, zoom : this.zmG});
+              let xtExt = this.extractBounds(this.mphmap.zoom, cntr, 'pan');
+              xtExt.then( (xtExt) => {
+                this.setBounds(xtExt);
+                this.addGraphic(cntr);
+              });
+            }
+            async addGraphic(pt){
+              const options = {
+                url: 'https://js.arcgis.com/4.7/'
+              };
+              const [esriPoint, esriSimpleMarkerSymbol, esriSimpleLineSymbol,
+                    esriGraphic] = await loadModules([
+                    'esri/geometry/Point', 'esri/symbols/SimpleMarkerSymbol', 'esri/symbols/SimpleLineSymbol',
+                    'esri/Graphic'
+                  ], options)
+              let symbol = new esriSimpleMarkerSymbol({
+                color: [226, 119, 40],
+                outline: {
+                  color: [255, 255, 255],
+                  width: 1
+                }
+              });
+
+              let graphic = new esriGraphic({
+                geometry: pt,
+                symbol: symbol
+              });
+              this.mphmap.graphics.add(graphic);
+            }
+
             async configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
               const options = {
                 url: 'https://js.arcgis.com/4.7/'
@@ -668,30 +710,26 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                         this.setBounds(this.extractBounds(this.mphmap.getLevel(), evt.extent.getCenter(), 'pan'));
                     }
                 });
-                this.mphmap.on('mouse-move', function (evt) {
+                this.mphmap.on('pointer-move', (evt) => {
 
 
                     var // pnt = new Point({longitude : evt.mapPoint.x, latitude : evt.mapPoint.y}),
-                        ltln = esriwebMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y),
-                        fixedLL = this.utils.toFixedTwo(ltln[0], ltln[1], 4),
+                        ltln = this.mphmap.toMap({x: evt.x, y: evt.y}),
+                        // ltln = esriwebMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y),
+                        fixedLL = this.geopushSup.utils.toFixedTwo(ltln.longitude, ltln.latitude, 4),
                         evlng = fixedLL.lon,
-                        evlat = fixedLL.lat,
-                        zm = this.mphmap.getLevel(),
-                        xtntLoc = this.mphmap.extent,
-                        cntrLoc = esriwebMercatorUtils.xyToLngLat(xtntLoc.center.longitude, xtntLoc.center.latitude),
-                        fixedCntrLL = this.utils.toFixedTwo(cntrLoc[0], cntrLoc[1], 4),
-                        cntrlng = fixedCntrLL.lon,
-                        cntrlat = fixedCntrLL.lat;
-                    //     view = "Zoom : " + zm + " Center : " + cntrlng + ", " + cntrlat + " Current  : " + evlng + ", " + evlat;      // + selectedWebMapId;
-                    // document.getElementById("mppos").value = view;
-                    this.positionUpdateService.update('coords', {
-                        'zm' : zm,
-                        'scl' : this.scale2Level[zm].scale,
-                        'cntrlng' : cntrlng,
-                        'cntrlat': cntrlat,
+                        evlat = fixedLL.lat
+                this.geopushSup.positionUpdateService.positionData.emit(
+                    {'key' : 'coords',
+                      'val' : {
+                        'zm' : this.zmG,
+                        'scl' : this.scale2Level.length > 0 ? this.scale2Level[this.zmG].scale : 3,
+                        'cntrlng' : evlng,
+                        'cntrlat': evlat,
                         'evlng' : evlng,
                         'evlat' : evlat
-                    });
+                  }
+                });
                 });
 
                 this.mphmap.on("click", (evt) => {

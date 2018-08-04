@@ -28,6 +28,8 @@ export class PushersetupComponent {
       this.viewCtrl.dismiss();
       let chnl = this.pushergroup.value.privateChannelMashover;  //  ['privateChannelMashover'];
       this.pusherConfig.setChannel(chnl); //this.pushergroup.value['privateChannelMashover']);
+      let uname = this.pushergroup.value.userName;
+      this.pusherConfig.setUserName(uname);
   }
   logForm(){
     console.log(this.pushergroup.value)

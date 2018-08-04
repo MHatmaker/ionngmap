@@ -12,6 +12,7 @@ import { GeoCoder } from './GeoCoder';
 import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
+import { MapLocOptions } from '../../../services/positionupdate.interface';
 
 
 // @Injectable()
@@ -393,6 +394,12 @@ export class MapHosterLeaflet extends MapHoster {
         //     ctrlSvc = $inj.get('MapControllerService'),
         //     mapCtrl = ctrlSvc.getController();
         // mapCtrl.setupQueryListener('leaflet');
+    }
+
+    setCurrentLocation( loc : MapLocOptions) {
+      let lcntr = L.latLng(loc.center.lat, loc.center.lng, null);
+      this.mphmap.panTo(lcntr);
+      this.setBounds('pan', lcntr);
     }
 
     configureMap(lmap, mapOptions, config) {
