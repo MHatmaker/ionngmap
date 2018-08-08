@@ -168,6 +168,31 @@ export class MLConfig {
     gethost () : string {
         return this.details.host;
     }
+    gethref () {
+        let pos = this.details.href.indexOf("/arcgis");
+        if (pos  > -1) {
+            return this.details.href; //.substring(0, pos);
+        }
+        return this.details.href;
+    }
+
+    getQuery () {
+        return this.details.query;
+        // if (details.query.length === 0) {
+        //     return "";
+        // } else {
+        //     return details.query[0];
+        // }
+    }
+    getUpdatedRawUrl () {
+      let n = this.details.webmapId.length,
+          id = this.details.webmapId.substr(0, n - 1),
+          updatedUrl = "?id=" + id + "&lon=" + this.details.mlposition.lon + "&lat=" + this.details.mlposition.lat +
+              "&zoom=" + this.details.mlposition.zoom + "&channel=" + this.details.masherChannel;
+      console.log(updatedUrl);
+      return updatedUrl;
+  }
+
     hasCoordinates () : boolean {
         var result = "";
         result = this.details.mlposition.zoom || this.getParameterByName('zoom', this.details.mlposition);
