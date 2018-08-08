@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Sharing Setup</ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="close()">
+        <span ion-text color="primary" showWhen="ios">Cancel</span>
+        <ion-icon name="md-close" showWhen="android, windows"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="cards-bg social-cards">
+    <ion-card id="idMsgSetupCard">
+      <ion-card-content>
+          <form [formGroup]="msgsetupgroup" (ngSubmit)="logForm()">
+            <h4>Share Your MapLinkr Session</h4>
+            <ion-item>
+                <ion-label>Fetch the link to the current ArcGIS Online map:</ion-label>
+            </ion-item>
+                <button ion-button color="btn-primary" (click)="fetchUrl()">Copy Url to Clipboard</button>
+            <ion-item>
+                <ion-input type="text" formControlName="urlCopyField"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="instructionsVisible">
+                <ion-label style="white-space: normal">
+                    The url is now focused and selected.
+                    Now use Ctrl-C to copy to clipboard.
+                    Then paste the link into an email, text message, or chat session.
+                </ion-label>
+            </ion-item>
+                <button ion-button color="btn-secondary" (click)="close()">Cancel</button>
+          </form>
+        </ion-card-content>
+    </ion-card>
+  </ion-content>
