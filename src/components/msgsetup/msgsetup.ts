@@ -3,6 +3,7 @@ import { ViewController } from 'ionic-angular';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CurrentMapTypeService } from '../../services/currentmaptypeservice';
 import { MapInstanceService } from '../../services/MapInstanceService';
+import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport'
 
 @Component({
   selector: 'msgsetup',
@@ -13,15 +14,18 @@ export class MsgsetupComponent {
   private msgsetupgroup : FormGroup;
   private urlCopyField : string;
   private instructionsVisible : boolean = false;
+  private mapInstanceService : MapInstanceService;
+  private currentMapTypeService : CurrentMapTypeService;
 
-  constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder,
-    private currentMapTypeService : CurrentMapTypeService, private mapInstanceService : MapInstanceService
-  ) {
+  constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder, private geopush : GeoPusherSupport) {
     console.log('Hello MsgsetupComponent Component');
 
     this.msgsetupgroup = this.formBuilder.group({
       urlCopyField: ["url"],
     });
+    let geoPush = geopush.getGeoPusherSupport();
+    this.mapInstanceService = geoPush.mapInstanceService;
+    this.currentMapTypeService = geoPush.currentMapTypeService;
   }
   assembleUrl() {
       console.log("gethref : ");

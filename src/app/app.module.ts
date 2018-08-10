@@ -24,6 +24,7 @@ import { SideMenuContentComponent } from '../side-menu-content/side-menu-content
 
 import { PlacesSearchComponent } from '../pages/mlcomponents/PlacesSearch/places.component';
 import { PositionViewComponent } from '../pages/mlcomponents/PositionView/PositionView.component';
+import { MsgsetupComponent } from '../components/msgsetup/msgsetup';
 import { EsriMapComponent } from '../pages/mlcomponents/EsriMap/esrimap.component';
 import { GoogleMapComponent } from '../pages/mlcomponents/GoogleMap/googlemap.component';
 import { LeafletMapComponent } from '../pages/mlcomponents/LeafletMap/leafletmap.component';
@@ -63,7 +64,6 @@ import { SharemapComponent } from '../components/sharemap/sharemap'
 import { SharemapProvider } from '../providers/sharemap/sharemap';
 import { InfopopupComponent } from '../components/infopopup/infopopup';
 import { AgodetailComponent } from '../components/agodetail/agodetail';
-import { MsgsetupComponent } from '../components/msgsetup/msgsetup';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
