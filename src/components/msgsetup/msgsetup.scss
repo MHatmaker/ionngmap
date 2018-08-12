@@ -9,3 +9,9 @@ msgsetup {
 .instruction-visibility-showing {
   visibility: visible;
 }
+
+.clipgrid {
+  display : grid;
+  grid-template-rows : auto;
+  grid-template-columns : auto 4rem;
+}

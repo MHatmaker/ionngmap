@@ -16,6 +16,7 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 import { DomService } from '../services/dom.service';
 import { CommonToNG } from '../pages/mlcomponents/libs/CommonToNG';
 import { SharemapProvider } from '../providers/sharemap/sharemap';
+import { Http } from '@angular/http';
 
 @Component({
   templateUrl: 'app.html',
@@ -49,7 +50,8 @@ export class MapLinkrApp {
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
       private menuCtrl: MenuController, private pageService : PageService, private domsvc : DomService,
-      private shareMapInfoSvc : SharemapProvider, private pusherConfig : PusherConfig, hostConfig : HostConfig) {
+      private shareMapInfoSvc : SharemapProvider, private pusherConfig : PusherConfig, hostConfig : HostConfig,
+      private http: Http) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -75,6 +77,18 @@ export class MapLinkrApp {
     if (location.search === '') {
         hostConfig.setInitialUserStatus(true);
         hostConfig.setReferrerId('-99');
+          this.http.get(this.pusherConfig.getPusherPath() + "/username")
+            .map(res => res.json())
+            .subscribe(data =>
+            {
+              console.log("simpleserver returns");
+              this.userName = data['name'];
+              console.log(this.userName);
+              pusherConfig.setUserName(this.userName);
+              let userId = data['id'];
+              console.log(userId);
+              pusherConfig.setUserId(userId);
+            });
     } else {
         hostConfig.setInitialUserStatus(false);
         this.channel = pusherConfig.getChannelFromUrl();

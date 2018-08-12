@@ -3,7 +3,8 @@ import { ViewController } from 'ionic-angular';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CurrentMapTypeService } from '../../services/currentmaptypeservice';
 import { MapInstanceService } from '../../services/MapInstanceService';
-import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport'
+import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport';
+import * as Clipboard from 'clipboard/dist/clipboard.min.js';
 
 @Component({
   selector: 'msgsetup',
@@ -53,9 +54,21 @@ export class MsgsetupComponent {
       return updtUrl;
   }
   fetchUrl() {
-    this.urlCopyField = this.assembleUrl();
-    console.log(this.urlCopyField);
+    // this.urlCopyField = this.assembleUrl();
+    this.msgsetupgroup.controls['urlCopyField'].setValue(this.assembleUrl());
+    console.log(this.msgsetupgroup.controls['urlCopyField'].value);
     this.instructionsVisible = true;
+    let clipboard = new Clipboard('#cpyBtn');
+    clipboard.on('success', (e) => {
+      console.log("copied to clipboard");
+      console.info('Action:', e.action);
+      console.info('Text:', e.text);
+      console.info('Trigger:', e.trigger);
+    });
+    clipboard.on('error', (e) => {
+      console.error('Action:', e.action);
+      console.error('Trigger:', e.trigger);
+    });
   }
 
   logForm(){
