@@ -12,6 +12,27 @@ msgsetup {
 
 .clipgrid {
   display : grid;
-  grid-template-rows : auto;
-  grid-template-columns : auto 4rem;
+  grid-template-columns : auto 5rem;
+  padding-left: 10px;
+}
+.url-field {
+  grid-row: 1;
+  grid-column: 1;
+}
+.url-copy-label {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+}
+.url-copy-button {
+  grid-column: 2;
+  grid-row: 1;
+  padding-left: 0px;
+  padding-right: 0px;
+  height: 5rem;
+  width: 5rem;
+  background-color: #eeeeee;
+}
+.url-copy-info {
+  grid-column: 1 / span 2;
+  grid-row: 3;
 }
