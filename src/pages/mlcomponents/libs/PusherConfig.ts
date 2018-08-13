@@ -34,7 +34,7 @@ export class PusherConfig implements IPusherConfig {
         nameChannelAccepted : false,
         userName : 'defaultuser',
         userId : 'uidnone',
-        pusherPathPre : "http://",
+        pusherPathPre : "https://",
         // pusherPathNgrok :"maplinkroc3-maplinkr.7e14.starter-us-west-2.openshiftapps.com", //"c1232bf1",
         pusherPathNgrok :"maplinkr-simpleserver.herokuapp.com",
         pusherPathPost : "", //".ngrok.io",
