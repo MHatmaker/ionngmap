@@ -13,7 +13,6 @@
 <ion-content class="cards-bg social-cards">
     <ion-card id="idMsgSetupCard">
       <ion-card-content>
-          <form [formGroup]="msgsetupgroup" (ngSubmit)="logForm()">
             <h4>Share Your MapLinkr Session</h4>
             <ion-item>
                 <ion-label>Fetch the link to the current ArcGIS Online map:</ion-label>
@@ -22,13 +21,15 @@
                     color="btn-primary" (click)="fetchUrl()">Assemble Url
                 </button>
             <ion-item>
-                <ion-input id="copyTarget" type="text" formControlName="urlCopyField"></ion-input>
+                <!-- <ion-input id="copyTarget" type="text" [(ngModel)]="urlCopyField"></ion-input> -->
+                <textarea id="copyTarget" type="text" style="width: 100%" value="url to copy" #urlInput [(ngModel)]="urlCopyField"></textarea>
+
             </ion-item>
             <ion-item>
                 <ion-label>Copy url to clipboard</ion-label>
             </ion-item>
             <ion-item>
-                <button ion-button id="cpyBtn" data-clipboard-target="#copyTarget">To Clip
+                <button ion-button id="cpyBtn" (click)="copyUrlField(urlInput)">To Clip
                     <!-- <img src="assets/imgs/clippy.svg" alt="Copy to clipboard"> -->
                 </button>
             </ion-item>
@@ -42,7 +43,6 @@
             <ion-item>
                 <button ion-button color="btn-secondary" (click)="close()">Cancel</button>
             </ion-item>
-          </form>
         </ion-card-content>
     </ion-card>
   </ion-content>
