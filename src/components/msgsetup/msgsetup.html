@@ -13,29 +13,29 @@
 <ion-content class="cards-bg social-cards">
     <ion-card id="idMsgSetupCard">
       <ion-card-content>
-            <h4>Share Your MapLinkr Session</h4>
+            <h5 style="font-weight: bold; font-size: 1.8rem;    ">Share Your MapLinkr Session</h5>
             <ion-item>
-                <ion-label>Fetch the link to the current ArcGIS Online map:</ion-label>
+                <ion-label style="white-space: normal">Assemble the map configuration to share:</ion-label>
             </ion-item>
+            <ion-item>
                 <button ion-button
                     color="btn-primary" (click)="fetchUrl()">Assemble Url
                 </button>
-            <div class="clipgrid">
+            </ion-item>
+            <div class="clipgrid" *ngIf="instructionsVisible">
                 <ion-item class="url-field">
                     <!-- <ion-input id="copyTarget" type="text" [(ngModel)]="urlCopyField"></ion-input> -->
-                    <textarea id="copyTarget" type="text" style="width: 100%" value="url to copy" #urlInput [(ngModel)]="urlCopyField"></textarea>
+                    <textarea id="copyTarget" type="text" style="width: 100%; min-height: 8rem;"
+                        value="url to copy" #urlInput [(ngModel)]="urlCopyField">
+                    </textarea>
 
-                </ion-item>
-                <ion-item class="url-copy-label">
-                    <ion-label>Copy url to clipboard</ion-label>
                 </ion-item>
                 <button ion-button id="cpyBtn" class="url-copy-button" (click)="copyUrlField(urlInput)">
                     <img src="assets/imgs/clippy.svg" alt="Copy to clipboard">
                 </button>
-                <ion-item *ngIf="instructionsVisible" class="url-copy-info">
+                <ion-item class="url-copy-info">
                     <ion-label style="white-space: normal">
-                        The url is now focused and selected.
-                        Now use Ctrl-C to copy to clipboard.
+                        Tap the clipboard button.
                         Then paste the link into an email, text message, or chat session.
                     </ion-label>
                 </ion-item>

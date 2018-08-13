@@ -9,15 +9,19 @@ msgsetup {
 .instruction-visibility-showing {
   visibility: visible;
 }
+.share-heading {
+  font-weight: bold;
+  font-size: 1.8rem;
+}
 
 .clipgrid {
   display : grid;
   grid-template-columns : auto 5rem;
-  padding-left: 10px;
 }
 .url-field {
   grid-row: 1;
   grid-column: 1;
+  min-height: 8rem;
 }
 .url-copy-label {
   grid-column: 1 / span 2;
@@ -34,5 +38,5 @@ msgsetup {
 }
 .url-copy-info {
   grid-column: 1 / span 2;
-  grid-row: 3;
+  grid-row: 2;
 }
