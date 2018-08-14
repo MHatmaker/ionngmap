@@ -296,59 +296,60 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             }
 
             async retrievedClick(clickPt) {
-              const options = {
-                url: 'https://js.arcgis.com/4.7/'
-              };
-              const [esriPoint, esriMapView] = await loadModules([
-                    'esri/geometry/Point', 'esri/views/MapView'
-                  ], options)
-                console.log("Back in retrievedClick");
-                // var latlng = L.latLng(clickPt.y, clickPt.x, clickPt.y);
-                console.log("You clicked the map at " + clickPt.x + ", " + clickPt.y);
-                // alert("You clicked the map at " + clickPt.x + ", " + clickPt.y);
-                console.debug(clickPt);
-                var
-                    // mpDiv = document.getElementById("map" + this.mlconfig.getMapNumber()),
-                    // mpDivNG = angular.element(mpDiv),
-                    mpDivNG = this.elementRef,
-                    // wdt = mpDivNG[0].clientWidth,
-                    // hgt = mpDivNG[0].clientHeight,
-                    mppt = new esriPoint({longitude : clickPt.x, latitude : clickPt.y}),
-                    // screenGeo = new toScreenGeometry(this.mphmap.extent, wdt, hgt, mppt),
-                    screenGeo = this.mphmap.toScreen(mppt),
-                    fixedLL,
-                    content,
-                    $inj,
-                    linkrSvc;
+              if (clickPt.referrerId !== this.mlconfig.getUserId()) {
+                const options = {
+                  url: 'https://js.arcgis.com/4.7/'
+                };
+                const [esriPoint, esriMapView] = await loadModules([
+                      'esri/geometry/Point', 'esri/views/MapView'
+                    ], options)
+                  console.log("Back in retrievedClick");
+                  // var latlng = L.latLng(clickPt.y, clickPt.x, clickPt.y);
+                  console.log("You clicked the map at " + clickPt.x + ", " + clickPt.y);
+                  // alert("You clicked the map at " + clickPt.x + ", " + clickPt.y);
+                  console.debug(clickPt);
+                  var
+                      // mpDiv = document.getElementById("map" + this.mlconfig.getMapNumber()),
+                      // mpDivNG = angular.element(mpDiv),
+                      mpDivNG = this.elementRef,
+                      // wdt = mpDivNG[0].clientWidth,
+                      // hgt = mpDivNG[0].clientHeight,
+                      mppt = new esriPoint({longitude : clickPt.x, latitude : clickPt.y}),
+                      // screenGeo = new toScreenGeometry(this.mphmap.extent, wdt, hgt, mppt),
+                      screenGeo = this.mphmap.toScreen(mppt),
+                      fixedLL,
+                      content,
+                      $inj,
+                      linkrSvc;
 
-                // console.log("screenGeo");
-                // console.debug(screenGeo);
-                // $inj = this.mlconfig.getInjector();
-                // linkrSvc = $inj.get('LinkrService');
-                // linkrSvc.hideLinkr();
+                  // console.log("screenGeo");
+                  // console.debug(screenGeo);
+                  // $inj = this.mlconfig.getInjector();
+                  // linkrSvc = $inj.get('LinkrService');
+                  // linkrSvc.hideLinkr();
 
-                //      screengraphic = new esri.geometry.toScreenGeometry(this.mphmap.extent,800,600,userdrawlayer.graphics[0].geometry);
+                  //      screengraphic = new esri.geometry.toScreenGeometry(this.mphmap.extent,800,600,userdrawlayer.graphics[0].geometry);
 
-                // if (clickPt.referrerId !== this.mlconfig.getUserId()) {
-                    fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 6);
-                    content = "Map click at " + fixedLL.lat + ", " + fixedLL.lon;
-                    if (clickPt.title) {
-                        content += '<br>' + clickPt.title;
-                    }
-                    if (clickPt.address) {
-                        content += '<br>' + clickPt.address;
-                    }
-                    this.mphmap.popup.title = "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId;
-                    this.mphmap.popup.content = content;
-                // }
+                  // if (clickPt.referrerId !== this.mlconfig.getUserId()) {
+                      fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 6);
+                      content = "Map click at " + fixedLL.lat + ", " + fixedLL.lon;
+                      if (clickPt.title) {
+                          content += '<br>' + clickPt.title;
+                      }
+                      if (clickPt.address) {
+                          content += '<br>' + clickPt.address;
+                      }
+                      this.mphmap.popup.title = "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId;
+                      this.mphmap.popup.content = content;
+                  // }
 
-                this.mphmap.popup.open({location : mppt}); // this.mphmap.getInfoWindowAnchor(screenGeo));
-                // popup
-                    // .setLatLng(latlng)
-                    // .setContent("You clicked the map at " + latlng.toString())
-                    // .openOn(this.mphmap);
+                  this.mphmap.popup.open({location : mppt}); // this.mphmap.getInfoWindowAnchor(screenGeo));
+                  // popup
+                      // .setLatLng(latlng)
+                      // .setContent("You clicked the map at " + latlng.toString())
+                      // .openOn(this.mphmap);
+              }
             }
-
             async retrievedBounds(xj) {
               const options = {
                 url: 'https://js.arcgis.com/4.7/'
