@@ -12,8 +12,12 @@ declare const Pusher: any;
 
 class PusherClient {
     public eventHandlers : IEventDct; // = new Map<string, IEventDct>();
-    constructor(evtDct : IEventDct, clientName : string) {
+    public clientName: string;
+    public userName: string;
+    constructor(evtDct : IEventDct, clientName : string, userName : string) {
         this.eventHandlers = evtDct;
+        this.clientName = clientName;
+        this.userName = userName;
     }
 }
 
@@ -231,14 +235,14 @@ export class PusherClientService {
         this.callbackFunction = cbfn;
         this.info = nfo;
         console.log("createPusherClient for map " + clientName);
-        this.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), clientName);
+        this.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), clientName, this.userName);
         this.PusherChannel(this.CHANNELNAME);
 
         return this.clients[clientName];
     }
 
     createHiddenPusherClient(evtDct : IEventDct) {
-        this.clients['hiddenmap'] = new PusherClient(evtDct, 'hiddenmap');
+        this.clients['hiddenmap'] = new PusherClient(evtDct, 'hiddenmap', 'hiddenmap');
     }
 
     setupPusherClient (resolve, reject) {
@@ -311,12 +315,13 @@ publishClickEvent(frame) {
     for (clName in this.clients) {
         if(clName !== frame.mapId) {
           client = this.clients[clName];
-      // for (handler in this.clients.  eventHandlers) {
-          if (client.hasOwnProperty('eventHandlers')) {
-              obj = client.eventHandlers;
-              console.log("publish click event to map " + client.eventHandlers);
-              obj['client-MapClickEvent'](frame);
-          }
+          if(client.userName !== frame.userName){
+              if (client.hasOwnProperty('eventHandlers')) {
+                  obj = client.eventHandlers;
+                  console.log("publish click event to map " + client.eventHandlers);
+                  obj['client-MapClickEvent'](frame);
+              }
+            }
       }
     }
     this.channel.trigger('client-MapClickEvent', frame);

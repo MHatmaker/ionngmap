@@ -129,6 +129,8 @@ export class MapHosterGoogle extends MapHoster {
         }
     }
 
+
+
     markerInfoPopup(pos, content, title, mrkr=null) {
         var popId = "id" + title,
             shareBtnId = "idShare" + title,
@@ -149,23 +151,19 @@ export class MapHosterGoogle extends MapHoster {
                 map: this.mphmap,
                 title: title
             }),
+              showSomething  = function(e: Event, self) {
+                  let fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 6);
+                  let referrerId = self.mlconfig.getUserId();
+                  let referrerName = self.geopushSup.pusherConfig.getUserName();
+                  let mapId = "map" + self.mlconfig.getUserId();
+                  let pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
+                      "referrerId" : referrerId, "referrerName" : referrerName,
+                      "mapId" : mapId,
+                      'address' : marker.address, 'title' : marker.title };
+                  console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
+                  self.geopushSup.pusherClientService.publishClickEvent(pushLL);
+              }
 
-            showSomething  = function (e: Event, self) {
-                var
-                    fixedLL,
-                    referrerId,
-                    referrerName,
-                    pushLL;
-                fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 6);
-                referrerId = self.mlconfig.getUserId();
-                referrerName = self.geopushSup.pusherConfig.getUserName();
-                pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
-                    "referrerId" : referrerId, "referrerName" : referrerName,
-                    "mapId" : "map" + self.mlconfig.getMapId(),
-                    'address' : marker.address, 'title' : marker.title };
-                console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                self.geopushSup.pusherClientService.publishClickEvent(pushLL);
-            };
 
 
         google.maps.event.addListener(marker, 'click',  (event) => {
@@ -442,7 +440,7 @@ export class MapHosterGoogle extends MapHoster {
             this.popDetails.infoWnd.close();
             this.popDetails.infoMarker.setMap(null);
         }
-        if (clickPt.referrerId) {  // !== this.mlconfig.getUserId()) {
+        if (clickPt.referrerId !== this.mlconfig.getUserId()) {
             this.popDetails = this.markerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId);
             this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
 
