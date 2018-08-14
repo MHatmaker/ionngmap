@@ -161,6 +161,7 @@ export class MapHosterGoogle extends MapHoster {
                 referrerName = self.geopushSup.pusherConfig.getUserName();
                 pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
                     "referrerId" : referrerId, "referrerName" : referrerName,
+                    "mapId" : "map" + self.mlconfig.getMapId(),
                     'address' : marker.address, 'title' : marker.title };
                 console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
                 self.geopushSup.pusherClientService.publishClickEvent(pushLL);

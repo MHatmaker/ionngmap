@@ -309,13 +309,15 @@ publishClickEvent(frame) {
         frame.zoom = frame.z;
     }
     for (clName in this.clients) {
-        client = this.clients[clName];
-    // for (handler in this.clients.  eventHandlers) {
-        if (client.hasOwnProperty('eventHandlers')) {
-            obj = client.eventHandlers;
-            console.log("publish click event to map " + client.eventHandlers);
-            obj['client-MapClickEvent'](frame);
-        }
+        if(clName !== frame.mapId) {
+          client = this.clients[clName];
+      // for (handler in this.clients.  eventHandlers) {
+          if (client.hasOwnProperty('eventHandlers')) {
+              obj = client.eventHandlers;
+              console.log("publish click event to map " + client.eventHandlers);
+              obj['client-MapClickEvent'](frame);
+          }
+      }
     }
     this.channel.trigger('client-MapClickEvent', frame);
     // this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
