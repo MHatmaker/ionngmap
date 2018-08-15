@@ -33,5 +33,8 @@ export class InfopopupComponent {
     // let pushLL = {'address' : this.itemContent};
     pusherClientService.publishClickEvent(this.itemContent);
   }
+  cancel() {
+    console.log("cancelled arcgis infopopup");
+  }
 
 }

@@ -10,7 +10,6 @@ import { CanvasService } from '../../../services/CanvasService';
 export class MultiCanvasEsri {
     // private el : string = null;
     private ndx : number = null;
-    private mapcolheight : number = 510;
     public slidevisibility : string = "multi-can-current";
 
     constructor(private canvasService: CanvasService) {

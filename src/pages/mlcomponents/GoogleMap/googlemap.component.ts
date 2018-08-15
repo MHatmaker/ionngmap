@@ -34,7 +34,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
 
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService, private canvasService : CanvasService,
-      public geolocation : Geolocation, public mapElement : ElementRef, private rndr : Renderer2,
+      public geolocation : Geolocation, public elementRef : ElementRef, private rndr : Renderer2,
       geopush: GeoPusherSupport, private slideViewService : SlideViewService) {
 
       console.log("GoogleMapComponent ctor");
@@ -57,10 +57,10 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
       places : null
     };
     // let mapElement = this.mapElement.nativeElement;
-    let mapElement = document.getElementById("google-map-component" + this.mapNumber);
+    // let mapElement = document.getElementById("google-map-component" + this.mapNumber);
     // this.gmHeight = '370px';
 
-    console.log(this.mapElement.nativeElement);
+    console.log(this.elementRef.nativeElement);
     console.log(document.getElementById("google-map-component" + this.mapNumber));
 
     //this.geolocation.getCurrentPosition().then((position) => {
@@ -82,7 +82,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
         mapOptions.center = {lng: this.glng, lat: this.glat};
         console.log(`geolocation center at ${this.glng}, ${this.glat}`);
         // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
-        this.startup.configure("google-map-component" + this.mapNumber, mapElement, mapOptions);
+        this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
         /*
         }, (err) => {
             console.log(err);
