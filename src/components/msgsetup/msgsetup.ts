@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 import { CurrentMapTypeService } from '../../services/currentmaptypeservice';
 import { MapInstanceService } from '../../services/MapInstanceService';
+import { HostConfig } from '../../pages/mlcomponents/libs/HostConfig';
+import { PusherConfig } from '../../pages/mlcomponents/libs/PusherConfig';
 import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport';
 import * as Clipboard from 'clipboard/dist/clipboard.min.js';
 
@@ -16,7 +18,8 @@ export class MsgsetupComponent {
   private mapInstanceService : MapInstanceService;
   private currentMapTypeService : CurrentMapTypeService;
 
-  constructor(public viewCtrl: ViewController, private geopush : GeoPusherSupport) {
+  constructor(public viewCtrl: ViewController, private geopush : GeoPusherSupport, private hostConfig : HostConfig,
+      private pusherConfig : PusherConfig) {
     console.log('Hello MsgsetupComponent Component');
 
     let geoPush = geopush.getGeoPusherSupport();
@@ -26,14 +29,15 @@ export class MsgsetupComponent {
   assembleUrl() {
       console.log("gethref : ");
       let mlConfig = this.mapInstanceService.getMapHosterInstanceForCurrentSlide().getmlconfig();
-      console.log(mlConfig.gethref());
-      let updtUrl = mlConfig.gethref(),
+      console.log(this.hostConfig.gethref());
+      let updtUrl = this.hostConfig.gethref(),
           curmapsys = this.currentMapTypeService.getMapRestUrl(),
           gmQuery = encodeURIComponent(mlConfig.getQuery()),
-          bnds = mlConfig.getBoundsForUrl();
+          bnds = mlConfig.getBoundsForUrl(),
+          channel = this.pusherConfig.masherChannel(false);
 
       if (updtUrl.indexOf('?') < 0) {
-          updtUrl +=  mlConfig.getUpdatedRawUrl();
+          updtUrl +=  mlConfig.getUpdatedRawUrl(channel);
       }
       console.log("Raw Updated url");
       console.log(updtUrl);

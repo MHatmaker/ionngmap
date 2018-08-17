@@ -184,11 +184,11 @@ export class MLConfig {
         //     return details.query[0];
         // }
     }
-    getUpdatedRawUrl () {
+    getUpdatedRawUrl (channel : string) {
       let n = this.details.webmapId.length,
-          id = this.details.webmapId.substr(0, n - 1),
+          id = this.details.webmapId == 'nowebmap' ? 'nowebmap' : this.details.webmapId.substr(0, n - 1),
           updatedUrl = "?id=" + id + "&lon=" + this.details.mlposition.lon + "&lat=" + this.details.mlposition.lat +
-              "&zoom=" + this.details.mlposition.zoom + "&channel=" + this.details.masherChannel;
+              "&zoom=" + this.details.mlposition.zoom + "&channel=" + channel;
       console.log(updatedUrl);
       return updatedUrl;
   }
