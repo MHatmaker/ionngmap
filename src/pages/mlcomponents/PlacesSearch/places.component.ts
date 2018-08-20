@@ -7,7 +7,8 @@ import { DestselectionComponent } from '../../../components/destselection/destse
 import { MapopenerProvider } from '../../../providers/mapopener/mapopener';
 // import { MaplocoptsProvider } from '../../../providers/maplocopts/maplocopts';
 import { MLConfig } from '../../../pages/mlcomponents/libs/MLConfig';
-import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface'
+import { mlBounds } from '../../../pages/mlcomponents/libs/mlBounds.interface';
+import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface';
 
 declare var google;
 
@@ -38,7 +39,6 @@ export class PlacesSearchComponent implements AfterViewInit {
             'location': google.maps.LatLng,
             'query': String
           };
-        // this._ngZone.run(() => {
           console.log(this.searchBox);
           let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
           let gmap = this.mapInstanceService.getHiddenMap();
@@ -76,4 +76,5 @@ export class PlacesSearchComponent implements AfterViewInit {
       });
 
     }
+
 }

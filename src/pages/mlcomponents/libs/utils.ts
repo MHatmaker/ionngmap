@@ -70,7 +70,9 @@ export class utils {
         // );
         return document.documentElement.offsetHeight; //window.innerHeight;
     }
-
+    getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
     getRootElementFontSize() {
         // Returns a number
         var fontSize = parseFloat(

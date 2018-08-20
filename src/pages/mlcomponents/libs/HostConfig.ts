@@ -4,6 +4,8 @@ import {
     Injectable,
 } from '@angular/core';
 import { PusherConfig } from './PusherConfig';
+import { utils } from './utils';
+// import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface';
 // import { IPosition } from '../../../services/position.service'
 
 console.log("loading HostConfig");
@@ -70,7 +72,10 @@ export class HostConfig implements IHostConfigDetails {
         query: '',
         mapHost: null
     };
-    constructor(private pusherConfig: PusherConfig) {
+    public nextWindowName : string = 'mishmash';
+    public smallFormDimensions : { 'top' : 1, 'left' : 1, 'width' : 450, 'height' : 570};
+
+    constructor(private pusherConfig: PusherConfig, private utils : utils) {
             console.log("HostConfig ctor");
     }
 
@@ -227,7 +232,16 @@ export class HostConfig implements IHostConfigDetails {
                 alert('Oops' + data.name);
             });
     }
-
+    getNextWindowName () {
+        var nextNum = this.utils.getRandomInt(100, 200),
+            nextName = this.nextWindowName + nextNum;
+        return nextName;
+    }
+    getSmallFormDimensions () {
+        var d = this.smallFormDimensions,
+            ltwh = `top=${d.top}, left=$d.left1}, height=${d.height},width=${d.width}`;
+        return ltwh;
+    }
     testUrlArgs  () : boolean {
         var rslt = this.getParameterByName('id', this.details);
         // alert("this.getParameterByName('id') = " + rslt);

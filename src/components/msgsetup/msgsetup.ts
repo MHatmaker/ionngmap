@@ -6,6 +6,7 @@ import { HostConfig } from '../../pages/mlcomponents/libs/HostConfig';
 import { PusherConfig } from '../../pages/mlcomponents/libs/PusherConfig';
 import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport';
 import * as Clipboard from 'clipboard/dist/clipboard.min.js';
+import { PusherClientService } from '../../services/pusherclient.service';
 
 @Component({
   selector: 'msgsetup',
@@ -19,7 +20,7 @@ export class MsgsetupComponent {
   private currentMapTypeService : CurrentMapTypeService;
 
   constructor(public viewCtrl: ViewController, private geopush : GeoPusherSupport, private hostConfig : HostConfig,
-      private pusherConfig : PusherConfig) {
+      private pusherConfig : PusherConfig, private pusherClientService : PusherClientService) {
     console.log('Hello MsgsetupComponent Component');
 
     let geoPush = geopush.getGeoPusherSupport();
@@ -71,6 +72,7 @@ export class MsgsetupComponent {
 
     console.log(this.urlCopyField);
     this.instructionsVisible = true;
+    this.pusherClientService.publishPosition(this.urlCopyField);
     // let clipboard = new Clipboard('#cpyBtn', {container: document.getElementById('idMsgSetupCard')});
     // clipboard.text = this.urlCopyField;
     // clipboard.on('success', (e) => {

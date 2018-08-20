@@ -329,18 +329,17 @@ publishClickEvent(frame) {
 }
 
 publishPosition(pos) {
-    var handler, client : PusherClient,
-        clName,
-        obj;
-    for (clName in this.clients) {
-        client = this.clients[clName];
-    // for (handler in this.clients.  eventHandlers) {
-        if (client.hasOwnProperty('eventHandlers')) {
-            obj = client.eventHandlers;
-            console.log("publish position event to map " + client.eventHandlers);
-            obj['client-NewMapPosition'](pos);
-        }
-    }
+    // var handler, client : PusherClient,
+    //     clName,
+    //     obj;
+    // for (clName in this.clients) {
+    //     client = this.clients[clName];
+    //     if (client.hasOwnProperty('eventHandlers')) {
+    //         obj = client.eventHandlers;
+    //         console.log("publish position event to map " + client.eventHandlers);
+    //         obj['client-NewMapPosition'](pos);
+    //     }
+    // }
     this.pusher.channel(this.channel).trigger('client-NewMapPosition', pos);
 }
 }

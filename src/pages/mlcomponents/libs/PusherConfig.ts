@@ -97,6 +97,13 @@ export class PusherConfig implements IPusherConfig {
     getUserId () : string {
         return this.details.userId;
     }
+    getBoundsFromUrl () {
+        var llx = this.getParameterByName('llx'),
+            lly = this.getParameterByName('lly'),
+            urx = this.getParameterByName('urx'),
+            ury = this.getParameterByName('ury');
+        return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
+    }
     getPusherPath () : string {
         var path = this.details.pusherPathPre + this.details.pusherPathNgrok + this.details.pusherPathPost;
         console.log("Pusher ngrok path is " + path);
