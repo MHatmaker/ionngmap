@@ -29,6 +29,16 @@ export class SearchplacesProvider {
             ury = this.getParameterByName('ury');
         return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
     }
+    lon  () : number {
+        let s = this.getParameterByName('lon');
+        return  Number(s);
+    }
+    lat  () : number {
+        return Number(this.getParameterByName('lat'));
+    }
+    zoom  () : number {
+        return Number(this.getParameterByName('zoom'));
+    }
 
     searchForPlaces(queryArgs : any) {
         let gmap = this.mapInstanceService.getHiddenMap();

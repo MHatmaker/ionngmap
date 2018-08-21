@@ -20,7 +20,7 @@ export class MsgsetupComponent {
   private currentMapTypeService : CurrentMapTypeService;
 
   constructor(public viewCtrl: ViewController, private geopush : GeoPusherSupport, private hostConfig : HostConfig,
-      private pusherConfig : PusherConfig, private pusherClientService : PusherClientService) {
+      private pusherConfig : PusherConfig) {
     console.log('Hello MsgsetupComponent Component');
 
     let geoPush = geopush.getGeoPusherSupport();
@@ -72,7 +72,8 @@ export class MsgsetupComponent {
 
     console.log(this.urlCopyField);
     this.instructionsVisible = true;
-    this.pusherClientService.publishPosition(this.urlCopyField);
+    let pusherClientService = this.geopush.getGeoPusherSupport().pusherClientService;
+    pusherClientService.publishPosition(this.urlCopyField);
     // let clipboard = new Clipboard('#cpyBtn', {container: document.getElementById('idMsgSetupCard')});
     // clipboard.text = this.urlCopyField;
     // clipboard.on('success', (e) => {

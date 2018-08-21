@@ -6,6 +6,7 @@ import { IPosition, MLPosition } from '../../services/position.service';
 import { IConfigParams, EMapSource } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
 import { HostConfig } from '../mlcomponents/libs/HostConfig';
+import { GeoPusherSupport } from '../mlcomponents/libs/geopushersupport';
 import { PusherEventHandler } from '../mlcomponents/libs/PusherEventHandler';
 import { MapInstanceService} from '../../services/MapInstanceService';
 // import { CarouselComponent} from '../mlcomponents/Carousel/carousel.component';
@@ -41,6 +42,7 @@ export class MapsPage implements AfterViewInit {
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
     private menuActions = {};
+    private pusherEventHandler : PusherEventHandler;
     private mapHosterDict : Map<string, any> = new Map<string, any>([
         ['google', MultiCanvasGoogle],
         ['esri', MultiCanvasEsri],
@@ -50,8 +52,7 @@ export class MapsPage implements AfterViewInit {
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
               private slideViewService : SlideViewService, private modalCtrl : ModalController,
-              private mapOpener : MapopenerProvider, private hostConfig : HostConfig,
-              private pusherEventHandler : PusherEventHandler, private searchPlaces : SearchplacesProvider) {
+              private mapOpener : MapopenerProvider, private hostConfig : HostConfig) { //}, private searchPlaces : SearchplacesProvider) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
@@ -139,6 +140,7 @@ export class MapsPage implements AfterViewInit {
   ngAfterViewInit() {
     // this.addCanvas(this.selectedMapType, this.mlconfig, null);
     // this.addCanvas('google', null, null);
+    this.pusherEventHandler = new PusherEventHandler(-101);
     this.pusherEventHandler.addEvent('client-NewMapPosition', this.onNewMapPosition);
   }
 
@@ -163,31 +165,31 @@ export class MapsPage implements AfterViewInit {
       this.addCanvas( menuOption.displayName, null, null);
   }
   onNewMapPosition (pos) {
-      var pos2prt : string = `onNewMapPosition handler - framework ${pos.maphost},
-            referrer ${pos.referrerId}, at x ${pos.lon}, y ${pos.lat}, zoom ${pos.zoom}`,
-
-          baseUrl = this.hostConfig.getbaseurl(),
-          completeUrl = baseUrl + pos.maphost + pos.search,
-          nextWindowName = this.hostConfig.getNextWindowName();
+      // let pos2prt : string = `onNewMapPosition handler -
+      //       referrer ${pos.referrerId}, at x ${pos.lon}, y ${pos.lat}, zoom ${pos.zoom}`,
+          // baseUrl = this.hostConfig.getbaseurl(),
+          // completeUrl = baseUrl + pos.maphost + pos.search,
+      let nextWindowName = this.hostConfig.getNextWindowName();
           // $inj,
           // modalInstance,
           // popresult = null;
-      console.log(pos2prt);
+      // console.log(pos2prt);
       console.log("search url :");
       console.log(pos.search);
       console.log('completeUrl');
-      console.debug(completeUrl);
-      console.log(`userId = " ${this.hostConfig.getUserId()} referrerId = ${this.hostConfig.getReferrerId()}
-          pos.referrerId = ${pos.referrerId}`);
+      // console.debug(completeUrl);
+      // console.log(`userId = " ${this.hostConfig.getUserId()} referrerId = ${this.hostConfig.getReferrerId()}
+      //     pos.referrerId = ${pos.referrerId}`);
       console.log(`is Initial User ? ${this.hostConfig.getInitialUserStatus()}`);
       console.log(`Open new window with name ${nextWindowName}`);
 
-      if (pos.referrerName !== this.hostConfig.getUserName()) {
-          completeUrl += "&userName=" + this.hostConfig.getUserName();
-          let places = this.searchPlaces.searchForPlaces(pos);
+      if (this.hostConfig.getUserName()) {
+          // completeUrl += "&userName=" + this.hostConfig.getUserName();
+          let searchPlaces = new SearchplacesProvider(this.mapInstanceService);
+          let places = searchPlaces.searchForPlaces(pos);
           if (places) {
-              let mplocCoords : MapLocCoords = {lat: pos.lat, lng: pos.lng};
-              let mploc : MapLocOptions = {center: mplocCoords, zoom: pos.zoom, places: places};
+              let mplocCoords : MapLocCoords = {lat: searchPlaces.lat(), lng: searchPlaces.lon()};
+              let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(), places: places};
               this.addCanvas('google', null, mploc);
           }
           // let popresult = window.open(completeUrl, nextWindowName, this.hostConfig.getSmallFormDimensions());

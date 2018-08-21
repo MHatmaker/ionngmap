@@ -7,7 +7,7 @@ import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
 // import { Pusher } from 'pusher-client';
 import { Pusher } from 'pusher-js';
 import { IEventDct } from '../pages/mlcomponents/libs/PusherEventHandler';
-
+import { MapopenerProvider } from '../providers/mapopener/mapopener';
 declare const Pusher: any;
 
 class PusherClient {
@@ -54,7 +54,8 @@ export class PusherClientService {
 
     constructor (
         private pusherConfig: PusherConfig,
-        private mapInstanceService: MapInstanceService
+        private mapInstanceService: MapInstanceService,
+        private mapOpener : MapopenerProvider
       ){
     }
 
@@ -151,6 +152,7 @@ export class PusherClientService {
         channelBind.bind('client-NewMapPosition', function (frame) {
             console.log('frame is', frame);
             console.log("back from NewMapPosition Event");
+            this.mapopener.openMap.emit(frame);
         });
 
         console.log("BIND to client-MapXtntEvent");
@@ -340,6 +342,6 @@ publishPosition(pos) {
     //         obj['client-NewMapPosition'](pos);
     //     }
     // }
-    this.pusher.channel(this.channel).trigger('client-NewMapPosition', pos);
-}
+    this.channel.trigger('client-NewMapPosition', pos);
+  }
 }
