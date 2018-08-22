@@ -149,10 +149,10 @@ export class PusherClientService {
             console.log("back from NewUrlEvent");
         });
 
-        channelBind.bind('client-NewMapPosition', function (frame) {
+        channelBind.bind('client-NewMapPosition', (frame) => {
             console.log('frame is', frame);
             console.log("back from NewMapPosition Event");
-            this.mapopener.openMap.emit(frame);
+            this.mapOpener.openMap.emit(frame);
         });
 
         console.log("BIND to client-MapXtntEvent");

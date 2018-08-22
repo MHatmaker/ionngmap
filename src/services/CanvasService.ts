@@ -51,7 +51,8 @@ export class CanvasService {
         this.initialLoc = {
           center: {'lng' : glng, 'lat' : glat},
           zoom: 15,
-          places : null
+          places : null,
+          query : ""
           //mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         console.log(`geolocation center at ${glng}, ${glat}`);
@@ -71,7 +72,8 @@ export class CanvasService {
           this.currentLoc = {
             center: {'lng' : glng, 'lat' : glat},
             zoom: 15,
-            places : null
+            places : null,
+            query : ""
             //mapTypeId: google.maps.MapTypeId.ROADMAP
           };
           let maphoster = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();

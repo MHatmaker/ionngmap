@@ -59,9 +59,10 @@ export class PlacesSearchComponent implements AfterViewInit {
                       modal.onDidDismiss(data => {
                           console.log(data.destination.title);
                           if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
+                              let gmquery = this.input.value;
                               let coords : any = queryPlaces.location;
                               let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
-                              let opts: MapLocOptions = { center :  cntr, zoom : gmap.getZoom(), places : p};
+                              let opts: MapLocOptions = { center :  cntr, zoom : gmap.getZoom(), places : p, query : gmquery};
                               this.mapopener.openMap.emit(opts);
                           } else {
                               mph.placeMarkers(p);

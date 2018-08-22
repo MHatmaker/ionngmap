@@ -9,6 +9,7 @@ export class MapopenerProvider implements MapLocOptions {
     center : MapLocCoords;
     zoom : number;
     places : any;
+    query : string;
     mapLocOpts : MapLocOptions;
 
   // constructor(private mapLocOpts : MapLocOptions) {

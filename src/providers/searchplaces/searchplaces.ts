@@ -29,6 +29,9 @@ export class SearchplacesProvider {
             ury = this.getParameterByName('ury');
         return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
     }
+    query() {
+        return this.getParameterByName('gmquery');
+    }
     lon  () : number {
         let s = this.getParameterByName('lon');
         return  Number(s);
@@ -40,19 +43,23 @@ export class SearchplacesProvider {
         return Number(this.getParameterByName('zoom'));
     }
 
-    searchForPlaces(queryArgs : any) {
+    async searchForPlaces(queryArgs : any) {
+        this.searchString = queryArgs;
         let gmap = this.mapInstanceService.getHiddenMap();
-        let googlecntr = new google.maps.LatLng(queryArgs.lat, queryArgs.lng);
 
-        let sw = new google.maps.LatLng(queryArgs.bnds.lly, queryArgs.bnds.llx);
-        let ne = new google.maps.LatLng(queryArgs.bnds.ury,queryArgs.bnds.urx);
+        let googlecntr = new google.maps.LatLng(this.lat(), this.lon());
+        let bnds = this.getBoundsFromUrl(queryArgs);
+        let gmquery = this.query();
+
+        let sw = new google.maps.LatLng(bnds.lly, bnds.llx);
+        let ne = new google.maps.LatLng(bnds.ury, bnds.urx);
         let queryPlaces = {
           'bounds' : new google.maps.LatLngBounds(sw, ne),
           'location': googlecntr,
-          'query': queryArgs.gmquery
+          'query': gmquery
         };
         let service = new google.maps.places.PlacesService(gmap);
-        service.textSearch(queryPlaces, (p) => {
+        await service.textSearch(queryPlaces, (p) => {
             if (p.length != 0) {
                 return p;
             } else {

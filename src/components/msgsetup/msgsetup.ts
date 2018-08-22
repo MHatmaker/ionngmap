@@ -72,8 +72,6 @@ export class MsgsetupComponent {
 
     console.log(this.urlCopyField);
     this.instructionsVisible = true;
-    let pusherClientService = this.geopush.getGeoPusherSupport().pusherClientService;
-    pusherClientService.publishPosition(this.urlCopyField);
     // let clipboard = new Clipboard('#cpyBtn', {container: document.getElementById('idMsgSetupCard')});
     // clipboard.text = this.urlCopyField;
     // clipboard.on('success', (e) => {
@@ -94,7 +92,12 @@ export class MsgsetupComponent {
     console.log(this.urlCopyField);
   }
   close() {
-      this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss('usemsg', null);
+  }
+  shareMap() {
+    // let pusherClientService = this.geopush.getGeoPusherSupport().pusherClientService;
+    // pusherClientService.publishPosition(this.urlCopyField);
+    this.viewCtrl.dismiss('usepush', this.urlCopyField);
   }
 
 }

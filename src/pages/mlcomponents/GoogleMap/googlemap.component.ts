@@ -54,7 +54,8 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
       center: latLng,
       zoom: 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
-      places : null
+      places : null,
+      query : ""
     };
     // let mapElement = this.mapElement.nativeElement;
     // let mapElement = document.getElementById("google-map-component" + this.mapNumber);

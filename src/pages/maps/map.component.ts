@@ -52,7 +52,8 @@ export class MapsPage implements AfterViewInit {
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
               private slideViewService : SlideViewService, private modalCtrl : ModalController,
-              private mapOpener : MapopenerProvider, private hostConfig : HostConfig) { //}, private searchPlaces : SearchplacesProvider) {
+              private mapOpener : MapopenerProvider, private hostConfig : HostConfig,
+              private geoPush : GeoPusherSupport) { //}, private searchPlaces : SearchplacesProvider) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
@@ -80,7 +81,7 @@ export class MapsPage implements AfterViewInit {
               let xcntr = xtnt.getCenter();
               let cntr : IPosition = new MLPosition(xcntr.x, xcntr.y, 15);
               let mplocCoords : MapLocCoords = {lat: xcntr.y, lng: xcntr.x};
-              let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null};
+              let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null, query: null};
               let mlcfg = new MLConfig({mapId : -1, mapType : 'esri', webmapId : data.id,
                 mlposition : cntr, source : EMapSource.srcagonline});
               mlcfg.setBounds(xtnt);
@@ -95,8 +96,12 @@ export class MapsPage implements AfterViewInit {
         'Share Map' : () => {
           let modal = modalCtrl.create(MsgsetupComponent);
           modal.present();
-          modal.onDidDismiss((data) => {
-              this.onNewMapPosition(data);
+          modal.onDidDismiss((mode, data) => {
+              if(mode == 'usepush') {
+                  let pusherClientService = this.geoPush.getGeoPusherSupport().pusherClientService;
+                  pusherClientService.publishPosition(data);
+                  // this.onNewMapPosition(data);
+            }
           });
         },
         'Pusher Setup' : () => {
@@ -164,7 +169,8 @@ export class MapsPage implements AfterViewInit {
   onsetMap (menuOption : MenuOptionModel) {
       this.addCanvas( menuOption.displayName, null, null);
   }
-  onNewMapPosition (pos) {
+
+  async onNewMapPosition (pos) {
       // let pos2prt : string = `onNewMapPosition handler -
       //       referrer ${pos.referrerId}, at x ${pos.lon}, y ${pos.lat}, zoom ${pos.zoom}`,
           // baseUrl = this.hostConfig.getbaseurl(),
@@ -186,10 +192,10 @@ export class MapsPage implements AfterViewInit {
       if (this.hostConfig.getUserName()) {
           // completeUrl += "&userName=" + this.hostConfig.getUserName();
           let searchPlaces = new SearchplacesProvider(this.mapInstanceService);
-          let places = searchPlaces.searchForPlaces(pos);
+          let places = await searchPlaces.searchForPlaces(pos);
           if (places) {
               let mplocCoords : MapLocCoords = {lat: searchPlaces.lat(), lng: searchPlaces.lon()};
-              let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(), places: places};
+              let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(), places: places, query: pos.query};
               this.addCanvas('google', null, mploc);
           }
           // let popresult = window.open(completeUrl, nextWindowName, this.hostConfig.getSmallFormDimensions());
@@ -229,6 +235,7 @@ export class MapsPage implements AfterViewInit {
             mlconfig = new MLConfig(cfgparams);
             mlconfig.setHardInitialized(true);
             mlconfig.setInitialPlaces(maploc.places);
+            mlconfig.setQuery(maploc.query);
             // newpos = new MLPosition(-1, -1, -1);
             // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
             // mlConfig = new MLConfig(icfg);
