@@ -25,7 +25,6 @@ import { MsgsetupComponent } from "../../components/msgsetup/msgsetup";
 import { AgogroupComponent } from "../../components/agogroup/agogroup";
 import { AgoitemComponent } from "../../components/agoitem/agoitem";
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
-import { TestmapshareProvider } from "../../providers/testmapshare/testmapshare";
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { MLBounds, ImlBounds } from '../../services/mlbounds.service';
 import { SearchplacesProvider } from '../../providers/searchplaces/searchplaces';
@@ -53,7 +52,7 @@ export class MapsPage implements AfterViewInit {
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
               private slideViewService : SlideViewService, private modalCtrl : ModalController,
-              private mapOpener : MapopenerProvider, private hostConfig : HostConfig, private testShare : TestmapshareProvider,
+              private mapOpener : MapopenerProvider, private hostConfig : HostConfig,
               private geoPush : GeoPusherSupport) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
@@ -145,11 +144,6 @@ export class MapsPage implements AfterViewInit {
             } else {
                 this.onNewMapPosition(data);
             }
-      });
-      testShare.testShare.subscribe(
-          (data : IMapShare) => {
-            console.log("testShare.testShare subscriber entered");
-            this.onNewMapPosition(data);
       });
   }
 

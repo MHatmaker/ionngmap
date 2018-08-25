@@ -65,7 +65,6 @@ import { SharemapProvider } from '../providers/sharemap/sharemap';
 import { InfopopupComponent } from '../components/infopopup/infopopup';
 import { AgodetailComponent } from '../components/agodetail/agodetail';
 import { SearchplacesProvider } from '../providers/searchplaces/searchplaces';
-import { TestmapshareProvider } from '../providers/testmapshare/testmapshare';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -167,8 +166,7 @@ import { TestmapshareProvider } from '../providers/testmapshare/testmapshare';
     AgoqueryProvider,
     DomService,
     SharemapProvider,
-    SearchplacesProvider,
-    TestmapshareProvider
+    SearchplacesProvider
   ]
 })
 export class AppModule {}
