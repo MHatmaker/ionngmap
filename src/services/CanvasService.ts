@@ -16,9 +16,11 @@ import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
 import { MultiCanvasEsri } from '../pages/mlcomponents/MultiCanvas/multicanvasesri.component';
 import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvasgoogle.component';
 import { MultiCanvasLeaflet } from '../pages/mlcomponents/MultiCanvas/multicanvasleaflet.component';
+import { PusherConfig } from '../pages/mlcomponents/libs/PusherConfig';
 import { Geolocation } from '@ionic-native/geolocation';
-import { MapLocCoords, MapLocOptions } from './positionupdate.interface';
+import { MapLocCoords, MapLocOptions, IMapShare } from './positionupdate.interface';
 import { MapopenerProvider } from '../providers/mapopener/mapopener';
+import { MLBounds, ImlBounds } from './mlbounds.service';
 
 // import {MultiCanvasGoogle} from '../MultiCanvas/multicanvasgoogle.component';
 
@@ -40,7 +42,8 @@ export class CanvasService {
         private slideshareService : SlideShareService,
         private slideViewService : SlideViewService,
         private geoLocation : Geolocation,
-        private mapOpener : MapopenerProvider
+        private mapOpener : MapopenerProvider,
+        private pusherConfig : PusherConfig
       ){
     this.geoLocation.getCurrentPosition().then((position) => {
 
@@ -55,8 +58,11 @@ export class CanvasService {
           query : ""
           //mapTypeId: google.maps.MapTypeId.ROADMAP
         };
+        let bnds : MLBounds = null;
+        let opts : MapLocOptions = this.initialLoc;
+        let shr : IMapShare = {mapLocOpts : opts, userName : this.pusherConfig.getUserName(), mlBounds : bnds};
         console.log(`geolocation center at ${glng}, ${glat}`);
-        this.mapOpener.openMap.emit(this.initialLoc);
+        this.mapOpener.openMap.emit(shr);
         }, (err) => {
             console.log(err);
         });

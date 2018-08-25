@@ -25,7 +25,8 @@ import { MsgsetupComponent } from "../../components/msgsetup/msgsetup";
 import { AgogroupComponent } from "../../components/agogroup/agogroup";
 import { AgoitemComponent } from "../../components/agoitem/agoitem";
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
-import { MapLocOptions, MapLocCoords } from '../../services/positionupdate.interface';
+import { TestmapshareProvider } from "../../providers/testmapshare/testmapshare";
+import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { MLBounds, ImlBounds } from '../../services/mlbounds.service';
 import { SearchplacesProvider } from '../../providers/searchplaces/searchplaces';
 
@@ -52,8 +53,8 @@ export class MapsPage implements AfterViewInit {
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
               private slideViewService : SlideViewService, private modalCtrl : ModalController,
-              private mapOpener : MapopenerProvider, private hostConfig : HostConfig,
-              private geoPush : GeoPusherSupport) { //}, private searchPlaces : SearchplacesProvider) {
+              private mapOpener : MapopenerProvider, private hostConfig : HostConfig, private testShare : TestmapshareProvider,
+              private geoPush : GeoPusherSupport) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
@@ -137,8 +138,18 @@ export class MapsPage implements AfterViewInit {
         */
       });
       mapOpener.openMap.subscribe(
-          (data : MapLocOptions) => {
-            this.addCanvas('google', null, data)
+          (data : IMapShare) => {
+            console.log("mapOpener.openMap subscriber entered");
+            if(data.mapLocOpts.query == "" || data.mapLocOpts.places) {
+                this.addCanvas('google', null, data.mapLocOpts);
+            } else {
+                this.onNewMapPosition(data);
+            }
+      });
+      testShare.testShare.subscribe(
+          (data : IMapShare) => {
+            console.log("testShare.testShare subscriber entered");
+            this.onNewMapPosition(data);
       });
   }
 
@@ -170,34 +181,26 @@ export class MapsPage implements AfterViewInit {
       this.addCanvas( menuOption.displayName, null, null);
   }
 
-  async onNewMapPosition (pos) {
+  async onNewMapPosition (opts : IMapShare) {
       // let pos2prt : string = `onNewMapPosition handler -
       //       referrer ${pos.referrerId}, at x ${pos.lon}, y ${pos.lat}, zoom ${pos.zoom}`,
           // baseUrl = this.hostConfig.getbaseurl(),
           // completeUrl = baseUrl + pos.maphost + pos.search,
       let nextWindowName = this.hostConfig.getNextWindowName();
-          // $inj,
-          // modalInstance,
-          // popresult = null;
-      // console.log(pos2prt);
-      console.log("search url :");
-      console.log(pos.search);
-      console.log('completeUrl');
-      // console.debug(completeUrl);
-      // console.log(`userId = " ${this.hostConfig.getUserId()} referrerId = ${this.hostConfig.getReferrerId()}
-      //     pos.referrerId = ${pos.referrerId}`);
       console.log(`is Initial User ? ${this.hostConfig.getInitialUserStatus()}`);
       console.log(`Open new window with name ${nextWindowName}`);
+      // let opts : IMapShare = JSON.parse(pos);
+      let referrerName = opts.userName;
 
-      if (this.hostConfig.getUserName()) {
+      if (this.hostConfig.getUserName() !== referrerName) {
           // completeUrl += "&userName=" + this.hostConfig.getUserName();
           let searchPlaces = new SearchplacesProvider(this.mapInstanceService);
-          let places = await searchPlaces.searchForPlaces(pos);
-          if (places) {
+          await searchPlaces.searchForPlaces(opts, (places) => {
               let mplocCoords : MapLocCoords = {lat: searchPlaces.lat(), lng: searchPlaces.lon()};
-              let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(), places: places, query: pos.query};
+              let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(),
+                  places: places, query: opts.mapLocOpts.query};
               this.addCanvas('google', null, mploc);
-          }
+          });
           // let popresult = window.open(completeUrl, nextWindowName, this.hostConfig.getSmallFormDimensions());
       }
   }

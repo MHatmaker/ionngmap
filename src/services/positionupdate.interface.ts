@@ -1,3 +1,5 @@
+import { mlBounds } from '../pages/mlcomponents/libs/mlBounds.interface';
+
 export interface IPositionParams {
     zm : number,
     scl : number,
@@ -21,4 +23,10 @@ export interface MapLocOptions {
     zoom : number,
     places : any,
     query : string
+}
+
+export interface IMapShare {
+  mapLocOpts : MapLocOptions,
+  userName : string,
+  mlBounds : mlBounds
 }

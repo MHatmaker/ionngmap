@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { mlBounds } from '../../pages/mlcomponents/libs/mlBounds.interface';
-import { MapLocOptions, MapLocCoords } from '../../services/positionupdate.interface';
+import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { MapInstanceService } from '../../services/MapInstanceService';
 
 declare var google;
@@ -9,6 +9,7 @@ declare var google;
 @Injectable()
 export class SearchplacesProvider {
     private searchString : string;
+    private configDetails : IMapShare;
 
     constructor(public mapInstanceService : MapInstanceService) {
         console.log('Hello SearchplacesProvider Provider');
@@ -43,13 +44,13 @@ export class SearchplacesProvider {
         return Number(this.getParameterByName('zoom'));
     }
 
-    async searchForPlaces(queryArgs : any) {
-        this.searchString = queryArgs;
+    async searchForPlaces(opts : IMapShare, cb : any) {
+        // pos = {center : cntr, zoom : zoom, query : gmQuery, places : null};
         let gmap = this.mapInstanceService.getHiddenMap();
 
-        let googlecntr = new google.maps.LatLng(this.lat(), this.lon());
-        let bnds = this.getBoundsFromUrl(queryArgs);
-        let gmquery = this.query();
+        let googlecntr = new google.maps.LatLng(opts.mapLocOpts.center.lat, opts.mapLocOpts.center.lng);
+        let bnds = opts.mlBounds;
+        let gmquery = opts.mapLocOpts.query;
 
         let sw = new google.maps.LatLng(bnds.lly, bnds.llx);
         let ne = new google.maps.LatLng(bnds.ury, bnds.urx);
@@ -61,6 +62,7 @@ export class SearchplacesProvider {
         let service = new google.maps.places.PlacesService(gmap);
         await service.textSearch(queryPlaces, (p) => {
             if (p.length != 0) {
+                cb(p);
                 return p;
             } else {
                 console.log("no places returned from PlacesServices for ${query}")

@@ -85,6 +85,7 @@ export class MapLinkrApp {
               this.userName = data['name'];
               console.log(this.userName);
               pusherConfig.setUserName(this.userName);
+              hostConfig.setUserName(this.userName);
               let userId = data['id'];
               console.log(userId);
               pusherConfig.setUserId(userId);

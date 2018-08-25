@@ -7,6 +7,7 @@ import { PusherConfig } from '../../pages/mlcomponents/libs/PusherConfig';
 import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport';
 import * as Clipboard from 'clipboard/dist/clipboard.min.js';
 import { PusherClientService } from '../../services/pusherclient.service';
+import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 
 @Component({
   selector: 'msgsetup',
@@ -54,6 +55,22 @@ export class MsgsetupComponent {
       return updtUrl;
   }
 
+  assembleJson() : IMapShare {
+    let mlConfig = this.mapInstanceService.getMapHosterInstanceForCurrentSlide().getmlconfig(),
+        curmapsys = this.currentMapTypeService.getMapRestUrl(),
+        gmQuery = mlConfig.getQuery(),
+        bnds = mlConfig.getBounds(),
+        curpos = mlConfig.getPosition(),
+        cntr = {lat : curpos.lat, lng : curpos.lon},
+        zoom = curpos.zoom,
+        pos = {center : cntr, zoom : zoom, query : gmQuery, places : null},
+        username = this.hostConfig.getUserName(),
+        opts = {mapLocOpts : pos, userName : username, mlBounds : bnds};
+
+        return opts;
+
+  }
+
   // copyToClipboard(text) {
   //   if (window.clipboardData && window.clipboardData.setData) {
   //       // IE specific code path to prevent textarea being shown while dialog is visible.
@@ -97,7 +114,7 @@ export class MsgsetupComponent {
   shareMap() {
     // let pusherClientService = this.geopush.getGeoPusherSupport().pusherClientService;
     // pusherClientService.publishPosition(this.urlCopyField);
-    this.viewCtrl.dismiss('usepush', this.urlCopyField);
+    this.viewCtrl.dismiss('usepush', JSON.stringify(this.assembleJson()));
   }
 
 }

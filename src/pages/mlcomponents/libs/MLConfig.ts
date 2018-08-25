@@ -249,10 +249,6 @@ export class MLConfig {
     query () : string {
         return this.getParameterByName('gmquery', this.details);
     }
-    getQueryFromUrl () : string {
-        // this.details.query.push(this.getParameterByName('gmquery'));
-        return this.details.query;
-    }
     setInitialPlaces (p) {
         this.details.places = p;
     }
