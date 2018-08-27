@@ -8,6 +8,7 @@ import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport
 import * as Clipboard from 'clipboard/dist/clipboard.min.js';
 import { PusherClientService } from '../../services/pusherclient.service';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
+import { EmailerProvider, EmailParts } from '../../providers/emailer/emailer';
 
 @Component({
   selector: 'msgsetup',
@@ -21,7 +22,7 @@ export class MsgsetupComponent {
   private currentMapTypeService : CurrentMapTypeService;
 
   constructor(public viewCtrl: ViewController, private geopush : GeoPusherSupport, private hostConfig : HostConfig,
-      private pusherConfig : PusherConfig) {
+      private pusherConfig : PusherConfig, private emailer : EmailerProvider) {
     console.log('Hello MsgsetupComponent Component');
 
     let geoPush = geopush.getGeoPusherSupport();
@@ -85,6 +86,8 @@ export class MsgsetupComponent {
     }
 
   fetchUrl() {
+    let mlConfig = this.mapInstanceService.getMapHosterInstanceForCurrentSlide().getmlconfig();
+
     this.urlCopyField = this.assembleUrl();
 
     console.log(this.urlCopyField);
@@ -103,6 +106,18 @@ export class MsgsetupComponent {
     //   console.error('Action:', e.action);
     //   console.error('Trigger:', e.trigger);
     // });
+  }
+
+  sendMail() {
+    let mlConfig = this.mapInstanceService.getMapHosterInstanceForCurrentSlide().getmlconfig();
+
+    this.urlCopyField = this.assembleUrl();
+
+    console.log(this.urlCopyField);
+    this.instructionsVisible = true;
+    let email = new EmailParts({body : { to : 'michael.hatmaker@gmail.com', subject : mlConfig.getQuery(), text : this.urlCopyField}});
+    this.emailer.sendEmail(email);
+
   }
 
   logForm(){
