@@ -26,7 +26,7 @@ export class EmailParts implements IEmailParts {
 
 @Injectable()
 export class EmailerProvider {
-  private url : string = 'https://maplinkr.herokuapp.com/send-email'
+  private url : string = 'https://maplinkr-simpleserver.herokuapp.com/send-email'
   constructor(public http: Http) {
     console.log('Hello EmailerProvider Provider');
   }
@@ -35,7 +35,8 @@ export class EmailerProvider {
 
   	  let headers = new Headers({ 'Content-Type': 'application/json' });
       let options = new RequestOptions({ headers: headers });
-      return this.http.post(this.url, JSON.stringify(mailparts), options)
+      let jstring = JSON.stringify(mailparts.parts);
+      return this.http.post(this.url, jstring, options)
                  .map(this.extractData)
                  .catch(this.handleErrorObservable);
   }
