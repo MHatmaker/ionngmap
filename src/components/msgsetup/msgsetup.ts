@@ -115,7 +115,7 @@ export class MsgsetupComponent {
 
     console.log(this.urlCopyField);
     this.instructionsVisible = true;
-    let email = new EmailParts({body : { to : 'michael.hatmaker@gmail.com', subject : mlConfig.getQuery(), text : this.urlCopyField}});
+    let email = new EmailParts({ to : 'michael.hatmaker@gmail.com', subject : mlConfig.getQuery(), text : this.urlCopyField});
     this.emailer.sendEmail(email);
 
   }
