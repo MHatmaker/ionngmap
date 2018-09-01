@@ -8,7 +8,7 @@ import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport
 import * as Clipboard from 'clipboard/dist/clipboard.min.js';
 import { PusherClientService } from '../../services/pusherclient.service';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
-import { EmailerProvider, EmailParts } from '../../providers/emailer/emailer';
+import { EmailerProvider, EmailParts, IEmailAddress } from '../../providers/emailer/emailer';
 
 @Component({
   selector: 'msgsetup',
@@ -17,6 +17,7 @@ import { EmailerProvider, EmailParts } from '../../providers/emailer/emailer';
 export class MsgsetupComponent {
 
   private urlCopyField : string;
+  private recipientAdrs : string;
   private instructionsVisible : boolean = false;
   private mapInstanceService : MapInstanceService;
   private currentMapTypeService : CurrentMapTypeService;
@@ -115,7 +116,8 @@ export class MsgsetupComponent {
 
     console.log(this.urlCopyField);
     this.instructionsVisible = true;
-    let email = new EmailParts({ to : 'michael.hatmaker@gmail.com', subject : mlConfig.getQuery(), text : this.urlCopyField});
+    let adrs : IEmailAddress = {Email : this.recipientAdrs}; //{Email : 'michael.hatmaker@gmail.com'}
+    let email = new EmailParts({ to : [adrs], subject : mlConfig.getQuery(), text : this.urlCopyField});
     this.emailer.sendEmail(email);
 
   }

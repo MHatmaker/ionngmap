@@ -8,14 +8,18 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 
+export interface IEmailAddress {
+    Email : string;
+}
+
 export interface IEmailParts {
-    to: string;
+    to: [IEmailAddress];
     subject: string;
     text: string;
 }
 
 export class EmailParts implements IEmailParts {
-       to : string;
+       to : [IEmailAddress];
        subject : string;
        text : string;
 

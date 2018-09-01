@@ -30,14 +30,21 @@
                     </textarea>
 
                 </ion-item>
+                <ion-item>
+                    <ion-label>
+                        Recipient email address:
+                    </ion-label>
+                    <ion-input placeholder="email address" [(ngModel)]="recipientAdrs">
+                    </ion-input>
+                </ion-item>
                 <button ion-button id="cpyBtn" class="url-copy-button" (click)="copyUrlField(urlInput)">
                     <img src="assets/imgs/clippy.svg" alt="Copy to clipboard">
                 </button>
                 <ion-item class="url-copy-info">
                     <ion-label style="white-space: normal">
-                        Option 1. Tap the clipboard button.
+                        Option 1. Use the MapLinkr mail system by clicking the send mail button.
+                        Option 2. Tap the clipboard button.
                         Then paste the link into an email, text message, or chat session.
-                        Option 2. Use the MapLinkr mail system by clicking the send mail button.
                     </ion-label>
                 </ion-item>
                 <ion-item>
