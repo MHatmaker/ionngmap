@@ -1,0 +1,14 @@
+accordion-list {
+
+    .expand-wrapper {
+        transition: 0.2s linear;
+    }
+
+    .collapsed {
+        display: none;
+    }
+
+    .expanded {
+        display: block;
+    }
+}

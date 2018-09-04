@@ -66,6 +66,7 @@ import { InfopopupComponent } from '../components/infopopup/infopopup';
 import { AgodetailComponent } from '../components/agodetail/agodetail';
 import { SearchplacesProvider } from '../providers/searchplaces/searchplaces';
 import { EmailerProvider } from '../providers/emailer/emailer';
+import { AccordionListComponent } from '../components/accordion-list/accordion-list';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -94,7 +95,8 @@ import { EmailerProvider } from '../providers/emailer/emailer';
     SharemapComponent,
     InfopopupComponent,
     AgodetailComponent,
-    MsgsetupComponent
+    MsgsetupComponent,
+    AccordionListComponent
   ],
   imports: [
     BrowserModule,
@@ -132,7 +134,8 @@ import { EmailerProvider } from '../providers/emailer/emailer';
     SharemapComponent,
     InfopopupComponent,
     AgodetailComponent,
-    MsgsetupComponent
+    MsgsetupComponent,
+    AccordionListComponent
   ],
   providers: [
     StatusBar,

@@ -18,7 +18,8 @@ export class MsgsetupComponent {
 
   private urlCopyField : string;
   private recipientAdrs : string;
-  private instructionsVisible : boolean = false;
+  private items: any = [];
+  private selectedItem : any = null;
   private mapInstanceService : MapInstanceService;
   private currentMapTypeService : CurrentMapTypeService;
 
@@ -29,6 +30,13 @@ export class MsgsetupComponent {
     let geoPush = geopush.getGeoPusherSupport();
     this.mapInstanceService = geoPush.mapInstanceService;
     this.currentMapTypeService = geoPush.currentMapTypeService;
+
+    this.items = [
+        {expanded: false},
+        {expanded: false},
+        {expanded: false}
+    ];
+    this.selectedItem = this.items[0];
   }
   assembleUrl() {
       console.log("gethref : ");
@@ -84,15 +92,31 @@ export class MsgsetupComponent {
       inputElement.select();
       document.execCommand('copy');
       inputElement.setSelectionRange(0, 0);
-    }
+  }
+  expandItem(item){
 
+      this.items.map((listItem) => {
+
+          if(item == listItem){
+              listItem.expanded = !listItem.expanded;
+              // this.selectedItem.expanded = listItem.expanded;
+          } else {
+              listItem.expanded = false;
+          }
+
+          return listItem;
+
+      });
+
+  }
   fetchUrl() {
     let mlConfig = this.mapInstanceService.getMapHosterInstanceForCurrentSlide().getmlconfig();
 
     this.urlCopyField = this.assembleUrl();
 
     console.log(this.urlCopyField);
-    this.instructionsVisible = true;
+    this.selectedItem = this.items[0];
+    this.expandItem(this.items[0]);
     // let clipboard = new Clipboard('#cpyBtn', {container: document.getElementById('idMsgSetupCard')});
     // clipboard.text = this.urlCopyField;
     // clipboard.on('success', (e) => {
@@ -109,13 +133,21 @@ export class MsgsetupComponent {
     // });
   }
 
+  setupMapLinkrMail() {
+    this.selectedItem = this.items[1];
+    this.expandItem(this.items[1]);
+  }
+  setupDirectShare() {
+    this.selectedItem = this.items[2];
+    this.expandItem(this.items[2]);
+  }
+
   sendMail() {
     let mlConfig = this.mapInstanceService.getMapHosterInstanceForCurrentSlide().getmlconfig();
 
     this.urlCopyField = this.assembleUrl();
 
     console.log(this.urlCopyField);
-    this.instructionsVisible = true;
     let adrs : IEmailAddress = {Email : this.recipientAdrs}; //{Email : 'michael.hatmaker@gmail.com'}
     let email = new EmailParts({ to : [adrs], subject : mlConfig.getQuery(), text : this.urlCopyField});
     this.emailer.sendEmail(email);

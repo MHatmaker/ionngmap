@@ -9,6 +9,7 @@ import { SharemapComponent } from './sharemap/sharemap';
 import { InfopopupComponent } from './infopopup/infopopup';
 import { AgodetailComponent } from './agodetail/agodetail';
 import { MsgsetupComponent } from './msgsetup/msgsetup';
+import { AccordionListComponent } from './accordion-list/accordion-list';
 @NgModule({
 	declarations: [PushersetupComponent,
     NewsComponent,
@@ -20,7 +21,8 @@ import { MsgsetupComponent } from './msgsetup/msgsetup';
     SharemapComponent,
     InfopopupComponent,
     AgodetailComponent,
-    MsgsetupComponent],
+    MsgsetupComponent,
+    AccordionListComponent],
 	imports: [],
 	exports: [PushersetupComponent,
     NewsComponent,
@@ -32,6 +34,7 @@ import { MsgsetupComponent } from './msgsetup/msgsetup';
     SharemapComponent,
     InfopopupComponent,
     AgodetailComponent,
-    MsgsetupComponent]
+    MsgsetupComponent,
+    AccordionListComponent]
 })
 export class ComponentsModule {}
