@@ -14,7 +14,7 @@ msgsetup {
   font-size: 1.8rem;
 }
 
-.clipgrid {
+.copypastegrid {
   display : grid;
   grid-template-columns : auto 5rem;
 }
@@ -43,4 +43,11 @@ msgsetup {
 
 button {
     align-items: baseline;
+}
+.collapsed {
+    name: arrow-down;
+}
+
+.expanded {
+    name: arrow-left;
 }
