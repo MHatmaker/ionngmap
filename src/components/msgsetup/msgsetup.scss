@@ -51,3 +51,18 @@ button {
 .expanded {
     name: arrow-left;
 }
+[aria-expanded="false"] .menu__icon--open {
+    display: block;
+}
+
+[aria-expanded="false"] .menu__icon--close {
+    display: none;
+}
+
+[aria-expanded="true"] .menu__icon--open {
+    display: none;
+}
+
+[aria-expanded="true"] .menu__icon--close {
+    display: block;
+}

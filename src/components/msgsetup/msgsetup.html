@@ -15,9 +15,17 @@
       <ion-card-content>
             <h5 style="font-weight: bold; font-size: 1.8rem;    ">Share Your MapLinkr Session</h5>
                 <ion-label style="white-space: normal">Assemble the map configuration to share:</ion-label>
-                <button ion-button color="secondary" (click)="fetchUrl()" icon-end>
+                <button ion-button color="secondary" aria-expanded="false" aria-controls="menu"
+                        data-toggle="collapse" data-target="#menu" (click)="fetchUrl()" icon-end>
                     Email from your email account
-                    <ion-icon [expanded]="items[0].expanded" [class.collapsed]="!expanded" [class.expanded]="expanded"></ion-icon>
+                    <div class="menu collapse" id="menu">
+                        <div class="menu__icon menu__icon--open">
+                            <ion-icon name="arrow-down"></ion-icon>
+                        </div>
+                        <div class="menu__icon menu__icon--close">
+                            <ion-icon name="arrow-left"></ion-icon>
+                        </div>
+                    </div>
                 </button><br>
                     <accordion-list  [expanded]="items[0].expanded">
                         <div class="copypastegrid">
