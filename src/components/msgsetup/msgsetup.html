@@ -29,7 +29,7 @@
                                     value="url to copy" #urlInput [(ngModel)]="urlCopyField">
                                 </ion-textarea>
                             </ion-item>
-                            <button  id="cpyBtn" class="url-copy-button" (click)="copyUrlField(urlInput)">
+                            <button  id="cpyBtn" class="url-copy-button" (click)="copyUrlField(urlInput)" data-clipboard-target="#copyTarget">
                                 <img src="assets/imgs/clippy.svg" alt="Copy to clipboard">
                             </button>
                             <ion-item class="url-copy-info">

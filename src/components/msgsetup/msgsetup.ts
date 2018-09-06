@@ -89,9 +89,29 @@ export class MsgsetupComponent {
   //     }
   // }
   copyUrlField(inputElement){
-      inputElement.select();
-      document.execCommand('copy');
-      inputElement.setSelectionRange(0, 0);
+      // inputElement.select();
+      // document.execCommand('copy');
+      // inputElement.setSelecti  onRange(0, 0);
+
+    // let clipboard = new Clipboard('#cpyBtn', {container: document.getElementById('cpyBtn')});
+    let clipboard = new Clipboard('#cpyBtn', {
+        text: () => {
+            return this.urlCopyField;
+        }
+    });
+    
+    clipboard.on('success', (e) => {
+      // e.clipboardData = this.urlCopyField;
+      console.log("copied to clipboard");
+      console.info('clipboardData', e.clipboardData);
+      console.info('Action:', e.action);
+      console.info('Text:', e.text);
+      console.info('Trigger:', e.trigger);
+    });
+    clipboard.on('error', (e) => {
+      console.error('Action:', e.action);
+      console.error('Trigger:', e.trigger);
+    });
   }
   expandItem(item){
 
@@ -117,20 +137,6 @@ export class MsgsetupComponent {
     console.log(this.urlCopyField);
     this.selectedItem = this.items[0];
     this.expandItem(this.items[0]);
-    // let clipboard = new Clipboard('#cpyBtn', {container: document.getElementById('idMsgSetupCard')});
-    // clipboard.text = this.urlCopyField;
-    // clipboard.on('success', (e) => {
-    //   e.clipboardData = this.urlCopyField;
-    //   console.log("copied to clipboard");
-    //   console.info('clipboardData', e.clipboardData);
-    //   console.info('Action:', e.action);
-    //   console.info('Text:', e.text);
-    //   console.info('Trigger:', e.trigger);
-    // });
-    // clipboard.on('error', (e) => {
-    //   console.error('Action:', e.action);
-    //   console.error('Trigger:', e.trigger);
-    // });
   }
 
   setupMapLinkrMail() {
