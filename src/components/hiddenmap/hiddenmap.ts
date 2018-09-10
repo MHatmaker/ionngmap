@@ -5,6 +5,7 @@ import { CanvasService } from '../../services/CanvasService';
 import { GeoPusherSupport, IGeoPusher } from '../../pages/mlcomponents/libs/geopushersupport';
 import { PusherEventHandler } from '../../pages/mlcomponents/libs/PusherEventHandler';
 import { MapInstanceService } from '../../services/MapInstanceService';
+// import { HostConfig } from '../../pages/mlcomponents/libs/HostConfig'
 
 declare var google;
 
@@ -20,13 +21,12 @@ export class HiddenmapComponent {
     private hiddenMapCreated : boolean = false;
 
   constructor(private mapOpener : MapopenerProvider, private canvasService : CanvasService, private geopush : GeoPusherSupport,
-      private mapInstanceService : MapInstanceService) {
+      private mapInstanceService : MapInstanceService) { //}, private hostConfig : HostConfig) {
     console.log('Hello HiddenmapComponent Component');
     this.geopushSup = geopush.getGeoPusherSupport();
       mapOpener.openMap.subscribe(
           (data : MapLocOptions) => {
             if (this.hiddenMapCreated == false) {
-              this.hiddenMapCreated = true;
               this.addHiddenCanvas();
             }
       });
@@ -36,6 +36,7 @@ export class HiddenmapComponent {
     let mapOptions = this.canvasService.getInitialLocation();
 
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+    this.hiddenMapCreated = true;
     console.log("Add pusher event handler for hidden map");
     this.mapInstanceService.setHiddenMap(this.map);
 

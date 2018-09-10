@@ -109,6 +109,10 @@ export class PusherConfig implements IPusherConfig {
         console.log("Pusher ngrok path is " + path);
         return path;
     }
+    getQueryFromUrl() {
+        let query = this.getParameterByName('gmquery');
+        return query;
+    }
     setSearch (searchDetails: string) {
         this.details.search = searchDetails;
     }

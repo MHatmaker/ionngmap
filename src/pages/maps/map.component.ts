@@ -1,6 +1,6 @@
 import {
     Component,
-    AfterViewInit} from '@angular/core';
+    AfterViewInit, AfterContentChecked} from '@angular/core';
 import { IonicPage, ModalController } from 'ionic-angular';
 import { IPosition, MLPosition } from '../../services/position.service';
 import { IConfigParams, EMapSource } from '../../services/configparams.service';
@@ -28,6 +28,7 @@ import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { MLBounds, ImlBounds } from '../../services/mlbounds.service';
 import { SearchplacesProvider } from '../../providers/searchplaces/searchplaces';
+import { HiddenmapComponent } from '../../components/hiddenmap/hiddenmap';
 
 declare var google;
 
@@ -37,12 +38,13 @@ declare var google;
   templateUrl: './map.component.html'
   // styleUrls: ['./map.component.scss']
 })
-export class MapsPage implements AfterViewInit {
-    private selectedMapType : string;
+export class MapsPage implements AfterViewInit, AfterContentChecked {
+    private selectedMapType : string = 'google';
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
     private menuActions = {};
     private pusherEventHandler : PusherEventHandler;
+    private shr : IMapShare = null;
     private mapHosterDict : Map<string, any> = new Map<string, any>([
         ['google', MultiCanvasGoogle],
         ['esri', MultiCanvasEsri],
@@ -153,7 +155,19 @@ export class MapsPage implements AfterViewInit {
     this.pusherEventHandler = new PusherEventHandler(-101);
     this.pusherEventHandler.addEvent('client-NewMapPosition', this.onNewMapPosition);
   }
-
+  async ngAfterContentChecked () {
+    console.log("entering ngAfterContentChecked");
+    console.log(this.shr);
+    if(this.shr) {
+          let searchPlaces = new SearchplacesProvider(this.mapInstanceService);
+              await searchPlaces.searchForPlaces(this.shr, (places) => {
+                  let mplocCoords : MapLocCoords = {lat: searchPlaces.lat(), lng: searchPlaces.lon()};
+                  let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(),
+                      places: places, query: this.hostConfig.getQuery()};
+              });
+          this.shr = null;
+      }
+  }
   ionViewDidLoad() {
     console.log('ionViewDidLoad MapsPage');
   }
@@ -198,12 +212,13 @@ export class MapsPage implements AfterViewInit {
           // let popresult = window.open(completeUrl, nextWindowName, this.hostConfig.getSmallFormDimensions());
       }
   }
-  addCanvas (mapType : string, mlcfg : MLConfig, maploc : MapLocOptions) {
+  async addCanvas (mapType : string, mlcfg : MLConfig, maploc : MapLocOptions) {
       console.log("in map.component.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
           appendedElem,
           mapTypeToCreate,
           ipos,
+          startquery : string = '',
           mlConfig;
       if (mlcfg) {
           mlConfig = mlcfg;
@@ -222,9 +237,25 @@ export class MapsPage implements AfterViewInit {
                   // let ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15};
               }
             } else {
-                  let initialMaploc = this.canvasService.getInitialLocation();
-                  maploc = initialMaploc;
-                  ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
+                  let gmquery = this.hostConfig.getQueryFromUrl();
+                  if(gmquery && gmquery != '') {
+                      if(! this.mapInstanceService.getHiddenMap() ) {
+                          let bnds = this.hostConfig.getBoundsFromUrl();
+                          let lng = +this.hostConfig.lon();
+                          let lat = +this.hostConfig.lat();
+                          let zm = +this.hostConfig.zoom();
+                          let opts = {center : {lng : lng, lat : lat}, zoom : zm, places : null, query : gmquery};
+                          this.shr = {mapLocOpts : opts, userName : this.hostConfig.getUserName(), mlBounds : bnds};
+                          this.hostConfig.setStartupQuery(this.shr);
+                          maploc.query = this.hostConfig.getQuery();
+                          ipos = <IPosition>{'lon' : lng, 'lat' : lat, 'zoom' : zm};
+                          this.selectedMapType = 'google';
+                      }
+                  } else {
+                      let initialMaploc = this.canvasService.getInitialLocation();
+                      maploc = initialMaploc;
+                      ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
+                    }
             }
 
             let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType,
@@ -247,13 +278,6 @@ export class MapsPage implements AfterViewInit {
 
       appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, mlConfig, maploc); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
-      // this.mapInstanceService.incrementMapNumber();
-      // this.mapInstanceService.setCurrentSlide(currIndex);
-      // this.slideshareService.slideData.emit({
-      //             mapListItem: appendedElem,
-      //             slideNumber: currIndex,
-      //             mapName: "Map " + currIndex
-      //         });
   }
   removeCanvas (clickedItem) {
       console.log("removeCanvas");

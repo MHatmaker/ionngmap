@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import { PusherConfig } from './PusherConfig';
 import { utils } from './utils';
+import { MapLocOptions, MapLocCoords, IMapShare } from '../../../services/positionupdate.interface';
 // import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface';
 // import { IPosition } from '../../../services/position.service'
 
@@ -41,6 +42,7 @@ export interface IHostConfigDetails {
         isInitialUser: boolean,
         mapType: string,
         query: string,
+        startupQuery : IMapShare,
         mapHost: any
     }
 }
@@ -70,6 +72,7 @@ export class HostConfig implements IHostConfigDetails {
         isInitialUser: false,
         mapType: '',
         query: '',
+        startupQuery: null,
         mapHost: null
     };
     public nextWindowName : string = 'mishmash';
@@ -296,15 +299,31 @@ export class HostConfig implements IHostConfigDetails {
         return {"webmapId" : this.details.webmapId, "mapType" : this.details.mapType, "lon" : this.details.lon, "lat" : this.details.lat, "zoom" : this.details.zoom};
     }
 
+    setStartupQuery(query : IMapShare) {
+        this.details.startupQuery = query;
+    }
+    getStartupQuery() : IMapShare {
+        return this.details.startupQuery;
+    }
+
     setQuery  (q: string) {
         this.details.query = q;
     }
-    query  () : string {
-        return this.getParameterByName('gmquery', this.details);
-    }
-    getQueryFromUrl  () : string {
-        // this.details.query.push(this.getParameterByName('gmquery'));
+    getQuery  () : string {
         return this.details.query;
+        // return this.getParameterByName('gmquery', this.details);
+    }
+    getQueryFromUrl() : string {
+        let query = this.getParameterByName('gmquery', this.details);
+        this.details.query = query;
+        return query;
+    }
+    getBoundsFromUrl ()  {
+        var llx = +this.getParameterByName('llx', this.details),
+            lly = +this.getParameterByName('lly', this.details),
+            urx = +this.getParameterByName('urx', this.details),
+            ury = +this.getParameterByName('ury', this.details);
+        return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
     }
     getbaseurl  () : string {
         var baseurl = this.details.host + "/"; // this.details.protocol + "//" + this.details.host + "/";
