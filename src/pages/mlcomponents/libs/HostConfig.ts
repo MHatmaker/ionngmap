@@ -34,7 +34,7 @@ export interface IHostConfigDetails {
         href : string,
         userName: string,
         userId: string,
-        search: {},
+        search: string,
         referrerName: string,
         referrerId: string,
         locationPath: string,
@@ -64,7 +64,7 @@ export class HostConfig implements IHostConfigDetails {
         href : '', //"http://localhost",
         userName: 'defaultuser',
         userId: '',
-        search: {},
+        search: "",
         referrerName: '',
         referrerId: '',
         locationPath: '',
@@ -138,6 +138,9 @@ export class HostConfig implements IHostConfigDetails {
     }
     setSearch  (searchdetails: string) {
         this.details.search = searchdetails;
+    }
+    getSearch() : string {
+        return this.details.search;
     }
     setprotocol  (p: string) {
         this.details.protocol = p;

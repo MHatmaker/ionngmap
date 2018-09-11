@@ -18,6 +18,7 @@ import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService';
 import { Observable } from 'rxjs/Observable';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
+import { SearchplacesProvider } from '../../../providers/searchplaces/searchplaces';
 
 declare var google;
 
@@ -318,7 +319,7 @@ export class MapHosterGoogle extends MapHoster {
         return cmp;
     }
 
-    setBounds(action) {
+    async setBounds(action) {
         console.log("MapHosterGoogle setBounds with  " + this.pusherEventHandler.getMapNumber());
         if (this.mapReady === true) {
             // runs this code after you finishing the zoom
@@ -352,7 +353,11 @@ export class MapHosterGoogle extends MapHoster {
                     this.queryPlaces.query = qtext;
                     this.queryPlaces.location = this.mphmap.getCenter();
                     service = new google.maps.places.PlacesService(this.mphmap);
-                    service.textSearch(this.queryPlaces, this.placesQueryCallback);
+                    await service.textSearch(this.queryPlaces, (places) => {
+                        if(places && places.length > 0) {
+                            this.placeMarkers(places);
+                        }
+                    });
                 }
             }
         }
@@ -363,7 +368,7 @@ export class MapHosterGoogle extends MapHoster {
         this.geopushSup.utils.hideLoading(error);
     }
 
-    retrievedBoundsInternal(xj) {
+    async retrievedBoundsInternal(xj) {
         console.log("Back in MapHosterGoogle " + this.mlconfig.getMapNumber() + " retrievedBounds");
         if (xj.zoom === '0') {
             xj.zoom = this.zmG;
@@ -405,7 +410,11 @@ export class MapHosterGoogle extends MapHoster {
                     this.queryPlaces.query = qtext;
                     this.queryPlaces.location = this.mphmap.getCenter();
                     service = new google.maps.places.PlacesService(this.mphmap);
-                    service.textSearch(this.queryPlaces, this.placesQueryCallback);
+                    service.textSearch(this.queryPlaces, (places) => {
+                        if(places && places.length > 0) {
+                            this.placeMarkers(places);
+                        }
+                    });
                 }
             } else {
                 if (tmpLon !== xj.lon || tmpLat !== xj.lat) {
@@ -464,6 +473,16 @@ export class MapHosterGoogle extends MapHoster {
       this.setBounds('pan');
     }
 
+  async searchOnStartupMap(queryPlaces) {
+        let service = new google.maps.places.PlacesService(this.mphmap);
+        await service.textSearch(queryPlaces, (places) => {
+            this.mlconfig.setInitialPlaces(places);
+            console.log(places);
+                if(places && places.length > 0) {
+                    this.placeMarkers(places);
+            }
+        });
+    }
     configureMap(gMap, mapOptions, goooogle, googPlaces, config) {
         console.log("MapHosterGoogle configureMap");
         var
@@ -576,7 +595,7 @@ export class MapHosterGoogle extends MapHoster {
             this.addInitialSymbols();
             // google.maps.event.trigger(this.mphmap, 'resize');
             // this.mphmap.setCenter(center);
-            gmQuery = this.mlconfig.query();
+            gmQuery = this.mlconfig.getQuery();
             console.log("getMaxZoomAtLatLng for " + cntr.lng() + ", " + cntr.lat());
 
             zsvc.getMaxZoomAtLatLng(cntr,  (response) => {
@@ -632,9 +651,10 @@ export class MapHosterGoogle extends MapHoster {
                 this.queryPlaces.bounds = gBnds;
                 this.queryPlaces.query = qtext;
                 this.queryPlaces.location = center;
-                service = new google.maps.places.PlacesService(this.mphmap);
-                service.textSearch(this.queryPlaces, this.placesQueryCallback);
-            }
+                this.searchOnStartupMap(this.queryPlaces);
+
+                }
+
 
             // setupQueryListener();
             placeCustomControls();
@@ -643,7 +663,6 @@ export class MapHosterGoogle extends MapHoster {
                 this.placeMarkers(initialPlaces);
               }
         });
-
         setupQueryListener();
         // var bndsInit = createBounds();
         // this.mphmap.fitBounds(bndsInit);
@@ -841,7 +860,7 @@ export class MapHosterGoogle extends MapHoster {
                         this.showClickResult(content, popPt, null);
                     }
                 });
-;
+
             // showClickResult(content, popPt);
         }
 

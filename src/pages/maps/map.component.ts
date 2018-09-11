@@ -1,6 +1,6 @@
 import {
     Component,
-    AfterViewInit, AfterContentChecked} from '@angular/core';
+    AfterViewInit} from '@angular/core';
 import { IonicPage, ModalController } from 'ionic-angular';
 import { IPosition, MLPosition } from '../../services/position.service';
 import { IConfigParams, EMapSource } from '../../services/configparams.service';
@@ -38,7 +38,7 @@ declare var google;
   templateUrl: './map.component.html'
   // styleUrls: ['./map.component.scss']
 })
-export class MapsPage implements AfterViewInit, AfterContentChecked {
+export class MapsPage implements AfterViewInit {
     private selectedMapType : string = 'google';
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
@@ -155,19 +155,19 @@ export class MapsPage implements AfterViewInit, AfterContentChecked {
     this.pusherEventHandler = new PusherEventHandler(-101);
     this.pusherEventHandler.addEvent('client-NewMapPosition', this.onNewMapPosition);
   }
-  async ngAfterContentChecked () {
-    console.log("entering ngAfterContentChecked");
-    console.log(this.shr);
-    if(this.shr) {
-          let searchPlaces = new SearchplacesProvider(this.mapInstanceService);
-              await searchPlaces.searchForPlaces(this.shr, (places) => {
-                  let mplocCoords : MapLocCoords = {lat: searchPlaces.lat(), lng: searchPlaces.lon()};
-                  let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(),
-                      places: places, query: this.hostConfig.getQuery()};
-              });
-          this.shr = null;
-      }
-  }
+  // async ngAfterContentChecked () {
+  //   console.log("entering ngAfterContentChecked");
+  //   console.log(this.shr);
+  //   if(this.shr) {
+  //         let searchPlaces = new SearchplacesProvider(this.mapInstanceService);
+  //             await searchPlaces.searchForPlaces(this.shr, (places) => {
+  //                 let mplocCoords : MapLocCoords = {lat: searchPlaces.lat(), lng: searchPlaces.lon()};
+  //                 let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(),
+  //                     places: places, query: this.hostConfig.getQuery()};
+  //             });
+  //         this.shr = null;
+  //     }
+  // }
   ionViewDidLoad() {
     console.log('ionViewDidLoad MapsPage');
   }
@@ -264,6 +264,7 @@ export class MapsPage implements AfterViewInit, AfterContentChecked {
             mlconfig.setHardInitialized(true);
             mlconfig.setInitialPlaces(maploc.places);
             mlconfig.setQuery(maploc.query);
+            mlconfig.setSearch(this.hostConfig.getSearch());
             // newpos = new MLPosition(-1, -1, -1);
             // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
             // mlConfig = new MLConfig(icfg);

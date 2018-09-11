@@ -184,6 +184,12 @@ export class MLConfig {
         //     return details.query[0];
         // }
     }
+    getSearch() : string {
+       return this.details.search;
+    }
+    setSearch(s : string) {
+        this.details.search = s;
+    }
     getUpdatedRawUrl (channel : string) {
       let n = this.details.webmapId.length,
           id = this.details.webmapId == 'nowebmap' ? 'nowebmap' : this.details.webmapId.substr(0, n - 1),
