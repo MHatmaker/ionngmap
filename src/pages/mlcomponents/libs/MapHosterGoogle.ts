@@ -5,7 +5,7 @@ import { MLConfig } from './MLConfig';
 import { PusherEventHandler } from './PusherEventHandler';
 // import { utils } from './utils';
 import { ImlBounds } from '../../../services/mlbounds.service';
-// import { ConfigParams } from '../../../services/configparams.service';
+import { EMapSource } from '../../../services/configparams.service';
 // import { GoogleMap, Size, Point, LatLngLiteral, LatLng, LatLngBounds } from '@agm/core/services/google-maps-types';
 // import { createClient, GoogleMapsClient } from '@google/maps';
 // import { GeoCoder } from './GeoCoder';
@@ -629,12 +629,13 @@ export class MapHosterGoogle extends MapHoster {
         // searchInput = (document.getElementById('pac-input' + this.mlconfig.getMapNumber()));
         // this.mphmap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchInput);
         // searchInput.value = '';
-            if (gmQuery !== '') {
-                this.searchFiredFromUrl = true;
-                this.mlconfig.setQuery(gmQuery);
-            }
-            if (this.searchFiredFromUrl === true) {
-                console.log("getBoundsFromUrl.......in MapHosterGoogle 'places_changed' listener");
+            // if (gmQuery !== '') {
+            //     this.searchFiredFromUrl = true;
+            //     this.mlconfig.setQuery(gmQuery);
+            // }
+            // if (this.searchFiredFromUrl === true) {
+            if (this.mlconfig.getSource() == EMapSource.urlgoogle) {
+                console.log("getBoundsFromUrl.......in MapHosterGoogle 'tilesloaded' listener");
                 bnds = this.mlconfig.getBoundsFromUrl();
                 console.debug(bnds);
                 ll = new google.maps.LatLng(bnds.lly, bnds.llx);
@@ -648,13 +649,13 @@ export class MapHosterGoogle extends MapHoster {
                 pacinput.value = qtext;
 */
                 // pacinput.focus();
-                this.queryPlaces.bounds = gBnds;
-                this.queryPlaces.query = qtext;
-                this.queryPlaces.location = center;
-                this.searchOnStartupMap(this.queryPlaces);
-
+                if (qtext != '') {
+                    this.queryPlaces.bounds = gBnds;
+                    this.queryPlaces.query = qtext;
+                    this.queryPlaces.location = center;
+                    this.searchOnStartupMap(this.queryPlaces);
                 }
-
+                }
 
             // setupQueryListener();
             placeCustomControls();

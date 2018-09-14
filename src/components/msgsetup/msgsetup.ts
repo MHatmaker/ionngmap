@@ -9,6 +9,7 @@ import * as Clipboard from 'clipboard/dist/clipboard.min.js';
 import { PusherClientService } from '../../services/pusherclient.service';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { EmailerProvider, EmailParts, IEmailAddress } from '../../providers/emailer/emailer';
+import { EMapSource } from '../../services/configparams.service'
 
 @Component({
   selector: 'msgsetup',
@@ -75,7 +76,7 @@ export class MsgsetupComponent {
         zoom = curpos.zoom,
         pos = {center : cntr, zoom : zoom, query : gmQuery, places : null},
         username = this.hostConfig.getUserName(),
-        opts = {mapLocOpts : pos, userName : username, mlBounds : bnds};
+        opts = {mapLocOpts : pos, userName : username, mlBounds : bnds, source : EMapSource.sharegoogle};
 
         return opts;
 
@@ -99,7 +100,7 @@ export class MsgsetupComponent {
             return this.urlCopyField;
         }
     });
-    
+
     clipboard.on('success', (e) => {
       // e.clipboardData = this.urlCopyField;
       console.log("copied to clipboard");

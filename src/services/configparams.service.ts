@@ -8,7 +8,9 @@ export enum EMapSource {
   srcleaflet,
   urlagonline,
   urlgoogle,
-  urlleaflet
+  urlleaflet,
+  sharegoogle,
+  placesgoogle
 }
 
 export interface IConfigParams {

@@ -50,7 +50,7 @@ export class MapLinkrApp {
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
       private menuCtrl: MenuController, private pageService : PageService, private domsvc : DomService,
-      private shareMapInfoSvc : SharemapProvider, private pusherConfig : PusherConfig, hostConfig : HostConfig,
+      private shareMapInfoSvc : SharemapProvider, private pusherConfig : PusherConfig, private hostConfig : HostConfig,
       private http: Http) {
     this.initializeApp();
 
@@ -74,23 +74,13 @@ export class MapLinkrApp {
 
     CommonToNG.setLibs({ 'domSvc' : this.domsvc, 'shareInfoSvc' : this.shareMapInfoSvc} );
 
+    this.queryForUserName();
     if (location.search === '') {
+        console.log("starting from url with no location/query data");
         hostConfig.setInitialUserStatus(true);
         hostConfig.setReferrerId('-99');
-          this.http.get(this.pusherConfig.getPusherPath() + "/username")
-            .map(res => res.json())
-            .subscribe(data =>
-            {
-              console.log("simpleserver returns");
-              this.userName = data['name'];
-              console.log(this.userName);
-              pusherConfig.setUserName(this.userName);
-              hostConfig.setUserName(this.userName);
-              let userId = data['id'];
-              console.log(userId);
-              pusherConfig.setUserId(userId);
-            });
     } else {
+        console.log("starting from url containing location/query data");
         hostConfig.setInitialUserStatus(false);
         this.channel = pusherConfig.getChannelFromUrl();
         if (this.channel !== '') {
@@ -100,10 +90,25 @@ export class MapLinkrApp {
         this.userName = hostConfig.getUserNameFromUrl();
         if (this.userName !== '') {
             pusherConfig.setUserName(this.userName);
+            hostConfig.setReferrerId (this.userName);
         }
-        // hostConfig.setStartupView(true, false);
-        console.log("hostConfig.SETSTARTUPVIEW to sumvis true, sitevis false");
     }
+  }
+
+  queryForUserName() {
+      this.http.get(this.pusherConfig.getPusherPath() + "/username")
+        .map(res => res.json())
+        .subscribe(data =>
+        {
+          console.log("simpleserver returns");
+          this.userName = data['name'];
+          console.log(this.userName);
+          this.pusherConfig.setUserName(this.userName);
+          this.hostConfig.setUserName(this.userName);
+          let userId = data['id'];
+          console.log(userId);
+          this.pusherConfig.setUserId(userId);
+        });
   }
 
   initializeApp() {

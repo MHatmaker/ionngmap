@@ -9,6 +9,7 @@ import { MapopenerProvider } from '../../../providers/mapopener/mapopener';
 import { MLConfig } from '../../../pages/mlcomponents/libs/MLConfig';
 import { mlBounds } from '../../../pages/mlcomponents/libs/mlBounds.interface';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../../services/positionupdate.interface';
+import { EMapSource } from '../../../services/configparams.service';
 
 declare var google;
 
@@ -63,7 +64,7 @@ export class PlacesSearchComponent implements AfterViewInit {
                               let coords : any = queryPlaces.location;
                               let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
                               let opts: MapLocOptions = { center :  cntr, zoom : gmap.getZoom(), places : p, query : gmquery};
-                              let shr: IMapShare = {mapLocOpts : opts, userName : 'foo', mlBounds : bnds};
+                              let shr: IMapShare = {mapLocOpts : opts, userName : 'foo', mlBounds : bnds, source : EMapSource.placesgoogle};
                               this.mapopener.openMap.emit(shr);
                           } else {
                               mph.placeMarkers(p);

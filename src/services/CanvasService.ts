@@ -11,7 +11,7 @@ import { MapInstanceService } from './MapInstanceService';
 import { SlideShareService } from './/slideshare.service';
 import { SlideViewService } from './/slideview.service';
 import { IPosition } from './position.service';
-import { IConfigParams } from './/configparams.service';
+import { IConfigParams, EMapSource } from './/configparams.service';
 import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
 import { MultiCanvasEsri } from '../pages/mlcomponents/MultiCanvas/multicanvasesri.component';
 import { MultiCanvasGoogle } from '../pages/mlcomponents/MultiCanvas/multicanvasgoogle.component';
@@ -60,7 +60,8 @@ export class CanvasService {
         };
         let bnds : MLBounds = null;
         let opts : MapLocOptions = this.initialLoc;
-        let shr : IMapShare = {mapLocOpts : opts, userName : this.pusherConfig.getUserName(), mlBounds : bnds};
+        let shr : IMapShare = {mapLocOpts : opts, userName : this.pusherConfig.getUserName(), mlBounds : bnds,
+            source : EMapSource.urlgoogle};
         console.log(`geolocation center at ${glng}, ${glat}`);
         this.mapOpener.openMap.emit(shr);
         }, (err) => {
@@ -94,17 +95,19 @@ export class CanvasService {
         return this.initialLoc;
     }
 
-  addCanvas (mapType, mapTypeToCreate, mlcfg, maploc) {
+  addCanvas (mapType, mapTypeToCreate, source, mlcfg, maploc)  : HTMLElement{
       console.log("in CanvasHolderCtrl.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
-          appendedElem,
+          appendedElem : HTMLElement,
           mlConfig;
       if (mlcfg) {
           mlConfig = mlcfg;
       } else {
           if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
+              console.log(`hasConfigInstanceForMap for index ${currIndex} is false`);
               var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
-                  cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType, webmapId : "nowebmap", mlposition :ipos},
+                  cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType,
+                        webmapId : "nowebmap", mlposition :ipos, source : source},
                   mlconfig = new MLConfig(cfgparams);
                   mlconfig.setHardInitialized(true);
               // newpos = new MLPosition(-1, -1, -1);
@@ -116,6 +119,7 @@ export class CanvasService {
                   currIndex === 0 ? currIndex : currIndex - 1).getConfigParams());
               this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig); //angular.copy(mlConfig));
           } else {
+              console.log(`getConfigForMap for current index ${currIndex}`);
               let mlcfg = this.mapInstanceService.getConfigForMap(currIndex > 0? currIndex - 1 : 0);
               let ipos = mlcfg.getPosition();
               mlcfg.setPosition(ipos);
@@ -124,6 +128,7 @@ export class CanvasService {
 
       appendedElem = this.appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
+      console.log("now incrementMapNumber from index ${currIndex}");
       this.mapInstanceService.incrementMapNumber();
       this.mapInstanceService.setCurrentSlide(currIndex);
       this.slideshareService.slideData.emit({
@@ -135,7 +140,7 @@ export class CanvasService {
   }
 
 
-    appendNewCanvasToContainer(component : any, ndx : number) {
+    appendNewCanvasToContainer(component : any, ndx : number) : HTMLElement {
         this.ndx = ndx;
         this.canvases.push(component);
         var mapParent = document.getElementsByClassName('mapcontent')[0];

@@ -1,4 +1,5 @@
 import { mlBounds } from '../pages/mlcomponents/libs/mlBounds.interface';
+import { EMapSource } from '../services/configparams.service';
 
 export interface IPositionParams {
     zm : number,
@@ -28,5 +29,6 @@ export interface MapLocOptions {
 export interface IMapShare {
   mapLocOpts : MapLocOptions,
   userName : string,
-  mlBounds : mlBounds
+  mlBounds : mlBounds,
+  source : EMapSource
 }

@@ -2,7 +2,7 @@
 //     Injectable,
 // } from '@angular/core';
 import { IPosition, MLPosition } from "../../../services/position.service";
-import { IConfigParams } from "../../../services/configparams.service";
+import { IConfigParams, EMapSource } from "../../../services/configparams.service";
 import { ImlBounds } from "../../../services/mlbounds.service";
 
 console.log("loading MLConfig");
@@ -233,6 +233,12 @@ export class MLConfig {
                 "zoom" : this.details.mlposition.zoom},
             "source" : this.details.source
             }
+    }
+    getSource() : EMapSource {
+        return this.details.source;
+    }
+    setSource(s : EMapSource) {
+        this.details.source = s;
     }
 
     setPosition (position : IPosition) {
