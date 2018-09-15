@@ -792,7 +792,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 console.log("empty function removeEventListners");
             }
 
-            getMLconfig() {
+            getmlconfig() {
                 return this.mlconfig;
             }
 }

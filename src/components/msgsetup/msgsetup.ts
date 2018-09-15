@@ -76,7 +76,7 @@ export class MsgsetupComponent {
         zoom = curpos.zoom,
         pos = {center : cntr, zoom : zoom, query : gmQuery, places : null},
         username = this.hostConfig.getUserName(),
-        opts = {mapLocOpts : pos, userName : username, mlBounds : bnds, source : EMapSource.sharegoogle};
+        opts = {mapLocOpts : pos, userName : username, mlBounds : bnds, source : mlConfig.getSource(), webmapId : mlConfig.getWebmapId(false)};
 
         return opts;
 

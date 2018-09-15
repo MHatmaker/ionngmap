@@ -61,7 +61,7 @@ export class CanvasService {
         let bnds : MLBounds = null;
         let opts : MapLocOptions = this.initialLoc;
         let shr : IMapShare = {mapLocOpts : opts, userName : this.pusherConfig.getUserName(), mlBounds : bnds,
-            source : EMapSource.urlgoogle};
+            source : EMapSource.urlgoogle, webmapId : 'nowebmap'};
         console.log(`geolocation center at ${glng}, ${glat}`);
         this.mapOpener.openMap.emit(shr);
         }, (err) => {
@@ -97,6 +97,8 @@ export class CanvasService {
 
   addCanvas (mapType, mapTypeToCreate, source, mlcfg, maploc)  : HTMLElement{
       console.log("in CanvasHolderCtrl.addCanvas");
+      console.log(`mapType : ${mapType}`);
+      console.log(mapTypeToCreate);
       var currIndex : number = this.mapInstanceService.getSlideCount(),
           appendedElem : HTMLElement,
           mlConfig;

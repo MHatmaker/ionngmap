@@ -30,5 +30,6 @@ export interface IMapShare {
   mapLocOpts : MapLocOptions,
   userName : string,
   mlBounds : mlBounds,
-  source : EMapSource
+  source : EMapSource,
+  webmapId : string
 }

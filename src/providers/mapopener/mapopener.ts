@@ -16,6 +16,7 @@ export class MapopenerProvider implements IMapShare {
     userName : string;
     mlBounds : mlBounds;
     source : EMapSource;
+    webmapId : string;
 
   // constructor(private mapLocOpts : MapLocOptions) {
   // }

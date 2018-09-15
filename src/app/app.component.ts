@@ -145,7 +145,7 @@ export class MapLinkrApp {
 				},
 				{
 					iconName: 'globe',
-					displayName: 'esri',
+					displayName: 'arcgis',
 					component: MapsPage
 				},
 				{

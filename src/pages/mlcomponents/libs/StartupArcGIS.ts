@@ -388,6 +388,8 @@ export class StartupArcGIS  extends Startup {
               // dojo.connect(aMap, "onLoad", initUI);
               this.mlconfig.setPosition({lat : this.mapView.center.latitude, lon : this.mapView.center.longitude, zoom : this.mapView.zoom});
               this.mapHoster = new MapHosterArcGIS(this.mapView, this.mapNumber, this.mlconfig, this.geopush, this.elementRef);
+              this.mlconfig.setMapHosterInstance(this.mapHoster);
+              this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
               this.initUI();
               this.mapHosterSetupCallback(this.mapHoster, this.aMap);
           },
