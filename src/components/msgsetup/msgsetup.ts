@@ -10,6 +10,8 @@ import { PusherClientService } from '../../services/pusherclient.service';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { EmailerProvider, EmailParts, IEmailAddress } from '../../providers/emailer/emailer';
 import { EMapSource } from '../../services/configparams.service'
+import { ImlBounds } from "../../services/mlbounds.service";
+import { IPosition } from '../../services/position.service';
 
 @Component({
   selector: 'msgsetup',
@@ -68,15 +70,18 @@ export class MsgsetupComponent {
 
   assembleJson() : IMapShare {
     let mlConfig = this.mapInstanceService.getMapHosterInstanceForCurrentSlide().getmlconfig(),
-        curmapsys = this.currentMapTypeService.getMapRestUrl(),
-        gmQuery = mlConfig.getQuery(),
-        bnds = mlConfig.getBounds(),
-        curpos = mlConfig.getPosition(),
+        curmapsys : string = this.currentMapTypeService.getMapRestUrl(),
+        gmQuery : string = mlConfig.getQuery(),
+        bnds : ImlBounds = mlConfig.getBounds(),
+        curpos : IPosition = mlConfig.getPosition(),
         cntr = {lat : curpos.lat, lng : curpos.lon},
-        zoom = curpos.zoom,
-        pos = {center : cntr, zoom : zoom, query : gmQuery, places : null},
-        username = this.hostConfig.getUserName(),
-        opts = {mapLocOpts : pos, userName : username, mlBounds : bnds, source : mlConfig.getSource(), webmapId : mlConfig.getWebmapId(false)};
+        zoom : number = curpos.zoom,
+        pos : MapLocOptions = {center : cntr, zoom : zoom, query : gmQuery, places : null},
+        username  : string = this.hostConfig.getUserName(),
+        // switch from getting places as the source for another tab to sharing the source and query for another user
+        src = mlConfig.getSource() == EMapSource.placesgoogle ? EMapSource.sharegoogle : mlConfig.getSource(),
+        ago : string = src == EMapSource.sharegoogle ? 'nowebmap' : mlConfig.getWebmapId(false),
+        opts : IMapShare = {mapLocOpts : pos, userName : username, mlBounds : bnds, source : src, webmapId : ago};
 
         return opts;
 

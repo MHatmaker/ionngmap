@@ -88,7 +88,9 @@ export class MapsPage implements AfterViewInit {
               let mlcfg = new MLConfig({mapId : -1, mapType : 'arcgis', webmapId : data.id,
                 mlposition : cntr, source : EMapSource.srcagonline});
               mlcfg.setBounds(xtnt);
-              this.addCanvas('arcgis', EMapSource.srcagonline, mlcfg, mploc, data.id);
+              let opts : IMapShare = {mapLocOpts : mploc, userName : this.hostConfig.getUserName(), mlBounds : xtnt,
+                  source : EMapSource.srcagonline, webmapId : data.id};
+              this.addCanvas('arcgis', opts, mlcfg, data.id);
 
           });
           modal.present();
@@ -102,6 +104,7 @@ export class MapsPage implements AfterViewInit {
           modal.onDidDismiss((mode, data) => {
               if(mode == 'usepush') {
                   let pusherClientService = this.geoPush.getGeoPusherSupport().pusherClientService;
+                  // publish stringifyed IMapShare
                   pusherClientService.publishPosition(data);
                   // this.onNewMapPosition(data);
             }
@@ -134,9 +137,9 @@ export class MapsPage implements AfterViewInit {
             console.log("mapOpener.openMap subscriber entered");
             console.log(`source is ${data.source}`);
             if(data.source == EMapSource.urlgoogle) {
-                this.addCanvas('google', data.source, null, data.mapLocOpts, 'nowebmap');
+                this.addCanvas('google', data, null, 'nowebmap');
             } else if (data.source == EMapSource.placesgoogle){
-                this.addCanvas('google', data.source, null, data.mapLocOpts, 'nowebmap');
+                this.addCanvas('google', data, null, 'nowebmap');
             } else if (data.source == EMapSource.sharegoogle || data.source == EMapSource.srcagonline) {
                 this.onNewMapPosition(data);
             } else {
@@ -175,15 +178,15 @@ export class MapsPage implements AfterViewInit {
           'arcgis' : EMapSource.srcagonline,
           'leaflet': EMapSource.srcleaflet
       }
-      this.addCanvas( menuOption.displayName, srcdct[menuOption.displayName], null, null, 'nowebmap');
+      // this.addCanvas( menuOption.displayName, srcdct[menuOption.displayName], null, null, 'nowebmap');
   }
 
   async onNewMapPosition (opts : IMapShare) {
       // let pos2prt : string = `onNewMapPosition handler -
       //       referrer ${pos.referrerId}, at x ${pos.lon}, y ${pos.lat}, zoom ${pos.zoom}`,
-          // baseUrl = this.hostConfig.getbaseurl(),
-          // completeUrl = baseUrl + pos.maphost + pos.search,
-      let nextWindowName = this.hostConfig.getNextWindowName();
+      let baseUrl = this.hostConfig.getbaseurl(),
+          // completeUrll = baseUrl + pos.maphost + pos.search,
+          nextWindowName = this.hostConfig.getNextWindowName();
       console.log(`is Initial User ? ${this.hostConfig.getInitialUserStatus()}`);
       console.log(`onNewMapPosition - Open new window with name ${nextWindowName}, query : ${opts.mapLocOpts.query},
             source : ${opts.source}`);
@@ -197,20 +200,22 @@ export class MapsPage implements AfterViewInit {
               await searchPlaces.searchForPlaces(opts, (places) => {
                   console.log(`searchForPlaces returned ${places.length}`);
                   console.log(places);
-                  let mplocCoords : MapLocCoords = {lat: searchPlaces.lat(), lng: searchPlaces.lon()};
-                  let mploc : MapLocOptions = {center: mplocCoords, zoom: searchPlaces.zoom(),
-                      places: places, query: opts.mapLocOpts.query};
-                  this.addCanvas('google', opts.source, null, mploc, 'nowebmap');
+                  // let mplocCoords : MapLocCoords = {lat: opts.mapLocOpts.center.lat, lng: opts.mapLocOpts.center.lng};
+                  // let mploc : MapLocOptions = {center: mplocCoords, zoom: opts.mapLocOpts.zoom,
+                  //     places: places, query: opts.mapLocOpts.query};
+                  opts.mapLocOpts.places = places;
               });
+                  this.addCanvas('google', opts, null, 'nowebmap');
+              // this.addCanvas('google', opts, null, 'nowebmap');
           }
           else if (opts.source == EMapSource.srcagonline) {
                 console.log(`addCanvas with arcgis, source : ${opts.source}`)
-                  this.addCanvas('arcgis', opts.source, null, opts.mapLocOpts, opts.webmapId);
+                  this.addCanvas('arcgis', opts, null, opts.webmapId);
           }
           // let popresult = window.open(completeUrl, nextWindowName, this.hostConfig.getSmallFormDimensions());
       }
   }
-  async addCanvas (mapType : string, source : EMapSource, mlcfg : MLConfig, maploc : MapLocOptions, ago : string) {
+  addCanvas (mapType : string, opts : IMapShare, mlcfg : MLConfig, ago : string) {
       console.log("in map.component.addCanvas");
       var currIndex : number = this.mapInstanceService.getSlideCount(),
           appendedElem : HTMLElement,
@@ -223,25 +228,30 @@ export class MapsPage implements AfterViewInit {
           mlConfig = mlcfg;
           mlConfig.setMapId(currIndex);
           // mlConfig.setHardInitialized(true);
-          mlConfig.setInitialPlaces(maploc.places);
+          mlConfig.setInitialPlaces(opts.mapLocOpts.places);
           this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
       } else {
           if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
-              if ( maploc) {
-                  console.log("get maploc from maploc argument");
-                  console.log(maploc);
-                  ipos = <IPosition>{'lon' : maploc.center.lng, 'lat' : maploc.center.lat, 'zoom' : maploc.zoom};
+              // starting up from url with or without query or mobile app startup
+              if (opts.mapLocOpts) {
+                  console.log("get maploc from maploc argument in url");
+                  console.log(opts.mapLocOpts);
+                  console.log(`mapLocOpts : lng : ${opts.mapLocOpts.center.lng}, lat : ${opts.mapLocOpts.center.lat}`);
+                  ipos = new MLPosition(opts.mapLocOpts.center.lng, opts.mapLocOpts.center.lat, opts.mapLocOpts.zoom);
+                  // ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat, 'zoom' : opts.mapLocOpts.zoom};
+                  console.log("ipos");
+                  console.log(ipos);
                   agoId = ago;
               } else {
                   console.log("get maploc from initial location");
                   let initialMaploc = this.canvasService.getInitialLocation();
-                  maploc = initialMaploc;
-                  console.log(maploc);
+                  opts.mapLocOpts = initialMaploc;
+                  console.log(opts.mapLocOpts);
                   ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
-                  // let ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15};
               }
             } else {
-                  if(source != EMapSource.sharegoogle) {
+                  // there is already a map open in the slide viewer
+                  if(opts.source != EMapSource.sharegoogle) {
                       let gmquery = this.hostConfig.getQueryFromUrl();
                       console.log(`gmquery is ${gmquery}`);
                       if(gmquery && gmquery != '') {
@@ -254,55 +264,57 @@ export class MapsPage implements AfterViewInit {
                               this.shr = <IMapShare>{mapLocOpts : opts, userName : this.hostConfig.getUserName(), mlBounds : bnds,
                                   source : EMapSource.urlgoogle, webmapId : agoId};
                               this.hostConfig.setStartupQuery(this.shr);
-                              maploc.query = this.hostConfig.getQuery();
+                              opts.query = this.hostConfig.getQuery();
                               ipos = <IPosition>{'lon' : lng, 'lat' : lat, 'zoom' : zm};
                               this.selectedMapType = 'google';
                           }
                       } else {
                           console.log('create maploc at initial position');
                           let initialMaploc = this.canvasService.getInitialLocation();
-                          maploc = initialMaploc;
+                          opts.mapLocOpts = initialMaploc;
                           ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
                       }
                   }
             }
 
             let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : mapType,
-                webmapId : agoId, mlposition :ipos, source : source},
-            mlconfig = new MLConfig(cfgparams);
-            console.log("create new MLConfig with cfgparams:");
+                webmapId : agoId, mlposition :ipos, source : opts.source};
             console.log(cfgparams);
-            mlconfig.setHardInitialized(true);
+            mlConfig = new MLConfig(cfgparams);
+            mlConfig.setBounds(opts.mlBounds);
+            console.log("created new MLConfig with cfgparams:");
+            console.log(cfgparams);
+            mlConfig.setHardInitialized(true);
             console.log("setInitialPlaces with places:");
-            console.log(maploc.places);
-            mlconfig.setInitialPlaces(maploc.places);
-              console.log(`setQuery with ${maploc.query}`);
-            mlconfig.setQuery(maploc.query);
-            mlconfig.setSearch(this.hostConfig.getSearch());
+            console.log(opts.mapLocOpts.places);
+            mlConfig.setInitialPlaces(opts.mapLocOpts.places);
+              console.log(`setQuery with ${opts.mapLocOpts.query}`);
+            mlConfig.setQuery(opts.mapLocOpts.query);
+            mlConfig.setSearch(this.hostConfig.getSearch());
             // newpos = new MLPosition(-1, -1, -1);
             // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}
             // mlConfig = new MLConfig(icfg);
-            console.log("addCanvas with index " + currIndex);
-            console.debug(mlconfig);
+            console.log(`addCanvas with index ${currIndex} using mlConfig :`);
+            console.debug(mlConfig);
             if (currIndex == 0) {
-                this.mapInstanceService.setConfigInstanceForMap(0, mlconfig);
+                this.mapInstanceService.setConfigInstanceForMap(0, mlConfig);
             } else {
-                if(source == EMapSource.sharegoogle || source == EMapSource.srcagonline) {
+                if(opts.source == EMapSource.sharegoogle || opts.source == EMapSource.srcagonline) {
                     console.log('get config from shared config');
-                    this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig);
+                    this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
                 } else {
                     console.log("get config from map in previous slide");
-                    mlconfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
+                    mlConfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
                         currIndex - 1).getConfigParams());
-                    mlconfig.setSource(source);
-                    this.mapInstanceService.setConfigInstanceForMap(currIndex, mlconfig);
+                    mlConfig.setSource(opts.source);
+                    this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
                 }
             }
 
       }
       mapTypeToCreate = this.mapHosterDict.get(mapType);
 
-      appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, source, mlConfig, maploc); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
+      appendedElem = this.canvasService.addCanvas(mapType, mapTypeToCreate, opts.source, mlConfig, opts.mapLocOpts); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
   }
   removeCanvas (clickedItem) {

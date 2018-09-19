@@ -8,6 +8,7 @@ import { MLConfig } from '../pages/mlcomponents/libs/MLConfig';
 import { Pusher } from 'pusher-js';
 import { IEventDct } from '../pages/mlcomponents/libs/PusherEventHandler';
 import { MapopenerProvider } from '../providers/mapopener/mapopener';
+import { IMapShare } from '../services/positionupdate.interface';
 declare const Pusher: any;
 
 class PusherClient {
@@ -149,7 +150,7 @@ export class PusherClientService {
             console.log("back from NewUrlEvent");
         });
 
-        channelBind.bind('client-NewMapPosition', (frame) => {
+        channelBind.bind('client-NewMapPosition', (frame : IMapShare) => {
             console.log('frame is', frame);
             console.log("back from NewMapPosition Event");
             this.mapOpener.openMap.emit(frame);
@@ -331,7 +332,7 @@ publishClickEvent(frame) {
     // this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
 }
 
-publishPosition(pos) {
+publishPosition(pos : string) {
     // var handler, client : PusherClient,
     //     clName,
     //     obj;
