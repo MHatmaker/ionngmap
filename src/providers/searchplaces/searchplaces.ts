@@ -62,7 +62,6 @@ export class SearchplacesProvider {
         let service = new google.maps.places.PlacesService(gmap);
         await service.textSearch(queryPlaces, (p) => {
             if (p.length != 0) {
-                cb(p);
                 return p;
             } else {
                 console.log("no places returned from PlacesServices for ${query}")

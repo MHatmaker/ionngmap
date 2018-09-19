@@ -634,16 +634,21 @@ export class MapHosterGoogle extends MapHoster {
             //     this.mlconfig.setQuery(gmQuery);
             // }
             // if (this.searchFiredFromUrl === true) {
-            if (this.mlconfig.getSource() == EMapSource.urlgoogle) {
-                console.log("getBoundsFromUrl.......in MapHosterGoogle 'tilesloaded' listener");
-                bnds = this.mlconfig.getBoundsFromUrl();
+            if (this.mlconfig.getSource() == EMapSource.urlgoogle || this.mlconfig.getSource() == EMapSource.sharegoogle) {
+                console.log("getBoundsFromUrl or from share config.......in MapHosterGoogle 'tilesloaded' listener");
+                if (this.mlconfig.getSource() == EMapSource.urlgoogle) {
+                    bnds = this.mlconfig.getBoundsFromUrl();
+                    qtext = this.mlconfig.query();
+                } else {
+                    bnds = this.mlconfig.getBounds();
+                    qtext = this.mlconfig.getQuery();
+                }
                 console.debug(bnds);
                 ll = new google.maps.LatLng(bnds.lly, bnds.llx);
                 ur = new google.maps.LatLng(bnds.ury, bnds.urx);
                 gBnds = new google.maps.LatLngBounds(ll, ur);
                 this.searchFiredFromUrl = false;
 
-                qtext = this.mlconfig.query();
 /* this is the previously functional location for accessing pac-input
                 pacinput = angular.element('pac-input' + this.mlconfig.getMapNumber());
                 pacinput.value = qtext;
@@ -658,7 +663,7 @@ export class MapHosterGoogle extends MapHoster {
                 }
 
             // setupQueryListener();
-            placeCustomControls();
+            // ();
             let initialPlaces = this.mlconfig.getInitialPlaces();
             if( initialPlaces) {
                 this.placeMarkers(initialPlaces);
