@@ -498,13 +498,7 @@ export class StartupArcGIS  extends Startup {
       } else {
           console.log("found idAgoItem");
           console.log("use " + idAgoItem);
-          if(this.mlconfig.isHardInitialized()) {
-              let pos = this.mlconfig.getPosition();
-              // this.zoomWebMap = pos.zoom;
-              // this.pointWebMap = [pos.lon, pos.lat];
-              this.pointWebMap = [-87.620692, 41.888941];
-              this.zoomWebMap = 15;
-          } else if (this.mlconfig.getConfigParams().source == EMapSource.urlagonline) {
+          if (this.mlconfig.getConfigParams().source == EMapSource.urlagonline) {
               this.zoomWebMap = this.mlconfig.zoom();
               llon = this.mlconfig.lon();
               llat = this.mlconfig.lat();

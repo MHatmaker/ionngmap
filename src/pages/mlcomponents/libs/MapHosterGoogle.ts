@@ -429,6 +429,27 @@ export class MapHosterGoogle extends MapHoster {
                     this.mphmap.setCenter(cntr);
                 }
                 this.mphmap.setZoom(zm);
+                gBnds = this.mphmap.getBounds();
+                console.debug(gBnds);
+                // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
+                // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
+                // gBnds = new google.maps.LatLngBounds(ll, ur);
+                if (this.mlconfig.getSource() == EMapSource.urlgoogle) {
+                    qtext = this.mlconfig.query();
+                } else { //if (this.mlconfig.getSource() == EMapSource.sharegoogle) {
+                    qtext = this.mlconfig.getQuery();
+                }
+                if (qtext && qtext !== "") {
+                    this.queryPlaces.bounds = gBnds;
+                    this.queryPlaces.query = qtext;
+                    this.queryPlaces.location = this.mphmap.getCenter();
+                    service = new google.maps.places.PlacesService(this.mphmap);
+                    service.textSearch(this.queryPlaces, (places) => {
+                        if(places && places.length > 0) {
+                            this.placeMarkers(places);
+                        }
+                    });
+                }
             }
             this.userZoom = true;
         }

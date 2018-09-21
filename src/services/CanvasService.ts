@@ -105,6 +105,7 @@ export class CanvasService {
       if (mlcfg) {
           mlConfig = mlcfg;
       } else {
+          // this might not be used
           if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
               console.log(`hasConfigInstanceForMap for index ${currIndex} is false`);
               var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
