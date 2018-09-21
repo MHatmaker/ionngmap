@@ -116,14 +116,14 @@ export class MapsPage implements AfterViewInit {
           modal.present();
         }
     };
-    console.log("fire up ConfigParams");
-    var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
-        cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType,
-            webmapId : "nowebmap", mlposition : ipos, source : EMapSource.srcmenu },
-        mlconfig = new MLConfig(cfgparams);
-    this.mlconfig = mlconfig;
-    mlconfig.setHardInitialized(true);
-    mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
+    // console.log("fire up ConfigParams");
+    // var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
+    //     cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType,
+    //         webmapId : "nowebmap", mlposition : ipos, source : EMapSource.srcmenu },
+    //     mlconfig = new MLConfig(cfgparams);
+    // this.mlconfig = mlconfig;
+    // mlconfig.setHardInitialized(true);
+    // mapInstanceService.setConfigInstanceForMap(this.outerMapNumber, mlconfig);
     pageService.menuOption.subscribe(
       (data: MenuOptionModel) => {
         console.log(data);
@@ -302,6 +302,7 @@ export class MapsPage implements AfterViewInit {
             mlConfig.setQuery(opts.mapLocOpts.query);
             if( opts.source == EMapSource.urlgoogle || opts.source == EMapSource.srcagonline) {
                 mlConfig.setSearch(this.hostConfig.getSearch());
+                mlConfig.setQuery(this.hostConfig.getQuery());
             }
             // newpos = new MLPosition(-1, -1, -1);
             // icfg = <IConfigParams>{mapId : -1, mapType : 'unknown', webmapId : '', mlposition : newpos}

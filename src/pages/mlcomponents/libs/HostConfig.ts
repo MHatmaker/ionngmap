@@ -138,6 +138,7 @@ export class HostConfig implements IHostConfigDetails {
     }
     setSearch  (searchdetails: string) {
         this.details.search = searchdetails;
+        this.details.query = this.getQueryFromUrl();
     }
     getSearch() : string {
         return this.details.search;
