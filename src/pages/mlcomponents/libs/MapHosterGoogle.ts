@@ -347,11 +347,12 @@ export class MapHosterGoogle extends MapHoster {
                 // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
                 // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
                 // gBnds = new google.maps.LatLngBounds(ll, ur);
-                if (this.mlconfig.getSource() == EMapSource.urlgoogle) {
-                    qtext = this.mlconfig.query();
-                } else { //if (this.mlconfig.getSource() == EMapSource.sharegoogle) {
-                    qtext = this.mlconfig.getQuery();
-                }
+                // if (this.mlconfig.getSource() == EMapSource.urlgoogle) {
+                //     qtext = this.mlconfig.query();
+                // } else { //if (this.mlconfig.getSource() == EMapSource.sharegoogle) {
+                //     qtext = this.mlconfig.getQuery();
+                // }
+                qtext = this.mlconfig.getQuery();
                 if (qtext && qtext !== "") {
                     this.queryPlaces.bounds = gBnds;
                     this.queryPlaces.query = qtext;
@@ -373,24 +374,17 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     refreshPlaces() {
-      var gBnds,
-          qtext,
-          service;
-      gBnds = this.mphmap.getBounds();
+      let gBnds = this.mphmap.getBounds();
       console.debug(gBnds);
       // ll = new google.maps.LatLng(bnds.lly, bnds.llx);
       // ur = new google.maps.LatLng(bnds.ury, bnds.urx);
       // gBnds = new google.maps.LatLngBounds(ll, ur);
-      if (this.mlconfig.getSource() == EMapSource.urlgoogle) {
-          qtext = this.mlconfig.query();
-      } else { //if (this.mlconfig.getSource() == EMapSource.sharegoogle) {
-          qtext = this.mlconfig.getQuery();
-      }
+      let qtext = this.mlconfig.getQuery();
       if (qtext && qtext !== "") {
           this.queryPlaces.bounds = gBnds;
           this.queryPlaces.query = qtext;
           this.queryPlaces.location = this.mphmap.getCenter();
-          service = new google.maps.places.PlacesService(this.mphmap);
+          let service = new google.maps.places.PlacesService(this.mphmap);
           service.textSearch(this.queryPlaces, (places) => {
               if(places && places.length > 0) {
                   this.placeMarkers(places);
@@ -648,12 +642,9 @@ export class MapHosterGoogle extends MapHoster {
             // if (this.searchFiredFromUrl === true) {
             if (this.mlconfig.getSource() == EMapSource.urlgoogle || this.mlconfig.getSource() == EMapSource.sharegoogle) {
                 console.log("getBoundsFromUrl or from share config.......in MapHosterGoogle 'tilesloaded' listener");
-                if (this.mlconfig.getSource() == EMapSource.urlgoogle) {
-                    bnds = this.mlconfig.getBoundsFromUrl();
-                    qtext = this.mlconfig.query();
-                } else {
-                    bnds = this.mlconfig.getBounds();
-                    qtext = this.mlconfig.getQuery();
+                bnds = this.mlconfig.getBounds();
+                qtext = this.mlconfig.getQuery();
+                if (this.mlconfig.getSource() == EMapSource.sharegoogle) {
                     let xtExt = this.extractBounds('pan');
                     this.geopushSup.pusherClientService.publishPanEvent(xtExt);
                 }

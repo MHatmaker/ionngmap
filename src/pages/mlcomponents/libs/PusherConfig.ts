@@ -22,7 +22,8 @@ export interface IPusherConfig {
         // pusherPathNgrok :"maplinkroc3-maplinkr.7e14.starter-us-west-2.openshiftapps.com", //"c1232bf1",
         pusherPathNgrok :string,
         pusherPathPost : string,
-        search : string
+        search : string,
+        query : string
     }
 }
 
@@ -38,7 +39,8 @@ export class PusherConfig implements IPusherConfig {
         // pusherPathNgrok :"maplinkroc3-maplinkr.7e14.starter-us-west-2.openshiftapps.com", //"c1232bf1",
         pusherPathNgrok :"maplinkr-simpleserver.herokuapp.com",
         pusherPathPost : "", //".ngrok.io",
-        search : '/'
+        search : '/',
+        query : ""
     };
     private APP_KEY : string = '5c6bad75dc0dd1cec1a6';
     private APP_SECRET : string = '54546672d0196be97f6a';
@@ -113,8 +115,12 @@ export class PusherConfig implements IPusherConfig {
         let query = this.getParameterByName('gmquery');
         return query;
     }
+    getQuery() : string {
+        return this.details.query;
+    }
     setSearch (searchDetails: string) {
         this.details.search = searchDetails;
+        this.details.query = this.getQueryFromUrl();
     }
     getAppKey () : string {
         return this.APP_KEY;

@@ -189,6 +189,7 @@ export class MLConfig {
     }
     setSearch(s : string) {
         this.details.search = s;
+        this.details.query = this.getParameterByName('gmquery, this.details');
     }
     getUpdatedRawUrl (channel : string) {
       let n = this.details.webmapId.length,

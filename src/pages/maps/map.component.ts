@@ -232,7 +232,7 @@ export class MapsPage implements AfterViewInit {
             } else {  // this case might never happen
                   // there is already a map open in the slide viewer
                   if(opts.source != EMapSource.sharegoogle) {
-                      let gmquery = this.hostConfig.getQueryFromUrl();
+                      let gmquery = this.hostConfig.getQuery();
                       console.log(`gmquery is ${gmquery}`);
                       alert (gmquery);
                       if(gmquery && gmquery != '') {
@@ -245,7 +245,7 @@ export class MapsPage implements AfterViewInit {
                               this.shr = <IMapShare>{mapLocOpts : opts, userName : this.hostConfig.getUserName(), mlBounds : bnds,
                                   source : EMapSource.urlgoogle, webmapId : agoId};
                               this.hostConfig.setStartupQuery(this.shr);
-                              opts.query = this.hostConfig.getQuery();
+                              opts.query = gmquery;
                               ipos = <IPosition>{'lon' : lng, 'lat' : lat, 'zoom' : zm};
                               this.selectedMapType = 'google';
                           }
