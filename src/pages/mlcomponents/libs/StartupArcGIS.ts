@@ -367,8 +367,8 @@ export class StartupArcGIS  extends Startup {
             //   lods: TileInfo.create().lods
             // },
             center: new esriPoint({
-              x: -87.620692,
-              y: 41.888941,
+              x: this.mlconfig.getPosition().lon,
+              y: this.mlconfig.getPosition().lat,
               spatialReference: new esriSpatialReference({ wkid: 4326 })
             })
           });
@@ -386,7 +386,7 @@ export class StartupArcGIS  extends Startup {
               // dojo.connect(aMap, "onUpdateStart", showLoading);
               // dojo.connect(aMap, "onUpdateEnd", hideLoading);
               // dojo.connect(aMap, "onLoad", initUI);
-              this.mlconfig.setPosition({lat : this.mapView.center.latitude, lon : this.mapView.center.longitude, zoom : this.mapView.zoom});
+              // this.mlconfig.setPosition({lat : this.mapView.center.latitude, lon : this.mapView.center.longitude, zoom : this.mapView.zoom});
               this.mapHoster = new MapHosterArcGIS(this.mapView, this.mapNumber, this.mlconfig, this.geopush, this.elementRef);
               this.mlconfig.setMapHosterInstance(this.mapHoster);
               this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);

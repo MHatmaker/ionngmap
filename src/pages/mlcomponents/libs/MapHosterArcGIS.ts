@@ -81,6 +81,10 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         super(geopush);
         this.mlconfig = mlconfig;
         this.geopushSup = geopush.getGeoPusherSupport();
+        let pos = this.mlconfig.getPosition();
+        this.cntrxG = pos.lon;
+        this.cntryG = pos.lat;
+        this.zmG = pos.zoom;
     }
 
     async initializeMap() {
