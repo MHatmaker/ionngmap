@@ -153,7 +153,7 @@ export class MapHosterGoogle extends MapHoster {
                 title: title
             }),
               showSomething  = function(e: Event, self) {
-                  let fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 6);
+                  let fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9);
                   let referrerId = self.mlconfig.getUserId();
                   let referrerName = self.geopushSup.pusherConfig.getUserName();
                   let mapId = "map" + self.mlconfig.getUserId();
@@ -278,7 +278,7 @@ export class MapHosterGoogle extends MapHoster {
     extractBounds(action) {
         var zm = this.mphmap.getZoom(),
             cntr = this.mphmap.getCenter(),
-            fixedLL = this.geopushSup.utils.toFixedTwo(cntr.lng(), cntr.lat(), 6),
+            fixedLL = this.geopushSup.utils.toFixedTwo(cntr.lng(), cntr.lat(), 9),
             bnds = this.mphmap.getBounds(),
             xtntDict = {
                 'src' : 'google',
@@ -433,7 +433,7 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     retrievedClick(clickPt) {
-        var fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 6),
+        var fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 9),
             content,
             popPt,
             btnShare;
@@ -834,7 +834,7 @@ export class MapHosterGoogle extends MapHoster {
         onMapClick(e) {
             var popPt = e.latLng,
                 popPtRaw = {lat: popPt.lat(), lng: popPt.lng()},
-                fixedLL = this.geopushSup.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6),
+                fixedLL = this.geopushSup.utils.toFixedTwo(popPt.lng(), popPt.lat(), 9),
                 marker,
                 adrs : string,
                 content = "You clicked the map at " + fixedLL.lat + ", " + fixedLL.lon,
