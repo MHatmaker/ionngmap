@@ -17,7 +17,7 @@
             <h4>Find map items based on search term. Sign-in to search for private groups.</h4>
             <ion-item>
                 <ion-label>Item:</ion-label>
-                <ion-input type="text" formControlName="searchTermItem"></ion-input>
+                <ion-input type="text" formControlName="searchTermItem" (keypress)="checkEnter(event)"></ion-input>
             </ion-item>
             <button ion-button type="button" (click)="itemFinderSubmit()">Submit Query</button>
             <ion-list fromControlName="agoItems">

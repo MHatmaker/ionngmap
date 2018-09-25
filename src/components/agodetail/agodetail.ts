@@ -13,11 +13,15 @@ import { NavParams, ModalController, ViewController } from 'ionic-angular';
 })
 export class AgodetailComponent {
 
-  text: string;
+  title: string;
+  snippet: string;
+  thumbnailUrl : any;
 
   constructor(private detailInfo : NavParams, private modalCtrl : ModalController, private viewCtrl : ViewController ) {
     console.log('Hello AgodetailComponent Component');
-    this.text = detailInfo.get('title');
+    this.title = detailInfo.get('title');
+    this.snippet = detailInfo.get('snippet');
+    this.thumbnailUrl = detailInfo.get('thumbnailUrl');
   }
   cancelSelectedItem() {
     let data = {'selected' : false};

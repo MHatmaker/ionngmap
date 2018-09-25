@@ -8,7 +8,15 @@
 
 
 <ion-content>
-	<ion-item>{{text}}</ion-item>
+	<ion-item>
+      <ion-thumbnail item-left>
+        <img src="{{thumbnailUrl}}">
+      </ion-thumbnail>
+      <h2>{{title}}</h2>
+    </ion-item>
+    <ion-item text-wrap>
+            {{snippet}}
+    </ion-item>
 	<button ion-button (click)="loadMapForItem()" type="button">Accept</button>
 	<button ion-button (click)="cancelSelectedItem()" type="button">Cancel</button>
 </ion-content>

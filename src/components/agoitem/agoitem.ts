@@ -25,6 +25,28 @@ export class AgoitemComponent {
       agoItems : Array<AgoItem[]>()
     });
   }
+
+  checkEnter(e){ //e is event object passed from function invocation
+    var characterCode; //literal character code will be stored in this variable
+
+    if(e && e.which){ //if which property of event object is supported (NN4)
+      e = e
+      characterCode = e.which; //character code is contained in NN4's which property
+    }
+    else{
+      e = event
+      characterCode = e.keyCode; //character code is contained in IE's keyCode property
+    }
+
+    if(characterCode == 13){ //if generated character code is equal to ascii 13 (if enter key)
+      this.itemFinderSubmit(); //submit the form
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
   async itemFinderSubmit() {
       let itm = this.agoitemgroup.getRawValue();
       this.agoItems = await this.agoqp.findArcGISItem(itm.searchTermItem);
@@ -34,9 +56,9 @@ export class AgoitemComponent {
   selectAgoItem(itm) {
       console.log(`selected map item ${itm.title}`);
       this.selectedItem = itm;
-      let agodtl = this.modalCtrl.create(AgodetailComponent, {title : itm.title});
+      let agodtl = this.modalCtrl.create(AgodetailComponent, {title : itm.title, snippet : itm.snippet, thumbnailUrl : itm.thumbnailUrl});
       agodtl.onDidDismiss(data => {
-        data.selected == true ? this.accept() : this.cancel();
+        data.selected == true ? this.accept() : this.logForm();
       });
       agodtl.present();
   }
