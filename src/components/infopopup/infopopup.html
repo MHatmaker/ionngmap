@@ -16,12 +16,16 @@
             <h4>Info on clicked point</h4>
             <ion-item>
                 {{itemContent.address}}
+            </ion-item>
+            <ion-item>
                 {{itemContent.x}}
+            </ion-item>
+            <ion-item>
                 {{itemContent.y}}
             </ion-item>
             <ion-row>
               <ion-col>
-                <button ion-button color="btn-primary" (click)="publishInfo()">Accept</button>
+                <button ion-button color="btn-primary" (click)="publishInfo()">Share</button>
               </ion-col>
               <ion-col>
                 <button ion-button color="btn-secondary" (click)="cancel()">Cancel</button>

@@ -31,7 +31,7 @@
             </ion-list>
             <ion-row>
               <ion-col>
-                <button ion-button color="btn-primary" (click)="accept()">Accept</button>
+                <button *ngIf="selectedItem!=''" ion-button color="btn-primary" (click)="accept()">Accept</button>
               </ion-col>
               <ion-col>
                 <button ion-button color="btn-secondary" (click)="cancel()">Cancel</button>

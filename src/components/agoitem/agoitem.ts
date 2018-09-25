@@ -14,7 +14,7 @@ export class AgoitemComponent {
   searchTermItem: string;
   private agoitemgroup : FormGroup;
   private agoItems : any;
-  private selectedItem : string;
+  private selectedItem : string = "";
 
   constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder,
     private agoqp : AgoqueryProvider, private modalCtrl : ModalController) {
@@ -49,6 +49,7 @@ export class AgoitemComponent {
   cancel() {
       // this.viewCtrl.dismiss();
       console.log("agoitem got cancel from agodetail");
+      this.viewCtrl.dismiss("cancelled");
   }
 
 }

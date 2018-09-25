@@ -492,19 +492,16 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 let shareElement = document.createElement(addedShareBtn);
                 // let injector = ReflectiveInjector.resolveAndCreate([DomService]);
                 // let domsvc = injector.get(DomService);
+                let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
+                let pushContent = this.configForPusher(content);
                 if( actionList) {
-                    let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
-                    let pushContent = this.configForPusher(content);
                     shareMapInfoSvc.setInfo(pushContent);
                     let domsvc = CommonToNG.getLibs().domSvc;
                     domsvc.appendComponentToElement(SharemapComponent, actionList);
                 } else {
-                    let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
-                    let pushContent = this.configForPusher(content);
-
                     shareMapInfoSvc.showInfo(pushContent);
               }
-                /*
+
                 if (content === null) {
                     addedContent = "Share lat/lon : " + this.fixedLLG.lat + ", " + this.fixedLLG.lon;
                     this.mphmap.popup.title = "Ready to Push Click";
@@ -513,12 +510,13 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                     addedContent = 'Share address : ' + content;
                     // if (actionList.className === 'actionList hidden') {
                     //     addedContent = content + '<br>' + addedShareBtn;
+                    this.mphmap.popup.content = addedContent;
                     // }
-                    addedContentNode = document.createTextNode(addedContent);
-                    contentNode.appendChild(addedContentNode);
+                    // addedContentNode = document.createTextNode(addedContent);
+                    // contentNode.appendChild(addedContentNode);
                     // this.mphmap.infoWindow.setContent(content);
                 }
-                */
+
 
 
 

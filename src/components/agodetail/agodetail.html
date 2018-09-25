@@ -1,15 +1,14 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>master</ion-title>
+    <ion-title>Selected ArcGIS Online Item</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content>
-	<div>{{text}}</div>
+	<ion-item>{{text}}</ion-item>
 	<button ion-button (click)="loadMapForItem()" type="button">Accept</button>
 	<button ion-button (click)="cancelSelectedItem()" type="button">Cancel</button>
 </ion-content>
-

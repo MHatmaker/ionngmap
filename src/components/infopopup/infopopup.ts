@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavParams } from 'ionic-angular';
+import { NavParams, ViewController } from 'ionic-angular';
 import {GeoPusherSupport, IGeoPusher } from '../../pages/mlcomponents/libs/geopushersupport';
 // import { SharemapProvider } from '../../providers/sharemap/sharemap';
 // import { FormGroup, FormBuilder } from '@angular/forms';
@@ -12,7 +12,7 @@ export class InfopopupComponent {
 
   itemContent: any;
 
-  constructor(info : NavParams, private geopushersupport : GeoPusherSupport ) {
+  constructor(info : NavParams, public viewCtrl: ViewController, private geopushersupport : GeoPusherSupport ) {
     console.log('Hello InfopopupComponent Component');
     // alert(info.get('address'));
     // this.itemContent = info.get('address');
@@ -32,9 +32,12 @@ export class InfopopupComponent {
     let pusherClientService = this.geopushersupport.getGeoPusherSupport().pusherClientService;
     // let pushLL = {'address' : this.itemContent};
     pusherClientService.publishClickEvent(this.itemContent);
+    this.viewCtrl.dismiss();
+
   }
   cancel() {
     console.log("cancelled arcgis infopopup");
+    this.viewCtrl.dismiss();
   }
 
 }

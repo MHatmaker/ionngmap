@@ -80,6 +80,7 @@ export class MapsPage implements AfterViewInit {
           modal.onDidDismiss((data) => {
               console.log("Ago dialog dismissed processing");
               console.log(data);
+              if(data != 'cancelled') {
               let xtnt : MLBounds = data.defaultExtent;
               let xcntr = xtnt.getCenter();
               let cntr : IPosition = new MLPosition(xcntr.x, xcntr.y, 15);
@@ -91,7 +92,7 @@ export class MapsPage implements AfterViewInit {
               let opts : IMapShare = {mapLocOpts : mploc, userName : this.hostConfig.getUserName(), mlBounds : xtnt,
                   source : EMapSource.srcagonline, webmapId : data.id};
               this.addCanvas('arcgis', opts, mlcfg, data.id);
-
+          }
           });
           modal.present();
         },
