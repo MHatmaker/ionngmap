@@ -8,7 +8,7 @@ import { ModalController } from 'ionic-angular';
 export class SharemapProvider {
 
   // @Output() change: EventEmitter<boolean> = new EventEmitter();
-  private info : any;
+  info : any;
   private useStoredInfo : boolean = false;
 
   constructor(private modalCtrl : ModalController, private pusherClientService : PusherClientService) {

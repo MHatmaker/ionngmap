@@ -44,7 +44,7 @@ export class AgoqueryProvider {
   }
   async loadPortal() {
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [ portal ] = await loadModules(
         ['esri/portal/Portal'], options);
@@ -81,7 +81,7 @@ export class AgoqueryProvider {
 
   async findArcGISGroup(searchTermGrp) {
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [ portal, PortalQueryParams ] = await loadModules(
         ['esri/portal/Portal', 'esri/portal/PortalQueryParams'], options);
@@ -99,7 +99,7 @@ export class AgoqueryProvider {
 
   async findArcGISItem(searchTermItem) {
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [ portal, PortalQueryParams ] = await loadModules(
         ['esri/portal/Portal', 'esri/portal/PortalQueryParams'], options);

@@ -90,7 +90,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     async initializeMap() {
       try {
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
         const [esriPoint, esriSpatialReference, esriWebMercator, esriGeometry, Locator,
               esriwebMercatorUtils, esriMapView] = await loadModules([
@@ -136,7 +136,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async updateGlobals(msg, cntrx, cntry, zm) {
         const options = {
-          url: 'https://js.arcgis.com/4.7/'
+          url: 'https://js.arcgis.com/4.8/'
         };
         const [esriwebMercatorUtils] = await loadModules([
              'esri/geometry/support/webMercatorUtils'
@@ -194,7 +194,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async extractBounds(zm, cntr, action) : Promise<xtntParams> {
         const options = {
-          url: 'https://js.arcgis.com/4.7/'
+          url: 'https://js.arcgis.com/4.8/'
         };
         const [esriPoint, esriSpatialReference] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference',
@@ -302,7 +302,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     async retrievedClick(clickPt) {
       if (clickPt.referrerId !== this.mlconfig.getUserId()) {
         const options = {
-          url: 'https://js.arcgis.com/4.7/'
+          url: 'https://js.arcgis.com/4.8/'
         };
         const [esriPoint, esriMapView] = await loadModules([
               'esri/geometry/Point', 'esri/views/MapView'
@@ -356,7 +356,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
     async retrievedBounds(xj) {
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
@@ -418,7 +418,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     async onMapClick(e) {
       try {
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
@@ -445,10 +445,10 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             if (response.address) {
                 let address = response.address;
                 let location = esriwebMercatorUtils.lngLatToXY(response.location.longitude, response.location.latitude);
-                this.showClickResult(address);
+                this.showClickResult(address, e.mapPoint);
                 console.debug(location);
             } else {
-                this.showClickResult(null);
+                this.showClickResult(null, e.mapPoint);
             }
 
         }).otherwise(function(err) {
@@ -479,28 +479,41 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     // this.pusherEventHandler.addEvent('client-MapXtntEvent', retrievedBounds);
     // this.pusherEventHandler.addEvent('client-MapClickEvent',  retrievedClick);
 
-    showClickResult(content) {
-        var
-            actionList = document.getElementsByClassName('esri-popup__actions')[0],
-            contentNode = document.getElementsByClassName('esri-popup__actions')[0],
-            shareBtnId = 'shareSomethingId' + this.selectedMarkerId,
-            addedShareBtn = 'sharemap',
-            addedContent,
-            btnShare,
-            addedContentNode;
+    async showClickResult(content, mapPt) {
+        const options = {
+          url: 'https://js.arcgis.com/4.8/'
+        };
+        const [ActionButton] = await loadModules([
+              'esri/support/actions/ActionButton'
+            ], options);
 
-        let shareElement = document.createElement(addedShareBtn);
-        // let injector = ReflectiveInjector.resolveAndCreate([DomService]);
-        // let domsvc = injector.get(DomService);
+        var
+            // actionList = document.getElementsByClassName('esri-popup__actions')[0],
+            // shareBtnId = 'shareSomethingId' + this.selectedMarkerId,
+            addedContent;
+
         let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
         let pushContent = this.configForPusher(content);
-        if( actionList) {
-            shareMapInfoSvc.setInfo(pushContent);
-            let domsvc = CommonToNG.getLibs().domSvc;
-            domsvc.appendComponentToElement(SharemapComponent, actionList);
-        } else {
-            shareMapInfoSvc.showInfo(pushContent);
+
+        let shareAction = new ActionButton({
+          title: "Share Info",
+          id: "idShareInfo",
+          className: 'share-action',
+          image: "assets/imgs/share-info.png"
+        });
+
+        if (this.mphmap.popup.visible == false) {
+            // let mppt = new esriPoint({longitude : mapPt.x, latitude : clickPt.y}),
+            this.mphmap.popup.open({location: mapPt});
         }
+        if (this.mphmap.popup.actions.length < 2) {
+          this.mphmap.popup.actions.push(shareAction);
+        }
+        this.mphmap.popup.on("trigger-action", (event) =>{
+          if(event.action.id === "idShareInfo"){
+            this.geopushSup.pusherClientService.publishClickEvent(pushContent);
+          }
+        });
 
         if (content === null) {
             addedContent = "Share lat/lon : " + this.fixedLLG.lat + ", " + this.fixedLLG.lon;
@@ -508,42 +521,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             this.mphmap.popup.content = "lat/lon : " + this.fixedLLG.lat + ", " + this.fixedLLG.lon;
         } else {
             addedContent = 'Share address : ' + content;
-            // if (actionList.className === 'actionList hidden') {
-            //     addedContent = content + '<br>' + addedShareBtn;
             this.mphmap.popup.content = addedContent;
             this.mphmap.popup.watch("currentDockPosition", (value) => {
                 console.log("currentDockPosition");
                 console.log(value);
-                let domsvc = CommonToNG.getLibs().domSvc;
-                domsvc.appendComponentToElement(SharemapComponent, actionList);
             });
-            // }
-            // addedContentNode = document.createTextNode(addedContent);
-            // contentNode.appendChild(addedContentNode);
-            // this.mphmap.infoWindow.setContent(content);
         }
-
-
-
-
-        // this.mphmap.popup.open({location : this.screenPt}); //, this.mphmap.getInfoWindowAnchor(this.screenPt));
-
-        // btnShare = document.getElementById(shareBtnId);
-        // btnShare.onclick = function () {
-        //     showSomething();
-        // };
-          /*
-        if (selfPusherDetails.pusher)
-        {
-            var referrerId = this.mlconfig`.getUserId();
-                 referrerName = this.pusherConfig.getUserName();
-                 pushLL = {"x" : fixedLLG.lon, "y" : fixedLLG.lat, "z" : "0",
-                    "referrerId" : referrerId, "referrerName" : referrerName,
-                        'address' : contextContent };
-                console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLLG.lat + ", " + fixedLLG.lon);
-            selfPusherDetails.pusher.channel(selfPusherDetails.channel).trigger('client-MapClickEvent', pushLL);
-        }
-        */
     }
     configForPusher(content) {
         var referrerId,
@@ -570,7 +553,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async setCurrentLocation( loc : MapLocOptions) {
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSpatialReference, esriLocator,
               esriwebMercatorUtils, watchUtils] = await loadModules([
@@ -588,7 +571,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async addGraphic(pt){
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSimpleMarkerSymbol, esriSimpleLineSymbol,
             esriGraphic] = await loadModules([
@@ -612,7 +595,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
       const options = {
-        url: 'https://js.arcgis.com/4.7/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSpatialReference, esriLocator,
               esriwebMercatorUtils, watchUtils] = await loadModules([
