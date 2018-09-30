@@ -520,8 +520,10 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             this.mphmap.popup.title = "Ready to Push Click";
             this.mphmap.popup.content = "lat/lon : " + this.fixedLLG.lat + ", " + this.fixedLLG.lon;
         } else {
-            addedContent = 'Share address : ' + content;
-            this.mphmap.popup.content = addedContent;
+            if (this.mphmap.popup.content === null) {
+              addedContent = 'Share address : ' + content;
+              this.mphmap.popup.content = addedContent;
+            }
             this.mphmap.popup.watch("currentDockPosition", (value) => {
                 console.log("currentDockPosition");
                 console.log(value);

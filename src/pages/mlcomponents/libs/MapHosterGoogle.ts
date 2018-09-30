@@ -133,14 +133,19 @@ export class MapHosterGoogle extends MapHoster {
 
 
     markerInfoPopup(pos, content, title, mrkr=null) {
-        var popId = "id" + title,
-            shareBtnId = "idShare" + title,
-            contentString = '<div id="content">' +
-                '<h4 id="' + popId + '" style="color:forestgreen">' + title + '</h4>' +
-                '<div id="bodyContent" style="color:darkmagenta">' +
-                content + '<br><button class="sharebutton btn-primary" id="' + shareBtnId + '" >Share</button>' +
-                '</div>' +
-                '</div>',
+        var shareBtnId = "idShare" + title,
+            contentString = `<ion-card>
+                <ion-item class="item-md bar bar-header bar-positive"">
+                  <h4 style="color:forestgreen"> ${title} </h4>
+                </ion-item>
+                <ion-item class="item-md" style="color:darkmagenta">
+                  ${content}
+                </ion-item>
+                <ion-item class="item-md">
+                  <button ion-button class="sharebutton button button-md button-default button-default-md" color="btn-primary"
+                  id="${shareBtnId}" style="visibility: block">Share</button>
+                </ion-item>
+              </ion-card>`,
 
 
             infowindow = new google.maps.InfoWindow({
