@@ -19,6 +19,7 @@ import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService
 import { Observable } from 'rxjs/Observable';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
 import { SearchplacesProvider } from '../../../providers/searchplaces/searchplaces';
+// import { InfopopupComponent } from '../../../src/infopopup/infopopup';
 
 declare var google;
 
@@ -135,15 +136,20 @@ export class MapHosterGoogle extends MapHoster {
     markerInfoPopup(pos, content, title, mrkr=null) {
         var shareBtnId = "idShare" + title,
             contentString = `<ion-card>
-                <ion-item class="item-md bar bar-header bar-positive"">
+                <ion-item class="item item-block item-md bar bar-header bar-positive"">
                   <h4 style="color:forestgreen"> ${title} </h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+                    class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
                 </ion-item>
-                <ion-item class="item-md" style="color:darkmagenta">
+                <ion-item class="item item-block item-md" style="color:darkmagenta">
                   ${content}
                 </ion-item>
-                <ion-item class="item-md">
-                  <button ion-button class="sharebutton button button-md button-default button-default-md" color="btn-primary"
-                  id="${shareBtnId}" style="visibility: block">Share</button>
+                <ion-item class="item item-block item-md">
+                  <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary"
+                    id="${shareBtnId}" style="visibility: block">
+                  <span class="button-inner">Share</span>
+                  <div class="button-effect"></div>
+                  </button>
                 </ion-item>
               </ion-card>`,
 

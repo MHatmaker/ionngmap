@@ -300,7 +300,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async retrievedClick(clickPt) {
-      if (clickPt.referrerId !== this.mlconfig.getUserId()) {
+      if (1) {  // clickPt.referrerId !== this.mlconfig.getUserId()) {
         const options = {
           url: 'https://js.arcgis.com/4.8/'
         };
