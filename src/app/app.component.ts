@@ -16,6 +16,7 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 import { DomService } from '../services/dom.service';
 import { CommonToNG } from '../pages/mlcomponents/libs/CommonToNG';
 import { SharemapProvider } from '../providers/sharemap/sharemap';
+import { GmpopoverProvider } from '../providers/gmpopover/gmpopover';
 import { Http } from '@angular/http';
 
 @Component({
@@ -50,7 +51,8 @@ export class MapLinkrApp {
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
       private menuCtrl: MenuController, private pageService : PageService, private domsvc : DomService,
-      private shareMapInfoSvc : SharemapProvider, private pusherConfig : PusherConfig, private hostConfig : HostConfig,
+      private shareMapInfoSvc : SharemapProvider, private gmpopoverSvc : GmpopoverProvider,
+      private pusherConfig : PusherConfig, private hostConfig : HostConfig,
       private http: Http) {
     this.initializeApp();
 
@@ -72,7 +74,7 @@ export class MapLinkrApp {
     hostConfig.sethostport(location.port);
     hostConfig.sethref(location.href);
 
-    CommonToNG.setLibs({ 'domSvc' : this.domsvc, 'shareInfoSvc' : this.shareMapInfoSvc} );
+    CommonToNG.setLibs({ 'domSvc' : this.domsvc, 'shareInfoSvc' : this.shareMapInfoSvc, 'gmpopoverSvc' : this.gmpopoverSvc} );
 
     this.queryForUserName();
     if (location.search === '') {

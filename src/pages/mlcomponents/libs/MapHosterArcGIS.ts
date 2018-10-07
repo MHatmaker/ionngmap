@@ -20,9 +20,7 @@ import { MapHoster } from './MapHoster';
 import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
 import { ImlBounds, MLBounds, xtntParams } from '../../../services/mlbounds.service';
 import { DomService } from '../../../services/dom.service';
-import { SharemapComponent } from '../../../components/sharemap/sharemap';
 import { ReflectiveInjector } from '@angular/core';
-import { CommonToNG } from '../libs/CommonToNG';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
 
 const proj4 = (proj4x as any).default;
@@ -492,7 +490,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             // shareBtnId = 'shareSomethingId' + this.selectedMarkerId,
             addedContent;
 
-        let shareMapInfoSvc = CommonToNG.getLibs().shareInfoSvc;
         let pushContent = this.configForPusher(content);
 
         let shareAction = new ActionButton({

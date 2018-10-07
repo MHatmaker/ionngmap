@@ -59,6 +59,7 @@
     "zone.js": "0.8.18"
   },
   "devDependencies": {
+    "@ionic/app-scripts": "^3.2.0",
     "@types/arcgis-js-api": "^4.7.0",
     "@types/core-js": "0.9.39",
     "@types/dojo": "^1.9.38",

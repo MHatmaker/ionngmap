@@ -67,6 +67,8 @@ import { AgodetailComponent } from '../components/agodetail/agodetail';
 import { SearchplacesProvider } from '../providers/searchplaces/searchplaces';
 import { EmailerProvider } from '../providers/emailer/emailer';
 import { AccordionListComponent } from '../components/accordion-list/accordion-list';
+import { GmpopoverProvider } from '../providers/gmpopover/gmpopover';
+import { GmpopoverComponent } from '../components/gmpopover/gmpopover';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -96,7 +98,8 @@ import { AccordionListComponent } from '../components/accordion-list/accordion-l
     InfopopupComponent,
     AgodetailComponent,
     MsgsetupComponent,
-    AccordionListComponent
+    AccordionListComponent,
+    GmpopoverComponent
   ],
   imports: [
     BrowserModule,
@@ -135,7 +138,8 @@ import { AccordionListComponent } from '../components/accordion-list/accordion-l
     InfopopupComponent,
     AgodetailComponent,
     MsgsetupComponent,
-    AccordionListComponent
+    AccordionListComponent,
+    GmpopoverComponent
   ],
   providers: [
     StatusBar,
@@ -171,7 +175,8 @@ import { AccordionListComponent } from '../components/accordion-list/accordion-l
     DomService,
     SharemapProvider,
     SearchplacesProvider,
-    EmailerProvider
+    EmailerProvider,
+    GmpopoverProvider
   ]
 })
 export class AppModule {}

@@ -11,6 +11,25 @@
   src: '../assets/icon/map-w-marker-icon.png';
 }
 
+.popover-custom .popover-content {
+  width: 80%;
+  top: 70px;
+  left: 10px;
+}
+
+
+.popover-content {
+  width: 80%;
+  top: 70px;
+  left: 10px;
+}
+
+.custom-popover {
+  top: 80px;
+  left: 15px;
+  width: 70%;
+}
+
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These

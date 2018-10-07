@@ -20,6 +20,8 @@ import { Observable } from 'rxjs/Observable';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
 import { SearchplacesProvider } from '../../../providers/searchplaces/searchplaces';
 // import { InfopopupComponent } from '../../../src/infopopup/infopopup';
+import { CommonToNG } from '../libs/CommonToNG';
+import { GmpopoverProvider } from '../../../providers/gmpopover/gmpopover';
 
 declare var google;
 
@@ -135,19 +137,21 @@ export class MapHosterGoogle extends MapHoster {
 
     markerInfoPopup(pos, content, title, mrkr=null) {
         var shareBtnId = "idShare" + title,
+            isDocked = false,
+            idDock =  "idDock" + title,
             contentString = `<ion-card>
-                <ion-item class="item item-block item-md bar bar-header bar-positive"">
-                  <h4 style="color:forestgreen"> ${title} </h4>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+                <ion-item class="item item-block item-md bar bar-header bar-positive">
+                  <h4 style="color: steelblue;"> ${title} </h4>
+                  <svg id="${idDock}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
                     class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
                 </ion-item>
-                <ion-item class="item item-block item-md" style="color:darkmagenta">
+                <ion-item class="item item-block item-md calm" style="color: teal;">
                   ${content}
                 </ion-item>
                 <ion-item class="item item-block item-md">
                   <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary"
-                    id="${shareBtnId}" style="visibility: block">
-                  <span class="button-inner">Share</span>
+                    id="${shareBtnId}" style="visibility: block; width: 32px; height: 32px;
+                      background-image: url('assets/imgs/share-info.png');">
                   <div class="button-effect"></div>
                   </button>
                 </ion-item>
@@ -163,7 +167,7 @@ export class MapHosterGoogle extends MapHoster {
                 map: this.mphmap,
                 title: title
             }),
-              showSomething  = function(e: Event, self) {
+              shareClick  = function(e: Event, self) {
                   let fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9);
                   let referrerId = self.mlconfig.getUserId();
                   let referrerName = self.geopushSup.pusherConfig.getUserName();
@@ -174,19 +178,37 @@ export class MapHosterGoogle extends MapHoster {
                       'address' : marker.address, 'title' : marker.title };
                   console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
                   self.geopushSup.pusherClientService.publishClickEvent(pushLL);
+              },
+              dockPopup = function(e: Event, self) {
+                  console.log(e);
+                  if(isDocked) {
+                      isDocked = false;
+                      let gmpop = CommonToNG.getLibs().gmpopoverSvc;
+                      if(gmpop) {
+                          gmpop.close();
+                      }
+                      infowindow.open(self.mphmap, marker);
+                  } else {
+                      isDocked = true;
+                      infowindow.close();
+                      let gmpop = CommonToNG.getLibs().gmpopoverSvc;
+                      gmpop.dockPopEmitter.subscribe(
+                          (val : boolean) => {console.log("dockPopEmitter event received");
+                          isDocked = false;
+                          infowindow.open(self.mphmap, marker);
+                      });
+                      gmpop.open(content, title);
+                  }
               }
 
 
 
         google.maps.event.addListener(marker, 'click',  (event) => {
-            var btnShare;
-                // referrerId,
-                // usrId;
             infowindow.setContent(contentString);
             infowindow.setPosition(event.latLng);
             infowindow.open(this.mphmap, marker);
 
-            btnShare = document.getElementById(shareBtnId);
+            let btnShare = document.getElementById(shareBtnId);
             // referrerId = this.mlconfig.getReferrerId();
             // usrId = this.mlconfig.getUserId();
             // if (referrerId && referrerId != usrId) {
@@ -196,11 +218,15 @@ export class MapHosterGoogle extends MapHoster {
                 // }
             // }
             // btnShare.onclick = function () {
-            //     showSomething();
+            //     shareClick();
             // };
 
-            btnShare.addEventListener('click', (e:Event) => showSomething(e, this));
+            btnShare.addEventListener('click', (e:Event) => shareClick(e, this));
+
+            let btnDock = document.getElementById(idDock);
+            btnDock.addEventListener('click', (e:Event) => dockPopup(e, this));
         });
+
         return { "infoWnd" : infowindow, "infoMarker" : marker};
     }
 
