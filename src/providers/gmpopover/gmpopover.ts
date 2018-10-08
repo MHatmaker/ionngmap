@@ -14,14 +14,15 @@ export class GmpopoverProvider {
   }
   open(content : string, title : string) {
      let popover = this.popCtrl.create(GmpopoverComponent,
-        {title : title, content : content}, {cssClass: 'custom-popover popover-custom popover-content', enableBackdropDismiss : false});
+        {title : title, content : content}, {cssClass: 'custom-popover popover-custom popover-content', enableBackdropDismiss : true});
         this.popOver = popover;
      let ev = {
         target : {
           getBoundingClientRect : () => {
             return {
               top: '100',
-              left: '20'
+              left: '20',
+              bottom: 'unset'
             };
           }
         }

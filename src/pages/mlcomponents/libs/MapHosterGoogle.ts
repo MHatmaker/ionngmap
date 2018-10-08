@@ -141,9 +141,11 @@ export class MapHosterGoogle extends MapHoster {
             idDock =  "idDock" + title,
             contentString = `<ion-card>
                 <ion-item class="item item-block item-md bar bar-header bar-positive">
-                  <h4 style="color: steelblue;"> ${title} </h4>
-                  <svg id="${idDock}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
-                    class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
+                  <ion-label style="color: steelblue"> ${title}</ion-label>
+                  <ion-icon item-right>
+                    <svg id="${idDock}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+                      class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
+                  </ion-icon>
                 </ion-item>
                 <ion-item class="item item-block item-md calm" style="color: teal;">
                   ${content}
@@ -852,7 +854,7 @@ export class MapHosterGoogle extends MapHoster {
                 this.popDetails.infoWnd.close();
                 this.popDetails.infoMarker.setMap(null);
             }
-            this.popDetails = this.markerInfoPopup(popPt, content, "Ready to Push Click", marker);
+            this.popDetails = this.markerInfoPopup(popPt, content, "Shareable position/info", marker);
             // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
             // if (this.selfPusherDetails.pusher)
             // {
