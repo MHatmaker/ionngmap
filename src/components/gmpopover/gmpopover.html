@@ -1,12 +1,22 @@
 <ion-card>
-    <ion-item class="item item-block item-md bar bar-header bar-positive">
-      <ion-label style="color: steelblue"> {{title}}</ion-label>
-      <ion-icon item-right>
-        <svg id="{{idDock}}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
-          (click)="dockPopup()"
-          class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
-      </ion-icon>
-    </ion-item>
+    <div class="item item-block item-md bar bar-header bar-positive">
+        <div class="gmpopover-header">
+          <div class="gmpop-label">
+              <ion-label class="gmpop-label" style="color: steelblue"> {{title}}</ion-label>
+          </div>
+          <button ion-button="" class="gmppop-dock">
+              <ion-icon (click)="dockPopup()">
+                <svg id="{{idDock}}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+
+                  class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
+              </ion-icon>
+          </button>
+          <button ion-button class="gmpop-close" (click)="closePopup()">
+              <ion-icon name="close">
+              </ion-icon>
+          </button>
+      </div>
+  </div>
     <ion-item class="item item-block item-md calm" style="color: teal;">
       <span ion-text style="white-space: normal">
           {{content}}

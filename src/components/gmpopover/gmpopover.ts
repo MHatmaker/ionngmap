@@ -31,4 +31,7 @@ export class GmpopoverComponent implements AfterContentInit {
   dockPopup(evt: Event) {
     this.viewCtrl.dismiss({"action" : "dock"});
   }
+  closePopup(evt: Event) {
+    this.viewCtrl.dismiss({"action" : "close"});
+  }
 }

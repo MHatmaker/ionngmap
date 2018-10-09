@@ -142,10 +142,12 @@ export class MapHosterGoogle extends MapHoster {
             contentString = `<ion-card>
                 <ion-item class="item item-block item-md bar bar-header bar-positive">
                   <ion-label style="color: steelblue"> ${title}</ion-label>
-                  <ion-icon item-right>
-                    <svg id="${idDock}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
-                      class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
-                  </ion-icon>
+                  <button>
+                    <ion-icon item-right>
+                      <svg id="${idDock}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+                        class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
+                    </ion-icon>
+                  </button>
                 </ion-item>
                 <ion-item class="item item-block item-md calm" style="color: teal;">
                   ${content}
@@ -195,9 +197,11 @@ export class MapHosterGoogle extends MapHoster {
                       infowindow.close();
                       let gmpop = CommonToNG.getLibs().gmpopoverSvc;
                       gmpop.dockPopEmitter.subscribe(
-                          (val : boolean) => {console.log("dockPopEmitter event received");
-                          isDocked = false;
-                          infowindow.open(self.mphmap, marker);
+                          (val : any) => {console.log("dockPopEmitter event received");
+                          if(val && val.action == 'dock') {
+                            isDocked = false;
+                            infowindow.open(self.mphmap, marker);
+                          }
                       });
                       gmpop.open(content, title);
                   }

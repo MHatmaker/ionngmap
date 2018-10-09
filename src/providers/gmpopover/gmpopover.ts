@@ -34,7 +34,7 @@ export class GmpopoverProvider {
           if(this.popOver) {
               this.popOver = null;
           }
-          this.dockPopEmitter.emit(false);
+          this.dockPopEmitter.emit(data);
       });
   }
 

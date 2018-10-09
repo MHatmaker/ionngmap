@@ -5,3 +5,19 @@ gmpopover {
 .gmpopover-dimensions {
   bottom : auto;
 }
+
+.gmpopover-header {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: minmax(200px, 1fr) 32px 32px;
+}
+
+.gmpop-label {
+  grid-column: 1;
+}
+.gmpop-dock {
+  grid-column: 2;
+}
+.gmpop-close {
+  grid-column: 3;
+}
