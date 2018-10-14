@@ -138,13 +138,13 @@ export class MapHosterGoogle extends MapHoster {
     markerInfoPopup(pos, content, title, mrkr=null) {
         var shareBtnId = "idShare" + title,
             isDocked = false,
-            idDock =  "idDock" + title,
+            dockBtnId =  "dockBtnId" + title,
             contentString = `<ion-card>
                 <ion-item class="item item-block item-md bar bar-header bar-positive">
                   <ion-label style="color: steelblue"> ${title}</ion-label>
                   <button>
                     <ion-icon item-right>
-                      <svg id="${idDock}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+                      <svg id="${dockBtnId}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
                         class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
                     </ion-icon>
                   </button>
@@ -183,6 +183,27 @@ export class MapHosterGoogle extends MapHoster {
                   console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
                   self.geopushSup.pusherClientService.publishClickEvent(pushLL);
               },
+
+              addListeners = function(self, btnShareId, btnDockId) {
+                    let btnShare = document.getElementById(shareBtnId);
+                    // referrerId = this.mlconfig.getReferrerId();
+                    // usrId = this.mlconfig.getUserId();
+                    // if (referrerId && referrerId != usrId) {
+                        // if (btnShare) {
+                        //     console.debug(btnShare);
+                        //     btnShare.style.visibility = 'hidden';
+                        // }
+                    // }
+                    // btnShare.onclick = function () {
+                    //     shareClick();
+                    // };
+
+                    btnShare.addEventListener('click', (e:Event) => shareClick(e, self));
+
+                    let btnDock = document.getElementById(dockBtnId);
+                    btnDock.addEventListener('click', (e:Event) => dockPopup(e, self));
+              },
+
               dockPopup = function(e: Event, self) {
                   console.log(e);
                   if(isDocked) {
@@ -197,40 +218,39 @@ export class MapHosterGoogle extends MapHoster {
                       infowindow.close();
                       let gmpop = CommonToNG.getLibs().gmpopoverSvc;
                       gmpop.dockPopEmitter.subscribe(
-                          (val : any) => {console.log("dockPopEmitter event received");
-                          if(val && val.action == 'dock') {
-                            isDocked = false;
-                            infowindow.open(self.mphmap, marker);
+                          (retval : any) => {console.log("dockPopEmitter event received");
+                          if(retval) {
+                              if(retval.action == 'undock') {
+                              isDocked = false;
+                              infowindow.open(self.mphmap, marker);
+                            } else if(retval == 'close') {
+                              infowindow.close();
+                              marker.setMap(null);
+                            }
+                          } else {
+                            // got click on map outside docked popover
+                            infowindow.close();
+                            marker.setMap(null);
                           }
                       });
                       gmpop.open(content, title);
                   }
               }
 
-
-
-        google.maps.event.addListener(marker, 'click',  (event) => {
-            infowindow.setContent(contentString);
+        google.maps.event.addListener(marker, 'click',  async (event) => {
             infowindow.setPosition(event.latLng);
-            infowindow.open(this.mphmap, marker);
-
-            let btnShare = document.getElementById(shareBtnId);
-            // referrerId = this.mlconfig.getReferrerId();
-            // usrId = this.mlconfig.getUserId();
-            // if (referrerId && referrerId != usrId) {
-                // if (btnShare) {
-                //     console.debug(btnShare);
-                //     btnShare.style.visibility = 'hidden';
-                // }
-            // }
-            // btnShare.onclick = function () {
-            //     shareClick();
-            // };
-
-            btnShare.addEventListener('click', (e:Event) => shareClick(e, this));
-
-            let btnDock = document.getElementById(idDock);
-            btnDock.addEventListener('click', (e:Event) => dockPopup(e, this));
+            if( infowindow.content.includes('undefined')) {
+              let latlng = {lat: pos.lat(), lng: pos.lng()};
+              this.geopushSup.geoCoder.geoCode({location : latlng}).then((adrs) => {
+                let contentfixed = infowindow.content.replace('undefined', adrs);
+                infowindow.setContent(contentfixed);
+                infowindow.open(this.mphmap, marker);
+                addListeners(this, shareBtnId, dockBtnId);
+              });
+            } else {
+              infowindow.open(this.mphmap, marker);
+              addListeners(this, shareBtnId, dockBtnId);
+            }
         });
 
         return { "infoWnd" : infowindow, "infoMarker" : marker};
@@ -279,19 +299,6 @@ export class MapHosterGoogle extends MapHoster {
             }
         }
     }
-
-    placesQueryCallback(results, status) {
-        console.log('status is ' + status);
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            if (results && results.length > 0) {
-                console.log('PlacesService returned ' + results.length);
-                this.placeMarkers(results);
-            } else {
-                console.log('placesService() returned no results');
-            }
-        }
-    }
-
 
     addInitialSymbols() {
         var popPt = new google.maps.LatLng(41.890283, -87.625842),
@@ -874,41 +881,22 @@ export class MapHosterGoogle extends MapHoster {
 
 
 
-        onMapClick(e) {
+        async onMapClick(e) {
             var popPt = e.latLng,
                 popPtRaw = {lat: popPt.lat(), lng: popPt.lng()},
                 fixedLL = this.geopushSup.utils.toFixedTwo(popPt.lng(), popPt.lat(), 9),
                 marker,
-                adrs : string,
-                content = "You clicked the map at " + fixedLL.lat + ", " + fixedLL.lon,
-                options = {
-                     method: 'GET',
-                     url: 'https://maps.googleapis.com/maps/api/geocode/json',
-                     qs: {
-                     latlng: popPt,
-                     key: 'AIzaSyAwAOGAxY5PZ8MshDtaJFk2KgK7VYxArPA'
-                     }
-                  };
+                content = "You clicked the map at " + fixedLL.lat + ", " + fixedLL.lon;
 
-                  // this.geopushSup.geoCoder.GeocoderRequest
-                this.geopushSup.geoCoder.geocode({location: popPtRaw}).subscribe(data => {
-                    this.adrs = adrs = data.display_name
-                    console.log(this.adrs);
-
-                    // map((res: Observable<OSMAddress>) => Observable<OSMAddress>res.json().results.map()))
-                    const result = this.adrs; //s[0];
-                    console.log(result);
-                        // location = result.geometry.location;
-
-                    if(result) {
+                this.geopushSup.geoCoder.geoCode({location : popPtRaw}).then((adrs) => {
+                    if(adrs) {
                         marker = new google.maps.Marker({
                             map: this.mphmap,
-                            // title: "",
-                            title : this.adrs,
+                            title : adrs,
                             position: popPtRaw
                         });
 
-                        content = this.adrs;
+                        content = adrs;
                         this.showClickResult(content, popPt, marker);
                     } else {
                         this.showClickResult(content, popPt, null);

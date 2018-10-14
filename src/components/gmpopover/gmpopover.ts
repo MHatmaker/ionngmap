@@ -6,7 +6,7 @@ import { ViewController, NavParams } from 'ionic-angular';
   templateUrl: 'gmpopover.html'
 })
 export class GmpopoverComponent implements AfterContentInit {
-  idDock : string;
+  dockBtnId : string;
   shareBtnId : string;
   content : string;
   title : string;
@@ -16,7 +16,7 @@ export class GmpopoverComponent implements AfterContentInit {
     this.title = navParams.get('title');
     this.content = navParams.get('content');
     this.shareBtnId = "idShare" + this.title;
-    this.idDock =  "idDock" + this.title;
+    this.dockBtnId =  "dockBtnId" + this.title;
   }
 
   ngAfterContentInit() {
@@ -29,7 +29,7 @@ export class GmpopoverComponent implements AfterContentInit {
     this.viewCtrl.dismiss({"action" : "share"});
   }
   dockPopup(evt: Event) {
-    this.viewCtrl.dismiss({"action" : "dock"});
+    this.viewCtrl.dismiss({"action" : "undock"});
   }
   closePopup(evt: Event) {
     this.viewCtrl.dismiss({"action" : "close"});

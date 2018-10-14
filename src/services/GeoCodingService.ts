@@ -51,7 +51,26 @@ export class GeoCodingService {
     this.geoCoder = createClient({
       key: 'AIzaSyAwAOGAxY5PZ8MshDtaJFk2KgK7VYxArPA',
     });
+    this.geoCoder = new google.maps.Geocoder;
 
+  }
+
+
+  geoCode(request : google.maps.GeocoderRequest) : Promise<string>{
+      let adrs = "no results";
+      return new Promise((resolve, reject) => {
+        this.geoCoder.geocode(request, (results, status)  => {
+          if(status === 'OK') {
+            if(results[0]) {
+              resolve(results[0].formatted_address);
+            } else {
+              console.log("no results");
+              return adrs = 'no results';
+            }
+          }
+        });
+      return adrs;
+    });
   }
 
   public geocode(request : google.maps.GeocoderRequest ): Observable<OSMAddress> {
