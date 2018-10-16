@@ -45,6 +45,8 @@ export class MapHosterGoogle extends MapHoster {
     marker = null;
     markers = [];
     popups = [];
+    infoWnds : {title : string, infownd : any} = {title: 'no title', infownd : null};
+    currentPopup = null;
     mrkr = null;
     CustomControl = null;
     queryListenerLoaded = false;
@@ -139,6 +141,7 @@ export class MapHosterGoogle extends MapHoster {
         var shareBtnId = "idShare" + title,
             isDocked = false,
             dockBtnId =  "dockBtnId" + title,
+            contentRaw = content,
             contentString = `<ion-card>
                 <ion-item class="item item-block item-md bar bar-header bar-positive">
                   <ion-label style="color: steelblue"> ${title}</ion-label>
@@ -211,8 +214,11 @@ export class MapHosterGoogle extends MapHoster {
                       let gmpop = CommonToNG.getLibs().gmpopoverSvc;
                       if(gmpop) {
                           gmpop.close();
+                          // gmpop.dockPopEmitter.unsubscribe();
+                          // gmpop = null;
                       }
                       infowindow.open(self.mphmap, marker);
+                      self.currentPopup = infowindow;
                   } else {
                       isDocked = true;
                       infowindow.close();
@@ -221,34 +227,58 @@ export class MapHosterGoogle extends MapHoster {
                           (retval : any) => {console.log("dockPopEmitter event received");
                           if(retval) {
                               if(retval.action == 'undock') {
-                              isDocked = false;
-                              infowindow.open(self.mphmap, marker);
-                            } else if(retval == 'close') {
+                                isDocked = false;
+                                if(retval.title == title) {
+                                  infowindow.open(self.mphmap, marker);
+                                }
+                                self.currentPopup = infowindow;
+                                console.log('dockPopEmitter client received undock');
+                                // gmpop.dockPopEmitter.unsubscribe();
+                              } else if(retval.action == 'close') {
+                              console.log('dockPopEmitter client received close');
                               infowindow.close();
-                              marker.setMap(null);
+                              if(self.currentPopup) {
+                                self.currentPopup.close();
+                                // self.currentPopup = null;
+                              }
                             }
                           } else {
                             // got click on map outside docked popover
+                            console.log('dockPopEmitter client received map click');
                             infowindow.close();
-                            marker.setMap(null);
+                            if(self.currentPopup) {
+                              self.currentPopup.close();
+                              // self.currentPopup = null;
+                              // gmpop.dockPopEmitter.unsubscribe();
+                            }
                           }
                       });
-                      gmpop.open(content, title);
+                      gmpop.open(contentRaw, title);
                   }
               }
 
+        this.currentPopup == infowindow;
+        this.infoWnds[title] = infowindow;
+
         google.maps.event.addListener(marker, 'click',  async (event) => {
+            if(this.currentPopup) {
+              this.currentPopup.close();
+              // this.currentPopup = null;
+            }
             infowindow.setPosition(event.latLng);
             if( infowindow.content.includes('undefined')) {
               let latlng = {lat: pos.lat(), lng: pos.lng()};
               this.geopushSup.geoCoder.geoCode({location : latlng}).then((adrs) => {
+                contentRaw = adrs;
                 let contentfixed = infowindow.content.replace('undefined', adrs);
                 infowindow.setContent(contentfixed);
                 infowindow.open(this.mphmap, marker);
+                this.currentPopup = infowindow;
                 addListeners(this, shareBtnId, dockBtnId);
               });
             } else {
               infowindow.open(this.mphmap, marker);
+              this.currentPopup = infowindow;
               addListeners(this, shareBtnId, dockBtnId);
             }
         });
