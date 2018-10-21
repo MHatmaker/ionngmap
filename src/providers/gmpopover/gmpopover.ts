@@ -3,22 +3,28 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { GmpopoverComponent } from '../../components/gmpopover/gmpopover';
 import { PopoverController, Popover } from 'ionic-angular';
 
+export class PopRect {
+  constructor(public left : string, public top : string, public bottom : string) {}
+}
+
 @Injectable()
 export class GmpopoverProvider {
 
   private popOver : Popover;
   private title : string;
+  private popovers = new Map<string, Popover>();
   public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string}>();
   constructor(public http: HttpClient, private popCtrl : PopoverController) {
     console.log('Hello GmpopoverProvider Provider');
 
   }
-  open(content : string, title : string) {
+  open(content : string, title : string) : {pop : Popover, poprt : PopRect} {
     this.title = title;
     let popover = this.popCtrl.create(GmpopoverComponent,
         {title : title, content : content}, {cssClass: 'custom-popover popover-custom popover-content', enableBackdropDismiss : true});
-        this.popOver = popover;
-     let ev = {
+    this.popOver = popover;
+    this.popovers[title] = popover;
+    let ev = {
         target : {
           getBoundingClientRect : () => {
             return {
@@ -29,12 +35,13 @@ export class GmpopoverProvider {
           }
         }
       };
-      popover.present({ev});
+      // popover.present({ev});
       popover.onDidDismiss((data : {action : string, title : string})=> {
           console.log('popover onDidDismiss');
           if(data) {
             data.title = this.title;
           } else {
+            console.log('onDidDismiss with background click');
             data = {title : this.title, action : 'undock'};
           }
           console.log(data);
@@ -43,6 +50,12 @@ export class GmpopoverProvider {
           }
           this.dockPopEmitter.emit(data);
       });
+      let rect = new PopRect('20', '100', 'unset');
+      return {pop : popover, poprt : rect};
+  }
+
+  closePopover (title : string) {
+    this.popovers[title].close();
   }
 
   close() {
