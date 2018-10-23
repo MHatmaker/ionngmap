@@ -10,7 +10,7 @@ export class PopRect {
 @Injectable()
 export class GmpopoverProvider {
 
-  private popOver : Popover;
+  private popOver : Popover = null;
   private title : string;
   private popovers = new Map<string, Popover>();
   public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string}>();
@@ -20,10 +20,13 @@ export class GmpopoverProvider {
   }
   open(content : string, title : string) : {pop : Popover, poprt : PopRect} {
     this.title = title;
-    let popover = this.popCtrl.create(GmpopoverComponent,
-        {title : title, content : content}, {cssClass: 'custom-popover popover-custom popover-content', enableBackdropDismiss : true});
-    this.popOver = popover;
-    this.popovers[title] = popover;
+    if(this.popOver) {
+      this.popOver.dismiss();
+      this.popOver = null;
+    }
+    this.popOver = this.popCtrl.create(GmpopoverComponent,
+          {title : title, content : content}, {cssClass: 'custom-popover popover-custom popover-content', enableBackdropDismiss : true});
+
     let ev = {
         target : {
           getBoundingClientRect : () => {
@@ -35,8 +38,9 @@ export class GmpopoverProvider {
           }
         }
       };
-      // popover.present({ev});
-      popover.onDidDismiss((data : {action : string, title : string})=> {
+      this.popOver.present({ev});
+
+      this.popOver.onDidDismiss((data : {action : string, title : string})=> {
           console.log('popover onDidDismiss');
           if(data) {
             data.title = this.title;
@@ -51,7 +55,7 @@ export class GmpopoverProvider {
           this.dockPopEmitter.emit(data);
       });
       let rect = new PopRect('20', '100', 'unset');
-      return {pop : popover, poprt : rect};
+      return {pop : this.popOver, poprt : rect};
   }
 
   closePopover (title : string) {
@@ -62,7 +66,7 @@ export class GmpopoverProvider {
       if(this.popOver) {
         this.popOver.dismiss();
         this.popOver = null;
-        this.dockPopEmitter.emit({'action' : 'close', title : this.title});
+        // this.dockPopEmitter.emit({'action' : 'close', title : this.title});
       }
   }
 
