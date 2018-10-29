@@ -12,7 +12,7 @@ export class GmpopoverComponent implements AfterContentInit {
   title : string;
 
   constructor(public viewCtrl : ViewController, public navParams:NavParams) {
-    console.log('Hello GmpopoverComponent Component');
+    console.log(`Hello GmpopoverComponent Component for ${navParams.get('title')}`);
     this.title = navParams.get('title');
     this.content = navParams.get('content');
     this.shareBtnId = "idShare" + this.title;
@@ -29,6 +29,7 @@ export class GmpopoverComponent implements AfterContentInit {
     this.viewCtrl.dismiss({"action" : "share"});
   }
   dockPopup(evt: Event) {
+    console.log(`got dockPopup event from ${this.title}`);
     this.viewCtrl.dismiss({"action" : "undock"});
   }
   closePopup(evt: Event) {

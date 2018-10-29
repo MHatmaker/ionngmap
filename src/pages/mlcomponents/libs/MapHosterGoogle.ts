@@ -23,6 +23,7 @@ import { SearchplacesProvider } from '../../../providers/searchplaces/searchplac
 import { CommonToNG } from '../libs/CommonToNG';
 import { GmpopoverProvider } from '../../../providers/gmpopover/gmpopover';
 import { Popover } from 'ionic-angular';
+import { MarkerInfoPopup } from './MarkerInfoPopup';
 
 declare var google;
 
@@ -50,6 +51,7 @@ export class MapHosterGoogle extends MapHoster {
     popups = [];
     infoWnds = new Map<string, google.maps.InfoWindow> ();
     popovers = new Map<string, Popover>();
+    markerInfoPopups = new Map<string, MarkerInfoPopup> ();
     currentPopup = null;
     mrkr = null;
     CustomControl = null;
@@ -139,159 +141,6 @@ export class MapHosterGoogle extends MapHoster {
         }
     }
 
-
-
-    markerInfoPopup(pos, content, title, mrkr=null) {
-        var shareBtnId = "idShare" + title,
-            dockBtnId =  "idDock" + title,
-            contentRaw = content,
-            contentString = `<ion-card>
-                <ion-item class="item item-block item-md bar bar-header bar-positive">
-                  <ion-label style="color: steelblue"> ${title}</ion-label>
-                  <button>
-                    <ion-icon item-right>
-                      <svg id="${dockBtnId}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
-                        class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
-                    </ion-icon>
-                  </button>
-                </ion-item>
-                <ion-item class="item item-block item-md calm" style="color: teal;">
-                  ${content}
-                </ion-item>
-                <ion-item class="item item-block item-md">
-                  <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary"
-                    id="${shareBtnId}" style="visibility: block; width: 32px; height: 32px;
-                      background-image: url('assets/imgs/share-info.png');">
-                  <div class="button-effect"></div>
-                  </button>
-                </ion-item>
-              </ion-card>`,
-
-            infowindow,
-
-            marker = mrkr || new google.maps.Marker({
-                position: pos,
-                map: this.mphmap,
-                title: title
-            }),
-            shareClick  = function(e: Event, self) {
-                let fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9);
-                let referrerId = self.mlconfig.getUserId();
-                let referrerName = self.geopushSup.pusherConfig.getUserName();
-                let mapId = "map" + self.mlconfig.getUserId();
-                let pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
-                    "referrerId" : referrerId, "referrerName" : referrerName,
-                    "mapId" : mapId,
-                    'address' : marker.address, 'title' : marker.title };
-                console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                self.geopushSup.pusherClientService.publishClickEvent(pushLL);
-            },
-
-            addListeners = function(self, shrBtnId, dockBtnId) {
-                  let btnShare = document.getElementById(shrBtnId);
-                  // referrerId = this.mlconfig.getReferrerId();
-                  // usrId = this.mlconfig.getUserId();
-                  // if (referrerId && referrerId != usrId) {
-                      // if (shrBtnId) {
-                      //     console.debug(shrBtnId);
-                      //     shrBtnId.style.visibility = 'hidden';
-                      // }
-                  // }
-                  // shrBtnId.onclick = function () {
-                  //     shareClick();
-                  // };
-
-                  btnShare.addEventListener('click', (e:Event) => shareClick(e, self));
-
-                  let btnDock = document.getElementById(dockBtnId);
-                  btnDock.addEventListener('click', (e:Event) => dockPopup(e, self));
-            },
-
-            dockPopup = function(e: Event, self) {
-                console.log(e);
-                infowindow.close();
-                //infowindow.close();
-                let gmpop = CommonToNG.getLibs().gmpopoverSvc;
-                gmpop.dockPopEmitter.subscribe((retval : any) => {
-                    console.log("dockPopEmitter event received");
-                    if(retval) {
-                        if(retval.action == 'undock') {
-                            if(retval.title == title) {
-                              infowindow.open(self.mphmap, marker);
-                          }
-                          self.currentPopup = infowindow;
-                          console.log('dockPopEmitter client received undock');
-                          // self.popovers[title].close();
-                        } else if(retval.action == 'close') {
-                            console.log('dockPopEmitter client received close');
-                            infowindow.close();
-                            if(self.currentPopup) {
-                                self.currentPopup.close();
-                                // self.currentPopup = null;
-                            }
-                        }
-                    } else {
-                        // got click on map outside docked popover
-                        console.log('dockPopEmitter client received map click');
-                        gmpop.close();
-                        infowindow.close();
-                        if(self.currentPopup) {
-                          self.currentPopup.close();
-                          // self.currentPopup = null;
-                          // gmpop.dockPopEmitter.unsubscribe();
-                        }
-                    }
-                });
-                let ev = {
-                  target : {
-                    getBoundingClientRect : () => {
-                      return {
-                        top: '100',
-                        left: '20',
-                        bottom: 'unset'
-                      };
-                    }
-                  }
-                };
-                gmpop.open(contentRaw, title);
-            }
-
-        if(!this.infoWnds[title]) {
-          infowindow = new google.maps.InfoWindow({
-              content: contentString
-          });
-          this.infoWnds[title] = infowindow;
-        }
-        this.currentPopup = infowindow;
-
-        google.maps.event.addListener(marker, 'click',  async (event) => {
-            if(this.currentPopup) {
-              this.currentPopup.close();
-              // this.currentPopup = null;
-            }
-            infowindow.setPosition(event.latLng);
-            if( infowindow.content.includes('undefined')) {
-              let latlng = {lat: pos.lat(), lng: pos.lng()};
-              this.geopushSup.geoCoder.geoCode({location : latlng}).then((adrs) => {
-                contentRaw = adrs;
-                let contentfixed = infowindow.content.replace('undefined', adrs);
-                google.maps.event.addListener(infowindow, "domready", () =>{
-                    addListeners(this, shareBtnId, dockBtnId);
-                });
-                infowindow.setContent(contentfixed);
-              });
-            } else {
-                google.maps.event.addListener(infowindow, "domready", () =>{
-                    addListeners(this, shareBtnId, dockBtnId);
-                });
-            }
-            infowindow.open(this.mphmap, marker);
-            this.currentPopup = infowindow;
-        });
-
-        return { "infoWnd" : infowindow, "infoMarker" : marker};
-    }
-
     placeMarkers(places) {
         var boundsForMarkers,
             image,
@@ -329,7 +178,9 @@ export class MapHosterGoogle extends MapHoster {
                 });
 
                 this.markers.push(marker);
-                this.markerInfoPopup(place.geometry.location, marker.address, marker.title, marker);
+                let mip = new MarkerInfoPopup(place.geometry.location, marker.address, place.name, marker,
+                    this.mphmap, this.geopush);
+                this.markerInfoPopups[place.name] = mip;
 
                 boundsForMarkers.extend(place.geometry.location);
             }
@@ -339,13 +190,19 @@ export class MapHosterGoogle extends MapHoster {
     addInitialSymbols() {
         var popPt = new google.maps.LatLng(41.890283, -87.625842),
             hint = "Lofty Thoughts";
-        this.markerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.", hint);
+        let mip = new MarkerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.",
+            hint, null, this.mphmap, this.geopush);
+        this.markerInfoPopups[hint] = mip;
         popPt = new google.maps.LatLng(41.888941, -87.620692);
         hint = "Drafty Sweatbox";
-        this.markerInfoPopup(popPt, "Climate control as nature intended.", hint);
+        mip = new MarkerInfoPopup(popPt, "Climate control as nature intended.",
+            hint, null, this.mphmap, this.geopush);
+        this.markerInfoPopups[hint] = mip;
         popPt = new google.maps.LatLng(41.884979, -87.620950);
         hint = "Blank Wall Vistas";
-        this.markerInfoPopup(popPt, "Panorama views are over-rated if you prefer exposed brick.", hint);
+        mip = new MarkerInfoPopup(popPt, "Panorama views are over-rated if you prefer exposed brick.",
+            hint, null, this.mphmap, this.geopush);
+        this.markerInfoPopups[hint] = mip;
         // this.polygon([
             // [51.509, -0.08],
             // [51.503, -0.06],
@@ -542,7 +399,9 @@ export class MapHosterGoogle extends MapHoster {
             this.popDetails.infoMarker.setMap(null);
         }
         if (clickPt.referrerId !== this.mlconfig.getUserId()) {
-            this.popDetails = this.markerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId);
+            let mip = new MarkerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
+              null, this.mphmap, this.geopush);
+            // this.markerInfoPopups[place.name] = mip;
             this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
 
             btnShare = document.getElementsByClassName('sharebutton')[0];
@@ -897,11 +756,14 @@ export class MapHosterGoogle extends MapHoster {
             // console.log(this.mphmap.getBounds());
         }
         showClickResult(content, popPt, marker) {
+            console.log(`showClickResult`);
             if (this.popDetails !== null) {
                 this.popDetails.infoWnd.close();
                 this.popDetails.infoMarker.setMap(null);
             }
-            this.popDetails = this.markerInfoPopup(popPt, content, "Shareable position/info", marker);
+            let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", marker,
+              this.mphmap, this.geopush);
+              // this.markerInfoPopups[place.name] = mip;
             // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
             // if (this.selfPusherDetails.pusher)
             // {

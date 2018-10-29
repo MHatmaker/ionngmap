@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+
 import { Injectable, EventEmitter } from '@angular/core';
 import { GmpopoverComponent } from '../../components/gmpopover/gmpopover';
 import { PopoverController, Popover } from 'ionic-angular';
@@ -14,19 +14,21 @@ export class GmpopoverProvider {
   private title : string;
   private popovers = new Map<string, Popover>();
   public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string}>();
-  constructor(public http: HttpClient, private popCtrl : PopoverController) {
+  constructor(private popCtrl : PopoverController) {
     console.log('Hello GmpopoverProvider Provider');
 
   }
   open(content : string, title : string) : {pop : Popover, poprt : PopRect} {
     this.title = title;
     if(this.popOver) {
-      this.popOver.dismiss();
-      this.popOver = null;
-    }
-    this.popOver = this.popCtrl.create(GmpopoverComponent,
+      console.log(`in RE-open  for ${title}, call dismiss on previous popovers`);
+      this.popOver.dismiss({action : 'close', title : title});
+      // this.popOver = null;
+    } else {
+      console.log(`Create new popOver for ${title}`);
+      this.popOver = this.popCtrl.create(GmpopoverComponent,
           {title : title, content : content}, {cssClass: 'custom-popover popover-custom popover-content', enableBackdropDismiss : true});
-
+      }
     let ev = {
         target : {
           getBoundingClientRect : () => {
@@ -41,17 +43,18 @@ export class GmpopoverProvider {
       this.popOver.present({ev});
 
       this.popOver.onDidDismiss((data : {action : string, title : string})=> {
-          console.log('popover onDidDismiss');
+          console.log(`popover onDidDismiss`);
           if(data) {
+            console.log(`got title ${data.title}`);
             data.title = this.title;
           } else {
             console.log('onDidDismiss with background click');
             data = {title : this.title, action : 'undock'};
           }
           console.log(data);
-          if(this.popOver) {
-              this.popOver = null;
-          }
+          // if(this.popOver) {
+          //     this.popOver = null;
+          // }
           this.dockPopEmitter.emit(data);
       });
       let rect = new PopRect('20', '100', 'unset');
@@ -63,8 +66,10 @@ export class GmpopoverProvider {
   }
 
   close() {
+      console.log(`gmpopover.close() for ${this.title}`);
       if(this.popOver) {
-        this.popOver.dismiss();
+        console.log(`forcing close for ${this.title}`);
+        // this.popOver.dismiss({action : 'close', title : this.title});
         this.popOver = null;
         // this.dockPopEmitter.emit({'action' : 'close', title : this.title});
       }
