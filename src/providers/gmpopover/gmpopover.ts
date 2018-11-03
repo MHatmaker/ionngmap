@@ -2,6 +2,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { GmpopoverComponent } from '../../components/gmpopover/gmpopover';
 import { PopoverController, Popover } from 'ionic-angular';
+import { PophandlerProvider } from '../pophandler/pophandler';
 
 export class PopRect {
   constructor(public left : string, public top : string, public bottom : string) {}
@@ -14,7 +15,7 @@ export class GmpopoverProvider {
   private title : string;
   private popovers = new Map<string, Popover>();
   public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string}>();
-  constructor(private popCtrl : PopoverController) {
+  constructor(private popCtrl : PopoverController, private pophandler : PophandlerProvider) {
     console.log('Hello GmpopoverProvider Provider');
 
   }
@@ -62,7 +63,9 @@ export class GmpopoverProvider {
   }
 
   closePopover (title : string) {
-    this.popovers[title].close();
+    if(this.popovers[title]) {
+      this.popovers[title].close();
+    }
   }
 
   close() {

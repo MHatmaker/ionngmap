@@ -181,6 +181,7 @@ export class MapHosterGoogle extends MapHoster {
                 let mip = new MarkerInfoPopup(place.geometry.location, marker.address, place.name, marker,
                     this.mphmap, this.geopush);
                 this.markerInfoPopups[place.name] = mip;
+                this.geopushSup.pophandlerProvider.addPopup(place.name, mip);
 
                 boundsForMarkers.extend(place.geometry.location);
             }
@@ -193,16 +194,19 @@ export class MapHosterGoogle extends MapHoster {
         let mip = new MarkerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.",
             hint, null, this.mphmap, this.geopush);
         this.markerInfoPopups[hint] = mip;
+        this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         popPt = new google.maps.LatLng(41.888941, -87.620692);
         hint = "Drafty Sweatbox";
         mip = new MarkerInfoPopup(popPt, "Climate control as nature intended.",
             hint, null, this.mphmap, this.geopush);
         this.markerInfoPopups[hint] = mip;
+        this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         popPt = new google.maps.LatLng(41.884979, -87.620950);
         hint = "Blank Wall Vistas";
         mip = new MarkerInfoPopup(popPt, "Panorama views are over-rated if you prefer exposed brick.",
             hint, null, this.mphmap, this.geopush);
         this.markerInfoPopups[hint] = mip;
+        this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         // this.polygon([
             // [51.509, -0.08],
             // [51.503, -0.06],
@@ -401,6 +405,7 @@ export class MapHosterGoogle extends MapHoster {
         if (clickPt.referrerId !== this.mlconfig.getUserId()) {
             let mip = new MarkerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
               null, this.mphmap, this.geopush);
+              this.geopushSup.pophandlerProvider.addPopup("received", mip);
             // this.markerInfoPopups[place.name] = mip;
             this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
 
@@ -763,6 +768,7 @@ export class MapHosterGoogle extends MapHoster {
             }
             let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", marker,
               this.mphmap, this.geopush);
+              this.geopushSup.pophandlerProvider.addPopup("mapclicked", mip);
               // this.markerInfoPopups[place.name] = mip;
             // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
             // if (this.selfPusherDetails.pusher)

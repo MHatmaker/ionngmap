@@ -69,6 +69,7 @@ import { EmailerProvider } from '../providers/emailer/emailer';
 import { AccordionListComponent } from '../components/accordion-list/accordion-list';
 import { GmpopoverProvider } from '../providers/gmpopover/gmpopover';
 import { GmpopoverComponent } from '../components/gmpopover/gmpopover';
+import { PophandlerProvider } from '../providers/pophandler/pophandler';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -176,7 +177,8 @@ import { GmpopoverComponent } from '../components/gmpopover/gmpopover';
     SharemapProvider,
     SearchplacesProvider,
     EmailerProvider,
-    GmpopoverProvider
+    GmpopoverProvider,
+    PophandlerProvider
   ]
 })
 export class AppModule {}

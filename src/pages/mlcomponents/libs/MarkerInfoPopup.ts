@@ -3,16 +3,17 @@ import { CommonToNG } from '../libs/CommonToNG';
 import { GmpopoverProvider } from '../../../providers/gmpopover/gmpopover';
 import { Popover } from 'ionic-angular';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
+import { PophandlerProvider } from '../../../providers/pophandler/pophandler';
 
 declare var google;
 
 
 export class MarkerInfoPopup {
-    private infoWindow;
-    private popOver : Popover;
+    public infoWindow;
+    public popOver : Popover;
     private geopushSup : IGeoPusher;
 
-    constructor(private pos, private content : string, private title : string,
+    constructor(private pos, private content : string, public title : string,
       private mrkr=null, private mphmap, private geopush ? : GeoPusherSupport) {
         this.geopushSup = geopush.getGeoPusherSupport();
         var shareBtnId = "idShare" + title,
@@ -85,16 +86,17 @@ export class MarkerInfoPopup {
                 self.infoWindow.close();
                 //self.infowindow.close();
                 let gmpop = CommonToNG.getLibs().gmpopoverSvc;
-                gmpop.dockPopEmitter.subscribe((retval : any) => {
+                let subscriber = gmpop.dockPopEmitter.subscribe((retval : any) => {
                     console.log(`dockPopEmitter event received from ${retval.title} in popover for ${title} `);
                     if(retval) {
                         if(retval.action == 'undock') {
-                            if(retval.title == title) {
+                          if(retval.title == title) {
                               console.log('titles matched....open infoWindow');
                               self.infoWindow.open(self.mphmap, marker);
                           } else {
                               console.log("titles didn't match....close infoWindow");
                               self.infoWindow.close();
+                              subscriber.unsubscribe();
                           }
                           console.log(`close popover for ${title}`);
                           gmpop.close();
@@ -102,6 +104,7 @@ export class MarkerInfoPopup {
                         } else if(retval.action == 'close') {
                             console.log('dockPopEmitter client received close...close infoWindow and popover');
                             self.infoWindow.close();
+                            subscriber.unsubscribe();
                             gmpop.close();
                         }
                     } else {
@@ -109,11 +112,14 @@ export class MarkerInfoPopup {
                         console.log('dockPopEmitter client received map click....close infoWindow and popover');
                         gmpop.close();
                         self.infoWindow.close();
+                        subscriber.unsubscribe();
                     }
-                    // gmpop.dockPopEmitter.unsubscribe();
+                    self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
+                    subscriber.unsubscribe();
                 });
                 console.log(`open popover for ${title}`);
                 self.popOver = gmpop.open(contentRaw, title).pop;
+                self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
             }
 
           this.infoWindow = new google.maps.InfoWindow({
@@ -122,6 +128,7 @@ export class MarkerInfoPopup {
 
 
         google.maps.event.addListener(marker, 'click',  async (event) => {
+            this.geopushSup.pophandlerProvider.closePopupsExceptOne(marker.title);
             this.infoWindow.setPosition(event.latLng);
             if( this.infoWindow.content.includes('undefined')) {
               let latlng = {lat: pos.lat(), lng: pos.lng()};
@@ -139,8 +146,13 @@ export class MarkerInfoPopup {
                 });
             }
             this.infoWindow.open(this.mphmap, marker);
+            // this.geopushSup.pophandlerProvider.closeAllPopups();
         });
 
+    }
+    closePopover(title) {
+      let gmpop = CommonToNG.getLibs().gmpopoverSvc;
+      gmpop.closePopover(title);
     }
     getPopover() : Popover {
         return this.popOver;

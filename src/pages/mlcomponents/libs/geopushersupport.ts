@@ -11,6 +11,7 @@ import { PusherEventHandler } from './PusherEventHandler';
 
 import { CurrentMapTypeService } from '../../../services/currentmaptypeservice';
 import { MapInstanceService } from '../../../services/MapInstanceService';
+import { PophandlerProvider } from'../../../providers/pophandler/pophandler';
 
 
 export interface IGeoPusher {
@@ -20,7 +21,8 @@ export interface IGeoPusher {
     positionUpdateService: PositionUpdateService,
     pusherClientService: PusherClientService,
     currentMapTypeService: CurrentMapTypeService,
-    mapInstanceService: MapInstanceService
+    mapInstanceService: MapInstanceService,
+    pophandlerProvider : PophandlerProvider
 }
 
 @Injectable()
@@ -30,7 +32,7 @@ export class GeoPusherSupport {
     constructor(protected utils: utils, protected pusherConfig: PusherConfig, protected geoCoder: GeoCodingService,
         protected positionUpdateService: PositionUpdateService, protected pusherClientService: PusherClientService,
         protected currentmaptypeservice: CurrentMapTypeService,
-        protected mapInstanceService: MapInstanceService) {
+        protected mapInstanceService: MapInstanceService, protected pophandlerProvider : PophandlerProvider) {
 
         this.IgeoPusher = {
             utils: utils,
@@ -39,7 +41,8 @@ export class GeoPusherSupport {
             positionUpdateService: positionUpdateService,
             pusherClientService: pusherClientService,
             currentMapTypeService: currentmaptypeservice,
-            mapInstanceService: mapInstanceService
+            mapInstanceService: mapInstanceService,
+            pophandlerProvider: pophandlerProvider
         }
 /*
         this.IgeoPusher.utils = utils; //new utils();
