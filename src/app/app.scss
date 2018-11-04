@@ -12,14 +12,14 @@
 }
 
 .popover-custom .popover-content {
-  width: 80%;
+  width: 95%;
   top: 70px;
   left: 10px;
 }
 
 
 .popover-content {
-  width: 80%;
+  width: 100%;
   top: 70px;
   left: 10px;
 }
@@ -27,7 +27,7 @@
 .custom-popover {
   top: 80px;
   left: 15px;
-  width: 70%;
+  width: calc(100% - 5px);
 }
 
 // App Global Sass

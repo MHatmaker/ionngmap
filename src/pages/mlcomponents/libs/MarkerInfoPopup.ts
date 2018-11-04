@@ -3,13 +3,12 @@ import { CommonToNG } from '../libs/CommonToNG';
 import { GmpopoverProvider } from '../../../providers/gmpopover/gmpopover';
 import { Popover } from 'ionic-angular';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
-import { PophandlerProvider } from '../../../providers/pophandler/pophandler';
+// import { PophandlerProvider } from '../../../providers/pophandler/pophandler';
 
 declare var google;
 
 
 export class MarkerInfoPopup {
-    public infoWindow;
     public popOver : Popover;
     private geopushSup : IGeoPusher;
 
@@ -19,28 +18,6 @@ export class MarkerInfoPopup {
         var shareBtnId = "idShare" + title,
             dockBtnId =  "idDock" + title,
             contentRaw = content,
-            contentString = `<ion-card>
-                <ion-item class="item item-block item-md bar bar-header bar-positive">
-                  <ion-label style="color: steelblue"> ${title}</ion-label>
-                  <button>
-                    <ion-icon item-right>
-                      <svg id="${dockBtnId}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
-                        class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
-                    </ion-icon>
-                  </button>
-                </ion-item>
-                <ion-item class="item item-block item-md calm" style="color: teal;">
-                  ${content}
-                </ion-item>
-                <ion-item class="item item-block item-md">
-                  <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary"
-                    id="${shareBtnId}" style="visibility: block; width: 32px; height: 32px;
-                      background-image: url('assets/imgs/share-info.png');">
-                  <div class="button-effect"></div>
-                  </button>
-                </ion-item>
-              </ion-card>`,
-
 
             marker = mrkr || new google.maps.Marker({
                 position: pos,
@@ -60,92 +37,49 @@ export class MarkerInfoPopup {
                 self.geopushSup.pusherClientService.publishClickEvent(pushLL);
             },
 
-            addListeners = function(self, shrBtnId, dockBtnId) {
-                  let btnShare = document.getElementById(shrBtnId);
-                  // referrerId = this.mlconfig.getReferrerId();
-                  // usrId = this.mlconfig.getUserId();
-                  // if (referrerId && referrerId != usrId) {
-                      // if (shrBtnId) {
-                      //     console.debug(shrBtnId);
-                      //     shrBtnId.style.visibility = 'hidden';
-                      // }
-                  // }
-                  // shrBtnId.onclick = function () {
-                  //     shareClick();
-                  // };
-
-                  btnShare.addEventListener('click', (e:Event) => shareClick(e, self));
-
-                  let btnDock = document.getElementById(dockBtnId);
-                  btnDock.addEventListener('click', (e:Event) => dockPopup(e, self));
-            },
-
             dockPopup = function(e: Event, self) {
-                console.log(e);
-                console.log(e.srcElement.id);
-                self.infoWindow.close();
-                //self.infowindow.close();
+                // console.log(e);
+                // console.log(e.srcElement.id);
                 let gmpop = CommonToNG.getLibs().gmpopoverSvc;
                 let subscriber = gmpop.dockPopEmitter.subscribe((retval : any) => {
                     console.log(`dockPopEmitter event received from ${retval.title} in popover for ${title} `);
                     if(retval) {
                         if(retval.action == 'undock') {
                           if(retval.title == title) {
-                              console.log('titles matched....open infoWindow');
-                              self.infoWindow.open(self.mphmap, marker);
+                              console.log('titles matched....');
                           } else {
-                              console.log("titles didn't match....close infoWindow");
-                              self.infoWindow.close();
+                              console.log("titles didn't match....unsubscribe");
                               subscriber.unsubscribe();
                           }
                           console.log(`close popover for ${title}`);
                           gmpop.close();
                           console.log('dockPopEmitter client received and processed undock');
                         } else if(retval.action == 'close') {
-                            console.log('dockPopEmitter client received close...close infoWindow and popover');
-                            self.infoWindow.close();
+                            console.log('dockPopEmitter client received close...close popover');
                             subscriber.unsubscribe();
                             gmpop.close();
                         }
                     } else {
                         // got click on map outside docked popover
-                        console.log('dockPopEmitter client received map click....close infoWindow and popover');
+                        console.log('dockPopEmitter client received map click....close popover and unsubscribe');
                         gmpop.close();
-                        self.infoWindow.close();
                         subscriber.unsubscribe();
                     }
-                    self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
+                    // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
                     subscriber.unsubscribe();
                 });
                 console.log(`open popover for ${title}`);
                 self.popOver = gmpop.open(contentRaw, title).pop;
-                self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
+                // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
             }
-
-          this.infoWindow = new google.maps.InfoWindow({
-              content: contentString
-          });
-
 
         google.maps.event.addListener(marker, 'click',  async (event) => {
-            this.geopushSup.pophandlerProvider.closePopupsExceptOne(marker.title);
-            this.infoWindow.setPosition(event.latLng);
-            if( this.infoWindow.content.includes('undefined')) {
-              let latlng = {lat: pos.lat(), lng: pos.lng()};
-              this.geopushSup.geoCoder.geoCode({location : latlng}).then((adrs) => {
-                contentRaw = adrs;
-                let contentfixed = this.infoWindow.content.replace('undefined', adrs);
-                google.maps.event.addListener(this.infoWindow, "domready", () =>{
-                    addListeners(this, shareBtnId, dockBtnId);
-                });
-                this.infoWindow.setContent(contentfixed);
-              });
-            } else {
-                google.maps.event.addListener(this.infoWindow, "domready", () =>{
-                    addListeners(this, shareBtnId, dockBtnId);
-                });
-            }
-            this.infoWindow.open(this.mphmap, marker);
+            // this.geopushSup.pophandlerProvider.closePopupsExceptOne(marker.title);
+            let latlng = {lat: pos.lat(), lng: pos.lng()};
+            this.geopushSup.geoCoder.geoCode({location : latlng}).then((adrs) => {
+              contentRaw = adrs;
+              dockPopup(event, this);
+            });
             // this.geopushSup.pophandlerProvider.closeAllPopups();
         });
 
@@ -156,12 +90,5 @@ export class MarkerInfoPopup {
     }
     getPopover() : Popover {
         return this.popOver;
-    }
-    getInfoWindow() : google.maps.InfoWindow {
-        return this.infoWindow;
-    }
-    getPopups() {
-        let retvals = {'infoWindow' : google.maps.InfoWindow = this.infoWindow, 'popOver' : this.popOver};
-        return retvals;
     }
 }

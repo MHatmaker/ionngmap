@@ -26,9 +26,9 @@ export class PophandlerProvider {
     // }
     // this.markerInfoPopups.forEach((pop : MarkerInfoPopup, title : string) => {
     // console.log(`addPopup for ${title}`);
-    for(const key of Object.keys(this.markerInfoPopups)) {
-      this.markerInfoPopups[key].infoWindow.close();
-    };
+    // for(const key of Object.keys(this.markerInfoPopups)) {
+    //   this.markerInfoPopups[key].infoWindow.close();
+    // };
     this.markerInfoPopups[title] = pop;
     // this.curpop = pop;
   }
@@ -43,12 +43,12 @@ export class PophandlerProvider {
     }
   }
   closeAllPopups() {
-    console.log('closeAllPopups()');;
+    console.log('closeAllPopups()');
 
-    for(const key of Object.keys(this.markerInfoPopups)){
-      this.markerInfoPopups[key].infoWindow.close();
+    // for(const key of Object.keys(this.markerInfoPopups)){
+    //   this.markerInfoPopups[key].infoWindow.close();
       // console.log(`closed popup for {key}`);
-    }
+    // }
   }
 
 }
