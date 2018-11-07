@@ -28,15 +28,14 @@ export class GmpopoverProvider {
     } else {
       console.log(`Create new popOver for ${title}`);
       this.popOver = this.popCtrl.create(GmpopoverComponent,
-          {title : title, content : content}, {cssClass: 'custom-popover popover-custom popover-content', enableBackdropDismiss : true});
+          {title : title, content : content}, {cssClass: 'popover-custom', enableBackdropDismiss : true});
       }
     let ev = {
         target : {
           getBoundingClientRect : () => {
             return {
-              top: '100',
-              left: '20',
-              bottom: 'unset'
+              top: '200',
+              left: '20'
             };
           }
         }

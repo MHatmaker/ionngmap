@@ -17,12 +17,12 @@
           </button>
       </div>
   </div>
-    <ion-item class="item item-block item-md calm" style="color: teal;">
-      <span ion-text style="white-space: normal">
+    <ion-item class="item item-block item-md calm" style="color: teal;" *ngIf="minimized==false">
+      <span ion-text style="white-space: normal" >
           {{content}}
       </span>
     </ion-item>
-    <ion-item class="item item-block item-md">
+    <ion-item class="item item-block item-md" *ngIf="minimized==false">
       <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary"
         id="{{shareBtnId}}" (click)="shareClick()"
         style="visibility: block; width: 32px; height: 32px;

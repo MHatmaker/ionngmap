@@ -10,6 +10,7 @@ export class GmpopoverComponent implements AfterContentInit {
   shareBtnId : string;
   content : string;
   title : string;
+  minimized : boolean = false;
 
   constructor(public viewCtrl : ViewController, public navParams:NavParams) {
     console.log(`Hello GmpopoverComponent Component for ${navParams.get('title')}`);
@@ -22,7 +23,7 @@ export class GmpopoverComponent implements AfterContentInit {
   ngAfterContentInit() {
     let popconE = document.getElementsByClassName('popover-content')[0];
     let popconH = popconE as HTMLElement;
-    popconH.style.left = '10px';
+    // popconH.style.left = '10px';
   }
 
   shareClick(evt : Event) {
@@ -30,7 +31,8 @@ export class GmpopoverComponent implements AfterContentInit {
   }
   dockPopup(evt: Event) {
     console.log(`got dockPopup event from ${this.title}`);
-    this.viewCtrl.dismiss({"action" : "undock"});
+    // this.viewCtrl.dismiss({"action" : "undock"});
+    this.minimized = ! this.minimized;
   }
   closePopup(evt: Event) {
     this.viewCtrl.dismiss({"action" : "close"});
