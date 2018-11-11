@@ -23,7 +23,9 @@ export class GmpopoverComponent implements AfterContentInit {
   ngAfterContentInit() {
     let popconE = document.getElementsByClassName('popover-content')[0];
     let popconH = popconE as HTMLElement;
-    // popconH.style.left = '10px';
+    popconH.style.bottom = '0';
+    popconH.style.top = 'auto';
+    popconH.style.transform = 'translateY(250px)';
   }
 
   shareClick(evt : Event) {

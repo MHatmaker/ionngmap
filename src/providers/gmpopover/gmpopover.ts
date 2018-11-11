@@ -21,20 +21,21 @@ export class GmpopoverProvider {
   }
   open(content : string, title : string) : {pop : Popover, poprt : PopRect} {
     this.title = title;
-    if(this.popOver) {
-      console.log(`in RE-open  for ${title}, call dismiss on previous popovers`);
-      this.popOver.dismiss({action : 'close', title : title});
-      // this.popOver = null;
-    } else {
+    // if(this.popOver) {
+    //   console.log(`in RE-open  for ${title}, call dismiss on previous popovers`);
+    //   this.popOver.dismiss({action : 'close', title : title});
+    //   // this.popOver = null;
+    // } else {
       console.log(`Create new popOver for ${title}`);
       this.popOver = this.popCtrl.create(GmpopoverComponent,
           {title : title, content : content}, {cssClass: 'popover-custom', enableBackdropDismiss : true});
-      }
+      // }
     let ev = {
         target : {
           getBoundingClientRect : () => {
             return {
-              top: '200',
+              // top: '200',
+              bottom: '0',
               left: '20'
             };
           }
