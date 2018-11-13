@@ -48,8 +48,9 @@ export class MarkerInfoPopup {
                 // console.log(e.srcElement.id);
                 let gmpop = CommonToNG.getLibs().gmpopoverSvc;
                 let subscriber = gmpop.dockPopEmitter.subscribe((retval : any) => {
-                    console.log(`dockPopEmitter event received from ${retval.title} in popover for ${title} `);
+                    console.log(`dockPopEmitter event received from ${retval.title} in popover for ${title} userId ${self.userId}`);
                     if(retval) {
+                        console.log(`retval.action is ${retval.action}`);
                         if(retval.action == 'undock') {
                           if(retval.title == title) {
                               console.log('titles matched....');
@@ -76,13 +77,14 @@ export class MarkerInfoPopup {
                     // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
                     subscriber.unsubscribe();
                 });
-                console.log(`open popover for ${title}`);
+                console.log(`open popover for ${self.userId} with title ${title}`);
                 self.popOver = gmpop.open(contentRaw, title).pop;
                 // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
             }
         this.popMarker = marker;
         google.maps.event.addListener(marker, 'click',  async (event) => {
             // this.geopushSup.pophandlerProvider.closePopupsExceptOne(marker.title);
+            console.log(`triggered click listener for user ${this.userId} on marker ${marker.title}`);
             let latlng = {lat: pos.lat(), lng: pos.lng()};
             this.geopushSup.geoCoder.geoCode({location : latlng}).then((adrs) => {
               contentRaw = adrs;
@@ -108,7 +110,7 @@ export class MarkerInfoPopup {
     }
 
     openPopover() {
-      console.log(`openPopover on share with title ${this.popTitle}, content ${this.popContent}`);
+      console.log(`openPopover on share for ${this.userId}, with title ${this.popTitle}, content ${this.popContent}`);
       google.maps.event.trigger(this.popMarker, 'click');
       // let gmpop = CommonToNG.getLibs().gmpopoverSvc;
       // gmpop.open(this.popContent, this.popTitle);
