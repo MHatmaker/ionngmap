@@ -16,7 +16,7 @@ export class GmpopoverComponent implements AfterContentInit {
     console.log(`Hello GmpopoverComponent Component for ${navParams.get('title')}`);
     this.title = navParams.get('title');
     this.content = navParams.get('content');
-    this.shareBtnId = "idShare" + this.title;
+    this.shareBtnId = "shareBtnId" + this.title;
     this.dockBtnId =  "dockBtnId" + this.title;
   }
 

@@ -1,11 +1,13 @@
 import { DomService } from '../../../services/dom.service';
 import { SharemapProvider } from '../../../providers/sharemap/sharemap';
 import { GmpopoverProvider } from '../../../providers/gmpopover/gmpopover';
+import { InfopopProvider } from '../../../providers/infopop/infopop';
 
 export interface ICommonToNG {
      domSvc : DomService,
      shareInfoSvc : SharemapProvider,
-     gmpopoverSvc : GmpopoverProvider
+     gmpopoverSvc : GmpopoverProvider,
+     infopopSvc : InfopopProvider
 }
 
 export class CommonToNG  implements ICommonToNG {
@@ -13,6 +15,7 @@ export class CommonToNG  implements ICommonToNG {
   domSvc : DomService;
   shareInfoSvc : SharemapProvider;
   gmpopoverSvc : GmpopoverProvider;
+  infopopSvc : InfopopProvider;
 
   // constructor(libs : ICommonToNG) {
   //

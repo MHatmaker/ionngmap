@@ -11,6 +11,7 @@ import { AgodetailComponent } from './agodetail/agodetail';
 import { MsgsetupComponent } from './msgsetup/msgsetup';
 import { AccordionListComponent } from './accordion-list/accordion-list';
 import { GmpopoverComponent } from './gmpopover/gmpopover';
+import { InfopopComponent } from './infopop/infopop';
 @NgModule({
 	declarations: [PushersetupComponent,
     NewsComponent,
@@ -24,7 +25,8 @@ import { GmpopoverComponent } from './gmpopover/gmpopover';
     AgodetailComponent,
     MsgsetupComponent,
     AccordionListComponent,
-    GmpopoverComponent],
+    GmpopoverComponent,
+    InfopopComponent],
 	imports: [],
 	exports: [PushersetupComponent,
     NewsComponent,
@@ -38,6 +40,7 @@ import { GmpopoverComponent } from './gmpopover/gmpopover';
     AgodetailComponent,
     MsgsetupComponent,
     AccordionListComponent,
-    GmpopoverComponent]
+    GmpopoverComponent,
+    InfopopComponent]
 })
 export class ComponentsModule {}

@@ -70,6 +70,7 @@ import { AccordionListComponent } from '../components/accordion-list/accordion-l
 import { GmpopoverProvider } from '../providers/gmpopover/gmpopover';
 import { GmpopoverComponent } from '../components/gmpopover/gmpopover';
 import { PophandlerProvider } from '../providers/pophandler/pophandler';
+import { InfopopProvider } from '../providers/infopop/infopop';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -178,7 +179,8 @@ import { PophandlerProvider } from '../providers/pophandler/pophandler';
     SearchplacesProvider,
     EmailerProvider,
     GmpopoverProvider,
-    PophandlerProvider
+    PophandlerProvider,
+    InfopopProvider
   ]
 })
 export class AppModule {}
