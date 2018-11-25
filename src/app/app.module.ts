@@ -71,6 +71,7 @@ import { GmpopoverProvider } from '../providers/gmpopover/gmpopover';
 import { GmpopoverComponent } from '../components/gmpopover/gmpopover';
 import { PophandlerProvider } from '../providers/pophandler/pophandler';
 import { InfopopProvider } from '../providers/infopop/infopop';
+import { InfopopComponent} from '../components/infopop/infopop';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -101,7 +102,8 @@ import { InfopopProvider } from '../providers/infopop/infopop';
     AgodetailComponent,
     MsgsetupComponent,
     AccordionListComponent,
-    GmpopoverComponent
+    GmpopoverComponent,
+    InfopopComponent
   ],
   imports: [
     BrowserModule,
@@ -141,7 +143,8 @@ import { InfopopProvider } from '../providers/infopop/infopop';
     AgodetailComponent,
     MsgsetupComponent,
     AccordionListComponent,
-    GmpopoverComponent
+    GmpopoverComponent,
+    InfopopComponent
   ],
   providers: [
     StatusBar,

@@ -4,6 +4,7 @@ import { InfopopProvider } from '../../../providers/infopop/infopop';
 import { Popover } from 'ionic-angular';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 // import { PophandlerProvider } from '../../../providers/pophandler/pophandler';
+import { InfopopComponent } from '../../../components/infopop/infopop';
 
 declare var google;
 
@@ -13,10 +14,11 @@ export class MarkerInfoPopup {
     private geopushSup : IGeoPusher;
     private popContent : string;
     private popTitle : string;
+    private popId : string;
     private popMarker : google.maps.Marker;
 
     constructor(private pos, private content : string, public title : string,
-      private mrkr=null, private mphmap, private userId : string, private geopush ? : GeoPusherSupport) {
+      private mrkr=null, private mphmap, private userId : string, private mapNumber : number, private geopush ? : GeoPusherSupport) {
         this.geopushSup = geopush.getGeoPusherSupport();
             this.popTitle = title;
             this.popContent = content;
@@ -40,7 +42,7 @@ export class MarkerInfoPopup {
             //     self.geopushSup.pusherClientService.publishClickEvent(pushLL);
             // },
 
-            dockPopup = function(e: Event, self) {
+            dockPopup = async function(e: Event, self) {
                 // console.log(e);
                 // console.log(e.srcElement.id);
                 let infopop = CommonToNG.getLibs().infopopSvc;
@@ -75,7 +77,9 @@ export class MarkerInfoPopup {
                     subscriber.unsubscribe();
                 });
                 console.log(`open popover for ${self.userId} with title ${title}`);
-                self.popOver = infopop.open(contentRaw, title);
+                self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent);
+                let popoverId = infopop.getLatestId();
+                infopop.open(contentRaw, title, popoverId);
                 // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
             }
         this.popMarker = marker;
