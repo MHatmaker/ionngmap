@@ -95,6 +95,10 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     console.log("ngOnInit");
     this.zoom = 14;
   }
+  onDomChange($event: Event): void {
+      console.log('googlemap.component caught a domChange mutation event');
+      console.log($event);
+  }
 
   onBoundsChange = (evt) => {
       console.log("boundsChange");

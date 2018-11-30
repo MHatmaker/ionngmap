@@ -77,10 +77,7 @@ export class MarkerInfoPopup {
                     subscriber.unsubscribe();
                 });
                 console.log(`open popover for ${self.userId} with title ${title}`);
-                self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent);
-                let popoverId = infopop.getLatestId();
-                infopop.open(contentRaw, title, popoverId);
-                // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
+                self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw, title);
             }
         this.popMarker = marker;
         google.maps.event.addListener(marker, 'click',  async (event) => {
