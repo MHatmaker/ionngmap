@@ -39,9 +39,9 @@ export class InfopopComponent {
         // close modal on background click
         this.element.addEventListener('click',  (e: any) => {
             var target = e.target;
-            if (!target.closest('.modal-body').length) {
-                modal.close();
-            }
+            // if (!target.closest('.modal-body').length) {
+            //     modal.close();
+            // }
         });
 
         // add self (this modal instance) to the modal service so it's accessible from controllers
@@ -71,7 +71,7 @@ export class InfopopComponent {
         this.parentElem.classList.remove('modal-open');
     }
   shareClick(evt : Event) {
-    this.infopopProvider.close(this.popoverId);
+    this.infopopProvider.share(this.popoverId);
     // this.viewCtrl.dismiss({"action" : "share"});
   }
   dockPopup(evt: Event) {

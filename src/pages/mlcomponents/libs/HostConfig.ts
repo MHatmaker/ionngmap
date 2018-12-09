@@ -6,6 +6,7 @@ import {
 import { PusherConfig } from './PusherConfig';
 import { utils } from './utils';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../../services/positionupdate.interface';
+import { Http } from '@angular/http';
 // import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface';
 // import { IPosition } from '../../../services/position.service'
 
@@ -78,7 +79,7 @@ export class HostConfig implements IHostConfigDetails {
     public nextWindowName : string = 'mishmash';
     public smallFormDimensions : { 'top' : 1, 'left' : 1, 'width' : 450, 'height' : 570};
 
-    constructor(private pusherConfig: PusherConfig, private utils : utils) {
+    constructor(private pusherConfig: PusherConfig, private utils : utils, private http : Http) {
             console.log("HostConfig ctor");
     }
 
@@ -203,42 +204,61 @@ export class HostConfig implements IHostConfigDetails {
         this.details.referrerName = this.getParameterByName('referrerName', this.details);
         return this.details.referrerName;
     }
-    getUserNameFromServer  ($http, opts) : void {
-        console.log(this.pusherConfig.getPusherPath());
-        var pusherPath = this.pusherConfig.getPusherPath() + '/username';
-        console.log("pusherPath in getUserNameFromServer");
-        console.log(pusherPath);
-        $http(
-            {
-                method: 'GET',
-                url: pusherPath,
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                }
-            }).
-            success(function (data, status, headers, config) {
-                // this callback will be called asynchronously
-                // when the response is available.
-                console.log('ControllerStarter getUserName: ', data.name);
-                if (opts.uname) {
-                    this.pusherConfig.setUserName(data.name);
-                }
-                // alert('got user name ' + data.name);
-                if (opts.uid) {
-                    this.pusherConfig.setUserId(data.id);
-                }
-                if (opts.refId === -99) {
-                    this.pusherConfig.setReferrerId(data.id);
-                }
-            }).
-            error(function (data, status, headers, config) {
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                console.log('Oops and error', data);
-                alert('Oops' + data.name);
-            });
+    async getUserNameFromServer() {
+      console.log('await in hostConfig.getUserNameFromServer');
+      await this.http.get(this.pusherConfig.getPusherPath() + "/username")
+        .map(res => res.json())
+        .subscribe(data =>
+        {
+          console.log("simpleserver returns");
+          let userName = data['name'];
+          console.log(userName);
+          this.pusherConfig.setUserName(userName);
+          this.setUserName(userName);
+          let userId = data['id'];
+          console.log(userId);
+          this.pusherConfig.setUserId(userId);
+          // this.setIDsAndNames();
+        });
+        console.log('return from hostConfig.getUserNameFromServer');
+
     }
+    // getUserNameFromServer  ($http, opts) : void {
+    //     console.log(this.pusherConfig.getPusherPath());
+    //     var pusherPath = this.pusherConfig.getPusherPath() + '/username';
+    //     console.log("pusherPath in getUserNameFromServer");
+    //     console.log(pusherPath);
+    //     $http(
+    //         {
+    //             method: 'GET',
+    //             url: pusherPath,
+    //             withCredentials: true,
+    //             headers: {
+    //                 'Content-Type': 'application/json; charset=utf-8'
+    //             }
+    //         }).
+    //         success(function (data, status, headers, config) {
+    //             // this callback will be called asynchronously
+    //             // when the response is available.
+    //             console.log('ControllerStarter getUserName: ', data.name);
+    //             if (opts.uname) {
+    //                 this.pusherConfig.setUserName(data.name);
+    //             }
+    //             // alert('got user name ' + data.name);
+    //             if (opts.uid) {
+    //                 this.pusherConfig.setUserId(data.id);
+    //             }
+    //             if (opts.refId === -99) {
+    //                 this.pusherConfig.setReferrerId(data.id);
+    //             }
+    //         }).
+    //         error(function (data, status, headers, config) {
+    //                 // called asynchronously if an error occurs
+    //                 // or server returns response with an error status.
+    //             console.log('Oops and error', data);
+    //             alert('Oops' + data.name);
+    //         });
+    // }
     getNextWindowName () {
         var nextNum = this.utils.getRandomInt(100, 200),
             nextName = this.nextWindowName + nextNum;
@@ -337,20 +357,20 @@ export class HostConfig implements IHostConfigDetails {
     showConfig(msg: string) {
         console.log(msg);
         console.log(
-            'isInitialUser ' + this.details.isInitialUser + "\n",
-            "  userId : "  + this.details.userId + ', userName ' + this.details.userName + "\n" +
-                "referrerId : "  + this.details.referrerId + "\n" +
-                "locationPath : "  + this.details.locationPath + "\n" +
-                "host : "  + this.details.host + "\n" +
-                "hostport : "  + this.details.hostport + "\n" +
-                "href : "  + this.details.href + "\n"  +
-                "search : "  + this.details.search + "\n" +
-                "maphost : "  + this.details.mapHost + "\n" +
-                "webmapId : "  + this.details.webmapId + "\n" +
-                "masherChannel : "  + this.pusherConfig.masherChannel(false) + "\n" +
-                "lon :" + this.details.lon + '\n' +
-                "lat : " + this.details.lat + "\n" +
-                "zoom : " + this.details.zoom
+            "isInitialUser : " + this.details.isInitialUser + "\n",
+            "userId : "  + this.details.userId + ', userName ' + this.details.userName + "\n" +
+            "referrerId : "  + this.details.referrerId + "\n" +
+            "locationPath : "  + this.details.locationPath + "\n" +
+            "host : "  + this.details.host + "\n" +
+            "hostport : "  + this.details.hostport + "\n" +
+            "href : "  + this.details.href + "\n"  +
+            "search : "  + this.details.search + "\n" +
+            "maphost : "  + this.details.mapHost + "\n" +
+            "webmapId : "  + this.details.webmapId + "\n" +
+            "masherChannel : "  + this.pusherConfig.masherChannel(false) + "\n" +
+            "lon :" + this.details.lon + '\n' +
+            "lat : " + this.details.lat + "\n" +
+            "zoom : " + this.details.zoom
         );
     }
 }

@@ -131,7 +131,7 @@ export class CanvasService {
 
       appendedElem = this.appendNewCanvasToContainer(mapTypeToCreate, currIndex);
 
-      console.log("now incrementMapNumber from index ${currIndex}");
+      console.log(`now incrementMapNumber from index ${currIndex}`);
       this.mapInstanceService.incrementMapNumber();
       this.mapInstanceService.setCurrentSlide(currIndex);
       this.slideshareService.slideData.emit({

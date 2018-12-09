@@ -203,10 +203,13 @@ export class MapsPage implements AfterViewInit {
           ipos : IPosition,
           startquery : string = '',
           agoId : string = ago,
-          mlConfig;
+          mlConfig,
+          userName = this.geoPush.getGeoPusherSupport().pusherConfig.getUserName();
+          console.log(`addCanvas set userName to ${userName}`);
       if (mlcfg) {
           mlConfig = mlcfg;
           mlConfig.setMapId(currIndex);
+          mlConfig.setUserName(userName);
           // mlConfig.setHardInitialized(true);
           mlConfig.setInitialPlaces(opts.mapLocOpts.places);
           this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
@@ -263,6 +266,7 @@ export class MapsPage implements AfterViewInit {
                 webmapId : agoId, mlposition :ipos, source : opts.source};
             console.log(cfgparams);
             mlConfig = new MLConfig(cfgparams);
+            mlConfig.setUserName(userName);
             mlConfig.setBounds(opts.mlBounds);
             console.log("created new MLConfig with cfgparams:");
             console.log(cfgparams);

@@ -19,6 +19,7 @@ import { SharemapProvider } from '../providers/sharemap/sharemap';
 import { GmpopoverProvider } from '../providers/gmpopover/gmpopover';
 import { Http } from '@angular/http';
 import { InfopopProvider } from '../providers/infopop/infopop';
+import { MapInstanceService } from '../services/MapInstanceService';
 
 @Component({
   templateUrl: 'app.html',
@@ -53,7 +54,7 @@ export class MapLinkrApp {
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
       private menuCtrl: MenuController, private pageService : PageService, private domsvc : DomService,
       private shareMapInfoSvc : SharemapProvider, private gmpopoverSvc : GmpopoverProvider,
-      private infopopSvc : InfopopProvider,
+      private infopopSvc : InfopopProvider, private mapInstanceService : MapInstanceService,
       private pusherConfig : PusherConfig, private hostConfig : HostConfig,
       private http: Http) {
     this.initializeApp();
@@ -83,28 +84,42 @@ export class MapLinkrApp {
       'infopopSvc' : this.infopopSvc} );
 
     this.queryForUserName();
+  }
+
+  setIDsAndNames() {
     if (location.search === '') {
         console.log("starting from url with no location/query data");
-        hostConfig.setInitialUserStatus(true);
-        hostConfig.setReferrerId('-99');
+        this.hostConfig.setInitialUserStatus(true);
+        this.hostConfig.setReferrerId('-99');
+        this.pusherConfig.setUserName(this.userName);
     } else {
         console.log("starting from url containing location/query data");
-        hostConfig.setInitialUserStatus(false);
-        this.channel = pusherConfig.getChannelFromUrl();
+        this.hostConfig.setInitialUserStatus(false);
+        this.channel = this.pusherConfig.getChannelFromUrl();
         if (this.channel !== '') {
-            pusherConfig.setChannel(this.channel);
-            pusherConfig.setNameChannelAccepted(true);
+            this.pusherConfig.setChannel(this.channel);
+            this.pusherConfig.setNameChannelAccepted(true);
         }
-        this.userName = hostConfig.getUserNameFromUrl();
+        this.userName = this.hostConfig.getUserNameFromUrl();
         if (this.userName !== '') {
-            pusherConfig.setUserName(this.userName);
-            hostConfig.setReferrerId (this.userName);
+            this.pusherConfig.setUserName(this.userName);
+            this.hostConfig.setReferrerId (this.userName);
         }
     }
   }
 
-  queryForUserName() {
-      this.http.get(this.pusherConfig.getPusherPath() + "/username")
+async queryForUserName()
+{
+  console.log('ready to await in queryForUserName');
+  await this.hostConfig.getUserNameFromServer();
+  console.log("finished await in queryForUserName");
+  //this.setIDsAndNames();
+}
+
+/*
+  async queryForUserName() {
+      console.log('await in queryForUserName');
+      await this.http.get(this.pusherConfig.getPusherPath() + "/username")
         .map(res => res.json())
         .subscribe(data =>
         {
@@ -116,9 +131,15 @@ export class MapLinkrApp {
           let userId = data['id'];
           console.log(userId);
           this.pusherConfig.setUserId(userId);
+          // let mpinst = this.mapInstanceService.getMapHosterInstance(0);
+          // let mlcfg = mpinst.getmlconfig();
+          // mlcfg.setUserName(this.userName);
+          // mlcfg.setUserId(userId);
+          this.setIDsAndNames();
         });
+        console.log('return from queryForUserName');
   }
-
+*/
   initializeApp() {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
