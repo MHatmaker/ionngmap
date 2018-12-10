@@ -206,22 +206,20 @@ export class HostConfig implements IHostConfigDetails {
     }
     async getUserNameFromServer() {
       console.log('await in hostConfig.getUserNameFromServer');
-      await this.http.get(this.pusherConfig.getPusherPath() + "/username")
-        .map(res => res.json())
-        .subscribe(data =>
-        {
+      const response = await this.http.get(this.pusherConfig.getPusherPath() + "/username").toPromise();
+      let retval = response.json();
           console.log("simpleserver returns");
-          let userName = data['name'];
+          let userName = retval['name'];
           console.log(userName);
           this.pusherConfig.setUserName(userName);
           this.setUserName(userName);
-          let userId = data['id'];
+          let userId = retval['id'];
           console.log(userId);
           this.pusherConfig.setUserId(userId);
           // this.setIDsAndNames();
-        });
-        console.log('return from hostConfig.getUserNameFromServer');
 
+        console.log('return from hostConfig.getUserNameFromServer');
+        return retval;
     }
     // getUserNameFromServer  ($http, opts) : void {
     //     console.log(this.pusherConfig.getPusherPath());
