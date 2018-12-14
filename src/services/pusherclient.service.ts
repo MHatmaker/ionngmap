@@ -230,7 +230,7 @@ export class PusherClientService {
         this.mlconfig = mlcfg;
         var
             mapHoster = this.mlconfig.getMapHosterInstance(),
-            clientName = 'map' + this.mlconfig.getMapNumber();
+            clientName = 'map' + this.pusherConfig.getUserName() + this.mlconfig.getMapNumber();
 
         this.CHANNELNAME = this.pusherConfig.getPusherChannel();
         this.userName = this.pusherConfig.getUserName();
@@ -307,7 +307,8 @@ publishPanEvent(frame) {
     // this.pusher.channels[this.CHANNELNAME].trigger('client-MapXtntEvent', frame);
 }
 publishClickEvent(frame) {
-    console.log('frame is', frame);
+    console.log(`publishClickEvent : frame for frame.mapId - ${frame.mapId} , referrerId - ${frame.referrerId}`);
+    console.log(frame);
     var handler, client: PusherClient,
         clName,
         obj;
@@ -317,18 +318,19 @@ publishClickEvent(frame) {
         frame.zoom = frame.z;
     }
     for (clName in this.clients) {
-        if(clName !== frame.mapId) {
+        if(!((clName === frame.mapId) || (clName === 'hiddenmap'))){
           client = this.clients[clName];
-          if(client.userName !== frame.userName){
+          console.log(`client is clientName ${client.clientName} userName ${client.userName}`);
+          if(client.userName !== frame.referrerId){
               if (client.hasOwnProperty('eventHandlers')) {
                   obj = client.eventHandlers;
-                  console.log("publish click event to map " + client.eventHandlers);
+                  console.log("publish shared click event to map " + client.clientName);
                   obj['client-MapClickEvent'](frame);
               }
             }
       }
     }
-    this.channel.trigger('client-MapClickEvent', frame);
+    // this.channel.trigger('client-MapClickEvent', frame);
     // this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
 }
 

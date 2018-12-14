@@ -79,6 +79,10 @@ export class MarkerInfoPopup {
                 console.log(`open popover for ${self.userId} with title ${title}`);
                 self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw, title);
             }
+
+        if(! this.mrkr) {
+            this.mrkr = marker;
+        }
         this.popMarker = marker;
         google.maps.event.addListener(marker, 'click',  async (event) => {
             // this.geopushSup.pophandlerProvider.closePopupsExceptOne(marker.title);

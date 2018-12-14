@@ -20,6 +20,7 @@ import { GmpopoverProvider } from '../providers/gmpopover/gmpopover';
 import { Http } from '@angular/http';
 import { InfopopProvider } from '../providers/infopop/infopop';
 import { MapInstanceService } from '../services/MapInstanceService';
+import { CanvasService } from '../services/CanvasService';
 
 @Component({
   templateUrl: 'app.html',
@@ -55,7 +56,7 @@ export class MapLinkrApp {
       private menuCtrl: MenuController, private pageService : PageService, private domsvc : DomService,
       private shareMapInfoSvc : SharemapProvider, private gmpopoverSvc : GmpopoverProvider,
       private infopopSvc : InfopopProvider, private mapInstanceService : MapInstanceService,
-      private pusherConfig : PusherConfig, private hostConfig : HostConfig,
+      private pusherConfig : PusherConfig, private hostConfig : HostConfig, private canvasService : CanvasService,
       private http: Http) {
     this.initializeApp();
 
@@ -113,6 +114,7 @@ async queryForUserName()
   console.log('ready to await in queryForUserName');
   await this.hostConfig.getUserNameFromServer();
   console.log("finished await in queryForUserName");
+  this.canvasService.addInitialCanvas(this.pusherConfig.getUserName());
   //this.setIDsAndNames();
 }
 

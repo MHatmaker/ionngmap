@@ -32,6 +32,8 @@ export class CanvasService {
     private selectedMapType : string;
     private initialLoc : MapLocOptions;
     private currentLoc : MapLocOptions;
+    private glongitude : number;
+    private glatitude : number;
     setCurrent = new EventEmitter<number>();
 
     constructor (
@@ -50,6 +52,8 @@ export class CanvasService {
         // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         let glat = position.coords.latitude;
         let glng = position.coords.longitude;
+        this.glatitude = glat;
+        this.glongitude = glng;
         let latLng = new google.maps.LatLng(glat, glng);
         this.initialLoc = {
           center: {'lng' : glng, 'lat' : glat},
@@ -58,12 +62,6 @@ export class CanvasService {
           query : ""
           //mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        let bnds : MLBounds = null;
-        let opts : MapLocOptions = this.initialLoc;
-        let shr : IMapShare = {mapLocOpts : opts, userName : this.pusherConfig.getUserName(), mlBounds : bnds,
-            source : EMapSource.urlgoogle, webmapId : 'nowebmap'};
-        console.log(`geolocation center at ${glng}, ${glat}`);
-        this.mapOpener.openMap.emit(shr);
         }, (err) => {
             console.log(err);
         });
@@ -94,6 +92,15 @@ export class CanvasService {
     getInitialLocation() : MapLocOptions {
         return this.initialLoc;
     }
+
+  addInitialCanvas(userName : string) {
+        let bnds : MLBounds = null;
+        let opts : MapLocOptions = this.initialLoc;
+        let shr : IMapShare = {mapLocOpts : opts, userName : userName, mlBounds : bnds,
+            source : EMapSource.urlgoogle, webmapId : 'nowebmap'};
+        console.log(`geolocation center at ${this.glongitude}, ${this.glatitude}`);
+        this.mapOpener.openMap.emit(shr);
+  }
 
   addCanvas (mapType, mapTypeToCreate, source, mlcfg, maploc)  : HTMLElement{
       console.log("in CanvasHolderCtrl.addCanvas");

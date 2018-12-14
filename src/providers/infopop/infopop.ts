@@ -85,6 +85,7 @@ export class InfopopProvider {
           modal.close();
       }
       share(id: string) {
+          console.log(`infopop emitting share action with title (id) : ${id}`);
           this.dockPopEmitter.emit({action : 'share', title : id});
       }
       undock(id: string) {
