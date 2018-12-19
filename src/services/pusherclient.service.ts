@@ -10,6 +10,7 @@ import { IEventDct } from '../pages/mlcomponents/libs/PusherEventHandler';
 import { MapopenerProvider } from '../providers/mapopener/mapopener';
 import { IMapShare } from '../services/positionupdate.interface';
 declare const Pusher: any;
+import * as _ from 'underscore';
 
 class PusherClient {
     public eventHandlers : IEventDct; // = new Map<string, IEventDct>();
@@ -317,19 +318,34 @@ publishClickEvent(frame) {
         frame.lon = frame.x;
         frame.zoom = frame.z;
     }
-    for (clName in this.clients) {
-        if(!((clName === frame.mapId) || (clName === 'hiddenmap'))){
-          client = this.clients[clName];
-          console.log(`client is clientName ${client.clientName} userName ${client.userName}`);
-          if(client.userName !== frame.referrerId){
-              if (client.hasOwnProperty('eventHandlers')) {
-                  obj = client.eventHandlers;
-                  console.log("publish shared click event to map " + client.clientName);
-                  obj['client-MapClickEvent'](frame);
-              }
-            }
-      }
-    }
+    let withoutHidden = _.without(this.clients, this.clients['hiddenmap']);
+    console.log(withoutHidden);
+    let withoutSubmitter = _.without(withoutHidden, this.clients[frame.mapId]);
+    console.log(withoutSubmitter);
+    _.each(withoutSubmitter, (cl) => {
+        console.log(`client is clientName ${cl.clientName} userName ${cl.userName}`);
+        if(cl.userName !== frame.referrerId) {
+          if (cl.hasOwnProperty('eventHandlers')) {
+              obj = cl.eventHandlers;
+              console.log("publish shared click event to map " + cl.clientName);
+              obj['client-MapClickEvent'](frame);
+          }
+        }
+    });
+
+    // for (clName in this.clients) {
+    //     if(!((clName === frame.mapId) || (clName === 'hiddenmap'))){
+    //       client = this.clients[clName];
+    //       console.log(`client is clientName ${client.clientName} userName ${client.userName}`);
+    //       if(client.userName !== frame.referrerId){
+    //           if (client.hasOwnProperty('eventHandlers')) {
+    //               obj = client.eventHandlers;
+    //               console.log("publish shared click event to map " + client.clientName);
+    //               obj['client-MapClickEvent'](frame);
+    //           }
+    //         }
+    //   }
+    // }
     // this.channel.trigger('client-MapClickEvent', frame);
     // this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
 }

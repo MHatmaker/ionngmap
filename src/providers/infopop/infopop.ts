@@ -91,4 +91,11 @@ export class InfopopProvider {
       undock(id: string) {
           this.dockPopEmitter.emit({action : 'undock', title : id});
       }
+      contains(id : string) : boolean {
+        return _.contains(this.modals, id);
+      }
+      subset(id : string) : any[] {
+        let modalToSkip = _.findWhere(this.modals, {id : id});
+        return _.without(this.modals, modalToSkip);
+      }
 }

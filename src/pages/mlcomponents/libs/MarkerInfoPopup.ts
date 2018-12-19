@@ -65,7 +65,7 @@ export class MarkerInfoPopup {
                             subscriber.unsubscribe();
                             infopop.close(self.popOver);
                         } else if(retval.action == 'share') {
-                          self.shareClick(e, self);
+                          self.shareClick(e, self, retval.title);
                         }
                     } else {
                         // got click on map outside docked popover
@@ -97,7 +97,7 @@ export class MarkerInfoPopup {
 
     }
 
-    shareClick(e: Event, self) {
+    shareClick(e: Event, self, popoverId) {
         let marker = self.mrkr,
             fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
             referrerName = self.geopushSup.pusherConfig.getUserName(),
@@ -105,7 +105,7 @@ export class MarkerInfoPopup {
             mapId = "map" + this.userId,
             pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
               "referrerId" : referrerId, "referrerName" : referrerName,
-              "mapId" : mapId,
+              "mapId" : mapId, "popId" : popoverId,
               'address' : marker.address, 'title' : marker.title };
         console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
         self.geopushSup.pusherClientService.publishClickEvent(pushLL);
