@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 
 import { InfopopProvider } from '../../providers/infopop/infopop';
 
+
 @Component({
   selector: 'infopop',
   templateUrl: 'infopop.html'
@@ -23,7 +24,7 @@ export class InfopopComponent {
 
     ngOnInit(): void {
         let modal = this;
-        this.popoverId = uuid();
+        this.popoverId = 'temporaryId';
 
         // ensure id attribute exists
         if (!this.popoverId) {
@@ -49,6 +50,9 @@ export class InfopopComponent {
     }
     getId() {
         return this.popoverId;
+    }
+    setId(id : string ) {
+      this.popoverId = id;
     }
 
     // remove self from modal service when directive is destroyed
@@ -84,3 +88,8 @@ export class InfopopComponent {
     // this.viewCtrl.dismiss({"action" : "close"});
   }
 }
+
+/*
+  http://jasonwatmore.com/post/2017/01/24/angular-2-custom-modal-window-dialog-box
+  https://stackoverflow.com/questions/40524197/how-to-position-a-popover-in-ionic-2
+*/

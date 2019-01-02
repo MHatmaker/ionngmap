@@ -57,7 +57,8 @@ export class InfopopProvider {
       add(modal: any) {
           // add modal to array of active modals
           this.modals.push(modal);
-          this.latestId = modal.getId();
+          this.latestId = uuid(); // modal.getId();
+          modal.setId(this.latestId);
           modal.title = this.currentTitle;
           modal.content = this.currentContent;
       }

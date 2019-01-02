@@ -310,9 +310,6 @@ publishPanEvent(frame) {
 publishClickEvent(frame) {
     console.log(`publishClickEvent : frame for frame.mapId - ${frame.mapId} , referrerId - ${frame.referrerId}`);
     console.log(frame);
-    var handler, client: PusherClient,
-        clName,
-        obj;
     if (frame.hasOwnProperty('x')) {
         frame.lat = frame.y;
         frame.lon = frame.x;
@@ -322,12 +319,12 @@ publishClickEvent(frame) {
     console.log(withoutHidden);
     let withoutSubmitter = _.without(withoutHidden, this.clients[frame.mapId]);
     console.log(withoutSubmitter);
-    _.each(withoutSubmitter, (cl) => {
-        console.log(`client is clientName ${cl.clientName} userName ${cl.userName}`);
-        if(cl.userName !== frame.referrerId) {
-          if (cl.hasOwnProperty('eventHandlers')) {
-              obj = cl.eventHandlers;
-              console.log("publish shared click event to map " + cl.clientName);
+    _.each(withoutSubmitter, (client) => {
+        console.log(`client is clientName ${client.clientName} userName ${client.userName}`);
+        if(client.userName !== frame.referrerId) {
+          if (client.hasOwnProperty('eventHandlers')) {
+              let obj = client.eventHandlers;
+              console.log("publish shared click event to map " + client.clientName);
               obj['client-MapClickEvent'](frame);
           }
         }

@@ -405,7 +405,7 @@ export class MapHosterGoogle extends MapHoster {
         console.log(`referrerId is ${clickPt.referrerId}, I am ${this.mlconfig.getUserId()}`);
         if (clickPt.referrerId !== this.mlconfig.getUserId()) {
             let mip = new MarkerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
-              null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, this.geopush);
+              null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, this.geopush, true);
             mip.openSharedPopover();
               // this.geopushSup.pophandlerProvider.addPopup("received", mip);
             // this.markerInfoPopups[place.name] = mip;

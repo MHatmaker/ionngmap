@@ -1,35 +1,27 @@
-<!--<ng-content id="{{popoverId}}"></ng-content>-->
-
-<ion-card>
-    <div class="item item-block item-md bar bar-header bar-positive">
-        <div class="gmpopover-header">
-          <div class="gmpop-label">
-              <ion-label class="gmpop-label" style="color: steelblue"> {{title}}</ion-label>
-          </div>
-          <button ion-button="" class="gmppop-dock">
-              <ion-icon (click)="dockPopup()">
-                <svg id="{{dockBtnId}}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
-
-                  class="svg-icon"><path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"/></svg>
-              </ion-icon>
-          </button>
-          <button ion-button class="gmpop-close" (click)="closePopup()">
-              <ion-icon name="close">
-              </ion-icon>
-          </button>
+<ion-card id="{{popoverId}}">
+  <div class="item item-block item-md bar bar-header bar-positive">
+    <div class="gmpopover-header">
+      <div class="gmpop-label">
+        <ion-label class="gmpop-label" style="color: steelblue">
+          {{title}}
+        </ion-label>
       </div>
-  </div>
-    <ion-item class="item item-block item-md calm" style="color: teal;" *ngIf="minimized==false">
-      <span ion-text style="white-space: normal" >
-          {{content}}
-      </span>
-    </ion-item>
-    <ion-item class="item item-block item-md" *ngIf="minimized==false">
-      <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary"
-        id="{{shareBtnId}}" (click)="shareClick()"
-        style="visibility: block; width: 32px; height: 32px;
-          background-image: url('assets/imgs/share-info.png');">
-      <div class="button-effect"></div>
+      <button ion-button="" class="gmppop-dock">
+        <ion-icon>
+          <svg id="{{dockBtnId}}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32" class="svg-icon">
+            <path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"></path>
+          </svg>
+        </ion-icon>
       </button>
-    </ion-item>
+      <button ion-button="" class="gmpop-close">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </div>
+  </div>
+  <ion-item class="item item-block item-md calm" style="color: teal;"><span ion-text="" style="white-space: normal">{{content}}</span></ion-item>
+  <ion-item class="item item-block item-md">
+    <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary" id="{{shareBtnId}}" style="visibility: block; width: 32px; height: 32px; background-image: url('assets/imgs/share-info.png');">
+      <div class="button-effect"></div>
+    </button>
+  </ion-item>
 </ion-card>

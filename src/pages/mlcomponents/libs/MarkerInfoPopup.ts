@@ -18,7 +18,8 @@ export class MarkerInfoPopup {
     private popMarker : google.maps.Marker;
 
     constructor(private pos, private content : string, public title : string,
-      private mrkr=null, private mphmap, private userId : string, private mapNumber : number, private geopush ? : GeoPusherSupport) {
+      private mrkr=null, private mphmap, private userId : string, private mapNumber : number, private geopush ? : GeoPusherSupport,
+      private isShared : boolean = false) {
         this.geopushSup = geopush.getGeoPusherSupport();
             this.popTitle = title;
             this.popContent = content;
@@ -113,7 +114,11 @@ export class MarkerInfoPopup {
 
     openSharedPopover() {
       console.log(`openPopover on share for ${this.userId}, with title ${this.popTitle}, content ${this.popContent}`);
-      google.maps.event.trigger(this.popMarker, 'click');
+      console.log('isShared ?');
+      console.log(this.isShared);
+      if (this.isShared === true) {
+        google.maps.event.trigger(this.popMarker, 'click');
+      }
       // let infopop = CommonToNG.getLibs().infopopoverSvc;
       // infopop.open(this.popContent, this.popTitle);
     }
