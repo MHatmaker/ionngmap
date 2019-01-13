@@ -18,7 +18,8 @@ export class MarkerInfoPopup {
     private popMarker : google.maps.Marker;
 
     constructor(private pos, private content : string, public title : string,
-      private mrkr=null, private mphmap, private userId : string, private mapNumber : number, private geopush ? : GeoPusherSupport,
+      private mrkr=null, private mphmap, private userId : string, private mapNumber : number,
+      private uid : string, private geopush ? : GeoPusherSupport,
       private isShared : boolean = false) {
         this.geopushSup = geopush.getGeoPusherSupport();
             this.popTitle = title;
@@ -78,7 +79,7 @@ export class MarkerInfoPopup {
                     subscriber.unsubscribe();
                 });
                 console.log(`open popover for ${self.userId} with title ${title}`);
-                self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw, title);
+                self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw, title, self.uid);
             }
 
         if(! this.mrkr) {
@@ -106,9 +107,9 @@ export class MarkerInfoPopup {
             mapId = "map" + this.userId,
             pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
               "referrerId" : referrerId, "referrerName" : referrerName,
-              "mapId" : mapId, "popId" : popoverId,
+              "mapId" : mapId, "popId" : popoverId, "mapNumber" : this.mapNumber,
               'address' : marker.address, 'title' : marker.title };
-        console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
+        console.log("You, " + referrerName + ", " + referrerId + ", clicked the map with id " + popoverId + " at " + fixedLL.lat + ", " + fixedLL.lon);
         self.geopushSup.pusherClientService.publishClickEvent(pushLL);
     }
 
@@ -121,6 +122,9 @@ export class MarkerInfoPopup {
       }
       // let infopop = CommonToNG.getLibs().infopopoverSvc;
       // infopop.open(this.popContent, this.popTitle);
+    }
+    openPopover(content : string, title : string) {
+
     }
 
     closePopover(ngUid) {

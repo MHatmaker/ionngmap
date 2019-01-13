@@ -10,12 +10,10 @@ import { v4 as uuid } from 'uuid';
 import { MapInstanceService } from '../../services/MapInstanceService';
 import { InfopopComponent } from '../../components/infopop/infopop';
 
-/*
-  Generated class for the InfopopProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
+class PopupItem {
+  mapNumber : number;
+  pop : any;
+}
 @Injectable()
 export class InfopopProvider {
   public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string}>();
@@ -29,14 +27,19 @@ export class InfopopProvider {
   }
 
       private modals: any[] = [];
+      private modalMap : Map<string, PopupItem> = new Map<string, PopupItem>();
       private currentContent : string;
       private currentTitle : string;
+      private mapNumber : number;
+      private uid : string;
 
-      create(markerElement : Element, mapNumber : number, component : any, content : string, title : string) {
+      create(markerElement : Element, mapNumber : number, component : any, content : string, title : string, uid : string) {
         let parentElem = document.getElementById('google-map-component' + mapNumber);
         console.log(parentElem);
         this.currentContent = content;
         this.currentTitle = title;
+        this.mapNumber = mapNumber;
+        this.uid = uid;
 
         const componentRef = this.componentFactoryResolver
           .resolveComponentFactory(component)
@@ -57,10 +60,11 @@ export class InfopopProvider {
       add(modal: any) {
           // add modal to array of active modals
           this.modals.push(modal);
-          this.latestId = uuid(); // modal.getId();
+          this.latestId = this.uid; // uuid(); // modal.getId();
           modal.setId(this.latestId);
           modal.title = this.currentTitle;
           modal.content = this.currentContent;
+          this.modalMap[this.latestId] = {mapNumber : this.mapNumber, pop : modal};
       }
       getLatestId() : string {
         return this.latestId;
@@ -68,21 +72,24 @@ export class InfopopProvider {
 
       remove(id: string) {
           // remove modal from array of active modals
-          let modalToRemove = _.findWhere(this.modals, { id: id });
-          this.modals = _.without(this.modals, modalToRemove);
+          // let modalToRemove = _.findWhere(this.modals, { id: id });
+          // this.modals = _.without(this.modals, modalToRemove);
+          this.modalMap.delete(id);
       }
 
       open(content : string, title : string, ngUid : string) {
           // open modal specified by id
           console.log('We are supposed to open a modal here in infopop provider');
-          let modal = _.findWhere(this.modals, { id: ngUid });
+          // let modal = _.findWhere(this.modals, { id: ngUid });
+          let modal = this.modalMap[ngUid];
           modal.open(content, title);
       }
 
       close(ngUid: string) {
           // close modal specified by id
           this.dockPopEmitter.emit({action : 'close', title : ngUid});
-          let modal = _.find(this.modals, { ngUid: ngUid });
+          // let modal = _.find(this.modals, { ngUid: ngUid });
+          let modal = this.modalMap[ngUid];
           modal.close();
       }
       share(id: string) {

@@ -16,10 +16,12 @@ class PusherClient {
     public eventHandlers : IEventDct; // = new Map<string, IEventDct>();
     public clientName: string;
     public userName: string;
-    constructor(evtDct : IEventDct, clientName : string, userName : string) {
+    public mapNumber : number;
+    constructor(evtDct : IEventDct, clientName : string, userName : string, mapNumber : number) {
         this.eventHandlers = evtDct;
         this.clientName = clientName;
         this.userName = userName;
+        this.mapNumber = mapNumber;
     }
 }
 
@@ -240,14 +242,14 @@ export class PusherClientService {
         this.callbackFunction = cbfn;
         this.info = nfo;
         console.log("createPusherClient for map " + clientName);
-        this.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), clientName, this.userName);
+        this.clients[clientName] = new PusherClient(mapHoster.getEventDictionary(), clientName, this.userName, this.mapNumber);
         this.PusherChannel(this.CHANNELNAME);
 
         return this.clients[clientName];
     }
 
     createHiddenPusherClient(evtDct : IEventDct) {
-        this.clients['hiddenmap'] = new PusherClient(evtDct, 'hiddenmap', 'hiddenmap');
+        this.clients['hiddenmap'] = new PusherClient(evtDct, 'hiddenmap', 'hiddenmap', 99);
     }
 
     setupPusherClient (resolve, reject) {
@@ -320,8 +322,9 @@ publishClickEvent(frame) {
     let withoutSubmitter = _.without(withoutHidden, this.clients[frame.mapId]);
     console.log(withoutSubmitter);
     _.each(withoutSubmitter, (client) => {
-        console.log(`client is clientName ${client.clientName} userName ${client.userName}`);
-        if(client.userName !== frame.referrerId) {
+        let testId = client.userName + client.mapNumber;
+        console.log(`client is clientName ${client.clientName}, userName ${client.userName}, testId ${testId}`);
+        if(testId !== frame.referrerId) {
           if (client.hasOwnProperty('eventHandlers')) {
               let obj = client.eventHandlers;
               console.log("publish shared click event to map " + client.clientName);

@@ -20,7 +20,7 @@
   </div>
   <ion-item class="item item-block item-md calm" style="color: teal;"><span ion-text="" style="white-space: normal">{{content}}</span></ion-item>
   <ion-item class="item item-block item-md">
-    <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary" id="{{shareBtnId}}" style="visibility: block; width: 32px; height: 32px; background-image: url('assets/imgs/share-info.png');">
+    <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary" id="{{shareBtnId}}" (click)="shareClick()" style="visibility: block; width: 32px; height: 32px; background-image: url('assets/imgs/share-info.png');">
       <div class="button-effect"></div>
     </button>
   </ion-item>

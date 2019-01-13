@@ -24,13 +24,13 @@ export class InfopopComponent {
 
     ngOnInit(): void {
         let modal = this;
-        this.popoverId = 'temporaryId';
+        // this.popoverId = 'temporaryId';
 
         // ensure id attribute exists
-        if (!this.popoverId) {
-            console.error('modal must have an id');
-            return;
-        }
+        // if (!this.popoverId) {
+        //     console.error('modal must have an id');
+        //     return;
+        // }
 
         // move element to bottom of page (just before </body>) so it can be displayed above everything else
 
