@@ -310,7 +310,8 @@ publishPanEvent(frame) {
     // this.pusher.channels[this.CHANNELNAME].trigger('client-MapXtntEvent', frame);
 }
 publishClickEvent(frame) {
-    console.log(`publishClickEvent : frame for frame.mapId - ${frame.mapId} , referrerId - ${frame.referrerId}`);
+    console.log(`publishClickEvent : frame for frame.mapId - ${frame.mapId} , referrerId - ${frame.referrerId}
+        popId - ${frame.popId}`);
     console.log(frame);
     if (frame.hasOwnProperty('x')) {
         frame.lat = frame.y;
@@ -321,7 +322,9 @@ publishClickEvent(frame) {
     console.log(withoutHidden);
     let withoutSubmitter = _.without(withoutHidden, this.clients[frame.mapId]);
     console.log(withoutSubmitter);
-    _.each(withoutSubmitter, (client) => {
+    let withoutPopId = _.without(withoutSubmitter, this.clients[frame.popId]);
+    console.log(withoutPopId);
+    _.each(withoutPopId, (client) => {
         let testId = client.userName + client.mapNumber;
         console.log(`client is clientName ${client.clientName}, userName ${client.userName}, testId ${testId}`);
         if(testId !== frame.referrerId) {

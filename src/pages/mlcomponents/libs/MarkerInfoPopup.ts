@@ -100,17 +100,19 @@ export class MarkerInfoPopup {
     }
 
     shareClick(e: Event, self, popoverId) {
-        let marker = self.mrkr,
-            fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
-            referrerName = self.geopushSup.pusherConfig.getUserName(),
-            referrerId = this.userId,
-            mapId = "map" + this.userId,
-            pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
-              "referrerId" : referrerId, "referrerName" : referrerName,
-              "mapId" : mapId, "popId" : popoverId, "mapNumber" : this.mapNumber,
-              'address' : marker.address, 'title' : marker.title };
-        console.log("You, " + referrerName + ", " + referrerId + ", clicked the map with id " + popoverId + " at " + fixedLL.lat + ", " + fixedLL.lon);
-        self.geopushSup.pusherClientService.publishClickEvent(pushLL);
+        if(popoverId == this.uid) {
+            let marker = self.mrkr,
+                fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
+                referrerName = self.geopushSup.pusherConfig.getUserName(),
+                referrerId = this.userId,
+                mapId = "map" + this.userId,
+                pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
+                  "referrerId" : referrerId, "referrerName" : referrerName,
+                  "mapId" : mapId, "popId" : popoverId, "mapNumber" : this.mapNumber,
+                  'address' : marker.address, 'title' : marker.title };
+            console.log("You, " + referrerName + ", " + referrerId + ", clicked the map with id " + popoverId + " at " + fixedLL.lat + ", " + fixedLL.lon);
+            self.geopushSup.pusherClientService.publishClickEvent(pushLL);
+        }
     }
 
     openSharedPopover() {

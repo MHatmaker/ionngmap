@@ -35,6 +35,7 @@ export class InfopopProvider {
 
       create(markerElement : Element, mapNumber : number, component : any, content : string, title : string, uid : string) {
         let parentElem = document.getElementById('google-map-component' + mapNumber);
+        console.log(`infpop.create for Id ${uid}, title ${title}`);
         console.log(parentElem);
         this.currentContent = content;
         this.currentTitle = title;

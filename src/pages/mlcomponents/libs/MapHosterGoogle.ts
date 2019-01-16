@@ -179,9 +179,10 @@ export class MapHosterGoogle extends MapHoster {
                 });
 
                 this.markers.push(marker);
+                let uid = uuid();
                 let mip = new MarkerInfoPopup(place.geometry.location, marker.address, place.name, marker,
-                    this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), this.geopush);
-                this.markerInfoPopups[place.name] = mip;
+                    this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush);
+                this.markerInfoPopups[uid] = mip;
                 // this.geopushSup.pophandlerProvider.addPopup(place.name, mip);
 
                 boundsForMarkers.extend(place.geometry.location);
@@ -190,23 +191,26 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     addInitialSymbols() {
-        var popPt = new google.maps.LatLng(41.890283, -87.625842),
+        let popPt = new google.maps.LatLng(41.890283, -87.625842),
             hint = "Lofty Thoughts";
+        let uid = uuid();
         let mip = new MarkerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), this.geopush);
-        this.markerInfoPopups[hint] = mip;
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush);
+        this.markerInfoPopups[uid] = mip;
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         popPt = new google.maps.LatLng(41.888941, -87.620692);
         hint = "Drafty Sweatbox";
+        uid = uuid();
         mip = new MarkerInfoPopup(popPt, "Climate control as nature intended.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), this.geopush);
-        this.markerInfoPopups[hint] = mip;
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush);
+        this.markerInfoPopups[uid] = mip;
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         popPt = new google.maps.LatLng(41.884979, -87.620950);
         hint = "Blank Wall Vistas";
+        uid = uuid();
         mip = new MarkerInfoPopup(popPt, "Panorama views are over-rated if you prefer exposed brick.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), this.geopush);
-        this.markerInfoPopups[hint] = mip;
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush);
+        this.markerInfoPopups[uid] = mip;
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         // this.polygon([
             // [51.509, -0.08],
@@ -406,17 +410,21 @@ export class MapHosterGoogle extends MapHoster {
         console.log(`referrerId is ${clickPt.referrerId}, I am ${this.mlconfig.getUserId()}`);
         console.log(`popoverId is ${clickPt.popId}`);
         if (clickPt.referrerId !== this.mlconfig.getUserId()) {
-            let mip = new MarkerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
-              null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), this.geopush, true);
-            mip.openSharedPopover();
-              // this.geopushSup.pophandlerProvider.addPopup("received", mip);
-            // this.markerInfoPopups[place.name] = mip;
-            // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
+            if(! this.markerInfoPopups.has(clickPt.popId)) {
+              let uid = uuid();
+              let mip = new MarkerInfoPopup(popPt, content, "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
+                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush, true);
+              this.markerInfoPopups[uid] = mip;
+              mip.openSharedPopover();
+                // this.geopushSup.pophandlerProvider.addPopup("received", mip);
+              // this.markerInfoPopups[place.name] = mip;
+              // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
 
-            btnShare = document.getElementsByClassName('sharebutton')[0];
-            if (btnShare) {
-                console.debug(btnShare);
-                btnShare.style.visibility = 'hidden';
+              btnShare = document.getElementsByClassName('sharebutton')[0];
+              if (btnShare) {
+                  console.debug(btnShare);
+                  btnShare.style.visibility = 'hidden';
+              }
             }
         }
     }
