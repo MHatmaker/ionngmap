@@ -1,4 +1,4 @@
-<ion-card id="{{popoverId}}">
+<ion-card id="{{popoverId}}" *ngIf="popped">
   <div class="item item-block item-md bar bar-header bar-positive">
     <div class="gmpopover-header">
       <div class="gmpop-label">
@@ -8,18 +8,19 @@
       </div>
       <button ion-button="" class="gmppop-dock">
         <ion-icon>
-          <svg id="{{dockBtnId}}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32" class="svg-icon">
+          <svg id="{{dockBtnId}}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32"
+                (click)="dockPopup()" class="svg-icon">
             <path d="M2 4v24h28V4H2zm22 22H4V6h20v20z"></path>
           </svg>
         </ion-icon>
       </button>
       <button ion-button="" class="gmpop-close">
-        <ion-icon name="close"></ion-icon>
+        <ion-icon name="close" (click)="closePopup()"></ion-icon>
       </button>
     </div>
   </div>
   <ion-item class="item item-block item-md calm" style="color: teal;"><span ion-text="" style="white-space: normal">{{content}}</span></ion-item>
-  <ion-item class="item item-block item-md">
+  <ion-item class="item item-block item-md" *ngIf="show">
     <button ion-button="" class="item-button button button-md button-default button-default-md" color="btn-primary" id="{{shareBtnId}}" (click)="shareClick()" style="visibility: block; width: 32px; height: 32px; background-image: url('assets/imgs/share-info.png');">
       <div class="button-effect"></div>
     </button>

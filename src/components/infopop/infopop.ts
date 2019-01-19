@@ -9,7 +9,7 @@ import { InfopopProvider } from '../../providers/infopop/infopop';
   selector: 'infopop',
   templateUrl: 'infopop.html'
 })
-export class InfopopComponent {
+export class InfopopComponent implements OnDestroy {
 
     private popoverId: string;
     private element : Element;
@@ -17,9 +17,12 @@ export class InfopopComponent {
     private minimized : boolean = false;
     private title : string;
     private content : string;
+    public show : boolean;
+    private popped : boolean;
 
     constructor(private infopopProvider: InfopopProvider, private el: ElementRef) {
         this.element = el.nativeElement;
+        this.popped = true;
     }
 
     ngOnInit(): void {
@@ -54,6 +57,9 @@ export class InfopopComponent {
     setId(id : string ) {
       this.popoverId = id;
     }
+    setShareShow(showHide : boolean) {
+      this.show = showHide;
+    }
 
     // remove self from modal service when directive is destroyed
     ngOnDestroy(): void {
@@ -66,13 +72,14 @@ export class InfopopComponent {
         // this.element.show();
         this.content = content;
         this.title = title;
-        this.parentElem.classList.add('modal-open');
+        this.element.parentElement.classList.add('modal-open');
     }
 
     // close modal
     close(): void {
         // this.element.hide();
-        this.parentElem.classList.remove('modal-open');
+        this.element.parentElement.classList.remove('modal-open');
+        this.popped = false;
     }
   shareClick(evt : Event) {
     this.infopopProvider.share(this.popoverId);

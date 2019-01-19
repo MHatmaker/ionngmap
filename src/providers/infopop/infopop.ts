@@ -32,8 +32,11 @@ export class InfopopProvider {
       private currentTitle : string;
       private mapNumber : number;
       private uid : string;
+      public show : boolean;
+      private domElem : HTMLElement;
 
-      create(markerElement : Element, mapNumber : number, component : any, content : string, title : string, uid : string) {
+      create(markerElement : Element, mapNumber : number, component : any,
+          content : string, title : string, uid : string, showHide : boolean = true) {
         let parentElem = document.getElementById('google-map-component' + mapNumber);
         console.log(`infpop.create for Id ${uid}, title ${title}`);
         console.log(parentElem);
@@ -41,6 +44,7 @@ export class InfopopProvider {
         this.currentTitle = title;
         this.mapNumber = mapNumber;
         this.uid = uid;
+        this.show = showHide;
 
         const componentRef = this.componentFactoryResolver
           .resolveComponentFactory(component)
@@ -55,6 +59,7 @@ export class InfopopProvider {
 
         // Append DOM element to the body
         parentElem.appendChild(domElem);
+        this.domElem = domElem;
         return domElem;
       }
 
@@ -65,6 +70,7 @@ export class InfopopProvider {
           modal.setId(this.latestId);
           modal.title = this.currentTitle;
           modal.content = this.currentContent;
+          modal.setShareShow(this.show);
           this.modalMap[this.latestId] = {mapNumber : this.mapNumber, pop : modal};
       }
       getLatestId() : string {
@@ -76,6 +82,8 @@ export class InfopopProvider {
           // let modalToRemove = _.findWhere(this.modals, { id: id });
           // this.modals = _.without(this.modals, modalToRemove);
           this.modalMap.delete(id);
+          let parentElem = document.getElementById('google-map-component' + this.mapNumber);
+          parentElem.removeChild(this.domElem);
       }
 
       open(content : string, title : string, ngUid : string) {
@@ -91,7 +99,8 @@ export class InfopopProvider {
           this.dockPopEmitter.emit({action : 'close', title : ngUid});
           // let modal = _.find(this.modals, { ngUid: ngUid });
           let modal = this.modalMap[ngUid];
-          modal.close();
+          modal.pop.close();
+          this.modalMap.delete(ngUid);
       }
       share(id: string) {
           console.log(`infopop emitting share action with title (id) : ${id}`);

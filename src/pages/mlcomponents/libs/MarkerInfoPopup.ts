@@ -65,7 +65,7 @@ export class MarkerInfoPopup {
                         } else if(retval.action == 'close') {
                             console.log('dockPopEmitter client received close...close popover');
                             subscriber.unsubscribe();
-                            infopop.close(self.popOver);
+                            infopop.close(self.uid);
                         } else if(retval.action == 'share') {
                           self.shareClick(e, self, retval.title);
                         }
@@ -79,7 +79,8 @@ export class MarkerInfoPopup {
                     subscriber.unsubscribe();
                 });
                 console.log(`open popover for ${self.userId} with title ${title}`);
-                self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw, title, self.uid);
+                self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw,
+                  title, self.uid, ! self.isShared);
             }
 
         if(! this.mrkr) {
