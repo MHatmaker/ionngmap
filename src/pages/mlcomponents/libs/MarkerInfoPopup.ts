@@ -65,7 +65,7 @@ export class MarkerInfoPopup {
                         } else if(retval.action == 'close') {
                             console.log('dockPopEmitter client received close...close popover');
                             subscriber.unsubscribe();
-                            infopop.close(self.uid);
+                            // infopop.close(self.uid);
                         } else if(retval.action == 'share') {
                           self.shareClick(e, self, retval.title);
                         }

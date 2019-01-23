@@ -78,7 +78,7 @@ export class InfopopComponent implements OnDestroy {
     // close modal
     close(): void {
         // this.element.hide();
-        this.element.parentElement.classList.remove('modal-open');
+        // this.element.parentElement.classList.remove('modal-open');
         this.popped = false;
     }
   shareClick(evt : Event) {

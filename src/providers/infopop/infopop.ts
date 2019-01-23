@@ -81,9 +81,10 @@ export class InfopopProvider {
           // remove modal from array of active modals
           // let modalToRemove = _.findWhere(this.modals, { id: id });
           // this.modals = _.without(this.modals, modalToRemove);
-          this.modalMap.delete(id);
           let parentElem = document.getElementById('google-map-component' + this.mapNumber);
-          parentElem.removeChild(this.domElem);
+          let elemToRemove = this.modalMap[id].pop.element;
+          parentElem.removeChild(elemToRemove);
+          this.modalMap.delete(id);
       }
 
       open(content : string, title : string, ngUid : string) {
@@ -100,7 +101,8 @@ export class InfopopProvider {
           // let modal = _.find(this.modals, { ngUid: ngUid });
           let modal = this.modalMap[ngUid];
           modal.pop.close();
-          this.modalMap.delete(ngUid);
+          this.remove(ngUid);
+          // this.modalMap.delete(ngUid);
       }
       share(id: string) {
           console.log(`infopop emitting share action with title (id) : ${id}`);
