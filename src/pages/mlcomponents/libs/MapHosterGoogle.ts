@@ -79,6 +79,8 @@ export class MapHosterGoogle extends MapHoster {
     boundsListenerHandle : any;
     adrs : string;
     im : 'http://www.robotwoods.com/dev/misc/bluecircle.png';
+    private labels : string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    private labelIndex : number = 0;
 
     constructor(private mapNumber: number, mlconfig: MLConfig, geopush: GeoPusherSupport) {
         super(geopush);
@@ -170,10 +172,13 @@ export class MapHosterGoogle extends MapHoster {
                 };
 
               // Create a marker for each place.
+                let lbl = this.labels[this.labelIndex++ % this.labels.length];
+                let labelItem = {text: lbl, color: "#eb3a44", fontSize: "16px", fontWeight: "bold"};
                 marker = new google.maps.Marker({
                     map: this.mphmap,
                     icon: image,
                     title: place.name,
+                    label : labelItem,
                     // address : place.formatted_address,
                     position: place.geometry.location
                 });
@@ -181,7 +186,7 @@ export class MapHosterGoogle extends MapHoster {
                 this.markers.push(marker);
                 let uid = uuid();
                 let mip = new MarkerInfoPopup(place.geometry.location, marker.address, place.name, marker,
-                    this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush);
+                    this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, null, this.geopush);
                 this.markerInfoPopups[uid] = mip;
                 // this.geopushSup.pophandlerProvider.addPopup(place.name, mip);
 
@@ -194,22 +199,25 @@ export class MapHosterGoogle extends MapHoster {
         let popPt = new google.maps.LatLng(41.890283, -87.625842),
             hint = "Lofty Thoughts";
         let uid = uuid();
+        let label = this.labels[this.labelIndex++ % this.labels.length];
         let mip = new MarkerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush);
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, label, this.geopush);
         this.markerInfoPopups[uid] = mip;
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         popPt = new google.maps.LatLng(41.888941, -87.620692);
         hint = "Drafty Sweatbox";
         uid = uuid();
+        label = this.labels[this.labelIndex++ % this.labels.length];
         mip = new MarkerInfoPopup(popPt, "Climate control as nature intended.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush);
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, label, this.geopush);
         this.markerInfoPopups[uid] = mip;
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         popPt = new google.maps.LatLng(41.884979, -87.620950);
         hint = "Blank Wall Vistas";
         uid = uuid();
+        label = this.labels[this.labelIndex++ % this.labels.length];
         mip = new MarkerInfoPopup(popPt, "Panorama views are over-rated if you prefer exposed brick.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush);
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, label, this.geopush);
         this.markerInfoPopups[uid] = mip;
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         // this.polygon([
@@ -413,8 +421,10 @@ export class MapHosterGoogle extends MapHoster {
             if(! this.markerInfoPopups.has(clickPt.popId)) {
               let uid = uuid();
               let titleShared = "(shared )" + clickPt.title;
+              let lbl = this.labels[this.labelIndex++ % this.labels.length];
+              let labelItem = {text: lbl, color: "#eb3a44", fontSize: "16px", fontWeight: "bold"}
               let mip = new MarkerInfoPopup(popPt, content, titleShared, // "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
-                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, this.geopush, true);
+                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, labelItem, this.geopush, true);
               this.markerInfoPopups[uid] = mip;
               mip.openSharedPopover();
                 // this.geopushSup.pophandlerProvider.addPopup("received", mip);
@@ -779,8 +789,9 @@ export class MapHosterGoogle extends MapHoster {
                 this.popDetails.infoWnd.close();
                 this.popDetails.infoMarker.setMap(null);
             }
+            let label = this.labels[this.labelIndex++ % this.labels.length];
             let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", marker,
-              this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), this.geopush);
+              this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label, this.geopush);
               // this.geopushsup.pophandlerprovider.addpopup("mapclicked", mip);
               // this.markerInfoPopups[place.name] = mip;
             // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);

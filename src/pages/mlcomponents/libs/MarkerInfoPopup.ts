@@ -19,7 +19,7 @@ export class MarkerInfoPopup {
 
     constructor(private pos, private content : string, public title : string,
       private mrkr=null, private mphmap, private userId : string, private mapNumber : number,
-      private uid : string, private geopush ? : GeoPusherSupport,
+      private uid : string, private labelarg : any, private geopush ? : GeoPusherSupport,
       private isShared : boolean = false) {
         this.geopushSup = geopush.getGeoPusherSupport();
             this.popTitle = title;
@@ -29,7 +29,8 @@ export class MarkerInfoPopup {
             marker = mrkr || new google.maps.Marker({
                 position: pos,
                 map: this.mphmap,
-                title: title
+                title: title,
+                label: {text: labelarg, color: "#eb3a44", fontSize: "16px", fontWeight: "bold"}
             }),
             // shareClick  = function(e: Event, self) {
             //     let fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9);
@@ -83,10 +84,17 @@ export class MarkerInfoPopup {
                   title, self.uid, ! self.isShared);
             }
 
+        // let lbl = marker.getLabel();
+        // lbl.color = "#eb3a44";
+        // lbl.text = labelarg;
+        // lbl.fontSize = "16px";
+        // lbl.fontWeight = "bold";
+        // marker.setLabel(lbl);
         if(! this.mrkr) {
             this.mrkr = marker;
         }
         this.popMarker = marker;
+        // this.popMarker.setLabel(lbl);
         google.maps.event.addListener(marker, 'click',  async (event) => {
             // this.geopushSup.pophandlerProvider.closePopupsExceptOne(marker.title);
             console.log(`triggered click listener for user ${this.userId} on marker ${marker.title}`);
