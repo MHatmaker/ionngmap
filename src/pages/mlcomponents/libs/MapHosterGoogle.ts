@@ -168,7 +168,8 @@ export class MapHosterGoogle extends MapHoster {
                     size: new google.maps.Size(71, 71),
                     origin: new google.maps.Point(0, 0),
                     anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(25, 25)
+                    scaledSize: new google.maps.Size(25, 25),
+                    labelOrigin: new google.maps.Point(20,16)
                 };
 
               // Create a marker for each place.
@@ -186,7 +187,7 @@ export class MapHosterGoogle extends MapHoster {
                 this.markers.push(marker);
                 let uid = uuid();
                 let mip = new MarkerInfoPopup(place.geometry.location, marker.address, place.name, marker,
-                    this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, null, this.geopush);
+                    this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, lbl, this.geopush);
                 this.markerInfoPopups[uid] = mip;
                 // this.geopushSup.pophandlerProvider.addPopup(place.name, mip);
 
@@ -200,7 +201,7 @@ export class MapHosterGoogle extends MapHoster {
             hint = "Lofty Thoughts";
         let uid = uuid();
         let label = this.labels[this.labelIndex++ % this.labels.length];
-        let mip = new MarkerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.",
+          let mip = new MarkerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.",
             hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, label, this.geopush);
         this.markerInfoPopups[uid] = mip;
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
@@ -424,7 +425,7 @@ export class MapHosterGoogle extends MapHoster {
               let lbl = this.labels[this.labelIndex++ % this.labels.length];
               let labelItem = {text: lbl, color: "#eb3a44", fontSize: "16px", fontWeight: "bold"}
               let mip = new MarkerInfoPopup(popPt, content, titleShared, // "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
-                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, labelItem, this.geopush, true);
+                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uid, lbl, this.geopush, true);
               this.markerInfoPopups[uid] = mip;
               mip.openSharedPopover();
                 // this.geopushSup.pophandlerProvider.addPopup("received", mip);

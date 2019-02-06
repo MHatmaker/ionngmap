@@ -16,7 +16,7 @@ class PopupItem {
 }
 @Injectable()
 export class InfopopProvider {
-  public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string}>();
+  public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string, 'labelShort' : string}>();
   private latestId : string;
 
   constructor(public mapInstanceService : MapInstanceService,
@@ -30,18 +30,20 @@ export class InfopopProvider {
       private modalMap : Map<string, PopupItem> = new Map<string, PopupItem>();
       private currentContent : string;
       private currentTitle : string;
+      private mrkrlabel : string;
       private mapNumber : number;
       private uid : string;
       public show : boolean;
       private domElem : HTMLElement;
 
       create(markerElement : Element, mapNumber : number, component : any,
-          content : string, title : string, uid : string, showHide : boolean = true) {
+          content : string, title : string, lbl : string, uid : string, showHide : boolean = true) {
         let parentElem = document.getElementById('google-map-component' + mapNumber);
         console.log(`infpop.create for Id ${uid}, title ${title}`);
         console.log(parentElem);
         this.currentContent = content;
         this.currentTitle = title;
+        this.mrkrlabel = lbl;
         this.mapNumber = mapNumber;
         this.uid = uid;
         this.show = showHide;
@@ -70,6 +72,7 @@ export class InfopopProvider {
           modal.setId(this.latestId);
           modal.title = this.currentTitle;
           modal.content = this.currentContent;
+          modal.mrkrlabel = this.mrkrlabel;
           modal.setShareShow(this.show);
           this.modalMap[this.latestId] = {mapNumber : this.mapNumber, pop : modal};
       }
@@ -97,7 +100,7 @@ export class InfopopProvider {
 
       close(ngUid: string) {
           // close modal specified by id
-          this.dockPopEmitter.emit({action : 'close', title : ngUid});
+          this.dockPopEmitter.emit({action : 'close', title : ngUid, 'labelShort' : ""});
           // let modal = _.find(this.modals, { ngUid: ngUid });
           let modal = this.modalMap[ngUid];
           modal.pop.close();
@@ -106,10 +109,11 @@ export class InfopopProvider {
       }
       share(id: string) {
           console.log(`infopop emitting share action with title (id) : ${id}`);
-          this.dockPopEmitter.emit({action : 'share', title : id});
+          let modal = this.modalMap[id];
+          this.dockPopEmitter.emit({action : 'share', title : id, 'labelShort' : modal.mrkrlabel});
       }
       undock(id: string) {
-          this.dockPopEmitter.emit({action : 'undock', title : id});
+          this.dockPopEmitter.emit({action : 'undock', title : id, 'labelShort' : ""});
       }
       contains(id : string) : boolean {
         return _.contains(this.modals, id);

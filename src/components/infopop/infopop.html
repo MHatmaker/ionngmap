@@ -1,12 +1,17 @@
 <ion-card id="{{popoverId}}" *ngIf="popped">
   <div class="item item-block item-md bar bar-header bar-positive">
-    <div class="gmpopover-header">
-      <div class="gmpop-label">
-        <ion-label class="gmpop-label" style="color: steelblue">
+    <div class="infopop-header">
+      <div class="infopoplabel-long">
+        <ion-label class="infopoplabel-long" style="color: steelblue">
           {{title}}
         </ion-label>
       </div>
-      <button ion-button="" class="gmppop-dock">
+      <div class="infopoplabel-short">
+        <ion-label class="infopoplabel-short" style="color: steelblue">
+          {{mrkrlabel}}
+        </ion-label>
+      </div>
+      <button ion-button="" class="infopop-dock">
         <ion-icon>
           <svg id="{{dockBtnId}}" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32"
                 (click)="dockPopup()" class="svg-icon">
@@ -14,7 +19,7 @@
           </svg>
         </ion-icon>
       </button>
-      <button ion-button="" class="gmpop-close">
+      <button ion-button="" class="infopop-close">
         <ion-icon name="close" (click)="closePopup()"></ion-icon>
       </button>
     </div>

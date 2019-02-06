@@ -19,6 +19,7 @@ export class InfopopComponent implements OnDestroy {
     private content : string;
     public show : boolean;
     private popped : boolean;
+    private mrkrlabel : string;
 
     constructor(private infopopProvider: InfopopProvider, private el: ElementRef) {
         this.element = el.nativeElement;

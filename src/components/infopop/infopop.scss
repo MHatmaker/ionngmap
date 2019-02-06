@@ -1,3 +1,28 @@
 infopop {
 
 }
+
+.infopop-dimensions {
+  bottom : auto;
+}
+
+.infopop-header {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: minmax(200px, 1fr) 24px 32px 32px;
+}
+
+.infopop-label-short {
+  grid-column: 1;
+}
+
+.infopop-label-long {
+  grid-column: 2;
+}
+
+.infopop-dock {
+  grid-column: 3;
+}
+.infopop-close {
+  grid-column: 4;
+}

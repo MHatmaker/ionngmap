@@ -68,7 +68,8 @@ export class MarkerInfoPopup {
                             subscriber.unsubscribe();
                             // infopop.close(self.uid);
                         } else if(retval.action == 'share') {
-                          self.shareClick(e, self, retval.title);
+                          console.log('dockPopEmitter client received share');
+                          self.shareClick(e, self, retval.title, retval.labelShort);
                         }
                     } else {
                         // got click on map outside docked popover
@@ -81,7 +82,7 @@ export class MarkerInfoPopup {
                 });
                 console.log(`open popover for ${self.userId} with title ${title}`);
                 self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw,
-                  title, self.uid, ! self.isShared);
+                  title, labelarg, self.uid, ! self.isShared);
             }
 
         // let lbl = marker.getLabel();
@@ -108,7 +109,7 @@ export class MarkerInfoPopup {
 
     }
 
-    shareClick(e: Event, self, popoverId) {
+    shareClick(e: Event, self, popoverId, labelShort) {
         if(popoverId == this.uid) {
             let marker = self.mrkr,
                 fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
