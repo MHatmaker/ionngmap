@@ -791,6 +791,7 @@ export class MapHosterGoogle extends MapHoster {
                 this.popDetails.infoMarker.setMap(null);
             }
             let label = this.labels[this.labelIndex++ % this.labels.length];
+            marker.setLabel(label);
             let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", marker,
               this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label, this.geopush);
               // this.geopushsup.pophandlerprovider.addpopup("mapclicked", mip);
@@ -822,7 +823,8 @@ export class MapHosterGoogle extends MapHoster {
                         marker = new google.maps.Marker({
                             map: this.mphmap,
                             title : adrs,
-                            position: popPtRaw
+                            position: popPtRaw,
+                            label : ""
                         });
 
                         content = adrs;
