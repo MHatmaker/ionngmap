@@ -12,6 +12,7 @@ import { MsgsetupComponent } from './msgsetup/msgsetup';
 import { AccordionListComponent } from './accordion-list/accordion-list';
 import { GmpopoverComponent } from './gmpopover/gmpopover';
 import { InfopopComponent } from './infopop/infopop';
+import { MarkeranimatorComponent } from './markeranimator/markeranimator';
 @NgModule({
 	declarations: [PushersetupComponent,
     NewsComponent,
@@ -26,7 +27,8 @@ import { InfopopComponent } from './infopop/infopop';
     MsgsetupComponent,
     AccordionListComponent,
     GmpopoverComponent,
-    InfopopComponent],
+    InfopopComponent,
+    MarkeranimatorComponent],
 	imports: [],
 	exports: [PushersetupComponent,
     NewsComponent,
@@ -41,6 +43,7 @@ import { InfopopComponent } from './infopop/infopop';
     MsgsetupComponent,
     AccordionListComponent,
     GmpopoverComponent,
-    InfopopComponent]
+    InfopopComponent,
+    MarkeranimatorComponent]
 })
 export class ComponentsModule {}

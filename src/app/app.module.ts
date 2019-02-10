@@ -72,6 +72,8 @@ import { GmpopoverComponent } from '../components/gmpopover/gmpopover';
 import { PophandlerProvider } from '../providers/pophandler/pophandler';
 import { InfopopProvider } from '../providers/infopop/infopop';
 import { InfopopComponent} from '../components/infopop/infopop';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MarkeranimatorComponent } from '../components/markeranimator/markeranimator';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -103,14 +105,16 @@ import { InfopopComponent} from '../components/infopop/infopop';
     MsgsetupComponent,
     AccordionListComponent,
     GmpopoverComponent,
-    InfopopComponent
+    InfopopComponent,
+    MarkeranimatorComponent
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MapLinkrApp),
     NgbModule.forRoot(),
     HttpClientModule,
-    HttpModule
+    HttpModule,
+    BrowserAnimationsModule
     // HttpHandler,
     /*
     AgmCoreModule.forRoot({
