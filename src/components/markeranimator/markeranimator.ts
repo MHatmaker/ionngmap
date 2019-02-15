@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import { Component, Input, trigger, state, style, transition, animate, keyframes } from '@angular/core';
 
 @Component({
   selector: 'markeranimator',
@@ -20,12 +19,10 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ]
 })
 export class MarkeranimatorComponent {
-
-  text: string;
+  @Input() currentState;
 
   constructor() {
     console.log('Hello MarkeranimatorComponent Component');
-    this.text = 'Hello World';
   }
 
 }

@@ -88,6 +88,7 @@ export class InfopopComponent implements OnDestroy {
   }
   dockPopup(evt: Event) {
     console.log(`got dockPopup event from ${this.title}`);
+    this.infopopProvider.undock(this.popoverId);
     // this.viewCtrl.dismiss({"action" : "undock"});
     this.minimized = ! this.minimized;
   }

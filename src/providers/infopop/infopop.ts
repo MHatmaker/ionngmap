@@ -22,7 +22,7 @@ export class InfopopProvider {
   constructor(public mapInstanceService : MapInstanceService,
         private componentFactoryResolver: ComponentFactoryResolver,
         private appRef: ApplicationRef,
-        private injector: Injector,) {
+        private injector: Injector) {
     console.log('Hello InfopopProvider Provider');
   }
 
