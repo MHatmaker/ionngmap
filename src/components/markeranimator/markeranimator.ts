@@ -1,4 +1,5 @@
 import { Component, Input, trigger, state, style, transition, animate, keyframes } from '@angular/core';
+import { CommonToNG } from '../../pages/mlcomponents/libs/CommonToNG';
 
 @Component({
   selector: 'markeranimator',
@@ -23,6 +24,11 @@ export class MarkeranimatorComponent {
 
   constructor() {
     console.log('Hello MarkeranimatorComponent Component');
+    let infopop = CommonToNG.getLibs().infopopSvc;
+    let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
+      console.log("MarkeranimatorComponent got undock event");
+      this.currentState = 'animated';
+    });
   }
 
 }

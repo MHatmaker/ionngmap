@@ -5,6 +5,7 @@ import { Injectable,
     ComponentFactoryResolver,
     EmbeddedViewRef,
     ApplicationRef } from '@angular/core';
+import { MarkeranimatorComponent } from '../../components/markeranimator/markeranimator';
 
 /*
   Generated class for the MarkeranimatorProvider provider.
@@ -23,14 +24,14 @@ export class MarkeranimatorProvider {
         private injector: Injector) {
     console.log('Hello MarkeranimatorProvider Provider');
   }
-  create(mapNumber : number, component : any) {
+  create(mapNumber : number) {
     let parentElem = document.getElementById('google-map-component' + mapNumber);
 
     console.log(parentElem);
     this.mapNumber = mapNumber;
 
     const componentRef = this.componentFactoryResolver
-      .resolveComponentFactory(component)
+      .resolveComponentFactory(MarkeranimatorComponent)
       .create(this.injector);
 
     // Attach component to the appRef so that it's inside the ng component tree

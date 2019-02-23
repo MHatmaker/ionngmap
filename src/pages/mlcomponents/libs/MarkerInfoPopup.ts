@@ -54,14 +54,14 @@ export class MarkerInfoPopup {
                     if(retval) {
                         console.log(`retval.action is ${retval.action}`);
                         if(retval.action == 'undock') {
-                          if(retval.title == title) {
+                          if(retval.title == uid) {
                               console.log('titles matched....');
                           } else {
                               console.log("titles didn't match....unsubscribe");
                               subscriber.unsubscribe();
                           }
                           console.log(`close popover for ${title}`);
-                          // infopop.close();
+                          infopop.close(uid);
                           console.log('dockPopEmitter client received and processed undock');
                         } else if(retval.action == 'close') {
                             console.log('dockPopEmitter client received close...close popover');

@@ -6,7 +6,10 @@ import { MLBounds } from '../../../services/mlbounds.service';
 import { StartupGoogle } from '../libs/StartupGoogle';
 import { GeoPusherSupport } from '../libs/geopushersupport';
 import { SlideViewService } from '../../../services/slideview.service';
-import { CanvasService } from '../../../services/CanvasService'
+import { CanvasService } from '../../../services/CanvasService';
+import { MarkeranimatorProvider } from '../../../providers/markeranimator/markeranimator';
+import { CommonToNG } from '../libs/CommonToNG';
+import { InfopopProvider } from '../../../providers/infopop/infopop';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 declare var google;
@@ -30,12 +33,14 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   // private self = this;
   private startup : StartupGoogle;
   //private places : PlacesSearch;
+  nextState = "normal";
 
 
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService, private canvasService : CanvasService,
       public geolocation : Geolocation, public elementRef : ElementRef, private rndr : Renderer2,
-      geopush: GeoPusherSupport, private slideViewService : SlideViewService) {
+      geopush: GeoPusherSupport, private slideViewService : SlideViewService, private markerAnimator : MarkeranimatorProvider,
+      private infopopProvider : InfopopProvider) {
 
       console.log("GoogleMapComponent ctor");
       this.mapNumber = this.mapInstanceService.getSlideCount();
@@ -84,20 +89,36 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
         console.log(`geolocation center at ${this.glng}, ${this.glat}`);
         // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
         this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
-        /*
-        }, (err) => {
-            console.log(err);
+        // this.markerAnimator.create(this.mapNumber);
+        let infopop = CommonToNG.getLibs().infopopSvc;
+        let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
+          this.markerAnimator.create(this.mapNumber);
         });
-      */
   }
 
   ngOnInit() {
     console.log("ngOnInit");
     this.zoom = 14;
+    //     let latLng = new google.maps.LatLng(this.glat, this.glng);
+    // let mapOptions = {
+    //   center: latLng,
+    //   zoom: 15,
+    //   mapTypeId: google.maps.MapTypeId.ROADMAP,
+    //   places : null,
+    //   query : ""
+    // };
+    //     mapOptions.center = {lng: this.glng, lat: this.glat};
+    //     console.log(`geolocation center at ${this.glng}, ${this.glat}`);
+    //     this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
+    //     this.markerAnimator.create(this.mapNumber);
   }
   onDomChange($event: Event): void {
       console.log('googlemap.component caught a domChange mutation event');
       console.log($event);
+  }
+
+  animateSquare(state) {
+    this.nextState = state;
   }
 
   onBoundsChange = (evt) => {
