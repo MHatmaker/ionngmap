@@ -17,6 +17,8 @@ import { MarkeranimatorComponent } from '../../components/markeranimator/markera
 export class MarkeranimatorProvider {
   private mapNumber : number;
   private domElem : HTMLElement;
+  private x : number;
+  private y : number;
 
   constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
@@ -24,7 +26,9 @@ export class MarkeranimatorProvider {
         private injector: Injector) {
     console.log('Hello MarkeranimatorProvider Provider');
   }
-  create(mapNumber : number) {
+  create(mapNumber : number, x_pos : number, y_pos : number) {
+    // this.x = x_pos;
+    // this.y = y_pos;
     let parentElem = document.getElementById('google-map-component' + mapNumber);
 
     console.log(parentElem);
@@ -40,6 +44,9 @@ export class MarkeranimatorProvider {
     // Get DOM element from component
     const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
       .rootNodes[0] as HTMLElement;
+    // domElem.style.position = "absolute";
+    // domElem.style.left = x_pos+'px';
+    // domElem.style.top = y_pos+'px';
 
     // Append DOM element to the body
     parentElem.appendChild(domElem);

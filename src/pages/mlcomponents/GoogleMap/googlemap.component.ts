@@ -83,17 +83,32 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     }
 
 
-        // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        latLng = new google.maps.LatLng(this.glat, this.glng);
-        mapOptions.center = {lng: this.glng, lat: this.glat};
-        console.log(`geolocation center at ${this.glng}, ${this.glat}`);
-        // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
-        this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
-        // this.markerAnimator.create(this.mapNumber);
-        let infopop = CommonToNG.getLibs().infopopSvc;
-        let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
-          this.markerAnimator.create(this.mapNumber);
-        });
+    // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    latLng = new google.maps.LatLng(this.glat, this.glng);
+    mapOptions.center = {lng: this.glng, lat: this.glat};
+    console.log(`geolocation center at ${this.glng}, ${this.glat}`);
+    // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
+    let gmap : google.maps.Map = this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
+    // this.markerAnimator.create(this.mapNumber);
+    let infopop = CommonToNG.getLibs().infopopSvc;
+    let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
+      let worldCoordinate : google.maps.Point = this.project(retval);
+      this.markerAnimator.create(this.mapNumber, worldCoordinate.x, worldCoordinate.y);
+    });
+  }
+  // The mapping between latitude, longitude and pixels is defined by the web
+      // mercator projection.
+   project(latLng) : google.maps.Point{
+    let siny = Math.sin(latLng.position.x * Math.PI / 180);
+    let TILE_SIZE = 256;
+
+    // Truncating to 0.9999 effectively limits latitude to 89.189. This is
+    // about a third of a tile past the edge of the world tile.
+    siny = Math.min(Math.max(siny, -0.9999), 0.9999);
+
+    return new google.maps.Point(
+        TILE_SIZE * (0.5 + latLng.position.x / 360),
+        TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI)));
   }
 
   ngOnInit() {

@@ -16,7 +16,8 @@ class PopupItem {
 }
 @Injectable()
 export class InfopopProvider {
-  public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string, 'labelShort' : string}>();
+  public dockPopEmitter = new EventEmitter<{'action' : string, 'title' : string, 'labelShort' : string,
+    position : {'x' : number, 'y' : number}}>();
   private latestId : string;
 
   constructor(public mapInstanceService : MapInstanceService,
@@ -32,14 +33,16 @@ export class InfopopProvider {
       private currentTitle : string;
       private mrkrlabel : string;
       private mapNumber : number;
+      private geopos : any;
+      private pos : any;
       private uid : string;
       public show : boolean;
       private domElem : HTMLElement;
 
-      create(markerElement : Element, mapNumber : number, component : any,
+      create(markerElement : google.maps.Marker, mapNumber : number, component : any,
           content : string, title : string, lbl : string, uid : string, showHide : boolean = true) {
         let parentElem = document.getElementById('google-map-component' + mapNumber);
-        console.log(`infpop.create for Id ${uid}, title ${title}`);
+        // console.log(`infpop.create for Id ${uid}, title ${title}`);
         console.log(parentElem);
         this.currentContent = content;
         this.currentTitle = title;
@@ -47,6 +50,9 @@ export class InfopopProvider {
         this.mapNumber = mapNumber;
         this.uid = uid;
         this.show = showHide;
+
+        this.geopos = {"x" : markerElement.getPosition().lng(), "y" : markerElement.getPosition().lat()};
+        this.pos = this.project(markerElement.getPosition());
 
         const componentRef = this.componentFactoryResolver
           .resolveComponentFactory(component)
@@ -100,7 +106,7 @@ export class InfopopProvider {
 
       close(ngUid: string) {
           // close modal specified by id
-          this.dockPopEmitter.emit({action : 'close', title : ngUid, 'labelShort' : ""});
+          this.dockPopEmitter.emit({action : 'close', title : ngUid, 'labelShort' : "", "position" : this.pos});
           // let modal = _.find(this.modals, { ngUid: ngUid });
           let modal = this.modalMap[ngUid];
           modal.pop.close();
@@ -110,10 +116,10 @@ export class InfopopProvider {
       share(id: string) {
           console.log(`infopop emitting share action with title (id) : ${id}`);
           let modal = this.modalMap[id];
-          this.dockPopEmitter.emit({action : 'share', title : id, 'labelShort' : modal.mrkrlabel});
+          this.dockPopEmitter.emit({action : 'share', title : id, 'labelShort' : modal.mrkrlabel, "position" : this.pos});
       }
       undock(id: string) {
-          this.dockPopEmitter.emit({action : 'undock', title : id, 'labelShort' : ""});
+          this.dockPopEmitter.emit({action : 'undock', title : id, 'labelShort' : "", "position" : this.pos});
       }
       contains(id : string) : boolean {
         return _.contains(this.modals, id);
@@ -122,4 +128,18 @@ export class InfopopProvider {
         let modalToSkip = _.findWhere(this.modals, {id : id});
         return _.without(this.modals, modalToSkip);
       }
+  // The mapping between latitude, longitude and pixels is defined by the web
+      // mercator projection.
+     project(latLng) : google.maps.Point{
+      let siny = Math.sin(latLng.position.y * Math.PI / 180);
+      let TILE_SIZE = 256;
+
+      // Truncating to 0.9999 effectively limits latitude to 89.189. This is
+      // about a third of a tile past the edge of the world tile.
+      siny = Math.min(Math.max(siny, -0.9999), 0.9999);
+
+      return new google.maps.Point(
+          TILE_SIZE * (0.5 + latLng.position.x() / 360),
+          TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI)));
+    }
 }
