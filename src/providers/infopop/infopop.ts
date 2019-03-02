@@ -33,7 +33,7 @@ export class InfopopProvider {
       private currentTitle : string;
       private mrkrlabel : string;
       private mapNumber : number;
-      private geopos : any;
+      private geopos : {'lng' : number, 'lat' : number};
       private pos : any;
       private uid : string;
       public show : boolean;
@@ -51,7 +51,7 @@ export class InfopopProvider {
         this.uid = uid;
         this.show = showHide;
 
-        this.geopos = {"x" : markerElement.getPosition().lng(), "y" : markerElement.getPosition().lat()};
+        this.geopos = {"lng" : markerElement.getPosition().lng(), "lat" : markerElement.getPosition().lat()};
         this.pos = this.project(markerElement.getPosition());
 
         const componentRef = this.componentFactoryResolver
@@ -80,6 +80,7 @@ export class InfopopProvider {
           modal.content = this.currentContent;
           modal.mrkrlabel = this.mrkrlabel;
           modal.setShareShow(this.show);
+          modal.setCoordinates(this.geopos)
           this.modalMap[this.latestId] = {mapNumber : this.mapNumber, pop : modal};
       }
       getLatestId() : string {
@@ -114,12 +115,16 @@ export class InfopopProvider {
           // this.modalMap.delete(ngUid);
       }
       share(id: string) {
-          console.log(`infopop emitting share action with title (id) : ${id}`);
+          // console.log(`infopop emitting share action with title (id) : ${id}`);
           let modal = this.modalMap[id];
-          this.dockPopEmitter.emit({action : 'share', title : id, 'labelShort' : modal.mrkrlabel, "position" : this.pos});
+          this.dockPopEmitter.emit({action : 'share', title : id, 'labelShort' : modal.pop.mrkrlabel, "position" : this.pos});
       }
       undock(id: string) {
-          this.dockPopEmitter.emit({action : 'undock', title : id, 'labelShort' : "", "position" : this.pos});
+          let modal = this.modalMap[id];
+          let coords = modal.pop.getCoordinates();
+          let latlng = new google.maps.LatLng(coords.lng, coords.lat);
+          let pos = this.project(latlng);
+          this.dockPopEmitter.emit({action : 'undock', title : id, 'labelShort' : "", "position" : pos});
       }
       contains(id : string) : boolean {
         return _.contains(this.modals, id);
@@ -130,16 +135,16 @@ export class InfopopProvider {
       }
   // The mapping between latitude, longitude and pixels is defined by the web
       // mercator projection.
-     project(latLng) : google.maps.Point{
-      let siny = Math.sin(latLng.position.y * Math.PI / 180);
-      let TILE_SIZE = 256;
+      project(latLng) : google.maps.Point{
+        let siny = Math.sin(latLng.lat() * Math.PI / 180);
+        let TILE_SIZE = 256;
 
-      // Truncating to 0.9999 effectively limits latitude to 89.189. This is
-      // about a third of a tile past the edge of the world tile.
-      siny = Math.min(Math.max(siny, -0.9999), 0.9999);
+        // Truncating to 0.9999 effectively limits latitude to 89.189. This is
+        // about a third of a tile past the edge of the world tile.
+        siny = Math.min(Math.max(siny, -0.9999), 0.9999);
 
-      return new google.maps.Point(
-          TILE_SIZE * (0.5 + latLng.position.x() / 360),
-          TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI)));
-    }
+        return new google.maps.Point(
+            TILE_SIZE * (0.5 + latLng.lng() / 360),
+            TILE_SIZE * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI)));
+        }
 }

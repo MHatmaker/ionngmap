@@ -92,14 +92,16 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     // this.markerAnimator.create(this.mapNumber);
     let infopop = CommonToNG.getLibs().infopopSvc;
     let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
-      let worldCoordinate : google.maps.Point = this.project(retval);
-      this.markerAnimator.create(this.mapNumber, worldCoordinate.x, worldCoordinate.y);
+      // let worldCoordinate : google.maps.Point = this.project(retval);
+      this.markerAnimator.create(this.mapNumber, retval.position.x, retval.position.y);
     });
+
+      // this.markerAnimator.create(this.mapNumber, -99, -99);
   }
   // The mapping between latitude, longitude and pixels is defined by the web
       // mercator projection.
    project(latLng) : google.maps.Point{
-    let siny = Math.sin(latLng.position.x * Math.PI / 180);
+    let siny = Math.sin(latLng.position.y * Math.PI / 180);
     let TILE_SIZE = 256;
 
     // Truncating to 0.9999 effectively limits latitude to 89.189. This is

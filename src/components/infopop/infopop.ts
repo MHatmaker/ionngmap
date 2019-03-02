@@ -20,10 +20,12 @@ export class InfopopComponent implements OnDestroy {
     public show : boolean;
     private popped : boolean;
     private mrkrlabel : string;
+    public worldCoordinates : {'lat' : number, 'lng' : number};
 
     constructor(private infopopProvider: InfopopProvider, private el: ElementRef) {
         this.element = el.nativeElement;
         this.popped = true;
+        this.worldCoordinates = {'lat': 99, 'lng' : 99};
     }
 
     ngOnInit(): void {
@@ -60,6 +62,13 @@ export class InfopopComponent implements OnDestroy {
     }
     setShareShow(showHide : boolean) {
       this.show = showHide;
+    }
+    setCoordinates(latlng : {lng : number, lat : number}){
+      this.worldCoordinates.lng = latlng.lng;
+      this.worldCoordinates.lat = latlng.lat;
+    }
+    getCoordinates() : {'lng' : number, 'lat' : number} {
+      return this.worldCoordinates;
     }
 
     // remove self from modal service when directive is destroyed

@@ -27,8 +27,8 @@ export class MarkeranimatorProvider {
     console.log('Hello MarkeranimatorProvider Provider');
   }
   create(mapNumber : number, x_pos : number, y_pos : number) {
-    // this.x = x_pos;
-    // this.y = y_pos;
+    this.x = x_pos;
+    this.y = y_pos;
     let parentElem = document.getElementById('google-map-component' + mapNumber);
 
     console.log(parentElem);
@@ -52,6 +52,10 @@ export class MarkeranimatorProvider {
     parentElem.appendChild(domElem);
     this.domElem = domElem;
     return domElem;
+  }
+
+  getCoordinates() : { x : number, y : number} {
+    return {x : this.x, y : this.y};
   }
 
 }
