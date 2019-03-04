@@ -123,7 +123,8 @@ export class InfopopProvider {
           let modal = this.modalMap[id];
           let coords = modal.pop.getCoordinates();
           let latlng = new google.maps.LatLng(coords.lng, coords.lat);
-          let pos = this.project(latlng);
+          // let pos = this.project(latlng);
+          let pos = {'x' : coords.lng, 'y' : coords.lat};
           this.dockPopEmitter.emit({action : 'undock', title : id, 'labelShort' : "", "position" : pos});
       }
       contains(id : string) : boolean {

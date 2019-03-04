@@ -34,6 +34,13 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   private startup : StartupGoogle;
   //private places : PlacesSearch;
   nextState = "normal";
+  private gmarker : google.maps.Marker;
+  private markerPosition :  [number, number] = [0, 0];
+  private numDeltas : number = 100;
+  private delay : number = 500; //milliseconds
+  private i : number = 0;
+  private deltaLat : number = 0;
+  private deltaLng : number = 0;
 
 
   constructor(
@@ -91,9 +98,17 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     let gmap : google.maps.Map = this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
     // this.markerAnimator.create(this.mapNumber);
     let infopop = CommonToNG.getLibs().infopopSvc;
+    this.gmarker = new google.maps.Marker({
+            position: latLng,
+            map: gmap,
+            title: "moving marker"
+        })
     let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
       // let worldCoordinate : google.maps.Point = this.project(retval);
-      this.markerAnimator.create(this.mapNumber, retval.position.x, retval.position.y);
+      // this.markerAnimator.create(this.mapNumber, retval.position.x, retval.position.y);
+      if(retval.action == "undock") {
+        this.transition([retval.position.y, retval.position.x]);
+      }
     });
 
       // this.markerAnimator.create(this.mapNumber, -99, -99);
@@ -154,10 +169,41 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
                                mp.getBounds().getNorthEast().lat()));
   }
 
-  markerDragEnd(m: marker, evt: MouseEvent) {
-    console.log('dragEnd', m, evt);
+  // markerDragEnd(m: marker, evt: MouseEvent) {
+  //   console.log('dragEnd', m, evt);
+  // }
+
+  delayMarker() {
+    return new Promise(resolve => setTimeout(resolve, 7));
   }
 
+  async transition(result){
+      console.log(`transition starting to ${result[0]}, ${result[1]}`);
+      this.markerPosition[0] = this.glat;
+      this.markerPosition[1] = this.glng;
+      this.deltaLat = (result[0] - this.markerPosition[0])/this.numDeltas;
+      this.deltaLng = (result[1] - this.markerPosition[1])/this.numDeltas;
+      console.log(`start moving by ${this.deltaLat}, ${this.deltaLng}`);
+      this.gmarker.setVisible(true);
+      for(let j=0; j<3; j++) {
+        this.markerPosition[0] = this.glat;
+        this.markerPosition[1] = this.glng;
+        console.log(`transition from ${this.markerPosition}, ${this.markerPosition[1]}`);
+        for ( this.i = 0; this.i < this.numDeltas; this.i++) {
+          await(this.moveMarker());
+        }
+     }
+     this.gmarker.setVisible(false);
+ }
+
+   moveMarker = async () => {
+       await this.delayMarker();
+       this.markerPosition[0] += this.deltaLat;
+       this.markerPosition[1] += this.deltaLng;
+       // console.log(`${this.i} - move to ${this.markerPosition[0]}, ${this.markerPosition[1]}`)
+       let latlng = new google.maps.LatLng(this.markerPosition[0], this.markerPosition[1]);
+       this.gmarker.setPosition(latlng);
+   }
 }
 
 // just an interface for type safety.
