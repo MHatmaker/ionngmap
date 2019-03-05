@@ -7,7 +7,6 @@ import { StartupGoogle } from '../libs/StartupGoogle';
 import { GeoPusherSupport } from '../libs/geopushersupport';
 import { SlideViewService } from '../../../services/slideview.service';
 import { CanvasService } from '../../../services/CanvasService';
-import { MarkeranimatorProvider } from '../../../providers/markeranimator/markeranimator';
 import { CommonToNG } from '../libs/CommonToNG';
 import { InfopopProvider } from '../../../providers/infopop/infopop';
 
@@ -46,7 +45,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService, private canvasService : CanvasService,
       public geolocation : Geolocation, public elementRef : ElementRef, private rndr : Renderer2,
-      geopush: GeoPusherSupport, private slideViewService : SlideViewService, private markerAnimator : MarkeranimatorProvider,
+      geopush: GeoPusherSupport, private slideViewService : SlideViewService,
       private infopopProvider : InfopopProvider) {
 
       console.log("GoogleMapComponent ctor");
@@ -96,7 +95,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     console.log(`geolocation center at ${this.glng}, ${this.glat}`);
     // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
     let gmap : google.maps.Map = this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
-    // this.markerAnimator.create(this.mapNumber);
+
     let infopop = CommonToNG.getLibs().infopopSvc;
     this.gmarker = new google.maps.Marker({
             position: latLng,
@@ -104,14 +103,11 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
             title: "moving marker"
         })
     let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
-      // let worldCoordinate : google.maps.Point = this.project(retval);
-      // this.markerAnimator.create(this.mapNumber, retval.position.x, retval.position.y);
       if(retval.action == "undock") {
         this.transition([retval.position.y, retval.position.x]);
       }
     });
 
-      // this.markerAnimator.create(this.mapNumber, -99, -99);
   }
   // The mapping between latitude, longitude and pixels is defined by the web
       // mercator projection.
@@ -142,7 +138,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     //     mapOptions.center = {lng: this.glng, lat: this.glat};
     //     console.log(`geolocation center at ${this.glng}, ${this.glat}`);
     //     this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
-    //     this.markerAnimator.create(this.mapNumber);
+
   }
   onDomChange($event: Event): void {
       console.log('googlemap.component caught a domChange mutation event');

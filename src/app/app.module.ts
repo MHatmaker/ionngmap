@@ -73,8 +73,6 @@ import { PophandlerProvider } from '../providers/pophandler/pophandler';
 import { InfopopProvider } from '../providers/infopop/infopop';
 import { InfopopComponent} from '../components/infopop/infopop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MarkeranimatorComponent } from '../components/markeranimator/markeranimator';
-import { MarkeranimatorProvider } from '../providers/markeranimator/markeranimator';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -106,8 +104,7 @@ import { MarkeranimatorProvider } from '../providers/markeranimator/markeranimat
     MsgsetupComponent,
     AccordionListComponent,
     GmpopoverComponent,
-    InfopopComponent,
-    MarkeranimatorComponent
+    InfopopComponent
   ],
   imports: [
     BrowserModule,
@@ -149,8 +146,7 @@ import { MarkeranimatorProvider } from '../providers/markeranimator/markeranimat
     MsgsetupComponent,
     AccordionListComponent,
     GmpopoverComponent,
-    InfopopComponent,
-    MarkeranimatorComponent
+    InfopopComponent
   ],
   providers: [
     StatusBar,
@@ -189,8 +185,7 @@ import { MarkeranimatorProvider } from '../providers/markeranimator/markeranimat
     EmailerProvider,
     GmpopoverProvider,
     PophandlerProvider,
-    InfopopProvider,
-    MarkeranimatorProvider
+    InfopopProvider
   ]
 })
 export class AppModule {}
