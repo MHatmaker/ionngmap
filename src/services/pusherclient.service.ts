@@ -349,7 +349,7 @@ publishClickEvent(frame) {
     //         }
     //   }
     // }
-    // this.channel.trigger('client-MapClickEvent', frame);
+    this.channel.trigger('client-MapClickEvent', frame);
     // this.pusher.channels(this.CHANNELNAME).trigger('client-MapClickEvent', frame);
 }
 

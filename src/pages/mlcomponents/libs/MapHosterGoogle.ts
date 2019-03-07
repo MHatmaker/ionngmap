@@ -797,16 +797,16 @@ export class MapHosterGoogle extends MapHoster {
               // this.geopushsup.pophandlerprovider.addpopup("mapclicked", mip);
               // this.markerInfoPopups[place.name] = mip;
             // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
-            // if (this.selfPusherDetails.pusher)
-            // {
-                // var fixedLL = this.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6);
-                // var referrerId = this.mlconfig.getUserId();
-                // var referrerName = PusherConfig.getUserName();
-                // var pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
-                    // "referrerId" : referrerId, "referrerName" : referrerName };
-                // console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-                // this.selfPusherDetails.pusher.channel(this.selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
-            // }
+            if (this.selfPusherDetails.pusher)
+            {
+                var fixedLL = this.geopushSup.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6);
+                var referrerId = this.mlconfig.getUserId();
+                var referrerName = this.geopushSup.pusherConfig.getUserName();
+                var pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
+                    "referrerId" : referrerId, "referrerName" : referrerName };
+                console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
+                this.selfPusherDetails.pusher.channel(this.selfPusherDetails.channelName).trigger('client-MapClickEvent', pushLL);
+            }
         }
 
 
