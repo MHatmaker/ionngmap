@@ -54,7 +54,7 @@ export class StartupArcGIS  extends Startup {
 
     async loadEsriModules() {
       const options = {
-        url: 'https://js.arcgis.com/4.8/'
+        url: 'https://js.arcgis.com/4.11/'
       };
       const [ esriLocator, esriConfig,
               GeometrySvc, WebMap, MapView, Point, SpatialReference] = await loadModules(
@@ -239,7 +239,7 @@ export class StartupArcGIS  extends Startup {
 
   async initializePostProc (idAgoItem) {
       const options = {
-        url: 'https://js.arcgis.com/4.8/'
+        url: 'https://js.arcgis.com/4.11/'
       };
       const [
               esriGeometrySvc, esriWebMap, esriMapView, esriPoint, esriSpatialReference, esriConfig, TileInfo, MapImageLayer] = await loadModules(
