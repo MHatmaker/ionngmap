@@ -78,7 +78,7 @@ export class MapHosterLeaflet extends MapHoster {
             lfltBounds.ymin = sw.lat;
             lfltBounds.xmax = ne.lng;
             lfltBounds.ymax = ne.lat;
-            this.mlconfig.setBounds({'llx' : sw.lng, 'lly' : sw.lat, 'urx' : ne.lng, 'ury' : ne.lat});
+            this.mlconfig.setBounds({'llx' : sw.lng, 'lly' : sw.lat, 'urx' : ne.lng, 'ury' : ne.lat, getCenter : null});
         }
         this.zmG = zm;
         this.cntrxG = cntrx;
@@ -552,7 +552,7 @@ export class MapHosterLeaflet extends MapHoster {
             lfltBounds.ymax = ne.lat;
 
             bnds = {'llx' : sw.lng, 'lly' : sw.lat,
-                         'urx' : ne.lng, 'ury' : ne.lat};
+                         'urx' : ne.lng, 'ury' : ne.lat, getCenter : null};
             this.mlconfig.setBounds(bnds);
         }
 

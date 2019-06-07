@@ -81,7 +81,7 @@ export class MapsPage implements AfterViewInit {
               console.log("Ago dialog dismissed processing");
               console.log(data);
               if(data != 'cancelled') {
-              let xtnt : MLBounds = data.defaultExtent;
+              let xtnt : MLBounds = new MLBounds(data.extent[0][0], data.extent[0][1], data.extent[1][0], data.extent[1][1]);
               let xcntr = xtnt.getCenter();
               let cntr : IPosition = new MLPosition(xcntr.x, xcntr.y, 15);
               let mplocCoords : MapLocCoords = {lat: xcntr.y, lng: xcntr.x};

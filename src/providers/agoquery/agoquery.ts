@@ -38,9 +38,10 @@ export class AgoItem implements IAgoItem {
 @Injectable()
 export class AgoqueryProvider {
   private portalForSearch : any;
+  private items : any;
 
-  constructor(public http: HttpClient, private utils : utils) {
-    this.loadPortal();
+  constructor(public httpClient: HttpClient, private utils : utils) {
+    // this.loadPortal();
   }
   async loadPortal() {
       const options = {
@@ -97,22 +98,24 @@ export class AgoqueryProvider {
       return this.simplifyGroupResults(data.results);
   };
 
-  async findArcGISItem(searchTermItem) {
-      const options = {
-        url: 'https://js.arcgis.com/4.11/'
-      };
-      const [ portal, PortalQueryParams ] = await loadModules(
-        ['esri/portal/Portal', 'esri/portal/PortalQueryParams'], options);
-
-      // utils.  showLoading();
-      var
-          portalQueryParams = {
-              query:  searchTermItem,
-              num: 20  //find 40 items - max is 100
-          };
-      console.log('findArcGISItem');
-      let data = await this.portalForSearch.queryItems(portalQueryParams);
-      return this.simplifyItemResults(data.results);
+  findArcGISItem(searchTermItem) {
+    const url : string = 'https://www.arcgis.com/sharing/rest/search?q=' + searchTermItem + '&f=pjson';
+    let fetchedItems =this.httpClient.get(url);
+    let unpacked = fetchedItems.subscribe(
+      data => {
+        this.items = data;
+      },
+      err => console.error(err),
+      // the third argument is a function which runs on completion
+      () => {
+        console.log('done loading items');
+        console.log(this.items);
+        return this.simplifyItemResults(this.items.results);
+      }
+    );
+    console.log(unpacked);
+    console.log(fetchedItems);
+    return fetchedItems;
   };
 
 }

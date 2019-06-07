@@ -87,7 +87,7 @@ export class LeafletMapComponent implements AfterViewInit {
           ne = lfltBounds.getNorthEast();
           sw = lfltBounds.getSouthWest();
           bnds = {'llx' : sw.lng, 'lly' : sw.lat,
-                       'urx' : ne.lng, 'ury' : ne.lat};
+                       'urx' : ne.lng, 'ury' : ne.lat, getCenter : null};
           this.mlconfig.setBounds(bnds);
       }
 

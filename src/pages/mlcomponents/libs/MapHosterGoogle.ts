@@ -93,7 +93,7 @@ export class MapHosterGoogle extends MapHoster {
         console.log("updateGlobals ");
         let gmBounds = this.mphmap.getBounds();
         var
-            mapLinkrBounds : ImlBounds = {urx: -1, ury: -1, llx: -1, lly: -1},
+            mapLinkrBounds : ImlBounds = {urx: -1, ury: -1, llx: -1, lly: -1, getCenter : null},
             ne,
             sw;
         if (gmBounds) {

@@ -14,6 +14,7 @@ export class AgoitemComponent {
   searchTermItem: string;
   private agoitemgroup : FormGroup;
   private agoItems : any;
+  private items : any;
   private selectedItem : string = "";
 
   constructor(public viewCtrl: ViewController, private formBuilder : FormBuilder,
@@ -49,7 +50,15 @@ export class AgoitemComponent {
 
   async itemFinderSubmit() {
       let itm = this.agoitemgroup.getRawValue();
-      this.agoItems = await this.agoqp.findArcGISItem(itm.searchTermItem);
+      this.agoqp.findArcGISItem(itm.searchTermItem).subscribe(
+          data => {
+            let d : any = data;
+            this.agoItems = d.results;
+          },
+          err => console.error(err),
+          // the third argument is a function which runs on completion
+          () => console.log('done loading items')
+        );
 
       console.log(this.agoItems);
   }

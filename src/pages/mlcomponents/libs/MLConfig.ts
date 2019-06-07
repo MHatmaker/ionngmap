@@ -23,7 +23,7 @@ export class MLConfig {
         masherChannel : "",
         query : "",
         places : null,
-        bounds : {llx : -1, lly : -1, urx : -1, ury : -1},
+        bounds : {llx : -1, lly : -1, urx : -1, ury : -1, getCenter : null},
         mapType : 'google',
         rawMap : null,
         mapHosterInstance : null,
