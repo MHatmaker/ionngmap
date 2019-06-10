@@ -72,9 +72,12 @@ export class AgoqueryProvider {
     d.forEach((itm) => {
       if (itm.type == 'Web Map') {
         let xtnt = itm.extent;
-        let bnds = new MLBounds(xtnt.xmin, xtnt.ymin, xtnt.xmax, xtnt.ymax);
+        let bnds = new MLBounds(xtnt[0][0], xtnt[0][1], xtnt[1][0], xtnt[1][1]);
         console.log(`item name : ${itm.title}, type : ${itm.type}, isLayer : ${itm.isLayer}`);
-        items.push(new AgoItem(itm.id, itm.title, itm.snippet, itm.thumbnailUrl, itm.itemUrl, bnds));
+        let thumbUrl = 'https://darcadian.maps.arcgis.com/sharing/rest/content/items/' + itm.id + '/info/' + itm.thumbnail;
+        console.log('itemUrl ' + itm.itemUrl);
+        console.log('thumbnailUrl ' + thumbUrl);
+        items.push(new AgoItem(itm.id, itm.title, itm.snippet, thumbUrl, itm.itemUrl, bnds));
       }
     });
     return items;
@@ -98,10 +101,14 @@ export class AgoqueryProvider {
       return this.simplifyGroupResults(data.results);
   };
 
-  findArcGISItem(searchTermItem) {
+  async findArcGISItem(searchTermItem) {
     const url : string = 'https://www.arcgis.com/sharing/rest/search?q=' + searchTermItem + '&f=pjson';
-    let fetchedItems =this.httpClient.get(url);
-    let unpacked = fetchedItems.subscribe(
+    let fetchedItems = await this.httpClient.get(url).toPromise();
+    console.log(fetchedItems);
+        let simp = this.simplifyItemResults(fetchedItems['results']);
+        console.log(simp);
+        /*
+    let unpacked = await fetchedItems.subscribe(
       data => {
         this.items = data;
       },
@@ -110,12 +117,15 @@ export class AgoqueryProvider {
       () => {
         console.log('done loading items');
         console.log(this.items);
-        return this.simplifyItemResults(this.items.results);
+        let simp = this.simplifyItemResults(this.items.results);
+        console.log(simp);
+        return simp;
       }
-    );
-    console.log(unpacked);
-    console.log(fetchedItems);
-    return fetchedItems;
+    );*/
+    // console.log(unpacked);
+    // console.log(fetchedItems);
+    // return fetchedItems;
+        return simp;
   };
 
 }

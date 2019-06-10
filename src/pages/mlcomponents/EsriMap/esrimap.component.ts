@@ -53,7 +53,7 @@ export class EsriMapComponent implements OnInit {
   ngOnInit() {
   // Load the mapping API modules
       const options = {
-        url: 'https://js.arcgis.com/4.8/'
+        url: 'https://js.arcgis.com/4.11/'
       };
       loadModules([
         'esri/geometry/Point', 'esri/geometry/SpatialReference'

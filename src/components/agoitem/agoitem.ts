@@ -50,8 +50,11 @@ export class AgoitemComponent {
 
   async itemFinderSubmit() {
       let itm = this.agoitemgroup.getRawValue();
-      this.agoqp.findArcGISItem(itm.searchTermItem).subscribe(
-          data => {
+      let searchRes = await this.agoqp.findArcGISItem(itm.searchTermItem);
+      console.log(searchRes);
+      this.agoItems = searchRes;
+      // this.agoItems = searchRes.toArray();
+/*          data => {
             let d : any = data;
             this.agoItems = d.results;
           },
@@ -59,7 +62,7 @@ export class AgoitemComponent {
           // the third argument is a function which runs on completion
           () => console.log('done loading items')
         );
-
+*/
       console.log(this.agoItems);
   }
   selectAgoItem(itm) {

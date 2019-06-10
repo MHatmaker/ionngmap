@@ -76,25 +76,7 @@ export class MapsPage implements AfterViewInit {
           modal.present();
         },
         'Search Map' : () => {
-          let modal = modalCtrl.create(AgoitemComponent);
-          modal.onDidDismiss((data) => {
-              console.log("Ago dialog dismissed processing");
-              console.log(data);
-              if(data != 'cancelled') {
-              let xtnt : MLBounds = new MLBounds(data.extent[0][0], data.extent[0][1], data.extent[1][0], data.extent[1][1]);
-              let xcntr = xtnt.getCenter();
-              let cntr : IPosition = new MLPosition(xcntr.x, xcntr.y, 15);
-              let mplocCoords : MapLocCoords = {lat: xcntr.y, lng: xcntr.x};
-              let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null, query: null};
-              let mlcfg = new MLConfig({mapId : -1, mapType : 'arcgis', webmapId : data.id,
-                mlposition : cntr, source : EMapSource.srcagonline});
-              mlcfg.setBounds(xtnt);
-              let opts : IMapShare = {mapLocOpts : mploc, userName : this.hostConfig.getUserName(), mlBounds : xtnt,
-                  source : EMapSource.srcagonline, webmapId : data.id};
-              this.addCanvas('arcgis', opts, mlcfg, data.id);
-          }
-          });
-          modal.present();
+          this.searchMap();
         },
         'Sharing Instructions' : () => {
             this.showSharingHelp();
@@ -140,6 +122,27 @@ export class MapsPage implements AfterViewInit {
                 console.log("invalid EMapSource");
             }
       });
+  }
+  async searchMap() {
+      let modal = this.modalCtrl.create(AgoitemComponent);
+      modal.onDidDismiss(async (data) => {
+          console.log("Ago dialog dismissed processing");
+          console.log(data);
+          if(data != 'cancelled') {
+              let xtnt : MLBounds = data.defaultExtent; //new MLBounds(data.extent[0][0], data.extent[0][1], data.extent[1][0], data.extent[1][1]);
+              let xcntr = await xtnt.getCenter();
+              let cntr : IPosition = new MLPosition(xcntr['x'], xcntr['y'], 15);
+              let mplocCoords : MapLocCoords = {lat: xcntr['x'], lng: xcntr['y']};
+              let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null, query: null};
+              let mlcfg = new MLConfig({mapId : -1, mapType : 'arcgis', webmapId : data.id,
+                mlposition : cntr, source : EMapSource.srcagonline});
+              mlcfg.setBounds(xtnt);
+              let opts : IMapShare = {mapLocOpts : mploc, userName : this.hostConfig.getUserName(), mlBounds : xtnt,
+                  source : EMapSource.srcagonline, webmapId : data.id};
+              this.addCanvas('arcgis', opts, mlcfg, data.id);
+          }
+      });
+      modal.present();
   }
 
   ngAfterViewInit() {
