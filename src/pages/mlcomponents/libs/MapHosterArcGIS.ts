@@ -88,7 +88,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     async initializeMap() {
       try {
       const options = {
-        url: 'https://js.arcgis.com/4.11/'
+        url: 'https://js.arcgis.com/4.8/'
       };
         const [esriPoint, esriSpatialReference, esriWebMercator, esriGeometry, Locator,
               esriwebMercatorUtils, esriMapView] = await loadModules([
@@ -134,7 +134,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async updateGlobals(msg, cntrx, cntry, zm) {
         const options = {
-          url: 'https://js.arcgis.com/4.11/'
+          url: 'https://js.arcgis.com/4.8/'
         };
         const [esriwebMercatorUtils] = await loadModules([
              'esri/geometry/support/webMercatorUtils'
@@ -192,7 +192,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async extractBounds(zm, cntr, action) : Promise<xtntParams> {
         const options = {
-          url: 'https://js.arcgis.com/4.11/'
+          url: 'https://js.arcgis.com/4.8/'
         };
         const [esriPoint, esriSpatialReference] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference',
@@ -300,7 +300,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     async retrievedClick(clickPt) {
       if (1) {  // clickPt.referrerId !== this.mlconfig.getUserId()) {
         const options = {
-          url: 'https://js.arcgis.com/4.11/'
+          url: 'https://js.arcgis.com/4.8/'
         };
         const [esriPoint, esriMapView] = await loadModules([
               'esri/geometry/Point', 'esri/views/MapView'
@@ -354,7 +354,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
     async retrievedBounds(xj) {
       const options = {
-        url: 'https://js.arcgis.com/4.11/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
@@ -416,7 +416,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     async onMapClick(e) {
       try {
       const options = {
-        url: 'https://js.arcgis.com/4.11/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
@@ -479,7 +479,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async showClickResult(content, mapPt) {
         const options = {
-          url: 'https://js.arcgis.com/4.11/'
+          url: 'https://js.arcgis.com/4.8/'
         };
         const [ActionButton] = await loadModules([
               'esri/support/actions/ActionButton'
@@ -503,6 +503,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             // let mppt = new esriPoint({longitude : mapPt.x, latitude : clickPt.y}),
             this.mphmap.popup.open({location: mapPt});
         }
+        /*
         if (this.mphmap.popup.actions.length < 2) {
           this.mphmap.popup.actions.push(shareAction);
         }
@@ -526,6 +527,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 console.log(value);
             });
         }
+        */
     }
     configForPusher(content) {
         var referrerId,
@@ -552,7 +554,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async setCurrentLocation( loc : MapLocOptions) {
       const options = {
-        url: 'https://js.arcgis.com/4.11/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSpatialReference, esriLocator,
               esriwebMercatorUtils, watchUtils] = await loadModules([
@@ -570,7 +572,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async addGraphic(pt){
       const options = {
-        url: 'https://js.arcgis.com/4.11/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSimpleMarkerSymbol, esriSimpleLineSymbol,
             esriGraphic] = await loadModules([
@@ -594,7 +596,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
       const options = {
-        url: 'https://js.arcgis.com/4.11/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriPoint, esriSpatialReference, esriLocator,
               esriwebMercatorUtils, watchUtils] = await loadModules([

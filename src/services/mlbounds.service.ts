@@ -27,7 +27,7 @@ export class MLBounds implements ImlBounds {
     }
     public async getCenter() : Promise<{x : number, y : number}> {
       const options = {
-        url: 'https://js.arcgis.com/4.11/'
+        url: 'https://js.arcgis.com/4.8/'
       };
       const [esriExtent, esriPoint] = await loadModules([
         'esri/geometry/Extent', 'esri/geometry/Point'

@@ -21,7 +21,7 @@ declare var google;
 export class GoogleMapComponent implements AfterViewInit, OnInit {
   @Output()
   viewCreated = new EventEmitter();
-  private gmap: any;
+  private gmap: google.maps.Map;
   private mapNumber : number;
   private gmHeight : string = '540px';
   private glat: number;
@@ -94,12 +94,12 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     mapOptions.center = {lng: this.glng, lat: this.glat};
     console.log(`geolocation center at ${this.glng}, ${this.glat}`);
     // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
-    let gmap : google.maps.Map = this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
+    this.gmap = this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
 
     let infopop = CommonToNG.getLibs().infopopSvc;
     this.gmarker = new google.maps.Marker({
             position: latLng,
-            map: gmap,
+            map: this.gmap,
             title: "moving marker"
         })
     let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
@@ -157,6 +157,8 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
           this.mlconfig = this.mapInstanceService.getConfigForMap(ndx - 1);
           this.mlconfig.setRawMap(this.gmap);
       }
+      this.glat = this.gmap.getCenter().lat();
+      this.glng = this.gmap.getCenter().lng();
       let mp = this.gmap;
 
       this.mlconfig.setBounds(new MLBounds(mp.getBounds().getSouthWest().lng(),
@@ -175,6 +177,8 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
 
   async transition(result){
       console.log(`transition starting to ${result[0]}, ${result[1]}`);
+      this.glat = this.gmap.getCenter().lat();
+      this.glng = this.gmap.getCenter().lng();
       this.markerPosition[0] = this.glat;
       this.markerPosition[1] = this.glng;
       this.deltaLat = (result[0] - this.markerPosition[0])/this.numDeltas;
@@ -184,7 +188,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
       for(let j=0; j<3; j++) {
         this.markerPosition[0] = this.glat;
         this.markerPosition[1] = this.glng;
-        console.log(`transition from ${this.markerPosition}, ${this.markerPosition[1]}`);
+        console.log(`transition from ${this.markerPosition[0]}, ${this.markerPosition[1]}`);
         for ( this.i = 0; this.i < this.numDeltas; this.i++) {
           await(this.moveMarker());
         }
