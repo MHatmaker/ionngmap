@@ -87,6 +87,10 @@ export class InfopopProvider {
         return this.latestId;
       }
 
+      hasModal(uid : string) {
+          return this.modalMap.has(uid);
+      }
+
       remove(id: string) {
           // remove modal from array of active modals
           // let modalToRemove = _.findWhere(this.modals, { id: id });

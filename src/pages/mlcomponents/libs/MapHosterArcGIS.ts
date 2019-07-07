@@ -503,7 +503,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             // let mppt = new esriPoint({longitude : mapPt.x, latitude : clickPt.y}),
             this.mphmap.popup.open({location: mapPt});
         }
-        /*
+
         if (this.mphmap.popup.actions.length < 2) {
           this.mphmap.popup.actions.push(shareAction);
         }
@@ -527,7 +527,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 console.log(value);
             });
         }
-        */
+
     }
     configForPusher(content) {
         var referrerId,

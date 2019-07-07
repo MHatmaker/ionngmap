@@ -80,9 +80,11 @@ export class MarkerInfoPopup {
                     // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
                     subscriber.unsubscribe();
                 });
+                if(! infopop.hasModal(self.uid)) {
                 console.log(`open popover for ${self.userId} with title ${title}`);
-                self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw,
-                  title, labelarg, self.uid, ! self.isShared);
+                    self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw,
+                      title, labelarg, self.uid, ! self.isShared);
+                }
             }
 
         // let lbl = marker.getLabel();
