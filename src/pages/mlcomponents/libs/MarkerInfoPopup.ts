@@ -111,6 +111,10 @@ export class MarkerInfoPopup {
 
     }
 
+    getId() {
+        return this.uid;
+    }
+
     shareClick(e: Event, self, popoverId, labelShort) {
         if(popoverId == this.uid) {
             let marker = self.mrkr,

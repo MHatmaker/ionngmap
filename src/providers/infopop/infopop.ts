@@ -81,7 +81,8 @@ export class InfopopProvider {
           modal.mrkrlabel = this.mrkrlabel;
           modal.setShareShow(this.show);
           modal.setCoordinates(this.geopos)
-          this.modalMap[this.latestId] = {mapNumber : this.mapNumber, pop : modal};
+          // this.modalMap[this.latestId] = {mapNumber : this.mapNumber, pop : modal};
+          this.modalMap.set(this.latestId, {mapNumber : this.mapNumber, pop : modal});
       }
       getLatestId() : string {
         return this.latestId;
@@ -96,7 +97,7 @@ export class InfopopProvider {
           // let modalToRemove = _.findWhere(this.modals, { id: id });
           // this.modals = _.without(this.modals, modalToRemove);
           let parentElem = document.getElementById('google-map-component' + this.mapNumber);
-          let elemToRemove = this.modalMap[id].pop.element;
+          let elemToRemove = this.modalMap.get(id).pop.element;
           parentElem.removeChild(elemToRemove);
           this.modalMap.delete(id);
       }
@@ -105,26 +106,26 @@ export class InfopopProvider {
           // open modal specified by id
           console.log('We are supposed to open a modal here in infopop provider');
           // let modal = _.findWhere(this.modals, { id: ngUid });
-          let modal = this.modalMap[ngUid];
-          modal.open(content, title);
+          let modal = this.modalMap.get(ngUid);
+          // modal.open(content, title);
       }
 
       close(ngUid: string) {
           // close modal specified by id
           this.dockPopEmitter.emit({action : 'close', title : ngUid, 'labelShort' : "", "position" : this.pos});
           // let modal = _.find(this.modals, { ngUid: ngUid });
-          let modal = this.modalMap[ngUid];
+          let modal = this.modalMap.get(ngUid); //[ngUid];
           modal.pop.close();
           this.remove(ngUid);
           // this.modalMap.delete(ngUid);
       }
       share(id: string) {
           // console.log(`infopop emitting share action with title (id) : ${id}`);
-          let modal = this.modalMap[id];
+          let modal = this.modalMap.get(id);
           this.dockPopEmitter.emit({action : 'share', title : id, 'labelShort' : modal.pop.mrkrlabel, "position" : this.pos});
       }
       undock(id: string) {
-          let modal = this.modalMap[id];
+          let modal = this.modalMap.get(id);
           let coords = modal.pop.getCoordinates();
           let latlng = new google.maps.LatLng(coords.lng, coords.lat);
           // let pos = this.project(latlng);

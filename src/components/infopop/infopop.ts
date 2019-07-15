@@ -30,6 +30,7 @@ export class InfopopComponent implements OnDestroy {
 
     ngOnInit(): void {
         let modal = this;
+        console.log("Component Infopop method : ngOnInit");
         // this.popoverId = 'temporaryId';
 
         // ensure id attribute exists
@@ -52,6 +53,8 @@ export class InfopopComponent implements OnDestroy {
         });
 
         // add self (this modal instance) to the modal service so it's accessible from controllers
+        console.log("add this popup to infopopProvider");
+        console.log(this);
         this.infopopProvider.add(this);
     }
     getId() {
