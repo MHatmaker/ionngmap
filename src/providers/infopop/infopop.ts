@@ -35,20 +35,20 @@ export class InfopopProvider {
       private mapNumber : number;
       private geopos : {'lng' : number, 'lat' : number};
       private pos : any;
-      private uid : string;
+      private popupId : string;
       public show : boolean;
       private domElem : HTMLElement;
 
       create(markerElement : google.maps.Marker, mapNumber : number, component : any,
-          content : string, title : string, lbl : string, uid : string, showHide : boolean = true) {
+          content : string, title : string, lbl : string, popupId : string, showHide : boolean = true) {
         let parentElem = document.getElementById('google-map-component' + mapNumber);
-        // console.log(`infpop.create for Id ${uid}, title ${title}`);
+        // console.log(`infpop.create for Id ${popupId}, title ${title}`);
         console.log(parentElem);
         this.currentContent = content;
         this.currentTitle = title;
         this.mrkrlabel = lbl;
         this.mapNumber = mapNumber;
-        this.uid = uid;
+        this.popupId = popupId;
         this.show = showHide;
 
         this.geopos = {"lng" : markerElement.getPosition().lng(), "lat" : markerElement.getPosition().lat()};
@@ -74,7 +74,7 @@ export class InfopopProvider {
       add(modal: any) {
           // add modal to array of active modals
           this.modals.push(modal);
-          this.latestId = this.uid; // uuid(); // modal.getId();
+          this.latestId = this.popupId; // modal.getId();
           modal.setId(this.latestId);
           modal.title = this.currentTitle;
           modal.content = this.currentContent;
@@ -88,15 +88,21 @@ export class InfopopProvider {
         return this.latestId;
       }
 
-      hasModal(uid : string) {
-          return this.modalMap.has(uid);
+      hasModal(popupId : string, mapNum) : boolean {
+          let firstTest = this.modalMap.has(popupId);
+          // if (firstTest === true) {
+          //     return this.modalMap.get(popupId).mapNumber === mapNum ? true : false;
+          // }
+          // return false;
+          return firstTest;
       }
 
       remove(id: string) {
           // remove modal from array of active modals
           // let modalToRemove = _.findWhere(this.modals, { id: id });
           // this.modals = _.without(this.modals, modalToRemove);
-          let parentElem = document.getElementById('google-map-component' + this.mapNumber);
+          let mapNo = this.modalMap.get(id).mapNumber;
+          let parentElem = document.getElementById('google-map-component' + mapNo);
           let elemToRemove = this.modalMap.get(id).pop.element;
           parentElem.removeChild(elemToRemove);
           this.modalMap.delete(id);
@@ -115,7 +121,9 @@ export class InfopopProvider {
           this.dockPopEmitter.emit({action : 'close', title : ngUid, 'labelShort' : "", "position" : this.pos});
           // let modal = _.find(this.modals, { ngUid: ngUid });
           let modal = this.modalMap.get(ngUid); //[ngUid];
-          modal.pop.close();
+          if(modal) {
+            modal.pop.close();
+          }
           this.remove(ngUid);
           // this.modalMap.delete(ngUid);
       }

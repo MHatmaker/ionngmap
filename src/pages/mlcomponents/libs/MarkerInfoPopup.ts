@@ -5,6 +5,7 @@ import { Popover } from 'ionic-angular';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 // import { PophandlerProvider } from '../../../providers/pophandler/pophandler';
 import { InfopopComponent } from '../../../components/infopop/infopop';
+import { v4 as uuid } from 'uuid';
 
 declare var google;
 
@@ -19,7 +20,7 @@ export class MarkerInfoPopup {
 
     constructor(private pos, private content : string, public title : string,
       private mrkr=null, private mphmap, private userId : string, private mapNumber : number,
-      private uid : string, private labelarg : any, private geopush ? : GeoPusherSupport,
+      private popupId : string, private labelarg : any, private geopush ? : GeoPusherSupport,
       private isShared : boolean = false) {
         this.geopushSup = geopush.getGeoPusherSupport();
             this.popTitle = title;
@@ -30,7 +31,7 @@ export class MarkerInfoPopup {
                 position: pos,
                 map: this.mphmap,
                 title: title,
-                label: {text: labelarg, color: "#eb3a44", fontSize: "16px", fontWeight: "bold"}
+                label: {text: labelarg, color: "#003a44", fontSize: "16px", fontWeight: "bold"}
             }),
             // shareClick  = function(e: Event, self) {
             //     let fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9);
@@ -48,25 +49,26 @@ export class MarkerInfoPopup {
             dockPopup = async function(e: Event, self) {
                 // console.log(e);
                 // console.log(e.srcElement.id);
+                console.log("dockPopup !!!");
                 let infopop = CommonToNG.getLibs().infopopSvc;
                 let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
                     console.log(`dockPopEmitter event received from ${retval.title} in popover for ${title} userId ${self.userId}`);
                     if(retval) {
                         console.log(`retval.action is ${retval.action}`);
                         if(retval.action == 'undock') {
-                          if(retval.title == self.uid) {
+                          if(retval.title == self.popupId) {
                               console.log('titles matched....');
                           } else {
                               console.log("titles didn't match....unsubscribe");
                               subscriber.unsubscribe();
                           }
                           console.log(`close popover for ${title}`);
-                          infopop.close(self.uid);
+                          infopop.close(self.popupId);
                           console.log('dockPopEmitter client received and processed undock');
                         } else if(retval.action == 'close') {
                             console.log('dockPopEmitter client received close...close popover');
                             subscriber.unsubscribe();
-                            // infopop.close(self.uid);
+                            // infopop.close(self.popupId);
                         } else if(retval.action == 'share') {
                           console.log('dockPopEmitter client received share');
                           self.shareClick(e, self, retval.title, retval.labelShort);
@@ -80,10 +82,13 @@ export class MarkerInfoPopup {
                     // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
                     subscriber.unsubscribe();
                 });
-                if(! infopop.hasModal(self.uid)) {
-                console.log(`open popover for ${self.userId} with title ${title}`);
+                self.popupId = uuid();
+                if(infopop.hasModal(self.popupId, self.mapNumber) === false) {
+                    console.log(`open popover for ${self.userId} with title ${title}`);
                     self.popOver = await infopop.create(marker, self.mapNumber, InfopopComponent, contentRaw,
-                      title, labelarg, self.uid, ! self.isShared);
+                      title, labelarg, self.popupId, ! self.isShared);
+                    console.log("back from infopop.create");
+                    console.log(self.popOver);
                 }
             }
 
@@ -112,11 +117,12 @@ export class MarkerInfoPopup {
     }
 
     getId() {
-        return this.uid;
+        return this.popupId;
     }
 
     shareClick(e: Event, self, popoverId, labelShort) {
-        if(popoverId == this.uid) {
+        console.log(`shareClick with popoverId : ${popoverId}, this.popupId ${this.popupId} `)
+        if(popoverId == this.popupId) {
             let marker = self.mrkr,
                 fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
                 referrerName = self.geopushSup.pusherConfig.getUserName(),
@@ -145,8 +151,8 @@ export class MarkerInfoPopup {
 
     }
 
-    closePopover(ngUid) {
+    closePopover() {
       let infopop = CommonToNG.getLibs().infopopSvc;
-      infopop.close(ngUid);
+      infopop.close(this.popupId);
     }
 }

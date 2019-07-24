@@ -54,6 +54,7 @@ export class InfopopComponent implements OnDestroy {
 
         // add self (this modal instance) to the modal service so it's accessible from controllers
         console.log("add this popup to infopopProvider");
+        // this.popoverId = uuid();
         console.log(this);
         this.infopopProvider.add(this);
     }
