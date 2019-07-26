@@ -48,6 +48,7 @@ export class InfopopProvider {
         this.currentTitle = title;
         this.mrkrlabel = lbl;
         this.mapNumber = mapNumber;
+        // cache popupId to be fetched in add method after element is generated
         this.popupId = popupId;
         this.show = showHide;
 
@@ -72,6 +73,7 @@ export class InfopopProvider {
       }
 
       add(modal: any) {
+          // modal has been added to dom in infopop component
           // add modal to array of active modals
           this.modals.push(modal);
           this.latestId = this.popupId; // modal.getId();
@@ -101,9 +103,12 @@ export class InfopopProvider {
           // remove modal from array of active modals
           // let modalToRemove = _.findWhere(this.modals, { id: id });
           // this.modals = _.without(this.modals, modalToRemove);
-          let mapNo = this.modalMap.get(id).mapNumber;
+          let popItem = this.modalMap.get(id);
+          let mapNo = popItem.mapNumber;
+          let elemToRemove = popItem.pop.element;
+          // let mapNo = this.modalMap.get(id).mapNumber;
           let parentElem = document.getElementById('google-map-component' + mapNo);
-          let elemToRemove = this.modalMap.get(id).pop.element;
+          // let elemToRemove = this.modalMap.get(id).pop.element;
           parentElem.removeChild(elemToRemove);
           this.modalMap.delete(id);
       }
@@ -112,7 +117,7 @@ export class InfopopProvider {
           // open modal specified by id
           console.log('We are supposed to open a modal here in infopop provider');
           // let modal = _.findWhere(this.modals, { id: ngUid });
-          let modal = this.modalMap.get(ngUid);
+          // let modal = this.modalMap.get(ngUid);
           // modal.open(content, title);
       }
 

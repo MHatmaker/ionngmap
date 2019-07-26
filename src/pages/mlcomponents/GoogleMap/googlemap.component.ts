@@ -29,18 +29,14 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   private zoom: number;
   private mlconfig : MLConfig;
   private mlconfigSet : boolean = false;
-  // private self = this;
   private startup : StartupGoogle;
-  //private places : PlacesSearch;
   nextState = "normal";
   private gmarker : google.maps.Marker;
   private markerPosition :  [number, number] = [0, 0];
+  private ypos : number;
+  private xpos : number;
   private numDeltas : number = 100;
-  private delay : number = 500; //milliseconds
   private i : number = 0;
-  private deltaLat : number = 0;
-  private deltaLng : number = 0;
-
 
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService, private canvasService : CanvasService,
@@ -104,7 +100,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
         })
     let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
       if(retval.action == "undock") {
-        this.transition([retval.position.y, retval.position.x]);
+        this.transition(retval.position);
       }
     });
 
@@ -175,34 +171,35 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     return new Promise(resolve => setTimeout(resolve, 7));
   }
 
-  async transition(result){
-      console.log(`transition starting to ${result[0]}, ${result[1]}`);
-      this.glat = this.gmap.getCenter().lat();
-      this.glng = this.gmap.getCenter().lng();
-      this.markerPosition[0] = this.glat;
-      this.markerPosition[1] = this.glng;
-      this.deltaLat = (result[0] - this.markerPosition[0])/this.numDeltas;
-      this.deltaLng = (result[1] - this.markerPosition[1])/this.numDeltas;
-      console.log(`start moving by ${this.deltaLat}, ${this.deltaLng}`);
+  async transition(position){
+      console.log(`transition starting to ${position.y}, ${position.x}`);
+      let glat = this.gmap.getCenter().lat();
+      let glng = this.gmap.getCenter().lng();
+      let deltaLat = (position.y - glat)/this.numDeltas;
+      let deltaLng = (position.x - glng)/this.numDeltas;
+      console.log(`start moving by ${deltaLat}, ${deltaLng}`);
       this.gmarker.setVisible(true);
-      for(let j=0; j<3; j++) {
-        this.markerPosition[0] = this.glat;
-        this.markerPosition[1] = this.glng;
-        console.log(`transition from ${this.markerPosition[0]}, ${this.markerPosition[1]}`);
-        for ( this.i = 0; this.i < this.numDeltas; this.i++) {
-          await(this.moveMarker());
-        }
-     }
-     this.gmarker.setVisible(false);
- }
 
-   moveMarker = async () => {
-       await this.delayMarker();
-       this.markerPosition[0] += this.deltaLat;
-       this.markerPosition[1] += this.deltaLng;
-       // console.log(`${this.i} - move to ${this.markerPosition[0]}, ${this.markerPosition[1]}`)
-       let latlng = new google.maps.LatLng(this.markerPosition[0], this.markerPosition[1]);
-       this.gmarker.setPosition(latlng);
+      const startOuter = async () => {
+        console.log(`transition from ${glat}, ${glng}`);
+        for (const nm of [1, 2, 3]) {
+          let ypos = glat;
+          let xpos = glng;
+
+          let nums = Array.from(Array(100).keys());
+            for (const num of nums) {
+                 await this.delayMarker();
+                 ypos += deltaLat;
+                 xpos += deltaLng;
+                 let latlng = new google.maps.LatLng(ypos, xpos);
+                 this.gmarker.setPosition(latlng);
+          }
+       }
+     }
+     startOuter().then(() => {
+       console.log("finished outer");
+       this.gmarker.setVisible(false);
+     });
    }
 }
 
