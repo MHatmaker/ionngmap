@@ -239,10 +239,10 @@ export class MapHosterGoogle extends MapHoster {
             bnds = this.mphmap.getBounds(),
             xtntDict = {
                 'src' : 'google',
-                'zoom' : zm,
+                'zoom' : zm < this.maxZoom ? zm : this.maxZoom - 1,
                 'lon' : fixedLL.lon,
                 'lat' : fixedLL.lat,
-                'scale': this.scale2Level[zm].scale,
+                'scale': this.scale2Level[zm < this.maxZoom ? zm : this.maxZoom - 1].scale,
                 'action': action,
                 'bounds': bnds
             };
@@ -723,13 +723,14 @@ export class MapHosterGoogle extends MapHoster {
                 cntrlng = fixedCntrLL.lon,
                 cntrlat = fixedCntrLL.lat;
 
-            if (this.scale2Level.length > 0) {
+            if (this.scale2Level.length > 0 && zm < this.maxZoom) {
                 // var view = "Zoom : " + zm + " Scale : " + this.scale2Level[zm].scale + " Center : " + cntrlng + ", " + cntrlat + " Current : " + evlng + ", " + evlat;
                 // document.getElementById("mppos").value = view;
+                console.log("positionUpdateService emitting at zoom level " + zm);
                 this.geopushSup.positionUpdateService.positionData.emit({key: 'coords',
                     val: {
-                        'zm' : zm,
-                        'scl' : this.scale2Level[zm].scale,
+                        'zm' : zm < this.maxZoom ? zm : this.maxZoom - 1,
+                        'scl' : this.scale2Level[zm < this.maxZoom ? zm : this.maxZoom - 1].scale,
                         'cntrlng' : cntrlng,
                         'cntrlat': cntrlat,
                         'evlng' : evlng,
