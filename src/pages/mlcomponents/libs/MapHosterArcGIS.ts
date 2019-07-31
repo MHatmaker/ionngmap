@@ -61,7 +61,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     mlconfig : MLConfig;
     geopushSup : IGeoPusher;
     pusherEventHandler: PusherEventHandler;
-    // agourl : string = "https://js.arcgis.com/4.8/";
+
     agoOptions
         options = {
         url: 'agourl'
@@ -92,9 +92,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async initializeMap() {
       try {
-      // const options = {
-      //   url: 'agourl'
-      // };
         const [esriPoint, esriSpatialReference, esriWebMercator, esriGeometry, Locator,
               esriwebMercatorUtils, esriMapView] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/WebMercator',
@@ -138,9 +135,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     // }
 
     async updateGlobals(msg, cntrx, cntry, zm) {
-        // const options = {
-        //   url: 'agourl'
-        // };
         const [esriwebMercatorUtils] = await loadModules([
              'esri/geometry/support/webMercatorUtils'
           ], this.agoOptions);
@@ -196,9 +190,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async extractBounds(zm, cntr, action) : Promise<xtntParams> {
-        // const options = {
-        //   url: 'agourl'
-        // };
         const [esriPoint, esriSpatialReference] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference',
           ], this.agoOptions)
@@ -304,9 +295,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async retrievedClick(clickPt) {
       if (clickPt.referrerId !== this.mlconfig.getUserId()) {
-        // const options = {
-        //   url: 'agourl'
-        // };
         const [esriPoint, esriMapView] = await loadModules([
               'esri/geometry/Point', 'esri/views/MapView'
             ], this.agoOptions)
@@ -358,9 +346,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
       }
     }
     async retrievedBounds(xj) {
-      // const options = {
-      //   url: 'agourl'
-      // };
       const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
           ], this.agoOptions)
@@ -420,9 +405,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async onMapClick(e) {
       try {
-      // const options = {
-      //   url: 'agourl'
-      // };
       const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
           ], this.agoOptions)
@@ -483,9 +465,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     // this.pusherEventHandler.addEvent('client-MapClickEvent',  retrievedClick);
 
     async showClickResult(content, mapPt) {
-        // const options = {
-        //   url: 'agourl'
-        // };
         const [ActionButton] = await loadModules([
               'esri/support/actions/ActionButton'
             ], this.agoOptions);
@@ -558,9 +537,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async setCurrentLocation( loc : MapLocOptions) {
-      // const options = {
-      //   url: 'agourl'
-      // };
       const [esriPoint, esriSpatialReference, esriLocator,
               esriwebMercatorUtils, watchUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/tasks/Locator',
@@ -576,9 +552,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async addGraphic(pt){
-      // const options = {
-      //   url: 'agourl'
-      // };
       const [esriPoint, esriSimpleMarkerSymbol, esriSimpleLineSymbol,
             esriGraphic] = await loadModules([
             'esri/geometry/Point', 'esri/symbols/SimpleMarkerSymbol', 'esri/symbols/SimpleLineSymbol',
@@ -600,9 +573,6 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
-      // const options = {
-      //   url: 'agourl'
-      // };
       const [esriPoint, esriSpatialReference, esriLocator,
               esriwebMercatorUtils, watchUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/tasks/Locator',
