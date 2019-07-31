@@ -61,6 +61,11 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     mlconfig : MLConfig;
     geopushSup : IGeoPusher;
     pusherEventHandler: PusherEventHandler;
+    // agourl : string = "https://js.arcgis.com/4.8/";
+    agoOptions
+        options = {
+        url: 'agourl'
+      };
     // require(['dojo/_base/event','esri/tasks/locator', 'dojo/_base/fx', 'dojo/fx/easing', 'esri/map']);
     //
     // define([
@@ -87,15 +92,15 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async initializeMap() {
       try {
-      const options = {
-        url: 'https://js.arcgis.com/4.8/'
-      };
+      // const options = {
+      //   url: 'agourl'
+      // };
         const [esriPoint, esriSpatialReference, esriWebMercator, esriGeometry, Locator,
               esriwebMercatorUtils, esriMapView] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/WebMercator',
             'esri/geometry/Geometry', 'esri/tasks/Locator', 'esri/geometry/support/webMercatorUtils',
             'esri/views/MapView'
-          ], options)
+          ], this.agoOptions)
       }
       catch(error) {
         console.log('We have an error: ' + error);
@@ -133,12 +138,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     // }
 
     async updateGlobals(msg, cntrx, cntry, zm) {
-        const options = {
-          url: 'https://js.arcgis.com/4.8/'
-        };
+        // const options = {
+        //   url: 'agourl'
+        // };
         const [esriwebMercatorUtils] = await loadModules([
              'esri/geometry/support/webMercatorUtils'
-          ], options);
+          ], this.agoOptions);
         console.log("updateGlobals ");
         this.zmG = zm;
         this.cntrxG = cntrx;
@@ -191,12 +196,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async extractBounds(zm, cntr, action) : Promise<xtntParams> {
-        const options = {
-          url: 'https://js.arcgis.com/4.8/'
-        };
+        // const options = {
+        //   url: 'agourl'
+        // };
         const [esriPoint, esriSpatialReference] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference',
-          ], options)
+          ], this.agoOptions)
         var source = proj4.Proj('GOOGLE'),
             dest = proj4.Proj('WGS84'),
             p = proj4.toPoint([cntr.longitude, cntr.latitude]),
@@ -299,12 +304,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async retrievedClick(clickPt) {
       if (clickPt.referrerId !== this.mlconfig.getUserId()) {
-        const options = {
-          url: 'https://js.arcgis.com/4.8/'
-        };
+        // const options = {
+        //   url: 'agourl'
+        // };
         const [esriPoint, esriMapView] = await loadModules([
               'esri/geometry/Point', 'esri/views/MapView'
-            ], options)
+            ], this.agoOptions)
           console.log("Back in retrievedClick");
           // var latlng = L.latLng(clickPt.y, clickPt.x, clickPt.y);
           console.log("You clicked the map at " + clickPt.x + ", " + clickPt.y);
@@ -353,12 +358,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
       }
     }
     async retrievedBounds(xj) {
-      const options = {
-        url: 'https://js.arcgis.com/4.8/'
-      };
+      // const options = {
+      //   url: 'agourl'
+      // };
       const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
-          ], options)
+          ], this.agoOptions)
         console.log("Back in MapHosterArcGIS " + this.mlconfig.getMapNumber() + " retrievedBounds");
         if (xj.zoom === '0') {
             xj.zoom = this.zmG;
@@ -415,12 +420,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
     async onMapClick(e) {
       try {
-      const options = {
-        url: 'https://js.arcgis.com/4.8/'
-      };
+      // const options = {
+      //   url: 'agourl'
+      // };
       const [esriPoint, esriSpatialReference, esriwebMercatorUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'
-          ], options)
+          ], this.agoOptions)
         var mapPt = {x : e.mapPoint.x, y : e.mapPoint.y},
             source = proj4.Proj('GOOGLE'),
             dest =  proj4.Proj('WGS84'),
@@ -478,12 +483,12 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     // this.pusherEventHandler.addEvent('client-MapClickEvent',  retrievedClick);
 
     async showClickResult(content, mapPt) {
-        const options = {
-          url: 'https://js.arcgis.com/4.8/'
-        };
+        // const options = {
+        //   url: 'agourl'
+        // };
         const [ActionButton] = await loadModules([
               'esri/support/actions/ActionButton'
-            ], options);
+            ], this.agoOptions);
 
         var
             // actionList = document.getElementsByClassName('esri-popup__actions')[0],
@@ -553,14 +558,14 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async setCurrentLocation( loc : MapLocOptions) {
-      const options = {
-        url: 'https://js.arcgis.com/4.8/'
-      };
+      // const options = {
+      //   url: 'agourl'
+      // };
       const [esriPoint, esriSpatialReference, esriLocator,
               esriwebMercatorUtils, watchUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/tasks/Locator',
             'esri/geometry/support/webMercatorUtils', 'esri/core/watchUtils'
-          ], options)
+          ], this.agoOptions)
       let cntr = new esriPoint({longitude : loc.center.lng, latitude : loc.center.lat, spatialReference : new esriSpatialReference({wkid: 4326})});
       this.mphmap.goTo({target : cntr, zoom : this.zmG});
       let xtExt = this.extractBounds(this.mphmap.zoom, cntr, 'pan');
@@ -571,14 +576,14 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async addGraphic(pt){
-      const options = {
-        url: 'https://js.arcgis.com/4.8/'
-      };
+      // const options = {
+      //   url: 'agourl'
+      // };
       const [esriPoint, esriSimpleMarkerSymbol, esriSimpleLineSymbol,
             esriGraphic] = await loadModules([
             'esri/geometry/Point', 'esri/symbols/SimpleMarkerSymbol', 'esri/symbols/SimpleLineSymbol',
             'esri/Graphic'
-          ], options)
+          ], this.agoOptions)
       let symbol = new esriSimpleMarkerSymbol({
         color: [226, 119, 40],
         outline: {
@@ -595,14 +600,14 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     async configureMap(xtntMap, zoomWebMap, pointWebMap, mlcfg) { // newMapId, mapOpts
-      const options = {
-        url: 'https://js.arcgis.com/4.8/'
-      };
+      // const options = {
+      //   url: 'agourl'
+      // };
       const [esriPoint, esriSpatialReference, esriLocator,
               esriwebMercatorUtils, watchUtils] = await loadModules([
             'esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/tasks/Locator',
             'esri/geometry/support/webMercatorUtils', 'esri/core/watchUtils'
-          ], options)
+          ], this.agoOptions)
         console.log("MapHosterArcGIS configureMap");
         this.mphmap = xtntMap;
         this.mapReady = false;
