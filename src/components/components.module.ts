@@ -12,6 +12,7 @@ import { MsgsetupComponent } from './msgsetup/msgsetup';
 import { AccordionListComponent } from './accordion-list/accordion-list';
 import { GmpopoverComponent } from './gmpopover/gmpopover';
 import { InfopopComponent } from './infopop/infopop';
+import { LocateselfComponent } from './locateself/locateself';
 @NgModule({
 	declarations: [PushersetupComponent,
     NewsComponent,
@@ -26,7 +27,8 @@ import { InfopopComponent } from './infopop/infopop';
     MsgsetupComponent,
     AccordionListComponent,
     GmpopoverComponent,
-    InfopopComponent],
+    InfopopComponent,
+    LocateselfComponent],
 	imports: [],
 	exports: [PushersetupComponent,
     NewsComponent,
@@ -41,6 +43,7 @@ import { InfopopComponent } from './infopop/infopop';
     MsgsetupComponent,
     AccordionListComponent,
     GmpopoverComponent,
-    InfopopComponent]
+    InfopopComponent,
+    LocateselfComponent]
 })
 export class ComponentsModule {}

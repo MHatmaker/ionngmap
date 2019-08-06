@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Sharing Setup</ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="cancel()">
+        <span ion-text color="primary" showWhen="ios">Cancel</span>
+        <ion-icon name="md-close" showWhen="android, windows"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="cards-bg social-cards">
+    <ion-card id="idLocateselfCard">
+      <ion-card-content>
+          <form [formGroup]="locateselfgroup" (ngSubmit)="logForm()">
+            <h4>Locate me on map</h4>
+              <ion-row>
+                <ion-col>
+                    <button ion-button color="btn-primary" (click)="getCurrentLocation()">Accept</button>
+                </ion-col>
+                <ion-col>
+                    <button ion-button color="btn-secondary" (click)="cancel()">Cancel</button>
+                </ion-col>
+              </ion-row>
+          </form>
+        </ion-card-content>
+    </ion-card>
+  </ion-content>

@@ -47,7 +47,7 @@ export class MapHoster {
         return null;
     }
     setCurrentLocation(loc : MapLocOptions) {
-      console.log("MapHoster base class for getCurrentLocation");
+      console.log("MapHoster base class for setCurrentLocation");
       return null;
     }
 }

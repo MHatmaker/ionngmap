@@ -50,6 +50,7 @@ export class CanvasService {
     this.geoLocation.getCurrentPosition().then((position) => {
 
         // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        console.log(`geoLocate current position ${position.coords.longitude}, ${position.coords.latitude}`);
         let glat = position.coords.latitude;
         let glng = position.coords.longitude;
         this.glatitude = glat;
@@ -62,14 +63,16 @@ export class CanvasService {
           query : ""
           //mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        }, (err) => {
-            console.log(err);
-        });
+      }).catch( (err) => {
+            console.log(`geoLocation getCurrentPosition error ${err}`);
+      });
     }
 
     getCurrentLocation() {
+      console.log('getCurrentLocation');
       this.geoLocation.getCurrentPosition().then((position) => {
 
+          console.log(`geoLocate current position ${position.coords.longitude}, ${position.coords.latitude}`);
           // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
           let glat = position.coords.latitude;
           let glng = position.coords.longitude;
@@ -83,6 +86,8 @@ export class CanvasService {
           };
           let maphoster = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
           maphoster.setCurrentLocation(this.currentLoc);
+        }).catch((err) => {
+          console.log(`geoLocate getCurrentPosition error ${err}`);
         });
     }
 
