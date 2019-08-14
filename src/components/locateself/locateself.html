@@ -15,6 +15,15 @@
       <ion-card-content>
           <form [formGroup]="locateselfgroup" (ngSubmit)="logForm()">
             <h4>Locate me on map</h4>
+
+                <ion-item>
+                    <ion-label>latitude</ion-label>
+                    <ion-input type="text" formControlName="latitude"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label>longitude</ion-label>
+                    <ion-input type="text" formControlName="longitude"></ion-input>
+                </ion-item>
               <ion-row>
                 <ion-col>
                     <button ion-button color="btn-primary" (click)="getCurrentLocation()">Accept</button>

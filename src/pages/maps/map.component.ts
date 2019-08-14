@@ -21,6 +21,7 @@ import { SlideViewService } from '../../services/slideview.service';
 import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
 import { PageService } from "../../services/pageservice"
 import { NewsComponent } from "../../components/news/news";
+import { LocateselfComponent } from "../../components/locateself/locateself";
 import { PushersetupComponent } from "../../components/pushersetup/pushersetup";
 import { MsgsetupComponent } from "../../components/msgsetup/msgsetup";
 import { AgogroupComponent } from "../../components/agogroup/agogroup";
@@ -161,7 +162,15 @@ export class MapsPage implements AfterViewInit {
   }
   showLocate() {
       console.log('show locate');
-      this.canvasService.getCurrentLocation();
+      // this.canvasService.getCurrentLocation();
+
+      let modal = this.modalCtrl.create(LocateselfComponent);
+      modal.present();
+      modal.onDidDismiss((mode, data) => {
+        console.log('showLocate returned');
+      }
+    )
+
   }
   showSharingHelp() {
       console.log('show sharing help');
@@ -231,10 +240,10 @@ export class MapsPage implements AfterViewInit {
               } else {
                   // This should have happend on the first map instance in canvasService ctor
                   console.log("get maploc from initial location");
-                  let initialMaploc = this.canvasService.getInitialLocation();
-                  opts.mapLocOpts = initialMaploc;
+                  await this.canvasService.awaitInitialLocation();
+                  opts.mapLocOpts = this.canvasService.getInitialLocation();
                   console.log(opts.mapLocOpts);
-                  ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
+                  ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat, 'zoom' : opts.mapLocOpts.zoom};
               }
             } else {  // this case might never happen
                   // there is already a map open in the slide viewer

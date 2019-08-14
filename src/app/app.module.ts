@@ -51,6 +51,7 @@ import { CurrentMapTypeService } from '../services/currentmaptypeservice';
 import { GeoCodingService } from '../services/GeoCodingService';
 import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
 import { NewsComponent } from '../components/news/news';
+import { LocateselfComponent } from '../components/locateself/locateself';
 import { PushersetupComponent } from '../components/pushersetup/pushersetup';
 import { AgogroupComponent } from '../components/agogroup/agogroup';
 import { AgoitemComponent } from '../components/agoitem/agoitem';
@@ -93,6 +94,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MultiCanvasLeaflet,
     CarouselComponent,
     NewsComponent,
+    LocateselfComponent,
     PushersetupComponent,
     AgogroupComponent,
     AgoitemComponent,
@@ -135,6 +137,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     LeafletMapComponent,
     PositionViewComponent,
     NewsComponent,
+    LocateselfComponent,
     PushersetupComponent,
     AgogroupComponent,
     AgoitemComponent,

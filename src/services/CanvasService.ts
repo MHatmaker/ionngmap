@@ -47,31 +47,35 @@ export class CanvasService {
         private mapOpener : MapopenerProvider,
         private pusherConfig : PusherConfig
       ){
-    this.geoLocation.getCurrentPosition().then((position) => {
-
-        // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        console.log(`geoLocate current position ${position.coords.longitude}, ${position.coords.latitude}`);
-        let glat = position.coords.latitude;
-        let glng = position.coords.longitude;
-        this.glatitude = glat;
-        this.glongitude = glng;
-        let latLng = new google.maps.LatLng(glat, glng);
-        this.initialLoc = {
-          center: {'lng' : glng, 'lat' : glat},
-          zoom: 15,
-          places : null,
-          query : ""
-          //mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-      }).catch( (err) => {
-            console.log(`geoLocation getCurrentPosition error ${err}`);
-      });
+        // this.awaitInitialLocation();
+    // this.geoLocation.getCurrentPosition().then((position) => {
+    //
+    //     // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    //     console.log(`geoLocate current position ${position.coords.longitude}, ${position.coords.latitude}`);
+    //     let glat = position.coords.latitude;
+    //     let glng = position.coords.longitude;
+    //     this.glatitude = glat;
+    //     this.glongitude = glng;
+    //     let latLng = new google.maps.LatLng(glat, glng);
+    //     this.initialLoc = {
+    //       center: {'lng' : glng, 'lat' : glat},
+    //       zoom: 15,
+    //       places : null,
+    //       query : ""
+    //       //mapTypeId: google.maps.MapTypeId.ROADMAP
+    //     };
+    //   }).catch( (err) => {
+    //         console.log(`geoLocation getCurrentPosition error ${err}`);
+    //   });
     }
 
-    getCurrentLocation() {
+    getCurrentLocation() : any {
       console.log('getCurrentLocation');
-      this.geoLocation.getCurrentPosition().then((position) => {
-
+      //this.geoLocation.getCurrentPosition().then((position) => {
+      return new Promise((resolve, reject) => {
+        this.geoLocation.getCurrentPosition();
+      })
+/*
           console.log(`geoLocate current position ${position.coords.longitude}, ${position.coords.latitude}`);
           // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
           let glat = position.coords.latitude;
@@ -84,11 +88,19 @@ export class CanvasService {
             query : ""
             //mapTypeId: google.maps.MapTypeId.ROADMAP
           };
-          let maphoster = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
-          maphoster.setCurrentLocation(this.currentLoc);
         }).catch((err) => {
           console.log(`geoLocate getCurrentPosition error ${err}`);
-        });
+        });*/
+    }
+
+    awaitInitialLocation = async () => {
+        const {coords} = await this.getCurrentLocation();
+        this.initialLoc = this.currentLoc;
+    }
+    awaitCurrentLocation = async () => {
+        await this.getCurrentLocation();
+        let maphoster = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
+        maphoster.setCurrentLocation(this.currentLoc);
     }
 
     getIndex () {
@@ -98,7 +110,8 @@ export class CanvasService {
         return this.initialLoc;
     }
 
-  addInitialCanvas(userName : string) {
+  async addInitialCanvas(userName : string) {
+        await this.awaitInitialLocation();
         let bnds : MLBounds = null;
         let opts : MapLocOptions = this.initialLoc;
         let shr : IMapShare = {mapLocOpts : opts, userName : userName, mlBounds : bnds,
