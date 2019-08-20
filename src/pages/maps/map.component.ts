@@ -123,6 +123,9 @@ export class MapsPage implements AfterViewInit {
                 console.log("invalid EMapSource");
             }
       });
+      this.showLocate();
+
+      // this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
   }
   async searchMap() {
       let modal = this.modalCtrl.create(AgoitemComponent);
@@ -168,6 +171,7 @@ export class MapsPage implements AfterViewInit {
       modal.present();
       modal.onDidDismiss((mode, data) => {
         console.log('showLocate returned');
+        console.log(data);
       }
     )
 

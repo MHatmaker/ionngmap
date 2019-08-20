@@ -114,7 +114,7 @@ async queryForUserName()
   console.log('ready to await in queryForUserName');
   await this.hostConfig.getUserNameFromServer();
   console.log("finished await in queryForUserName");
-  this.canvasService.addInitialCanvas(this.pusherConfig.getUserName());
+  // this.canvasService.addInitialCanvas(this.pusherConfig.getUserName());
   //this.setIDsAndNames();
 }
 
@@ -150,9 +150,13 @@ async queryForUserName()
       this.splashScreen.hide();
       // Initialize some options
 			this.initializeOptions();
-        let sc = document.getElementsByClassName('scroll-content');
-        sc[0].classList.add('padzero');
-        sc[1].classList.add('padzero');
+      let sc = document.getElementsByClassName('scroll-content');
+      sc[0].classList.add('padzero');
+      sc[1].classList.add('padzero');
+
+      let platforms = this.platform.platforms();
+      let isApp = (this.platform.is('core') || this.platform.is('mobileweb')) ? false : true;
+      this.canvasService.setPlatform(isApp);
     });
   }
 /*

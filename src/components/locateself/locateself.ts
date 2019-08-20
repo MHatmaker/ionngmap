@@ -26,7 +26,7 @@ export class LocateselfComponent {
     this.canvasService.awaitCurrentLocation();
     let chnl = this.locateselfgroup.value.latitude;
     let uname = this.locateselfgroup.value.longitude;
-    this.viewCtrl.dismiss();
+    // this.viewCtrl.dismiss();
   }
   logForm(){
     console.log(this.locateselfgroup.value)
