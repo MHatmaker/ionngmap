@@ -74,18 +74,14 @@ export class CanvasService {
         this.initialLoc.center.lat = position.coords.latitude;
         this.initialLoc.center.lng = position.coords.longitude;
     }
-    public async getCurrentLocationBrowser() :  Promise<any> {
+    setPlatform(pltfrm : boolean) {
+      this.isApp = pltfrm;
+    }
 
-      let options = {timeout: 10000, enableHighAccuracy: false};
-      let navpos = navigator.geolocation.watchPosition((position : Position) =>
-        // this.geoLocation.getCurrentPosition((position : Position) =>
-          {
-            console.log(`lng ${position.coords.longitude}, lat ${position.coords.latitude}`);
-            this.initialLoc.center.lat = position.coords.latitude;
-            this.initialLoc.center.lng = position.coords.longitude;
-            console.log(`lng ${this.initialLoc.center.lng}, lat ${this.initialLoc.center.lat}`);
-          }
-      );
+    public getCurrentLocationBrowser()  : Promise<{coords : any}>{
+
+      let options = {timeout: 3000, enableHighAccuracy: false};
+      return new Promise((resolve, reject) => {navigator.geolocation.getCurrentPosition(resolve, reject, options)});
     }
 
     public getCurrentLocation() {
@@ -98,35 +94,21 @@ export class CanvasService {
             this.initialLoc.center.lng = position.coords.longitude;
           }
       );
-
-/*
-          console.log(`geoLocate current position ${position.coords.longitude}, ${position.coords.latitude}`);
-          // let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-          let glat = position.coords.latitude;
-          let glng = position.coords.longitude;
-          let latLng = new google.maps.LatLng(glat, glng);
-          this.currentLoc = {
-            center: {'lng' : glng, 'lat' : glat},
-            zoom: 15,
-            places : null,
-            query : ""
-            //mapTypeId: google.maps.MapTypeId.ROADMAP
-          };
-        }).catch((err) => {
-          console.log(`geoLocate getCurrentPosition error ${err}`);
-        });*/
     }
 
-    setPlatform(pltfrm : boolean) {
-      this.isApp = pltfrm;
-    }
 
     awaitInitialLocation = async () => {
         if(this.isApp) {
           await this.getCurrentLocation();
           this.initialLoc = this.currentLoc;
       } else {
-          await this.getCurrentLocationBrowser();
+
+          const {coords} = await this.getCurrentLocationBrowser();
+          console.log(coords);
+          const {latitude, longitude} = coords;
+          console.log(coords);
+          this.initialLoc.center.lng = longitude;
+          this.initialLoc.center.lat = latitude;
           // this.initialLoc = this.currentLoc;
           console.log(`lng ${this.initialLoc.center.lng}, lat ${this.initialLoc.center.lat}`);
       }
@@ -136,11 +118,21 @@ export class CanvasService {
     awaitCurrentLocation = async () => {
         if(this.isApp) {
           await this.getCurrentLocation();
+          console.log(`lng ${this.initialLoc.center.lng}, lat ${this.initialLoc.center.lat}`);
           // this.initialLoc = this.currentLoc;
       } else {
-          await this.getCurrentLocationBrowser();
+        try {
+          const {coords} = await this.getCurrentLocationBrowser();
+          console.log(coords);
+          const {latitude, longitude} = coords;
+          console.log(coords);
+          this.initialLoc.center.lng = longitude;
+          this.initialLoc.center.lat = latitude;
           // this.initialLoc = this.currentLoc;
           console.log(`lng ${this.initialLoc.center.lng}, lat ${this.initialLoc.center.lat}`);
+        } catch(err) {
+          console.error(err);
+        }
       }
       // let maphoster = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
       // maphoster.setCurrentLocation(this.currentLoc);
