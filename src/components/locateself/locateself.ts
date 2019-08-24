@@ -22,11 +22,15 @@ export class LocateselfComponent {
       longitude : ["initial longitude"],
     });
   }
-  getCurrentLocation() {
-    this.canvasService.awaitCurrentLocation();
+  async getCurrentLocation() {
+    await this.canvasService.awaitCurrentLocation();
     let chnl = this.locateselfgroup.value.latitude;
     let uname = this.locateselfgroup.value.longitude;
-    // this.viewCtrl.dismiss();
+    let cntr = this.canvasService.getInitialLocation().center;
+    this.locateselfgroup.setValue({latitude : cntr.lat, longitude : cntr.lng});
+    setTimeout(
+      this.viewCtrl.dismiss(),
+      3000);
   }
   logForm(){
     console.log(this.locateselfgroup.value)

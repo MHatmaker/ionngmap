@@ -23,6 +23,10 @@ import { MapopenerProvider } from '../providers/mapopener/mapopener';
 import { MLBounds, ImlBounds } from './mlbounds.service';
 
 // import {MultiCanvasGoogle} from '../MultiCanvas/multicanvasgoogle.component';
+interface ICoords {
+  latitude : number;
+  longitude : number;
+}
 
 @Injectable()
 export class CanvasService {
@@ -78,10 +82,12 @@ export class CanvasService {
       this.isApp = pltfrm;
     }
 
-    public getCurrentLocationBrowser()  : Promise<{coords : any}>{
+    public async getCurrentLocationBrowser()  : Promise<{coords : ICoords}>{
 
-      let options = {timeout: 3000, enableHighAccuracy: false};
-      return new Promise((resolve, reject) => {navigator.geolocation.getCurrentPosition(resolve, reject, options)});
+      let options = {timeout: 10000, enableHighAccuracy: false};
+      return await new Promise<{coords : ICoords}>(async (resolve, reject) => {
+        await navigator.geolocation.getCurrentPosition(resolve, reject, options)
+      });
     }
 
     public getCurrentLocation() {
@@ -122,6 +128,7 @@ export class CanvasService {
           // this.initialLoc = this.currentLoc;
       } else {
         try {
+          console.log('call getCurrentLocationBrowser');
           const {coords} = await this.getCurrentLocationBrowser();
           console.log(coords);
           const {latitude, longitude} = coords;
@@ -131,6 +138,7 @@ export class CanvasService {
           // this.initialLoc = this.currentLoc;
           console.log(`lng ${this.initialLoc.center.lng}, lat ${this.initialLoc.center.lat}`);
         } catch(err) {
+          console.log('timeout on geoLocation');
           console.error(err);
         }
       }
