@@ -28,9 +28,12 @@ export class LocateselfComponent {
     let uname = this.locateselfgroup.value.longitude;
     let cntr = this.canvasService.getInitialLocation().center;
     this.locateselfgroup.setValue({latitude : cntr.lat, longitude : cntr.lng});
-    setTimeout(
-      this.viewCtrl.dismiss(),
-      3000);
+    // setTimeout(
+    //   this.viewCtrl.dismiss(),
+    //   3000);
+  }
+  accept() {
+    this.viewCtrl.dismiss();
   }
   logForm(){
     console.log(this.locateselfgroup.value)

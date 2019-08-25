@@ -34,8 +34,8 @@ export class CanvasService {
     private canvases : Array<any> = new Array<any>();
     private outerMapNumber : number = 0;
     private selectedMapType : string;
-    private initialLoc : MapLocOptions = {center : {lat : -1, lng : -1}, zoom : -1, places : null, query : ""};
-    private currentLoc : MapLocOptions = {center : {lat : -1, lng : -1}, zoom : -1, places : null, query : ""};;
+    private initialLoc : MapLocOptions = {center : {lat : -1, lng : -1}, zoom : 15, places : null, query : ""};
+    private currentLoc : MapLocOptions = {center : {lat : -1, lng : -1}, zoom : 15, places : null, query : ""};;
     private glongitude : number;
     private glatitude : number;
     private isApp : boolean = true;
@@ -154,10 +154,10 @@ export class CanvasService {
     }
 
   async addInitialCanvas(userName : string) {
-        await this.awaitInitialLocation();
+        // await this.awaitInitialLocation();
         let bnds : MLBounds = null;
-        let opts : MapLocOptions = this.initialLoc;
-        let shr : IMapShare = {mapLocOpts : opts, userName : userName, mlBounds : bnds,
+        // let opts : MapLocOptions = this.initialLoc;
+        let shr : IMapShare = {mapLocOpts : this.initialLoc, userName : userName, mlBounds : bnds,
             source : EMapSource.urlgoogle, webmapId : 'nowebmap'};
         console.log(`geolocation center at ${this.glongitude}, ${this.glatitude}`);
         this.mapOpener.openMap.emit(shr);
