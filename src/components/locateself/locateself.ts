@@ -12,18 +12,24 @@ export class LocateselfComponent {
   private locateselfgroup : FormGroup;
   private latitude : number;
   private longitude : number;
+  public findMe : boolean = true;
+  public foundMe : boolean = false;
   constructor(public viewCtrl: ViewController,
         private geoLocation : Geolocation,
         private canvasService : CanvasService,
         private formBuilder : FormBuilder) {
     console.log('Hello LocateselfComponent Component');
+    this.findMe = true;
+    this.foundMe = false;
     this.locateselfgroup = this.formBuilder.group({
       latitude : ["initial latitude"], //, Validators.required],
       longitude : ["initial longitude"],
     });
   }
   async getCurrentLocation() {
+    this.findMe = false;
     await this.canvasService.awaitCurrentLocation();
+    this.foundMe = true;
     let chnl = this.locateselfgroup.value.latitude;
     let uname = this.locateselfgroup.value.longitude;
     let cntr = this.canvasService.getInitialLocation().center;
@@ -33,14 +39,16 @@ export class LocateselfComponent {
     //   3000);
   }
   accept() {
-    this.viewCtrl.dismiss();
+    const onClosedData : string = "showme";
+    this.viewCtrl.dismiss(onClosedData);
   }
   logForm(){
     console.log(this.locateselfgroup.value)
   }
 
   cancel() {
-      this.viewCtrl.dismiss();
+    const onClosedData : string = "usequery";
+    this.viewCtrl.dismiss(onClosedData);
   }
 
 }

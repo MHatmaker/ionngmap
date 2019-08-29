@@ -14,27 +14,47 @@
     <ion-card id="idLocateselfCard">
       <ion-card-content>
           <form [formGroup]="locateselfgroup" >
-            <h4>Locate me on map</h4>
+            <h4>Start with initial map</h4>
 
-                <ion-item>
+                <ion-item  *ngIf="foundMe">
                     <ion-label>latitude</ion-label>
                     <ion-input type="text" formControlName="latitude"></ion-input>
                 </ion-item>
-                <ion-item>
+                <ion-item  *ngIf="foundMe">
                     <ion-label>longitude</ion-label>
                     <ion-input type="text" formControlName="longitude"></ion-input>
                 </ion-item>
-              <ion-row>
-                <ion-col>
-                    <button ion-button color="btn-primary" (click)="getCurrentLocation()">Find Me</button>
-                </ion-col>
-                <ion-col>
-                    <button ion-button color="btn-secondary" (click)="accept()">Accept</button>
-                </ion-col>
-                <ion-col>
-                    <button ion-button color="btn-secondary" (click)="cancel()">Cancel</button>
-                </ion-col>
-              </ion-row>
+
+                <div  *ngIf='findMe'>
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col>
+                                <button ion-button color="btn-primary" (click)="getCurrentLocation()">Find Me</button>
+                            </ion-col>
+                            <ion-col>
+                                <ion-label>Show my location on a Google base map</ion-label>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </div>
+                <div>
+                    <ion-item  *ngIf="foundMe">
+                        <button ion-button color="btn-secondary" (click)="accept()">Accept</button>
+                    </ion-item>
+                </div>
+                <div  *ngIf="!foundMe">
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col>
+                                <button ion-button color="btn-secondary" (click)="cancel()">Dismiss</button>
+                            </ion-col>
+                            <ion-col>
+                                <ion-label>I want to enter a location/facility type in search bar</ion-label>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </div>
+
           </form>
         </ion-card-content>
     </ion-card>

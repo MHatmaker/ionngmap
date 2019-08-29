@@ -171,8 +171,10 @@ export class MapsPage implements AfterViewInit {
       modal.present();
       modal.onDidDismiss((mode, data) => {
         console.log('showLocate returned');
-        console.log(data);
-        this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
+        console.log(mode);
+        if(mode == 'showme') {
+          this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
+        }
       }
     )
 
