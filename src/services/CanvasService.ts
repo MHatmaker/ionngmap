@@ -90,22 +90,36 @@ export class CanvasService {
       });
     }
 
-    public getCurrentLocation() {
+    public getCurrentLocation(isInitial : boolean = true) {
       console.log('getCurrentLocation');
       let options = {timeout: 10000, enableHighAccuracy: false};
         this.geoLocation.getCurrentPosition(options).then((position) =>
-        // this.geoLocation.getCurrentPosition((position : Position) =>
-          {
-            this.initialLoc.center.lat = position.coords.latitude;
-            this.initialLoc.center.lng = position.coords.longitude;
-          }
-      );
+        {
+          if(isInitial) {
+              this.initialLoc.center.lat = position.coords.latitude;
+              this.initialLoc.center.lng = position.coords.longitude;
+          } else {
+
+          let glat = position.coords.latitude;
+          let glng = position.coords.longitude;
+          let latLng = new google.maps.LatLng(glat, glng);
+          this.currentLoc = {
+            center: {'lng' : glng, 'lat' : glat},
+            zoom: 15,
+            places : null,
+            query : ""
+            //mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          let maphoster = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
+          maphoster.setCurrentLocation(this.currentLoc);
+        }
+      });
     }
 
 
     awaitInitialLocation = async () => {
-        if(this.isApp) {
-          await this.getCurrentLocation();
+      if(this.isApp) {
+          await this.getCurrentLocation(true);
           this.initialLoc = this.currentLoc;
       } else {
 

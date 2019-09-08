@@ -70,7 +70,7 @@ export class MapsPage implements AfterViewInit {
             this.showUsing();
         },
         'Locate Self' : () => {
-            this.showLocate();
+            this.showLocate(false);
         },
         'Search Group' : () => {
           let modal = modalCtrl.create(AgogroupComponent);
@@ -123,7 +123,7 @@ export class MapsPage implements AfterViewInit {
                 console.log("invalid EMapSource");
             }
       });
-      this.showLocate();
+      this.showLocate(true);
 
       // this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
   }
@@ -163,21 +163,22 @@ export class MapsPage implements AfterViewInit {
   showUsing() {
       console.log('show using');
   }
-  showLocate() {
+  showLocate(showModal : boolean) {
       console.log('show locate');
-      // this.canvasService.getCurrentLocation();
 
-      let modal = this.modalCtrl.create(LocateselfComponent);
-      modal.present();
-      modal.onDidDismiss((mode, data) => {
-        console.log('showLocate returned');
-        console.log(mode);
-        if(mode == 'showme') {
-          this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
-        }
+      if(showModal) {
+        let modal = this.modalCtrl.create(LocateselfComponent);
+        modal.present();
+        modal.onDidDismiss((mode, data) => {
+          console.log('showLocate returned');
+          console.log(mode);
+          if(mode == 'showme') {
+            this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
+          }
+        });
+      } else {
+        this.canvasService.getCurrentLocation(false);
       }
-    )
-
   }
   showSharingHelp() {
       console.log('show sharing help');
