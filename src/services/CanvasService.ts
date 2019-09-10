@@ -167,8 +167,19 @@ export class CanvasService {
         return this.initialLoc;
     }
 
+  setInitialLocation(maplocOpts : MapLocOptions) {
+    this.initialLoc = maplocOpts;
+    // this.initialLoc.center = maplocOpts.center;
+    // this.initialLoc.zoom = 15;
+    // this.initialLoc.query = maplocOpts.query;
+    // this.initialLoc.places = maplocOpts.places;
+  }
+
   async addInitialCanvas(userName : string) {
         // await this.awaitInitialLocation();
+        if(userName == "") {
+          userName = this.pusherConfig.getUserName();
+        }
         let bnds : MLBounds = null;
         // let opts : MapLocOptions = this.initialLoc;
         let shr : IMapShare = {mapLocOpts : this.initialLoc, userName : userName, mlBounds : bnds,

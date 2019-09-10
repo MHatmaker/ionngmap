@@ -10,6 +10,7 @@ import { MLConfig } from '../../../pages/mlcomponents/libs/MLConfig';
 import { mlBounds } from '../../../pages/mlcomponents/libs/mlBounds.interface';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../../services/positionupdate.interface';
 import { EMapSource } from '../../../services/configparams.service';
+import { CanvasService } from '../../../services/CanvasService';
 
 declare var google;
 
@@ -25,7 +26,7 @@ export class PlacesSearchComponent implements AfterViewInit {
     searchBox: any;
 
   constructor(private _ngZone: NgZone, private mapInstanceService : MapInstanceService,
-      private mapopener : MapopenerProvider, private modalCtrl : ModalController) {
+      private canvasService : CanvasService, private mapopener : MapopenerProvider, private modalCtrl : ModalController) {
 
   }
 
@@ -40,43 +41,60 @@ export class PlacesSearchComponent implements AfterViewInit {
             'location': google.maps.LatLng,
             'query': String
           };
-          console.log(this.searchBox);
-          let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
-          let gmap = this.mapInstanceService.getHiddenMap();
-          let bnds = gmap.getBounds();
-          let cntr = mph.getCenter();
-          let googlecntr = new google.maps.LatLng(cntr.lat, cntr.lon);
-          console.log("searchBox latest bounds");
-          console.log(bnds);
+          // console.log(this.searchBox);
+          console.log(this.input.value);
+          let isFirstTab = this.mapInstanceService.getSlideCount();
+          if (isFirstTab == 0) {
+              let geocoder = new google.maps.Geocoder();
+              geocoder.geocode({'address': this.input.value}, (results, status) => {
+              if (status === 'OK') {
+                let loc = {lng : results[0].geometry.location.lng(), lat : results[0].geometry.location.lat()}
+                let opts: MapLocOptions = { center :  loc, zoom : 15, places : null, query : this.input.value};
+                this.canvasService.setInitialLocation(opts);
+                this.canvasService.addInitialCanvas("");
+              } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+              }
+            });
 
-          queryPlaces.bounds = bnds;
-          queryPlaces.location = googlecntr;
-          queryPlaces.query = this.input.value;
-          let service = new google.maps.places.PlacesService(gmap);
-              service.textSearch(queryPlaces, (p) => {
-                  if (p.length != 0) {
+          } else {
+            let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
+            let gmap = this.mapInstanceService.getHiddenMap();
+            let bnds = gmap.getBounds();
+            let cntr = mph.getCenter();
+            let googlecntr = new google.maps.LatLng(cntr.lat, cntr.lon);
+            console.log("searchBox latest bounds");
+            console.log(bnds);
 
-                      let modal = this.modalCtrl.create(DestselectionComponent);
-                      modal.onDidDismiss(data => {
-                          console.log(data.destination.title);
-                          if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
-                              let gmquery = this.input.value;
-                              let coords : any = queryPlaces.location;
-                              let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
-                              let opts: MapLocOptions = { center :  cntr, zoom : gmap.getZoom(), places : p, query : gmquery};
-                              let shr: IMapShare = {mapLocOpts : opts, userName : 'foo', mlBounds : bnds,
-                                  source : EMapSource.placesgoogle, webmapId : 'nowebmap'};
-                              this.mapopener.openMap.emit(shr);
-                          } else {
-                              mph.placeMarkers(p);
-                          }
-                      })
-                      modal.present();
+            queryPlaces.bounds = bnds;
+            queryPlaces.location = googlecntr;
+            queryPlaces.query = this.input.value;
+            let service = new google.maps.places.PlacesService(gmap);
+                service.textSearch(queryPlaces, (p) => {
+                    if (p.length != 0) {
 
-                  } else {
-                      return;
-                  }
-              });
+                        let modal = this.modalCtrl.create(DestselectionComponent);
+                        modal.onDidDismiss(data => {
+                            console.log(data.destination.title);
+                            if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
+                                let gmquery = this.input.value;
+                                let coords : any = queryPlaces.location;
+                                let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
+                                let opts: MapLocOptions = { center :  cntr, zoom : gmap.getZoom(), places : p, query : gmquery};
+                                let shr: IMapShare = {mapLocOpts : opts, userName : 'foo', mlBounds : bnds,
+                                    source : EMapSource.placesgoogle, webmapId : 'nowebmap'};
+                                this.mapopener.openMap.emit(shr);
+                            } else {
+                                mph.placeMarkers(p);
+                            }
+                        })
+                        modal.present();
+
+                    } else {
+                        return;
+                    }
+                });
+            }
       });
 
     }
