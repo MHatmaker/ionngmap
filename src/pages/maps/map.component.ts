@@ -174,6 +174,8 @@ export class MapsPage implements AfterViewInit {
           console.log(mode);
           if(mode == 'showme') {
             this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
+          } else {
+            return;
           }
         });
       } else {
