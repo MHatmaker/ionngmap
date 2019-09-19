@@ -310,7 +310,7 @@ export class MapsPage implements AfterViewInit {
             if (currIndex == 0) {
                 this.mapInstanceService.setConfigInstanceForMap(0, mlConfig);
             } else {
-                if(opts.source == EMapSource.sharegoogle || opts.source == EMapSource.srcagonline) {
+                if(opts.source == EMapSource.sharegoogle || opts.source == EMapSource.srcagonline || opts.source == EMapSource.placesgoogle) {
                     console.log('get config from shared config');
                     this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
                 } else {

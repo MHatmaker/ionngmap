@@ -43,8 +43,8 @@ export class PlacesSearchComponent implements AfterViewInit {
           };
           // console.log(this.searchBox);
           console.log(this.input.value);
-          let isFirstTab = this.mapInstanceService.getSlideCount();
-          if (isFirstTab == 0) {
+
+          if (this.mapInstanceService.getSlideCount() == 0) {
               let geocoder = new google.maps.Geocoder();
               geocoder.geocode({'address': this.input.value}, (results, status) => {
               if (status === 'OK') {
@@ -66,21 +66,34 @@ export class PlacesSearchComponent implements AfterViewInit {
             console.log("searchBox latest bounds");
             console.log(bnds);
 
-            queryPlaces.bounds = bnds;
-            queryPlaces.location = googlecntr;
+            queryPlaces.bounds = null; // bnds;
+            queryPlaces.location = null; // googlecntr;
             queryPlaces.query = this.input.value;
             let service = new google.maps.places.PlacesService(gmap);
-                service.textSearch(queryPlaces, (p) => {
+                try {
+                service.textSearch(queryPlaces, (p, status, pagination) => {
+                    console.log(status);
                     if (p.length != 0) {
 
                         let modal = this.modalCtrl.create(DestselectionComponent);
                         modal.onDidDismiss(data => {
                             console.log(data.destination.title);
                             if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
+                                let opts : MapLocOptions = null;
                                 let gmquery = this.input.value;
-                                let coords : any = queryPlaces.location;
-                                let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
-                                let opts: MapLocOptions = { center :  cntr, zoom : gmap.getZoom(), places : p, query : gmquery};
+                                if (queryPlaces.location) {
+                                      let coords : any = queryPlaces.location;
+                                      let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
+                                      opts = { center :  cntr, zoom : gmap.getZoom(), places : p, query : gmquery};
+                                    } else {
+                                      bnds = new google.maps.LatLngBounds();
+                                      for (let i=0; i < p.length; i++) {
+                                        bnds.extend(p[i].geometry.location);
+                                      }
+                                      let cntr2 : google.maps.LatLng = bnds.getCenter();
+                                      let cntr3 : MapLocCoords = {lng: cntr2.lng(), lat: cntr2.lat()};
+                                      opts = { center :  cntr3, zoom : gmap.getZoom(), places : p, query : gmquery};
+                                  }
                                 let shr: IMapShare = {mapLocOpts : opts, userName : 'foo', mlBounds : bnds,
                                     source : EMapSource.placesgoogle, webmapId : 'nowebmap'};
                                 this.mapopener.openMap.emit(shr);
@@ -94,6 +107,10 @@ export class PlacesSearchComponent implements AfterViewInit {
                         return;
                     }
                 });
+              }
+              catch(error) {
+                console.log(error);
+              }
             }
       });
 
