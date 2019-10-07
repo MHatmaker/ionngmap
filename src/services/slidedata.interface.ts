@@ -1,5 +1,5 @@
 export interface ISlideData {
-    mapListItem : any;
+    mapListElement : any;
     slideNumber : number;
     mapName : string;
 };

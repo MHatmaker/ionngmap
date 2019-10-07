@@ -233,6 +233,11 @@ async queryForUserName()
           iconName: 'pusher-icon',
           displayName: 'Pusher Setup',
           component: MapsPage
+        },
+        {
+          iconName: 'pusher-icon',
+          displayName: 'Remove Map',
+          component: MapsPage
         }
       ]
     });

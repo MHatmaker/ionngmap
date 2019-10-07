@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CanvasService } from '../../../services/CanvasService';
 import { SlideViewService } from '../../../services/slideview.service';
 
@@ -8,22 +8,28 @@ import { SlideViewService } from '../../../services/slideview.service';
   styles: ['./multicanvas.component.css']
 })
 
-export class MultiCanvasGoogle {
+export class MultiCanvasGoogle implements OnDestroy {
     // private el : string = null;
-    private ndx : number = null;
+    private currentSubscription;
+    private ndx : number = 0;
     public slidevisibility : string = "multi-can-current";
 
     constructor(private canvasService: CanvasService, private slideViewService : SlideViewService) {
-        this.ndx = this.canvasService.getIndex();
+    }
+    ngOnInit() {
+        this.ndx  = this.canvasService.getIndex();
         console.log("ndx is " + this.ndx);
-        this.canvasService.setCurrent.subscribe((sn: number) =>{
-            console.log(`subscriber received id ${sn}`)
+        this.currentSubscription = this.canvasService.setCurrent.subscribe((sn: number) =>{
+            console.log(`subscriber ndx ${this.ndx} received id ${sn}`)
             if(sn == this.ndx) {
               this.slidevisibility = "multi-can-current";
             } else {
               this.slidevisibility = "multi-can-active";
             }
         });
+    }
+    ngOnDestroy() {
+        this.currentSubscription.unsubscribe();
     }
     /*
             Canvas.prototype.init = function () {

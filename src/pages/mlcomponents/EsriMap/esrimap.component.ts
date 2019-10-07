@@ -45,7 +45,7 @@ export class EsriMapComponent implements OnInit {
   constructor(private mapService: ESRIMapService, private geolocation : Geolocation,
       private mapInstanceService: MapInstanceService,
       private elementRef: ElementRef, private utils : utils, private geopush: GeoPusherSupport) {
-      this.mapNumber = this.mapInstanceService.getSlideCount();
+      this.mapNumber = this.mapInstanceService.getNextSlideNumber();
       this.startup = new StartupArcGIS(this.mapNumber,
           this.mapInstanceService.getConfigForMap(this.mapNumber), geopush);
   }

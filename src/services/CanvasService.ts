@@ -189,10 +189,10 @@ export class CanvasService {
   }
 
   addCanvas (mapType, mapTypeToCreate, source, mlcfg, maploc)  : HTMLElement{
-      console.log("in CanvasHolderCtrl.addCanvas");
+      console.log("in canvasService.addCanvas");
       console.log(`mapType : ${mapType}`);
       console.log(mapTypeToCreate);
-      var currIndex : number = this.mapInstanceService.getSlideCount(),
+      let currIndex : number = this.mapInstanceService.getNextSlideNumber(),
           appendedElem : HTMLElement,
           mlConfig;
       if (mlcfg) {
@@ -201,7 +201,7 @@ export class CanvasService {
           // this might not be used
           if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
               console.log(`hasConfigInstanceForMap for index ${currIndex} is false`);
-              var ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
+              let ipos = <IPosition>{'lon' : 37.422858, "lat" : -122.085065, "zoom" : 15},
                   cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : this.selectedMapType,
                         webmapId : "nowebmap", mlposition :ipos, source : source},
                   mlconfig = new MLConfig(cfgparams);
@@ -222,13 +222,14 @@ export class CanvasService {
           }
       }
 
-      appendedElem = this.appendNewCanvasToContainer(mapTypeToCreate, currIndex);
+      this.ndx = currIndex;
+      appendedElem = this.appendNewCanvasToContainer(mapTypeToCreate);
 
       console.log(`now incrementMapNumber from index ${currIndex}`);
       this.mapInstanceService.incrementMapNumber();
       this.mapInstanceService.setCurrentSlide(currIndex);
       this.slideshareService.slideData.emit({
-                  mapListItem: appendedElem,
+                  mapListElement: appendedElem,
                   slideNumber: currIndex,
                   mapName: "Map " + currIndex
               });
@@ -236,8 +237,7 @@ export class CanvasService {
   }
 
 
-    appendNewCanvasToContainer(component : any, ndx : number) : HTMLElement {
-        this.ndx = ndx;
+    appendNewCanvasToContainer(component : any) : HTMLElement {
         this.canvases.push(component);
         var mapParent = document.getElementsByClassName('mapcontent')[0];
         // Create a component reference from the component

@@ -97,6 +97,9 @@ export class MapsPage implements AfterViewInit {
         'Pusher Setup' : () => {
           let modal = modalCtrl.create(PushersetupComponent);
           modal.present();
+        },
+        'Remove Map' : () => {
+          this.removeCanvas(this.mapInstanceService.getCurrentSlide())
         }
     };
 
@@ -219,7 +222,7 @@ export class MapsPage implements AfterViewInit {
 
   async addCanvas (mapType : string, opts : IMapShare, mlcfg : MLConfig, ago : string) {
       console.log("in map.component.addCanvas");
-      var currIndex : number = this.mapInstanceService.getSlideCount(),
+      var currIndex : number = this.mapInstanceService.getNextSlideNumber(),
           appendedElem : HTMLElement,
           mapTypeToCreate,
           ipos : IPosition,

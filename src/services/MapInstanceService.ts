@@ -9,37 +9,37 @@ import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
 
 @Injectable()
 export class MapInstanceService {
-    slideCount : 0;
-    isFirstInstance : boolean;
-    currentSlideNumber : number;
+    nextSlideNumber : number = 0;
+    isFirstInstance : boolean = true;
+    currentSlideNumber : number = 0;
     configInstances : Map<string, MLConfig> = new Map<string, MLConfig>();
     mapHosterInstances : Map<string, MapHoster> = new Map<string, MapHoster>();
     hiddenMap : any;
 
     constructor() {
-        console.log("service to return slideCount");
-        this.isFirstInstance = true;
-        this.slideCount = 0;
-        this.currentSlideNumber = 0;
+        console.log("service to return nextSlideNumber");
+        // this.isFirstInstance = true;
+        // this.nextSlideNumber = 0;
+        // this.currentSlideNumber = 0;
         // this.configInstances = new MLConfig(new ConfigParams(-1, "", "", null));
     }
 
-    getSlideCount() : number {
-        return this.slideCount;
+    getNextSlideNumber() : number {
+        return this.nextSlideNumber;
     }
     incrementMapNumber() : void {
-        this.slideCount += 1;
-        console.log("incrementMapNumber to " + this.slideCount);
+        this.nextSlideNumber += 1;
+        console.log("incrementMapNumber nextSlideNumber to " + this.nextSlideNumber);
     }
     getNextMapNumber() : number {
         if (this.isFirstInstance) {
             this.isFirstInstance = false;
         }
-        return this.slideCount;
+        return this.nextSlideNumber;
     }
     removeInstance(slideToRemove : number) : void {
-        if (slideToRemove === this.slideCount - 1) {
-            this.slideCount -= 1;
+        if (slideToRemove === this.nextSlideNumber - 1) {
+            this.nextSlideNumber -= 1;
         }
     }
     setConfigInstanceForMap(ndx : number, cfg : MLConfig) {
@@ -49,12 +49,12 @@ export class MapInstanceService {
         return this.configInstances["cfg" + ndx];
     }
     hasConfigInstanceForMap(ndx : number) : boolean {
-        var instname = 'cfg' + ndx,
+        let instname = 'cfg' + ndx,
             test = this.configInstances[instname] === null;
         console.log('hasConfigInstanceForMap for ' + instname);
         console.log("test " + test);
 
-        return (this.configInstances['cfg' + ndx]) ? true : false;
+        return (this.configInstances[instname]) ? true : false;
     }
     setCurrentSlide(ndx : number) : void {
         this.currentSlideNumber = ndx;
@@ -66,7 +66,7 @@ export class MapInstanceService {
         return this.configInstances["cfg" + ndx];
     }
     setMapHosterInstance(ndx : number, inst : MapHoster) {
-        var cfgndx = "cfg" + ndx;
+        let cfgndx = "cfg" + ndx;
         this.mapHosterInstances[cfgndx] = inst; //setMapHosterInstance(inst);
         // incrementMapNumber();
     }

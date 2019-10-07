@@ -42,7 +42,7 @@ export class LeafletMapComponent implements AfterViewInit {
 
   constructor (private mapInstanceService: MapInstanceService, private rndr: Renderer2,
       public geolocation : Geolocation, geopush: GeoPusherSupport, ngZone : NgZone) {
-      this.mapNumber = this.mapInstanceService.getSlideCount();
+      this.mapNumber = this.mapInstanceService.getNextSlideNumber();
   }
 
   ngAfterViewInit () {
@@ -79,7 +79,7 @@ export class LeafletMapComponent implements AfterViewInit {
       console.debug(lfltBounds);
       if (!this.mlconfigSet) {
           this.mlconfigSet = true;
-          let ndx = this.mapInstanceService.getSlideCount();
+          let ndx = this.mapInstanceService.getNextSlideNumber();
           this.mlconfig = this.mapInstanceService.getConfigForMap(ndx - 1);
           this.mlconfig.setRawMap(this.lmap);
       }

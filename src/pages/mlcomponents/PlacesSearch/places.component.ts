@@ -44,7 +44,7 @@ export class PlacesSearchComponent implements AfterViewInit {
           // console.log(this.searchBox);
           console.log(this.input.value);
 
-          if (this.mapInstanceService.getSlideCount() == 0) {
+          if (this.mapInstanceService.getNextSlideNumber() == 0) {
               let geocoder = new google.maps.Geocoder();
               geocoder.geocode({'address': this.input.value}, (results, status) => {
               if (status === 'OK') {

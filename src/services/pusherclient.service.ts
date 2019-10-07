@@ -89,7 +89,7 @@ export class PusherClientService {
         console.log("onAcceptChannel " + this.statedata.privateChannelMashover);
         this.userName = this.statedata.userName;
         this.CHANNELNAME = this.statedata.privateChannelMashover;
-        this.statedata.clientName = this.clientName = 'map' + this.mapInstanceService.getSlideCount();
+        this.statedata.clientName = this.clientName = 'map' + this.mapInstanceService.getNextSlideNumber();
         this.pusherConfig.setChannel(this.statedata.privateChannelMashover);
         this.pusherConfig.setNameChannelAccepted(true);
         this.pusherConfig.setUserName(this.userName);

@@ -45,7 +45,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
       private infopopProvider : InfopopProvider) {
 
       console.log("GoogleMapComponent ctor");
-      this.mapNumber = this.mapInstanceService.getSlideCount();
+      this.mapNumber = this.mapInstanceService.getNextSlideNumber();
       this.startup = new StartupGoogle(this.mapNumber,
           this.mapInstanceService.getConfigForMap(this.mapNumber), geopush);
       this.gmHeight = slideViewService.getMapColHeight() + 'px';
@@ -149,7 +149,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
       console.log("boundsChange");
       if (!this.mlconfigSet) {
           this.mlconfigSet = true;
-          let ndx = this.mapInstanceService.getSlideCount();
+          let ndx = this.mapInstanceService.getNextSlideNumber();
           this.mlconfig = this.mapInstanceService.getConfigForMap(ndx - 1);
           this.mlconfig.setRawMap(this.gmap);
       }
