@@ -88,7 +88,7 @@ export class DoublyLinkedList<T> {
     return this.length;
   }
 
-  removeNode(ofst : number) {
+  removeNodeAtOffset(ofst : number) {
     let cur : DoublyLinkedListNode<T>  = this.head;
     let prev : DoublyLinkedListNode<T>  = this.head;
     let n : number = 0;
@@ -102,6 +102,33 @@ export class DoublyLinkedList<T> {
     this.length -= 1;
   }
 
+  removeNode(nd : DoublyLinkedListNode<T>) {
+    let cur : DoublyLinkedListNode<T>  = this.head;
+    let prev : DoublyLinkedListNode<T> = this.head.prev;
+    while(cur) {
+      if(cur === nd) {
+        if(prev) {
+          prev.next = cur.next;
+        } else {
+          this.head = cur.next;
+          this.head.prev = undefined;
+        }
+        if(cur.next) {
+          cur.next.prev = cur.prev;
+        }
+        if (cur === this.tail) {
+          if (cur.prev) {
+            this.tail = cur.prev;
+          }
+        }
+        this.length -= 1;
+        return;
+      }
+      prev = cur;
+      cur = cur.next;
+    }
+  }
+
   /**
    * Returns an iterator over the values
    */
@@ -109,6 +136,17 @@ export class DoublyLinkedList<T> {
     let current = this.head;
     while (current) {
       yield current.value;
+      current = current.next;
+    }
+  }
+
+  /**
+   * Returns an iterator over the values
+   */
+  *nodes() {
+    let current = this.head;
+    while (current) {
+      yield current;
       current = current.next;
     }
   }

@@ -5,7 +5,7 @@ import { SlideShareService } from '../../../services/slideshare.service';
 import { ISlideData } from "../../../services/slidedata.interface";
 import { CanvasService } from "../../../services/CanvasService";
 import { SlideViewService } from "../../../services/slideview.service";
-import { DoublyLinkedList } from "../libs/DoublyLinkedList";
+import { DoublyLinkedList, DoublyLinkedListNode } from "../libs/DoublyLinkedList";
 
 @Component({
   selector: 'carousel',
@@ -15,6 +15,7 @@ export class CarouselComponent {
     //console.log("Carousel : ready to set up Carousel");
     private items : DoublyLinkedList<ISlideData> = new DoublyLinkedList<ISlideData>();
     private activeSlideNumber : number = 0;
+    private activeSlide : DoublyLinkedListNode<ISlideData> = null;
     // private currentSlide : ISlideData;
     private MapNo : number = 0;
     private MapName : string = "";
@@ -54,25 +55,40 @@ export class CarouselComponent {
 
         console.log("change activeSlideNumber from " +this. activeSlideNumber);
         // calculate the new position
+
+        if (direction < 0) {
+          if (this.activeSlide.prev) {
+            this.activeSlide = this.activeSlide.prev;
+          } else {
+            this.activeSlide = this.items.tail;
+          }
+        } else {
+          if (this.activeSlide.next) {
+            this.activeSlide = this.activeSlide.next;
+          } else {
+            this.activeSlide = this.items.head;
+          }
+        }
         this.activeSlideNumber = (this.activeSlideNumber + direction) % this.slidesCount;
         this.activeSlideNumber = this.activeSlideNumber < 0 ? this.slidesCount - 1 : this.activeSlideNumber;
         console.log("to activeSlideNumber " + this.activeSlideNumber);
         // set new currentSlide element
         // and add CSS class
         // this.currentSlide = this.items.valueAtOffset(this.activeSlideNumber).mapListElement;
-        this.MapNo = this.activeSlideNumber;
-        this.MapName = this.items.valueAtOffset(this.activeSlideNumber).mapName;
+        this.MapNo = this.activeSlide.value.slideNumber;
+        this.MapName = this.activeSlide.value.mapName;
         let slideNo = this.items.valueAtOffset(this.activeSlideNumber).slideNumber;
-        this.canvasService.setCurrent.emit(slideNo);
-        this.mapInstanceService.setCurrentSlide(this.items.valueAtOffset(this.activeSlideNumber).slideNumber);
+        this.canvasService.setCurrent.emit(this.MapNo);
+        this.mapInstanceService.setCurrentSlide(this.MapNo);
     }
 
     onAddSlide (slideData : ISlideData) {
         console.log("Carousel Component onAddSlide to DoublyLinkedList");
         console.debug(slideData);
         this.items.add(slideData);
+        this.activeSlide = this.items.tail;
         // this.currentSlide = this.items.tailValue().mapListElement; //[this.items.length - 1].mapListElement;
-        this.activeSlideNumber = this.MapNo = this.items.listLength() - 1;
+        this.activeSlideNumber = this.activeSlide.value.slideNumber;
         this.MapName = slideData.mapName;
         this.canvasService.setCurrent.emit(this.activeSlideNumber);
 
@@ -81,12 +97,30 @@ export class CarouselComponent {
         this.showMapText = this.slidesCount > 0;
     }
     onRemoveSlide () : number {
-        var slideToRemove = this.activeSlideNumber,
+        var slideToRemove = this.activeSlide.value.slideNumber,
               slideElement = document.getElementById('slide' + slideToRemove).parentElement;
-        console.log("remove slide " + this.activeSlideNumber);
+        console.log("remove slide " + slideToRemove);
         if (slideToRemove > -1) {
             //slide being removed must unsubscribe??????
-            this.items.removeNode(slideToRemove); //splice(slideToRemove, 1);
+            // this.items.removeNode(slideToRemove); //splice(slideToRemove, 1);
+            console.log(this.items.values());
+            // for(let val : DoublyLinkedListNode<ISlideData> of this.items.values) {
+            //   if (val)
+            let v = this.items.values()
+            let itm = v.next();
+            while(itm.done == false) {
+              console.log(itm.value.mapName);
+              itm = v.next();
+            }
+            let n = this.items.nodes();
+            let nd : DoublyLinkedListNode<ISlideData> = this.items.head;
+            while(nd) {
+              if(nd.value.mapName == this.activeSlide.value.mapName) {
+                this.items.removeNode(nd);
+              }
+              nd = nd.next;
+            }
+
             this.slidesCount = this.items.listLength();
             this.showNavButtons =this.slidesCount  > 1;
             this.showMapText = this.slidesCount > 0;
@@ -108,7 +142,7 @@ export class CarouselComponent {
     }
 
     getCurrentSlideNumber () {
-        return this.items.valueAtOffset(this.activeSlideNumber).slideNumber;
+        return this.activeSlide.value.slideNumber;
     }
 
 
