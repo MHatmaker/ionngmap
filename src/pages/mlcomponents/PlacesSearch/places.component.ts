@@ -60,11 +60,14 @@ export class PlacesSearchComponent implements AfterViewInit {
           } else {
             let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
             let gmap = this.mapInstanceService.getHiddenMap();
-            let bnds = gmap.getBounds();
+
+            let cfg = this.mapInstanceService.getRecentConfig();
+            let bnds = cfg.getRawMap().getBounds(); //gmap.getBounds();
             let cntr = mph.getCenter();
             let googlecntr = new google.maps.LatLng(cntr.lat, cntr.lon);
             console.log("searchBox latest bounds");
             console.log(bnds);
+            console.log('cntr ' + cntr.lat + ", " + cntr.lon);
 
             queryPlaces.bounds = null; // bnds;
             queryPlaces.location = null; // googlecntr;
@@ -74,31 +77,37 @@ export class PlacesSearchComponent implements AfterViewInit {
                 service.textSearch(queryPlaces, (p, status, pagination) => {
                     console.log(status);
                     if (p.length != 0) {
-
+                        let plcs = p;
                         let modal = this.modalCtrl.create(DestselectionComponent);
                         modal.onDidDismiss(data => {
                             console.log(data.destination.title);
                             if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
                                 let opts : MapLocOptions = null;
                                 let gmquery = this.input.value;
-                                if (queryPlaces.location) {
-                                      let coords : any = queryPlaces.location;
-                                      let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
-                                      opts = { center :  cntr, zoom : gmap.getZoom(), places : p, query : gmquery};
-                                    } else {
-                                      bnds = new google.maps.LatLngBounds();
-                                      for (let i=0; i < p.length; i++) {
-                                        bnds.extend(p[i].geometry.location);
-                                      }
-                                      let cntr2 : google.maps.LatLng = bnds.getCenter();
-                                      let cntr3 : MapLocCoords = {lng: cntr2.lng(), lat: cntr2.lat()};
-                                      opts = { center :  cntr3, zoom : gmap.getZoom(), places : p, query : gmquery};
-                                  }
+                                // if (queryPlaces.location) {
+                                //       let coords : any = queryPlaces.location;
+                                //       let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
+                                //       opts = { center :  cntr, zoom : gmap.getZoom(), places : plcs, query : gmquery};
+                                //     } else {
+                                //       bnds = new google.maps.LatLngBounds();
+                                //       for (let i=0; i < plcs.length; i++) {
+                                //         bnds.extend(plcs[i].geometry.location);
+                                //       }
+                                //       let cntr2 : google.maps.LatLng = bnds.getCenter();
+                                //       let cntr3 : MapLocCoords = {lng: cntr2.lng(), lat: cntr2.lat()};
+                                //       opts = { center :  cntr3, zoom : gmap.getZoom(), places : plcs, query : gmquery};
+                                //   }
+                                      // let coords : any = queryPlaces.location;
+                                      // let cntr2 : MapLocCoords = { 'lng' : cntr.lng(), 'lat' : cntr.lat()};
+                                let cntrobj : MapLocCoords = {lat : cntr.lat, lng : cntr.lon};
+                                opts = { center :  cntrobj, zoom : gmap.getZoom(), places : plcs, query : gmquery};
                                 let shr: IMapShare = {mapLocOpts : opts, userName : 'foo', mlBounds : bnds,
                                     source : EMapSource.placesgoogle, webmapId : 'nowebmap'};
+                                    console.log('emit with shr');
+                                    console.log(shr);
                                 this.mapopener.openMap.emit(shr);
                             } else {
-                                mph.placeMarkers(p);
+                                mph.placeMarkers(plcs);
                             }
                         })
                         modal.present();

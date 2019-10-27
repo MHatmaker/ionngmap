@@ -18,7 +18,8 @@ export interface IConfigParams {
     mapType : string;
     webmapId : string;
     mlposition : IPosition;
-    source : EMapSource
+    source : EMapSource;
+    bounds : any;
 }
 
 console.log("loading ConfigParams");
@@ -31,7 +32,8 @@ export class ConfigParams implements IConfigParams{
          public mapType : string,
          public webmapId : string,
          public mlposition : IPosition,
-         public source : EMapSource) {
+         public source : EMapSource,
+         public bounds : any) {
 
     }
 };

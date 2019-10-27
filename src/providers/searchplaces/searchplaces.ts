@@ -49,7 +49,10 @@ export class SearchplacesProvider {
         let gmap = this.mapInstanceService.getHiddenMap();
 
         let googlecntr = new google.maps.LatLng(opts.mapLocOpts.center.lat, opts.mapLocOpts.center.lng);
-        let bnds = opts.mlBounds;
+
+        let cfg = this.mapInstanceService.getRecentConfig();
+        let bnds = cfg ? cfg.getBounds() : null;
+        // let bnds = opts.mlBounds;
         let gmquery = opts.mapLocOpts.query;
 
         let sw = new google.maps.LatLng(bnds.lly, bnds.llx);

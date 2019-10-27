@@ -15,7 +15,7 @@ declare var google;
 })
 export class HiddenmapComponent {
 @ViewChild('hiddenmap') mapElement : ElementRef;
-    map: any;
+    map: google.maps.Map;
     pusherEventHandler : PusherEventHandler;
     private geopushSup : IGeoPusher;
     private hiddenMapCreated : boolean = false;
@@ -36,6 +36,9 @@ export class HiddenmapComponent {
     let mapOptions = this.canvasService.getInitialLocation();
 
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+    let bnds = this.map.getBounds();
+    console.log("hidden canvas bounds");
+    console.log(bnds);
     this.hiddenMapCreated = true;
     console.log("Add pusher event handler for hidden map");
     this.mapInstanceService.setHiddenMap(this.map);

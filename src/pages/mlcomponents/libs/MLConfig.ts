@@ -232,7 +232,8 @@ export class MLConfig {
                 "lon" : this.details.mlposition.lon,
                 "lat" : this.details.mlposition.lat,
                 "zoom" : this.details.mlposition.zoom},
-            "source" : this.details.source
+            "source" : this.details.source,
+            "bounds" : this.details.bounds
             }
     }
     getSource() : EMapSource {

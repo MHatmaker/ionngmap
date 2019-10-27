@@ -142,7 +142,7 @@ export class MapsPage implements AfterViewInit {
               let mplocCoords : MapLocCoords = {lat: xcntr['x'], lng: xcntr['y']};
               let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null, query: null};
               let mlcfg = new MLConfig({mapId : -1, mapType : 'arcgis', webmapId : data.id,
-                mlposition : cntr, source : EMapSource.srcagonline});
+                mlposition : cntr, source : EMapSource.srcagonline, bounds : xtnt});
               mlcfg.setBounds(xtnt);
               let opts : IMapShare = {mapLocOpts : mploc, userName : this.hostConfig.getUserName(), mlBounds : xtnt,
                   source : EMapSource.srcagonline, webmapId : data.id};
@@ -239,7 +239,9 @@ export class MapsPage implements AfterViewInit {
           mlConfig.setInitialPlaces(opts.mapLocOpts.places);
           this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
       } else {
-          if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
+          let cfg = this.mapInstanceService.getRecentConfig();
+          if (cfg === null) {
+          // if (this.mapInstanceService.hasConfigInstanceForMap(currIndex) === false) {
               // starting up from url with or without query or mobile app startup
               if (opts.mapLocOpts) {
                   console.log("get maploc from maploc argument in url");
@@ -278,21 +280,27 @@ export class MapsPage implements AfterViewInit {
                               ipos = <IPosition>{'lon' : lng, 'lat' : lat, 'zoom' : zm};
                               this.selectedMapType = 'google';
                           }
-                      } else {
-                          console.log('create maploc at initial position');
-                          let initialMaploc = this.canvasService.getInitialLocation();
-                          opts.mapLocOpts = initialMaploc;
-                          ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
+                        } else {
+                          if(opts.source == EMapSource.placesgoogle) {
+                            ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat,
+                                      'zoom' : opts.mapLocOpts.zoom}
+                          } else {
+                            console.log('create maploc at initial position');
+                            let initialMaploc = this.canvasService.getInitialLocation();
+                            opts.mapLocOpts = initialMaploc;
+                            ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat, 'zoom' : initialMaploc.zoom};
+                          }
                       }
                   }
             }
 
             let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : mapType,
-                webmapId : agoId, mlposition :ipos, source : opts.source};
+                webmapId : agoId, mlposition :ipos, source : opts.source, bounds : cfg ? cfg.getBounds() : null};
             console.log(cfgparams);
             mlConfig = new MLConfig(cfgparams);
             mlConfig.setUserName(userName);
-            mlConfig.setBounds(opts.mlBounds);
+            // mlConfig.setBounds(opts.mlBounds);
+
             console.log("created new MLConfig with cfgparams:");
             console.log(cfgparams);
             mlConfig.setHardInitialized(true);
@@ -318,8 +326,9 @@ export class MapsPage implements AfterViewInit {
                     this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
                 } else {
                     console.log("get config from map in previous slide");
-                    mlConfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
-                        currIndex - 1).getConfigParams());
+                    mlConfig.setConfigParams(this.mapInstanceService.getRecentConfig().getConfigParams());
+                    // mlConfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
+                    //     currIndex - 1).getConfigParams());
                     mlConfig.setSource(opts.source);
                     this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
                 }

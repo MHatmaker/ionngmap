@@ -101,6 +101,7 @@ export class CarouselComponent {
             while(nd) {
               if(nd.value.mapName == this.activeSlide.value.mapName) {
                 this.items.removeNode(nd);
+                this.mapInstanceService.removeConfigInstances(this.activeSlide.value.slideNumber);
               }
               nd = nd.next;
             }
