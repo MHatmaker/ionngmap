@@ -192,4 +192,11 @@ export class utils {
         console.log("hide loading");
         // esri.hide(loading);
     }
+
+    getParameterByName  (name, searchUrl) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(searchUrl);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
 }

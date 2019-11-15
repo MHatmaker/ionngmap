@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { mlBounds } from '../../pages/mlcomponents/libs/mlBounds.interface';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { MapInstanceService } from '../../services/MapInstanceService';
+import { utils } from '../../pages/mlcomponents/libs/utils';
 
 declare var google;
 

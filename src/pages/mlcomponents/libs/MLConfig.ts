@@ -4,11 +4,13 @@
 import { IPosition, MLPosition } from "../../../services/position.service";
 import { IConfigParams, EMapSource } from "../../../services/configparams.service";
 import { ImlBounds } from "../../../services/mlbounds.service";
-
+import {utils } from "./utils";
+import { AppModule } from '../../../app/app.module'
 console.log("loading MLConfig");
 
 // @Injectable()
 export class MLConfig {
+    private utils : utils;
     private details = {
         mapId :  -1, //this.ndx,
         userId : "",
@@ -43,6 +45,7 @@ export class MLConfig {
     };
 
     constructor (cfgparams : IConfigParams) {
+      this.utils = AppModule.injector.get(utils);
         this.details.mlposition = cfgparams.mlposition;
         this.details.mapId = cfgparams.mapId;
         this.details.mapType = cfgparams.mapType;
@@ -50,13 +53,6 @@ export class MLConfig {
         this.details.source = cfgparams.source;
     }
 
-    getParameterByName (name : string, details? : any) {
-        // console.log("get paramater " + name + " from " + this.details.search);
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(this.details.search);
-        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
     setHardInitialized(tf : boolean) {
         this.details.isHardInitialized = tf;
     }
@@ -102,7 +98,7 @@ export class MLConfig {
     getWebmapId (newWindow : boolean) : string {
         let result = "";
         if (newWindow === true) {
-            result = this.getParameterByName('id', this.details);
+            result = this.utils.getParameterByName('id', this.details.search);
             if (result === "") {
                 result = this.details.webmapId;
             }
@@ -128,18 +124,18 @@ export class MLConfig {
         return this.details.referrerId;
     }
     getReferrerIdFromUrl () : string{
-        this.details.referrerId = this.getParameterByName('referrerId');
+        this.details.referrerId = this.utils.getParameterByName('referrerId', this.details.search);
         return this.details.referrerId;
     }
     setReferrerId (id : string) {
         this.details.referrerId = id;
     }
     getReferrerNameFromUrl () : string{
-        this.details.referrerName = this.getParameterByName('referrerName');
+        this.details.referrerName = this.utils.getParameterByName('referrerName', this.details.search);
         return this.details.referrerName;
     }
     testUrlArgs () : boolean{
-        let rslt = this.getParameterByName('id', this.details);
+        let rslt = this.utils.getParameterByName('id', this.details.search);
         // alert("getParameterByName('id') = " + rslt);
         // alert(rslt.length);
         // alert(rslt.length != 0);
@@ -189,7 +185,7 @@ export class MLConfig {
     }
     setSearch(s : string) {
         this.details.search = s;
-        this.details.query = this.getParameterByName('gmquery, this.details');
+        this.details.query = this.utils.getParameterByName('gmquery', this.details.search);
     }
     getUpdatedRawUrl (channel : string) {
       let n = this.details.webmapId.length,
@@ -202,17 +198,17 @@ export class MLConfig {
 
     hasCoordinates () : boolean {
         var result = "";
-        result = this.details.mlposition.zoom || this.getParameterByName('zoom', this.details.mlposition);
+        result = this.details.mlposition.zoom || this.utils.getParameterByName('zoom', this.details.mlposition);
         return result === "" ? false : true;
     }
     lon () : string{
-        return this.getParameterByName('lon', this.details.mlposition);
+        return this.utils.getParameterByName('lon', this.details.mlposition);
     }
     lat () : string {
-        return this.getParameterByName('lat', this.details.mlposition);
+        return this.utils.getParameterByName('lat', this.details.mlposition);
     }
     zoom () : string {
-        return this.getParameterByName('zoom', this.details.mlposition);
+        return this.utils.getParameterByName('zoom', this.details.mlposition);
     }
     setConfigParams (config : IConfigParams) {
         this.details.mlposition.lon = config.mlposition.lon;
@@ -261,7 +257,7 @@ export class MLConfig {
         this.details.query = q;
     }
     query () : string {
-        return this.getParameterByName('gmquery', this.details);
+        return this.utils.getParameterByName('gmquery', this.details.search);
     }
     setInitialPlaces (p) {
         this.details.places = p;
@@ -275,10 +271,10 @@ export class MLConfig {
         return bndsUrl;
     }
     getBoundsFromUrl () {
-        var llx = this.getParameterByName('llx'),
-            lly = this.getParameterByName('lly'),
-            urx = this.getParameterByName('urx'),
-            ury = this.getParameterByName('ury');
+        var llx = this.utils.getParameterByName('llx', this.details.search),
+            lly = this.utils.getParameterByName('lly', this.details.search),
+            urx = this.utils.getParameterByName('urx', this.details.search),
+            ury = this.utils.getParameterByName('ury', this.details.search);
         return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
     }
     getSmallFormDimensions () : string {

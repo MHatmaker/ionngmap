@@ -45,18 +45,7 @@ export class PlacesSearchComponent implements AfterViewInit {
           console.log(this.input.value);
 
           if (this.mapInstanceService.getNextSlideNumber() == 0) {
-              let geocoder = new google.maps.Geocoder();
-              geocoder.geocode({'address': this.input.value}, (results, status) => {
-              if (status === 'OK') {
-                let loc = {lng : results[0].geometry.location.lng(), lat : results[0].geometry.location.lat()}
-                let opts: MapLocOptions = { center :  loc, zoom : 15, places : null, query : this.input.value};
-                this.canvasService.setInitialLocation(opts);
-                this.canvasService.addInitialCanvas("");
-              } else {
-                alert('Geocode was not successful for the following reason: ' + status);
-              }
-            });
-
+              this.setupInitialSlide();
           } else {
             let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
             let gmap = this.mapInstanceService.getHiddenMap();
@@ -74,31 +63,17 @@ export class PlacesSearchComponent implements AfterViewInit {
             queryPlaces.query = this.input.value;
             let service = new google.maps.places.PlacesService(gmap);
                 try {
-                service.textSearch(queryPlaces, (p, status, pagination) => {
+                service.textSearch(queryPlaces, (plcs, status, pagination) => {
                     console.log(status);
-                    if (p.length != 0) {
-                        let plcs = p;
+                    if (plcs.length != 0) {
+                        // let plcs = p;
                         let modal = this.modalCtrl.create(DestselectionComponent);
                         modal.onDidDismiss(data => {
                             console.log(data.destination.title);
                             if (data.destination.title == 'New Tab' || data.destination.title == "New Window") {
                                 let opts : MapLocOptions = null;
                                 let gmquery = this.input.value;
-                                // if (queryPlaces.location) {
-                                //       let coords : any = queryPlaces.location;
-                                //       let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
-                                //       opts = { center :  cntr, zoom : gmap.getZoom(), places : plcs, query : gmquery};
-                                //     } else {
-                                //       bnds = new google.maps.LatLngBounds();
-                                //       for (let i=0; i < plcs.length; i++) {
-                                //         bnds.extend(plcs[i].geometry.location);
-                                //       }
-                                //       let cntr2 : google.maps.LatLng = bnds.getCenter();
-                                //       let cntr3 : MapLocCoords = {lng: cntr2.lng(), lat: cntr2.lat()};
-                                //       opts = { center :  cntr3, zoom : gmap.getZoom(), places : plcs, query : gmquery};
-                                //   }
-                                      // let coords : any = queryPlaces.location;
-                                      // let cntr2 : MapLocCoords = { 'lng' : cntr.lng(), 'lat' : cntr.lat()};
+                                // opts = this.frameMarkers(queryPlaces, plcs, bnds);
                                 let cntrobj : MapLocCoords = {lat : cntr.lat, lng : cntr.lon};
                                 opts = { center :  cntrobj, zoom : gmap.getZoom(), places : plcs, query : gmquery};
                                 let shr: IMapShare = {mapLocOpts : opts, userName : 'foo', mlBounds : bnds,
@@ -123,6 +98,41 @@ export class PlacesSearchComponent implements AfterViewInit {
             }
       });
 
+    }
+
+    frameMarkers(queryPlaces, plcs, bnds) {
+      let opts : MapLocOptions = null;
+      let gmquery = this.input.value;
+      let mph = this.mapInstanceService.getMapHosterInstanceForCurrentSlide();
+      let gmap = this.mapInstanceService.getHiddenMap();
+      if (queryPlaces.location) {
+          let coords : any = queryPlaces.location;
+          let cntr : MapLocCoords = { 'lng' : coords.lng(), 'lat' : coords.lat()};
+          opts = { center :  cntr, zoom : gmap.getZoom(), places : plcs, query : gmquery};
+        } else {
+          bnds = new google.maps.LatLngBounds();
+          for (let i=0; i < plcs.length; i++) {
+            bnds.extend(plcs[i].geometry.location);
+          }
+          let cntr2 : google.maps.LatLng = bnds.getCenter();
+          let cntr3 : MapLocCoords = {lng: cntr2.lng(), lat: cntr2.lat()};
+          opts = { center :  cntr3, zoom : gmap.getZoom(), places : plcs, query : gmquery};
+      }
+      return opts;
+    }
+
+    setupInitialSlide() {
+        let geocoder = new google.maps.Geocoder();
+        geocoder.geocoded({'address': this.input.value}, (results, status) => {
+        if (status === 'OK') {
+          let loc = {lng : results[0].geometry.location.lng(), lat : results[0].geometry.location.lat()}
+          let opts: MapLocOptions = { center :  loc, zoom : 15, places : null, query : this.input.value};
+          this.canvasService.setInitialLocation(opts);
+          this.canvasService.addInitialCanvas("");
+        } else {
+          alert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
     }
 
 }

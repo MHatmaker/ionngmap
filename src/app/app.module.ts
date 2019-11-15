@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import {HttpModule } from '@angular/http';
 
@@ -191,4 +191,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     InfopopProvider
   ]
 })
-export class AppModule {}
+export class AppModule {
+    static injector: Injector;
+    constructor(injector: Injector) {
+        AppModule.injector = injector;
+    }
+}

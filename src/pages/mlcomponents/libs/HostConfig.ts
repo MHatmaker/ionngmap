@@ -83,20 +83,13 @@ export class HostConfig implements IHostConfigDetails {
             console.log("HostConfig ctor");
     }
 
-    getParameterByName  (name, details) {
-        // console.log("get paramater " + name + " from " + this.details.search);
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(details.search);
-        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
     masherChannel  (newWindow) {
         // alert(this.getParameterByName('channel'));
         // alert(this.details.masherChannel);
-        return newWindow ? this.getParameterByName('channel', this.details) : this.details.masherChannel;
+        return newWindow ? this.utils.getParameterByName('channel', this.details) : this.details.masherChannel;
     }
     getChannelFromUrl  () {
-        this.details.masherChannel = this.getParameterByName('channel', this.details);
+        this.details.masherChannel = this.utils.getParameterByName('channel', this.details.search);
         this.details.masherChannelInitialized = true;
         return this.details.masherChannel;
     }
@@ -122,7 +115,7 @@ export class HostConfig implements IHostConfigDetails {
     getWebmapId  (newWindow : boolean) : string {
         var result = "";
         if (newWindow === true) {
-            result = this.getParameterByName('id', this.details);
+            result = this.utils.getParameterByName('id', this.details.search);
             if (result === "") {
                 result = this.details.webmapId;
             }
@@ -178,7 +171,7 @@ export class HostConfig implements IHostConfigDetails {
         return this.details.userName;
     }
     getUserNameFromUrl  () : string {
-        this.details.userName = this.getParameterByName('userName', this.details);
+        this.details.userName = this.utils.getParameterByName('userName', this.details.search);
         return this.details.userName;
     }
     setUserName  (name: string) {
@@ -194,14 +187,14 @@ export class HostConfig implements IHostConfigDetails {
         return this.details.referrerId;
     }
     getReferrerIdFromUrl () : string {
-        this.details.referrerId = this.getParameterByName('referrerId', this.details);
+        this.details.referrerId = this.utils.getParameterByName('referrerId', this.details.search);
         return this.details.referrerId;
     }
     setReferrerId  (id: string) {
         this.details.referrerId = id;
     }
     getReferrerNameFromUrl  () : string {
-        this.details.referrerName = this.getParameterByName('referrerName', this.details);
+        this.details.referrerName = this.utils.getParameterByName('referrerName', this.details.search);
         return this.details.referrerName;
     }
     async getUserNameFromServer() {
@@ -268,7 +261,7 @@ export class HostConfig implements IHostConfigDetails {
         return ltwh;
     }
     testUrlArgs  () : boolean {
-        var rslt = this.getParameterByName('id', this.details);
+        var rslt = this.utils.getParameterByName('id', this.details.search);
         // alert("this.getParameterByName('id') = " + rslt);
         // alert(rslt.length);
         // alert(rslt.length != 0);
@@ -300,17 +293,17 @@ export class HostConfig implements IHostConfigDetails {
     }
     hasCoordinates  () : boolean {
         var result = "";
-        result = this.getParameterByName('zoom', this.details);
+        result = this.utils.getParameterByName('zoom', this.details.search);
         return result === "" ? false : true;
     }
     lon  () : string {
-        return this.getParameterByName('lon', this.details);
+        return this.utils.getParameterByName('lon', this.details.search);
     }
     lat  () : string {
-        return this.getParameterByName('lat', this.details);
+        return this.utils.getParameterByName('lat', this.details.search);
     }
     zoom  () : string {
-        return this.getParameterByName('zoom', this.details);
+        return this.utils.getParameterByName('zoom', this.details.search);
     }
     setPosition  (position : IPositionStr) {
         this.details.lon = position.lon;
@@ -333,18 +326,18 @@ export class HostConfig implements IHostConfigDetails {
     }
     getQuery  () : string {
         return this.details.query;
-        // return this.getParameterByName('gmquery', this.details);
+        // return this.getParameterByName('gmquery', this.details.search);
     }
     getQueryFromUrl() : string {
-        let query = this.getParameterByName('gmquery', this.details);
+        let query = this.utils.getParameterByName('gmquery', this.details.search);
         this.details.query = query;
         return query;
     }
     getBoundsFromUrl ()  {
-        var llx = +this.getParameterByName('llx', this.details),
-            lly = +this.getParameterByName('lly', this.details),
-            urx = +this.getParameterByName('urx', this.details),
-            ury = +this.getParameterByName('ury', this.details);
+        var llx = +this.utils.getParameterByName('llx', this.details),
+            lly = +this.utils.getParameterByName('lly', this.details),
+            urx = +this.utils.getParameterByName('urx', this.details),
+            ury = +this.utils.getParameterByName('ury', this.details.search);
         return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
     }
     getbaseurl  () : string {

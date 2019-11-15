@@ -260,12 +260,12 @@ export class MapsPage implements AfterViewInit {
                   console.log(opts.mapLocOpts);
                   ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat, 'zoom' : opts.mapLocOpts.zoom};
               }
-            } else {  // this case might never happen
+            } else { 
                   // there is already a map open in the slide viewer
                   if(opts.source != EMapSource.sharegoogle) {
                       let gmquery = this.hostConfig.getQuery();
                       console.log(`gmquery is ${gmquery}`);
-                      alert (gmquery);
+                      // alert (gmquery);
                       if(gmquery && gmquery != '') {
                           if(! this.mapInstanceService.getHiddenMap() ) {
                               let bnds = this.hostConfig.getBoundsFromUrl();

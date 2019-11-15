@@ -1,6 +1,7 @@
 import {
     Injectable,
 } from '@angular/core';
+import { utils } from './utils';
 
 export interface IPusherConfigParams
 {
@@ -44,19 +45,13 @@ export class PusherConfig implements IPusherConfig {
     };
     private APP_KEY : string = '5c6bad75dc0dd1cec1a6';
     private APP_SECRET : string = '54546672d0196be97f6a';
-    constructor() {
+    constructor(private utils : utils) {
         console.log("entering PusherConfig");
 
     }
-    getParameterByName(name: string) {
-        // console.log("get paramater " + name + " from " + this.details.search);
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(this.details.search);
-        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
+    
     getChannelFromUrl () : string {
-        this.details.masherChannel = this.getParameterByName('channel');
+        this.details.masherChannel = this.utils.getParameterByName('channel', this.details.search);
         this.details.masherChannelInitialized = true;
         return this.details.masherChannel;
     }
@@ -82,7 +77,7 @@ export class PusherConfig implements IPusherConfig {
     masherChannel (newWindow: boolean) : string {
         // alert(getParameterByName('channel'));
         // alert(this.details.masherChannel);
-        return newWindow ? this.getParameterByName('channel') : this.details.masherChannel;
+        return newWindow ? this.utils.getParameterByName('channel', this.details.search) : this.details.masherChannel;
     }
     getPusherChannel () : string {
         return this.details.masherChannel;
@@ -100,10 +95,10 @@ export class PusherConfig implements IPusherConfig {
         return this.details.userId;
     }
     getBoundsFromUrl () {
-        var llx = this.getParameterByName('llx'),
-            lly = this.getParameterByName('lly'),
-            urx = this.getParameterByName('urx'),
-            ury = this.getParameterByName('ury');
+        var llx = this.utils.getParameterByName('llx', this.details.search),
+            lly = this.utils.getParameterByName('lly', this.details.search),
+            urx = this.utils.getParameterByName('urx', this.details.search),
+            ury = this.utils.getParameterByName('ury', this.details.search);
         return {'llx' : llx, 'lly' : lly, 'urx' : urx, 'ury' : ury};
     }
     getPusherPath () : string {
@@ -112,7 +107,7 @@ export class PusherConfig implements IPusherConfig {
         return path;
     }
     getQueryFromUrl() {
-        let query = this.getParameterByName('gmquery');
+        let query = this.utils.getParameterByName('gmquery', this.details.search);
         return query;
     }
     getQuery() : string {
