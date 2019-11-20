@@ -201,19 +201,30 @@ export class HostConfig implements IHostConfigDetails {
       console.log('await in hostConfig.getUserNameFromServer');
       const response = await this.http.get(this.pusherConfig.getPusherPath() + "/username").toPromise();
       let retval = response.json();
-          console.log("simpleserver returns");
-          let userName = retval['name'];
-          console.log(userName);
-          this.pusherConfig.setUserName(userName);
-          this.setUserName(userName);
-          let userId = retval['id'];
-          console.log(userId);
-          this.pusherConfig.setUserId(userId);
-          // this.setIDsAndNames();
+      console.log("simpleserver returns");
+      let userName = retval['name'];
+      console.log(userName);
+      this.pusherConfig.setUserName(userName);
+      this.setUserName(userName);
+      let userId = retval['id'];
+      console.log(userId);
+      this.pusherConfig.setUserId(userId);
+      // this.setIDsAndNames();
 
-        console.log('return from hostConfig.getUserNameFromServer');
-        return retval;
+      console.log('return from hostConfig.getUserNameFromServer');
+      return retval;
     }
+
+    async getPusherKeys() {
+      console.log('await in hostConfig.getPusherKeys');
+      const response = await this.http.get(this.pusherConfig.getPusherPath() + "/pusherkeys").toPromise();
+      let retval = response.json();
+      console.log(retval);
+      console.log('return from hostConfig.getPusherKeys');
+      this.pusherConfig.setPusherKeys(retval);
+      return retval;
+    }
+
     // getUserNameFromServer  ($http, opts) : void {
     //     console.log(this.pusherConfig.getPusherPath());
     //     var pusherPath = this.pusherConfig.getPusherPath() + '/username';

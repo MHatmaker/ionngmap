@@ -40,7 +40,7 @@ export class PusherClientService {
     // private isInitialized : false;
     // private pusherClient : null;
     // private isInstantiated : false;
-    // private serverUrl : string = 'https://maplinkr-simpleserver.herokuapp.com/';
+    // private serverUrl : string = 'https://smppushmaplinkrsrv.herokuapp.com/';
     private clients : Map<string, PusherClient> = new Map<string, PusherClient>();
     private eventHandlers : Map<string, IEventDct>;
     private mapNumber : number;

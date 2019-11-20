@@ -29,7 +29,7 @@ export class EmailParts implements IEmailParts {
 
 @Injectable()
 export class EmailerProvider {
-  private url : string = 'https://maplinkr-simpleserver.herokuapp.com/send-email';
+  private url : string = 'https://smppushmaplinkrsrv.herokuapp.com/send-email';
   constructor(public http: HttpClient) {
     console.log('Hello EmailerProvider Provider');
   }

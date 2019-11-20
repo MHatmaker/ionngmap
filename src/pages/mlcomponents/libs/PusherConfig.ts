@@ -38,18 +38,19 @@ export class PusherConfig implements IPusherConfig {
         userId : 'uidnone',
         pusherPathPre : "https://",
         // pusherPathNgrok :"maplinkroc3-maplinkr.7e14.starter-us-west-2.openshiftapps.com", //"c1232bf1",
-        pusherPathNgrok :"maplinkr-simpleserver.herokuapp.com",
+        pusherPathNgrok :"smppushmaplinkrsrv.herokuapp.com",
         pusherPathPost : "", //".ngrok.io",
         search : '/',
         query : ""
     };
-    private APP_KEY : string = '5c6bad75dc0dd1cec1a6';
-    private APP_SECRET : string = '54546672d0196be97f6a';
+    private APP_ID : string;
+    private APP_KEY : string; // = '5c6bad75dc0dd1cec1a6';
+    private APP_SECRET : string; // = '54546672d0196be97f6a';
     constructor(private utils : utils) {
         console.log("entering PusherConfig");
 
     }
-    
+
     getChannelFromUrl () : string {
         this.details.masherChannel = this.utils.getParameterByName('channel', this.details.search);
         this.details.masherChannelInitialized = true;
@@ -117,6 +118,13 @@ export class PusherConfig implements IPusherConfig {
         this.details.search = searchDetails;
         this.details.query = this.getQueryFromUrl();
     }
+    setPusherKeys(keys) {
+
+      this.APP_ID = keys.PUSHERAPPID;
+      this.APP_KEY = keys.PUSHERAPPKEY;
+      this.APP_SECRET = keys.PUSHERAPPSECRET;
+    };
+
     getAppKey () : string {
         return this.APP_KEY;
     }

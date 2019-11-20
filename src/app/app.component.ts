@@ -85,6 +85,7 @@ export class MapLinkrApp {
       'infopopSvc' : this.infopopSvc} );
 
     this.queryForUserName();
+    this.queryForPusherKeys();
   }
 
   setIDsAndNames() {
@@ -116,6 +117,12 @@ async queryForUserName()
   console.log("finished await in queryForUserName");
   // this.canvasService.addInitialCanvas(this.pusherConfig.getUserName());
   //this.setIDsAndNames();
+}
+
+async queryForPusherKeys() {
+  console.log('ready to await in queryForPusherKeys');
+  await this.hostConfig.getPusherKeys();
+  console.log('finished await in queryForPusherKeys');
 }
 
 /*
