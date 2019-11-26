@@ -104,13 +104,13 @@ export class PusherClientService {
     PusherChannel(chnl) {
         var // pusher,
             // APP_ID = '40938',
-            APP_KEY = this.pusherConfig.getAppKey(), //'5c6bad75dc0dd1cec1a6',
-            APP_SECRET = this.pusherConfig.getSecretKey(), //'54546672d0196be97f6a',
-            channel = chnl,
+            APP_KEY = this.pusherConfig.getAppKey(),
+            APP_SECRET = this.pusherConfig.getSecretKey(),            channel = chnl,
             channelBind,
             chlength = channel.length,
             channelsub = channel.substring(1);
         console.log("PusherChannel ready to create channel");
+        console.log(`AppKey : ${APP_KEY}, APP_SECRET ${APP_SECRET}`);
         // this.eventDct = eventDct;
 
         if (channel[0] === '/') {

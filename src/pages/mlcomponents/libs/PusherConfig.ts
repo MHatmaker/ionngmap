@@ -44,11 +44,10 @@ export class PusherConfig implements IPusherConfig {
         query : ""
     };
     private APP_ID : string;
-    private APP_KEY : string; // = '5c6bad75dc0dd1cec1a6';
-    private APP_SECRET : string; // = '54546672d0196be97f6a';
+    private APP_KEY : string;
+    private APP_SECRET : string;
     constructor(private utils : utils) {
         console.log("entering PusherConfig");
-
     }
 
     getChannelFromUrl () : string {
@@ -120,9 +119,9 @@ export class PusherConfig implements IPusherConfig {
     }
     setPusherKeys(keys) {
 
-      this.APP_ID = keys.PUSHERAPPID;
-      this.APP_KEY = keys.PUSHERAPPKEY;
-      this.APP_SECRET = keys.PUSHERAPPSECRET;
+      this.APP_ID = keys.appid;
+      this.APP_KEY = keys.appkey;
+      this.APP_SECRET = keys.appsecret;
     };
 
     getAppKey () : string {
