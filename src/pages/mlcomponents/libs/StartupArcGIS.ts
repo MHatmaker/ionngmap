@@ -8,6 +8,7 @@ import { Startup } from './Startup';
 import { MapHosterArcGIS } from './MapHosterArcGIS';
 import { loadModules } from 'esri-loader';
 import { GeoPusherSupport } from './geopushersupport';
+import { utils } from './utils';
 
 interface ConfigOptions {
     // webmap: '4b99c1fb712d4fe694805717df5fadf2', // selectedWebMapId,
@@ -51,6 +52,7 @@ export class StartupArcGIS  extends Startup {
     private mlconfig : MLConfig;
     private elementRef : ElementRef;
     private mapOptions : any;
+    private utils : any;
 
     async loadEsriModules() {
       const options = {
@@ -73,6 +75,7 @@ export class StartupArcGIS  extends Startup {
     constructor (private mapNumber : number, mlconfig : MLConfig,
         private geopush: GeoPusherSupport) {
         super(geopush);
+        //this.utils = AppModule.injector.get(utils);
         // @Output()
             this.viewCreated = new EventEmitter();
             // this.loadEsriModules();
@@ -111,13 +114,13 @@ export class StartupArcGIS  extends Startup {
   }
 
   showLoading () {
-      this.geopush.getGeoPusherSupport().utils.showLoading();
+      this.utils.showLoading();
       this.aMap.disableMapNavigation();
       this.aMap.hideZoomSlider();
   }
 
   hideLoading (error) {
-      this.geopush.getGeoPusherSupport().utils.hideLoading(error);
+      this.utils.hideLoading(error);
       this.aMap.enableMapNavigation();
       this.aMap.showZoomSlider();
   }

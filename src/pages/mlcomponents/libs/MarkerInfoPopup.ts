@@ -6,6 +6,8 @@ import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 // import { PophandlerProvider } from '../../../providers/pophandler/pophandler';
 import { InfopopComponent } from '../../../components/infopop/infopop';
 import { v4 as uuid } from 'uuid';
+import { AppModule } from '../../../app/app.module';
+import { utils } from './utils';
 
 declare var google;
 
@@ -17,14 +19,17 @@ export class MarkerInfoPopup {
     private popTitle : string;
     private popId : string;
     private popMarker : google.maps.Marker;
+    private utils : any;
 
     constructor(private pos, private content : string, public title : string,
       private mrkr=null, private mphmap, private userId : string, private mapNumber : number,
       private popupId : string, private labelarg : any, private geopush ? : GeoPusherSupport,
       private isShared : boolean = false) {
         this.geopushSup = geopush.getGeoPusherSupport();
-            this.popTitle = title;
-            this.popContent = content;
+        this.utils = AppModule.injector.get(utils);
+        this.popTitle = title;
+        this.popContent = content;
+
         var self = this,
             contentRaw = content,
             marker = mrkr || new google.maps.Marker({
@@ -124,7 +129,7 @@ export class MarkerInfoPopup {
         console.log(`shareClick with popoverId : ${popoverId}, this.popupId ${this.popupId} `)
         if(popoverId == this.popupId) {
             let marker = self.mrkr,
-                fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
+                fixedLL = self.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
                 referrerName = self.geopushSup.pusherConfig.getUserName(),
                 referrerId = this.userId,
                 mapId = "map" + this.userId,

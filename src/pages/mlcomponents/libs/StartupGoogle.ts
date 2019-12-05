@@ -7,8 +7,12 @@ import { MapHosterGoogle } from './MapHosterGoogle';
 // import { GoogleMap } from '@agm/core/services/google-maps-types';
 import { Startup } from './Startup';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
-import { utils } from './utils';
+import { PusherConfig } from './PusherConfig';
+import { MapInstanceService} from '../../../services/MapInstanceService';
+import { CurrentMapTypeService } from '../../../services/currentmaptypeservice';
+import { PusherClientService } from '../../../services/pusherclient.service';
 import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface';
+import { AppModule } from '../../../app/app.module';
 
 // @Injectable()
 export class StartupGoogle extends Startup {
@@ -20,14 +24,20 @@ export class StartupGoogle extends Startup {
     private pusher : any = null;
     private mapHoster : MapHosterGoogle;
     private mlconfig : MLConfig;
-    private geopushSup : IGeoPusher;
+    private pusherConfig : PusherConfig;
+    private mapInstanceService : MapInstanceService;
+    private pusherClientService : PusherClientService;
+    private currentMapTypeService : CurrentMapTypeService;
 
     constructor (private mapNumber : number, mlconfig : MLConfig, private geopush : GeoPusherSupport) {
         super(geopush);
         this.mlconfig = mlconfig;
         this.mlconfig.setMapNumber(mapNumber);
-        this.geopushSup = geopush.getGeoPusherSupport();
-        this.mlconfig.setUserId(this.geopushSup.pusherConfig.getUserName() + mapNumber);
+        this.pusherConfig = AppModule.injector.get(PusherConfig);
+        this.currentMapTypeService = AppModule.injector.get(CurrentMapTypeService);
+        this.mapInstanceService = AppModule.injector.get(MapInstanceService);
+        this.pusherClientService = AppModule.injector.get(PusherClientService);
+        this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNumber);
     }
 
 
@@ -84,10 +94,10 @@ export class StartupGoogle extends Startup {
         this.mlconfig.setMapHosterInstance(this.mapHoster);
         this.mlconfig.setRawMap(this.gMap);
 
-        this.geopushSup.mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
-        this.geopushSup.currentMapTypeService.setCurrentMapType('google');
+        this.mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
+        this.currentMapTypeService.setCurrentMapType('google');
 
-        this.pusher = this.geopushSup.pusherClientService.createPusherClient(
+        this.pusher = this.pusherClientService.createPusherClient(
             this.mlconfig,
             function (channel, userName) {
                 this.pusherConfig.setUserName(userName);

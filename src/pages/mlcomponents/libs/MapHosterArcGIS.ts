@@ -2,7 +2,7 @@ import {Injectable, OnInit, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
 // import { PusherConfig } from './PusherConfig';
 // import { PusherClientService } from '../../../services/pusherclient.service';
-// import { utils } from './utils';
+import { utils } from './utils';
 // import { ConfigParams } from '../../../services/configparams.service';
 // import { GeoCoder } from './GeoCoder';
 // import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
@@ -22,6 +22,7 @@ import { ImlBounds, MLBounds, xtntParams } from '../../../services/mlbounds.serv
 import { DomService } from '../../../services/dom.service';
 import { ReflectiveInjector } from '@angular/core';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
+import { AppModule } from '../../../app/app.module';
 
 const proj4 = (proj4x as any).default;
 
@@ -61,6 +62,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     mlconfig : MLConfig;
     geopushSup : IGeoPusher;
     pusherEventHandler: PusherEventHandler;
+    utils : any;
 
     agoOptions
         options = {
@@ -88,6 +90,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         this.cntrxG = pos.lon;
         this.cntryG = pos.lat;
         this.zmG = pos.zoom;
+        this.utils = AppModule.injector.get(utils);
     }
 
     async initializeMap() {
@@ -212,8 +215,8 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         console.log("cntr " + cntr.x + ", " + cntr.y);
         console.log("cntrpt " + cntrpt.x + ", " + cntrpt.y);
         // let ltln = esriwebMercatorUtils.geographicToWebMercator(cntrpt);
-        // fixedLL = this.geopushSup.utils.toFixedTwo(ltln.longitude, ltln.latitude, 3);
-        fixedLL = this.geopushSup.utils.toFixedTwo(cntrpt.x, cntrpt.y, 9);
+        // fixedLL = this.utils.toFixedTwo(ltln.longitude, ltln.latitude, 3);
+        fixedLL = this.utils.toFixedTwo(cntrpt.x, cntrpt.y, 9);
         return {
             'src' : 'arcgis',
             'zoom' : zm,
@@ -326,7 +329,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
           //      screengraphic = new esri.geometry.toScreenGeometry(this.mphmap.extent,800,600,userdrawlayer.graphics[0].geometry);
 
           // if (clickPt.referrerId !== this.mlconfig.getUserId()) {
-              fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 9);
+              fixedLL = this.utils.toFixedTwo(clickPt.x, clickPt.y, 9);
               content = "Map click at " + fixedLL.lat + ", " + fixedLL.lon;
               if (clickPt.title) {
                   content += '<br>' + clickPt.title;
@@ -421,7 +424,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         // cntrpt = new esriPoint({longitude : p.x, latitude : p.y, spatialReference : new esriSpatialReference({wkid: 4326})});
         // console.log("clicked Pt " + mapPt.x + ", " + mapPt.y);
         // console.log("converted Pt " + cntrpt.x + ", " + cntrpt.y);
-        this.fixedLLG = this.geopushSup.utils.toFixedTwo(e.mapPoint.longitude , e.mapPoint.latitude, 9);
+        this.fixedLLG = this.utils.toFixedTwo(e.mapPoint.longitude , e.mapPoint.latitude, 9);
         // let locPt = esriwebMercatorUtils.xyToLngLat(e.mapPoint.longitude, e.mapPoint.latitude);
         // let locPt2 = new esriPoint({longitude: locPt[0], latitude: locPt[1], spatialReference : new esriSpatialReference({wkid: 4326})});
         this.geoLocator.locationToAddress(e.mapPoint)
@@ -685,7 +688,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             var // pnt = new Point({longitude : evt.mapPoint.x, latitude : evt.mapPoint.y}),
                 ltln = this.mphmap.toMap({x: evt.x, y: evt.y}),
                 // ltln = esriwebMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y),
-                fixedLL = this.geopushSup.utils.toFixedTwo(ltln.longitude, ltln.latitude, 4),
+                fixedLL = this.utils.toFixedTwo(ltln.longitude, ltln.latitude, 4),
                 evlng = fixedLL.lon,
                 evlat = fixedLL.lat
             this.geopushSup.positionUpdateService.positionData.emit(

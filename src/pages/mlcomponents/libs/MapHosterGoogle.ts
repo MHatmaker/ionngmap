@@ -3,7 +3,7 @@ import { MLConfig } from './MLConfig';
 // import { PusherConfig } from './PusherConfig';
 // import { PusherClientService } from '../../../services/pusherclient.service';
 import { PusherEventHandler } from './PusherEventHandler';
-// import { utils } from './utils';
+import { utils } from './utils';
 import { ImlBounds } from '../../../services/mlbounds.service';
 import { EMapSource } from '../../../services/configparams.service';
 // import { GoogleMap, Size, Point, LatLngLiteral, LatLng, LatLngBounds } from '@agm/core/services/google-maps-types';
@@ -12,6 +12,8 @@ import { EMapSource } from '../../../services/configparams.service';
 // import { GeoCodingService } from '../../../services/GeoCodingService';
 // import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
 import { PositionUpdateService } from '../../../services/positionupdate.service';
+import { PusherClientService } from '../../../services/pusherclient.service';
+import { PusherConfig } from './PusherConfig';
 // import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
@@ -25,6 +27,7 @@ import { GmpopoverProvider } from '../../../providers/gmpopover/gmpopover';
 import { Popover } from 'ionic-angular';
 import { MarkerInfoPopup } from './MarkerInfoPopup';
 import { v4 as uuid } from 'uuid';
+import { AppModule } from '../../../app/app.module';
 
 declare var google;
 
@@ -64,7 +67,7 @@ export class MapHosterGoogle extends MapHoster {
         channelName : null,
         pusher : null
     };
-    popDetails = null;
+    // popDetails = null;
     queryPlaces = {
         location: null,
         bounds: null,
@@ -73,7 +76,6 @@ export class MapHosterGoogle extends MapHoster {
     placesFromSearch = [];
     // private geoCoder = createClient();
     mlconfig : MLConfig;
-    geopushSup : IGeoPusher;
     pusherEventHandler : PusherEventHandler;
     self : any;
     boundsListenerHandle : any;
@@ -81,12 +83,21 @@ export class MapHosterGoogle extends MapHoster {
     im : 'http://www.robotwoods.com/dev/misc/bluecircle.png';
     private labels : string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     private labelIndex : number = 0;
+    private utils : any;
+    private pusherConfig : PusherConfig;
+    private pusherClientService : PusherClientService;
+    private positionUpdateService : PositionUpdateService;
+    private geoCoder : GeoCodingService;
 
     constructor(private mapNumber: number, mlconfig: MLConfig, geopush: GeoPusherSupport) {
         super(geopush);
         this.mlconfig = mlconfig;
         this.self = this;
-        this.geopushSup = geopush.getGeoPusherSupport();
+        this.utils = AppModule.injector.get(utils);
+        this.pusherClientService = AppModule.injector.get(PusherClientService);
+        this.positionUpdateService = AppModule.injector.get(PositionUpdateService);
+        this.pusherConfig = AppModule.injector.get(PusherConfig);
+        this.geoCoder = AppModule.injector.get(GeoCodingService);
     }
 
     updateGlobals(msg : string, cntrx : number, cntry : number, zm : number) {
@@ -235,7 +246,7 @@ export class MapHosterGoogle extends MapHoster {
     extractBounds(action) {
         var zm = this.mphmap.getZoom(),
             cntr = this.mphmap.getCenter(),
-            fixedLL = this.geopushSup.utils.toFixedTwo(cntr.lng(), cntr.lat(), 9),
+            fixedLL = this.utils.toFixedTwo(cntr.lng(), cntr.lat(), 9),
             bnds = this.mphmap.getBounds(),
             xtntDict = {
                 'src' : 'google',
@@ -296,7 +307,7 @@ export class MapHosterGoogle extends MapHoster {
                     console.log("triggered?");
                     console.log(triggered);
                 }
-                this.geopushSup.pusherClientService.publishPanEvent(xtExt);
+                this.pusherClientService.publishPanEvent(xtExt);
                 this.updateGlobals("in setBounds with cmp false", +xtExt.lon, +xtExt.lat, xtExt.zoom);
 
                 gBnds = this.mphmap.getBounds();
@@ -327,7 +338,7 @@ export class MapHosterGoogle extends MapHoster {
 
     hideLoading(error = null) {
         console.log("hide loading");
-        this.geopushSup.utils.hideLoading(error);
+        this.utils.hideLoading(error);
     }
 
     refreshPlaces() {
@@ -390,7 +401,7 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     retrievedClick(clickPt) {
-        var fixedLL = this.geopushSup.utils.toFixedTwo(clickPt.x, clickPt.y, 9),
+        var fixedLL = this.utils.toFixedTwo(clickPt.x, clickPt.y, 9),
             content,
             popPt,
             btnShare;
@@ -408,10 +419,10 @@ export class MapHosterGoogle extends MapHoster {
         if (clickPt.address) {
             content += '<br>' + clickPt.address;
         }
-        if (this.popDetails !== null && clickPt.referrerId !== this.mlconfig.getUserId()) {
-            this.popDetails.infoWnd.close();
-            this.popDetails.infoMarker.setMap(null);
-        }
+        // if (this.popDetails !== null && clickPt.referrerId !== this.mlconfig.getUserId()) {
+        //     this.popDetails.infoWnd.close();
+        //     this.popDetails.infoMarker.setMap(null);
+        // }
         console.log(`referrerId is ${clickPt.referrerId}, I am ${this.mlconfig.getUserId()}`);
         console.log(`popoverId is ${clickPt.popId}`);
         if (clickPt.referrerId !== this.mlconfig.getUserId()) {
@@ -615,7 +626,7 @@ export class MapHosterGoogle extends MapHoster {
                 qtext = this.mlconfig.getQuery();
                 if (this.mlconfig.getSource() == EMapSource.sharegoogle) {
                     let xtExt = this.extractBounds('pan');
-                    this.geopushSup.pusherClientService.publishPanEvent(xtExt);
+                    this.pusherClientService.publishPanEvent(xtExt);
                 }
                 console.debug(bnds);
                 ll = new google.maps.LatLng(bnds.lly, bnds.llx);
@@ -714,12 +725,12 @@ export class MapHosterGoogle extends MapHoster {
 
         this.mphmap.addListener("mousemove", (e) => {
             var ltln = e.latLng,
-                fixedLL = this.geopushSup.utils.toFixedTwo(ltln.lng(), ltln.lat(), 4),
+                fixedLL = this.utils.toFixedTwo(ltln.lng(), ltln.lat(), 4),
                 evlng = fixedLL.lon,
                 evlat = fixedLL.lat,
                 zm = this.mphmap.getZoom(),
                 cntr = this.mphmap.getCenter(),
-                fixedCntrLL = this.geopushSup.utils.toFixedTwo(cntr.lng(), cntr.lat(), 4),
+                fixedCntrLL = this.utils.toFixedTwo(cntr.lng(), cntr.lat(), 4),
                 cntrlng = fixedCntrLL.lon,
                 cntrlat = fixedCntrLL.lat;
 
@@ -727,7 +738,7 @@ export class MapHosterGoogle extends MapHoster {
                 // var view = "Zoom : " + zm + " Scale : " + this.scale2Level[zm].scale + " Center : " + cntrlng + ", " + cntrlat + " Current : " + evlng + ", " + evlat;
                 // document.getElementById("mppos").value = view;
                 console.log("positionUpdateService emitting at zoom level " + zm);
-                this.geopushSup.positionUpdateService.positionData.emit({key: 'coords',
+                this.positionUpdateService.positionData.emit({key: 'coords',
                     val: {
                         'zm' : zm < this.maxZoom ? zm : this.maxZoom - 1,
                         'scl' : this.scale2Level[zm < this.maxZoom ? zm : this.maxZoom - 1].scale,
@@ -782,10 +793,10 @@ export class MapHosterGoogle extends MapHoster {
         }
         showClickResult(content, popPt, marker) {
             console.log(`showClickResult`);
-            if (this.popDetails !== null) {
-                this.popDetails.infoWnd.close();
-                this.popDetails.infoMarker.setMap(null);
-            }
+            // if (this.popDetails !== null) {
+            //     this.popDetails.infoWnd.close();
+            //     this.popDetails.infoMarker.setMap(null);
+            // }
             let label = this.labels[this.labelIndex++ % this.labels.length];
             marker.setLabel(label);
             let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", marker,
@@ -796,9 +807,9 @@ export class MapHosterGoogle extends MapHoster {
             // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
             if (this.selfPusherDetails.pusher)
             {
-                var fixedLL = this.geopushSup.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6);
+                var fixedLL = this.utils.toFixedTwo(popPt.lng(), popPt.lat(), 6);
                 var referrerId = this.mlconfig.getUserId();
-                var referrerName = this.geopushSup.pusherConfig.getUserName();
+                var referrerName = this.pusherConfig.getUserName();
                 var pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : "0",
                     "referrerId" : referrerId, "referrerName" : referrerName };
                 console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
@@ -811,11 +822,11 @@ export class MapHosterGoogle extends MapHoster {
         async onMapClick(e) {
             var popPt = e.latLng,
                 popPtRaw = {lat: popPt.lat(), lng: popPt.lng()},
-                fixedLL = this.geopushSup.utils.toFixedTwo(popPt.lng(), popPt.lat(), 9),
+                fixedLL = this.utils.toFixedTwo(popPt.lng(), popPt.lat(), 9),
                 marker,
                 content = "You clicked the map at " + fixedLL.lat + ", " + fixedLL.lon;
 
-                this.geopushSup.geoCoder.geoCode({location : popPtRaw}).then((adrs) => {
+                this.geoCoder.geoCode({location : popPtRaw}).then((adrs) => {
                     if(adrs) {
                         marker = new google.maps.Marker({
                             map: this.mphmap,
@@ -904,7 +915,7 @@ export class MapHosterGoogle extends MapHoster {
 
 
     setUserName(name) {
-        this.geopushSup.pusherConfig.setUserName(name);
+        this.pusherConfig.setUserName(name);
     }
 
     getGlobalsForUrl() {
@@ -919,7 +930,7 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     formatCoords(pos) {
-        var fixed = this.geopushSup.utils.toFixedTwo(pos.lng, pos.lat, 5),
+        var fixed = this.utils.toFixedTwo(pos.lng, pos.lat, 5),
             formatted  = '<div style="color: blue;">' + fixed.lon + ', ' + fixed.lat + '</div>';
         return formatted;
     }

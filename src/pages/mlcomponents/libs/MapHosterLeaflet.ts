@@ -13,6 +13,8 @@ import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
 import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
+import { AppModule } from '../../../app/app.module';
+import { utils } from './utils';
 
 
 // @Injectable()
@@ -39,13 +41,14 @@ export class MapHosterLeaflet extends MapHoster {
     pusherEvtHandler;
     mlconfig : MLConfig;
     geopushSup : IGeoPusher;
+    utils : any;
 
 
     constructor(private mapNumber: number, mlconfig: MLConfig, protected geopush: GeoPusherSupport,
         private geoCoderLflt : GeoCoder) {
         super(geopush);
         this.mlconfig = mlconfig;
-        this.geopushSup = geopush.getGeoPusherSupport();
+        this.utils = AppModule.injector.get(utils);
         this.CustomControl =  L.Control.extend({
             options: {
                 position: 'topright'
@@ -58,10 +61,10 @@ export class MapHosterLeaflet extends MapHoster {
         });
     }
     showLoading() {
-        this.geopushSup.utils.showLoading();
+        this.utils.showLoading();
     }
     hideLoading() {
-        this.geopushSup.utils.hideLoading(null);
+        this.utils.hideLoading(null);
     }
     // MapHosterLeaflet.prototype.updateGlobals (msg, this.cntrx, this.cntry, zm)
     updateGlobals(msg, cntrx, cntry, zm) {
@@ -210,12 +213,12 @@ export class MapHosterLeaflet extends MapHoster {
 
     onMouseMove(e) {
         var ltln = e.latlng,
-            fixedLL = this.geopushSup.utils.toFixedTwo(ltln.lng, ltln.lat, 4),
+            fixedLL = this.utils.toFixedTwo(ltln.lng, ltln.lat, 4),
             // evlng = fixedLL.lon,
             // evlat = fixedLL.lat,
             zm = this.mphmap.getZoom(),
             cntr = this.mphmap.getCenter(),
-            fixedCntrLL = this.geopushSup.utils.toFixedTwo(cntr.lng, cntr.lat, 4);
+            fixedCntrLL = this.utils.toFixedTwo(cntr.lng, cntr.lat, 4);
             // cntrlng = fixedCntrLL.lon,
             // cntrlat = fixedCntrLL.lat;
 
@@ -273,7 +276,7 @@ export class MapHosterLeaflet extends MapHoster {
             // mphmapCenter = mphmap.getCenter();
         // var cntr = action == 'pan' ? latlng : mphmap.getCenter();
         cntr = this.mphmap.getCenter();
-        fixedLL = this.geopushSup.utils.toFixedTwo(cntr.lng, cntr.lat, 3);
+        fixedLL = this.utils.toFixedTwo(cntr.lng, cntr.lat, 3);
         xtntDict = {
             'src' : 'leaflet_osm',
             'zoom' : zm,
@@ -514,7 +517,7 @@ export class MapHosterLeaflet extends MapHoster {
     }
 
     formatCoords(pos) {
-        var fixed = this.geopushSup.utils.toFixedTwo(pos.lng, pos.lat, 5),
+        var fixed = this.utils.toFixedTwo(pos.lng, pos.lat, 5),
             formatted  = '<div style="color: blue;">' + fixed.lon + ', ' + fixed.lat + '</div>';
         return formatted;
     }
