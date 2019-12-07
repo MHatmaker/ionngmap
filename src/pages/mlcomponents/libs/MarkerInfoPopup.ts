@@ -1,34 +1,41 @@
 
-import { CommonToNG } from '../libs/CommonToNG';
 import { InfopopProvider } from '../../../providers/infopop/infopop';
 import { Popover } from 'ionic-angular';
-import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 // import { PophandlerProvider } from '../../../providers/pophandler/pophandler';
 import { InfopopComponent } from '../../../components/infopop/infopop';
 import { v4 as uuid } from 'uuid';
 import { AppModule } from '../../../app/app.module';
 import { utils } from './utils';
+import { PusherConfig } from './PusherConfig';
+import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService';
+import { PusherClientService } from '../../../services/pusherclient.service';
 
 declare var google;
 
 
 export class MarkerInfoPopup {
     public popOver : string;
-    private geopushSup : IGeoPusher;
     private popContent : string;
     private popTitle : string;
     private popId : string;
     private popMarker : google.maps.Marker;
     private utils : any;
+    private pusherConfig : PusherConfig;
+    private pusherClientService : PusherClientService;
+    private geoCoder : GeoCodingService;
+    private infopopProvider : InfopopProvider;
 
     constructor(private pos, private content : string, public title : string,
       private mrkr=null, private mphmap, private userId : string, private mapNumber : number,
-      private popupId : string, private labelarg : any, private geopush ? : GeoPusherSupport,
+      private popupId : string, private labelarg : any,
       private isShared : boolean = false) {
-        this.geopushSup = geopush.getGeoPusherSupport();
         this.utils = AppModule.injector.get(utils);
+        this.pusherConfig = AppModule.injector.get(PusherConfig);
+        this.pusherClientService = AppModule.injector.get(PusherClientService);
         this.popTitle = title;
         this.popContent = content;
+        this.geoCoder = AppModule.injector.get(GeoCodingService);
+        this.infopopProvider = AppModule.injector.get(InfopopProvider);
 
         var self = this,
             contentRaw = content,
@@ -55,7 +62,7 @@ export class MarkerInfoPopup {
                 // console.log(e);
                 // console.log(e.srcElement.id);
                 console.log("dockPopup !!!");
-                let infopop = CommonToNG.getLibs().infopopSvc;
+                let infopop = self.infopopProvider;
                 let subscriber = infopop.dockPopEmitter.subscribe((retval : any) => {
                     console.log(`dockPopEmitter event received from ${retval.title} in popover for ${title} userId ${self.userId}`);
                     if(retval) {
@@ -112,7 +119,7 @@ export class MarkerInfoPopup {
             // this.geopushSup.pophandlerProvider.closePopupsExceptOne(marker.title);
             console.log(`triggered click listener for user ${this.userId} on marker ${marker.title}`);
             let latlng = {lat: pos.lat(), lng: pos.lng()};
-            this.geopushSup.geoCoder.geoCode({location : latlng}).then((adrs) => {
+            this.geoCoder.geoCode({location : latlng}).then((adrs) => {
               contentRaw = adrs;
                 dockPopup(event, this);
             });
@@ -130,7 +137,7 @@ export class MarkerInfoPopup {
         if(popoverId == this.popupId) {
             let marker = self.mrkr,
                 fixedLL = self.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
-                referrerName = self.geopushSup.pusherConfig.getUserName(),
+                referrerName = self.pusherConfig.getUserName(),
                 referrerId = this.userId,
                 mapId = "map" + this.userId,
                 pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
@@ -138,7 +145,7 @@ export class MarkerInfoPopup {
                   "mapId" : mapId, "popId" : popoverId, "mapNumber" : this.mapNumber,
                   'address' : marker.address, 'title' : marker.title };
             console.log("You, " + referrerName + ", " + referrerId + ", clicked the map with id " + popoverId + " at " + fixedLL.lat + ", " + fixedLL.lon);
-            self.geopushSup.pusherClientService.publishClickEvent(pushLL);
+            self.pusherClientService.publishClickEvent(pushLL);
         }
     }
 
@@ -157,7 +164,7 @@ export class MarkerInfoPopup {
     }
 
     closePopover() {
-      let infopop = CommonToNG.getLibs().infopopSvc;
+      let infopop = this.infopopProvider;
       infopop.close(this.popupId);
     }
 }

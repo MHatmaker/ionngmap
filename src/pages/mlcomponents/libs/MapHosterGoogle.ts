@@ -22,7 +22,6 @@ import { Observable } from 'rxjs/Observable';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
 import { SearchplacesProvider } from '../../../providers/searchplaces/searchplaces';
 // import { InfopopupComponent } from '../../../src/infopopup/infopopup';
-import { CommonToNG } from '../libs/CommonToNG';
 import { GmpopoverProvider } from '../../../providers/gmpopover/gmpopover';
 import { Popover } from 'ionic-angular';
 import { MarkerInfoPopup } from './MarkerInfoPopup';
@@ -197,7 +196,7 @@ export class MapHosterGoogle extends MapHoster {
 
                 this.markers.push(marker);
                 let mip = new MarkerInfoPopup(place.geometry.location, marker.address, place.name, marker,
-                    this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), lbl, this.geopush);
+                    this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), lbl);
                 this.markerInfoPopups.set(mip.getId(), mip);
                 // this.geopushSup.pophandlerProvider.addPopup(place.name, mip);
 
@@ -211,21 +210,21 @@ export class MapHosterGoogle extends MapHoster {
             hint = "Lofty Thoughts";
         let label = this.labels[this.labelIndex++ % this.labels.length];
           let mip = new MarkerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label, this.geopush);
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
         this.markerInfoPopups.set(mip.getId(), mip);
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         popPt = new google.maps.LatLng(41.888941, -87.620692);
         hint = "Drafty Sweatbox";
         label = this.labels[this.labelIndex++ % this.labels.length];
         mip = new MarkerInfoPopup(popPt, "Climate control as nature intended.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label, this.geopush);
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
         this.markerInfoPopups.set(mip.getId(), mip);
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         popPt = new google.maps.LatLng(41.884979, -87.620950);
         hint = "Blank Wall Vistas";
         label = this.labels[this.labelIndex++ % this.labels.length];
         mip = new MarkerInfoPopup(popPt, "Panorama views are over-rated if you prefer exposed brick.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label, this.geopush);
+            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
         this.markerInfoPopups.set(mip.getId(), mip);
         // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
         // this.polygon([
@@ -431,7 +430,7 @@ export class MapHosterGoogle extends MapHoster {
               let lbl = this.labels[this.labelIndex++ % this.labels.length];
               let labelItem = {text: lbl, color: "#eb3a44", fontSize: "16px", fontWeight: "bold"}
               let mip = new MarkerInfoPopup(popPt, content, titleShared, // "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
-                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), lbl, this.geopush, true);
+                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), lbl, true);
               this.markerInfoPopups.set(clickPt.popId, mip);
               mip.openSharedPopover();
                 // this.geopushSup.pophandlerProvider.addPopup("received", mip);
@@ -800,7 +799,7 @@ export class MapHosterGoogle extends MapHoster {
             let label = this.labels[this.labelIndex++ % this.labels.length];
             marker.setLabel(label);
             let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", marker,
-              this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label, this.geopush);
+              this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
             this.markerInfoPopups.set(mip.getId(), mip);
               // this.geopushsup.pophandlerprovider.addpopup("mapclicked", mip);
               // this.markerInfoPopups[place.name] = mip;

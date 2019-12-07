@@ -7,7 +7,6 @@ import { StartupGoogle } from '../libs/StartupGoogle';
 import { GeoPusherSupport } from '../libs/geopushersupport';
 import { SlideViewService } from '../../../services/slideview.service';
 import { CanvasService } from '../../../services/CanvasService';
-import { CommonToNG } from '../libs/CommonToNG';
 import { InfopopProvider } from '../../../providers/infopop/infopop';
 
 // import { PlacesSearch } from '../PlacesSearch/places.component';
@@ -92,8 +91,7 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
     // this.rndr.setAttribute(mapElement, "style", "height: 550px; position: relative; overflow: hidden;");
     this.gmap = this.startup.configure("google-map-component" + this.mapNumber, this.elementRef.nativeElement.firstChild, mapOptions);
 
-    let infopop = CommonToNG.getLibs().infopopSvc;
-    this.gmarker = new google.maps.Marker({
+    let infopop = this.infopopProvider;    this.gmarker = new google.maps.Marker({
             position: latLng,
             map: this.gmap,
             title: "moving marker"

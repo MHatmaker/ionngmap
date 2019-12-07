@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
-import {GeoPusherSupport, IGeoPusher } from '../../pages/mlcomponents/libs/geopushersupport';
+import { PusherClientService } from '../../services/pusherclient.service';
 // import { SharemapProvider } from '../../providers/sharemap/sharemap';
 // import { FormGroup, FormBuilder } from '@angular/forms';
 
@@ -12,7 +12,7 @@ export class InfopopupComponent {
 
   itemContent: any;
 
-  constructor(info : NavParams, public viewCtrl: ViewController, private geopushersupport : GeoPusherSupport ) {
+  constructor(info : NavParams, public viewCtrl: ViewController, private pusherClientService : PusherClientService ) {
     console.log('Hello InfopopupComponent Component');
     // alert(info.get('address'));
     // this.itemContent = info.get('address');
@@ -29,9 +29,7 @@ export class InfopopupComponent {
   }
 
   publishInfo() {
-    let pusherClientService = this.geopushersupport.getGeoPusherSupport().pusherClientService;
-    // let pushLL = {'address' : this.itemContent};
-    pusherClientService.publishClickEvent(this.itemContent);
+    this.pusherClientService.publishClickEvent(this.itemContent);
     this.viewCtrl.dismiss();
 
   }
