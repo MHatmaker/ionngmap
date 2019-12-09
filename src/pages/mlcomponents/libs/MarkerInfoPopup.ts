@@ -26,9 +26,9 @@ export class MarkerInfoPopup {
     private infopopProvider : InfopopProvider;
 
     constructor(private pos, private content : string, public title : string,
-      private mrkr=null, private mphmap, private userId : string, private mapNumber : number,
-      private popupId : string, private labelarg : any,
-      private isShared : boolean = false) {
+        private mrkr=null, private mphmap, private userId : string, private mapNumber : number,
+        private popupId : string, private labelarg : any,
+        private isShared : boolean = false) {
         this.utils = AppModule.injector.get(utils);
         this.pusherConfig = AppModule.injector.get(PusherConfig);
         this.pusherClientService = AppModule.injector.get(PusherClientService);

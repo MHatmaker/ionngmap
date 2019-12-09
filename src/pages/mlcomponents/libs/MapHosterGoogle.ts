@@ -205,34 +205,18 @@ export class MapHosterGoogle extends MapHoster {
         }
     }
 
-    addInitialSymbols() {
-        let popPt = new google.maps.LatLng(41.890283, -87.625842),
-            hint = "Lofty Thoughts";
+    addInitialSymbol(lat, lng, hint, text) {
+        let popPt = new google.maps.LatLng(lat, lng);
         let label = this.labels[this.labelIndex++ % this.labels.length];
-          let mip = new MarkerInfoPopup(popPt, "Creativity is inspired by collapsing ceilings and rubble walls.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
+        let mip = new MarkerInfoPopup(popPt, text,
+          hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
         this.markerInfoPopups.set(mip.getId(), mip);
-        // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
-        popPt = new google.maps.LatLng(41.888941, -87.620692);
-        hint = "Drafty Sweatbox";
-        label = this.labels[this.labelIndex++ % this.labels.length];
-        mip = new MarkerInfoPopup(popPt, "Climate control as nature intended.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
-        this.markerInfoPopups.set(mip.getId(), mip);
-        // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
-        popPt = new google.maps.LatLng(41.884979, -87.620950);
-        hint = "Blank Wall Vistas";
-        label = this.labels[this.labelIndex++ % this.labels.length];
-        mip = new MarkerInfoPopup(popPt, "Panorama views are over-rated if you prefer exposed brick.",
-            hint, null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
-        this.markerInfoPopups.set(mip.getId(), mip);
-        // this.geopushSup.pophandlerProvider.addPopup(hint, mip);
-        // this.polygon([
-            // [51.509, -0.08],
-            // [51.503, -0.06],
-            // [51.51, -0.047]
-        // ]);
-        // this.circle([51.508, -0.11], 500);
+    }
+
+    addInitialSymbols() {
+        this.addInitialSymbol(41.890283, -87.625842, "Lofty Thoughts",  "Creativity is inspired by collapsing ceilings and rubble walls.");
+        this.addInitialSymbol(41.888941, -87.620692, "Drafty Sweatbox",  "Climate control as nature intended.");
+        this.addInitialSymbol(41.884979, -87.620950, "Blank Wall Vistas",  "Panorama views are over-rated if you prefer exposed brick.");
     }
 
     // formatBounds(b) {
