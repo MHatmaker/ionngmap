@@ -26,7 +26,7 @@ export class MarkerInfoPopup {
     private infopopProvider : InfopopProvider;
 
     constructor(private pos, private content : string, public title : string,
-        private mrkr=null, private mphmap, private userId : string, private mapNumber : number,
+        private placeIconUrl, private mphmap, private userId : string, private mapNumber : number,
         private popupId : string, private labelarg : any,
         private isShared : boolean = false) {
         this.utils = AppModule.injector.get(utils);
@@ -37,10 +37,19 @@ export class MarkerInfoPopup {
         this.geoCoder = AppModule.injector.get(GeoCodingService);
         this.infopopProvider = AppModule.injector.get(InfopopProvider);
 
+        let image = {
+            url: placeIconUrl,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(25, 25),
+            labelOrigin: new google.maps.Point(20,16)
+        };
         var self = this,
             contentRaw = content,
-            marker = mrkr || new google.maps.Marker({
+            marker = new google.maps.Marker({
                 position: pos,
+                icon: image,
                 map: this.mphmap,
                 title: title,
                 label: {text: labelarg, color: "#003a44", fontSize: "16px", fontWeight: "bold"}
@@ -110,9 +119,9 @@ export class MarkerInfoPopup {
         // lbl.fontSize = "16px";
         // lbl.fontWeight = "bold";
         // marker.setLabel(lbl);
-        if(! this.mrkr) {
-            this.mrkr = marker;
-        }
+        // if(! this.mrkr) {
+        //     this.mrkr = marker;
+        // }
         this.popMarker = marker;
         // this.popMarker.setLabel(lbl);
         google.maps.event.addListener(marker, 'click',  async (event) => {
@@ -135,7 +144,7 @@ export class MarkerInfoPopup {
     shareClick(e: Event, self, popoverId, labelShort) {
         console.log(`shareClick with popoverId : ${popoverId}, this.popupId ${this.popupId} `)
         if(popoverId == this.popupId) {
-            let marker = self.mrkr,
+            let marker = self.popMarker,
                 fixedLL = self.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9),
                 referrerName = self.pusherConfig.getUserName(),
                 referrerId = this.userId,
@@ -158,6 +167,9 @@ export class MarkerInfoPopup {
       }
       // let infopop = CommonToNG.getLibs().infopopoverSvc;
       // infopop.open(this.popContent, this.popTitle);
+    }
+    getMarker() {
+      return this.popMarker;
     }
     openPopover(content : string, title : string) {
 

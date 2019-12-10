@@ -156,7 +156,6 @@ export class MapHosterGoogle extends MapHoster {
 
     placeMarkers(places) {
         var boundsForMarkers,
-            image,
             marker,
             place,
             i;
@@ -173,31 +172,12 @@ export class MapHosterGoogle extends MapHoster {
         for (i = 0; i < places.length; i += 1) {
             place = places[i];
             if (place) {
-                image = {
-                    url: place.icon,
-                    size: new google.maps.Size(71, 71),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(25, 25),
-                    labelOrigin: new google.maps.Point(20,16)
-                };
-
-              // Create a marker for each place.
                 let lbl = this.labels[this.labelIndex++ % this.labels.length];
-                let labelItem = {text: lbl, color: "#eb3a44", fontSize: "16px", fontWeight: "bold"};
-                marker = new google.maps.Marker({
-                    map: this.mphmap,
-                    icon: image,
-                    title: place.name,
-                    label : labelItem,
-                    // address : place.formatted_address,
-                    position: place.geometry.location
-                });
 
-                this.markers.push(marker);
-                let mip = new MarkerInfoPopup(place.geometry.location, marker.address, place.name, marker,
+                let mip = new MarkerInfoPopup(place.geometry.location, place.formatted_address, place.name, place.icon,
                     this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), lbl);
                 this.markerInfoPopups.set(mip.getId(), mip);
+                this.markers.push(mip.getMarker());
                 // this.geopushSup.pophandlerProvider.addPopup(place.name, mip);
 
                 boundsForMarkers.extend(place.geometry.location);
@@ -412,10 +392,10 @@ export class MapHosterGoogle extends MapHoster {
             if(this.markerInfoPopups.has(clickPt.popId) === false) {
               let titleShared = "(shared )" + clickPt.title;
               let lbl = this.labels[this.labelIndex++ % this.labels.length];
-              let labelItem = {text: lbl, color: "#eb3a44", fontSize: "16px", fontWeight: "bold"}
               let mip = new MarkerInfoPopup(popPt, content, titleShared, // "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
                 null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), lbl, true);
               this.markerInfoPopups.set(clickPt.popId, mip);
+              this.markers.push(mip.getMarker());
               mip.openSharedPopover();
                 // this.geopushSup.pophandlerProvider.addPopup("received", mip);
               // this.markerInfoPopups[place.name] = mip;
@@ -774,15 +754,14 @@ export class MapHosterGoogle extends MapHoster {
             this.mphmap.setCenter(center);
             // console.log(this.mphmap.getBounds());
         }
-        showClickResult(content, popPt, marker) {
+        showClickResult(content, popPt) {
             console.log(`showClickResult`);
             // if (this.popDetails !== null) {
             //     this.popDetails.infoWnd.close();
             //     this.popDetails.infoMarker.setMap(null);
             // }
             let label = this.labels[this.labelIndex++ % this.labels.length];
-            marker.setLabel(label);
-            let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", marker,
+            let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", null, // placeholder for image icon url
               this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
             this.markerInfoPopups.set(mip.getId(), mip);
               // this.geopushsup.pophandlerprovider.addpopup("mapclicked", mip);
@@ -819,13 +798,9 @@ export class MapHosterGoogle extends MapHoster {
                         });
 
                         content = adrs;
-                        this.showClickResult(content, popPt, marker);
-                    } else {
-                        this.showClickResult(content, popPt, null);
                     }
+                    this.showClickResult(content, popPt);
                 });
-
-            // showClickResult(content, popPt);
         }
 
     getMapHosterName() {
