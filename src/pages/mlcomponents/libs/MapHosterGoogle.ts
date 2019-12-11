@@ -393,7 +393,7 @@ export class MapHosterGoogle extends MapHoster {
               let titleShared = "(shared )" + clickPt.title;
               let lbl = this.labels[this.labelIndex++ % this.labels.length];
               let mip = new MarkerInfoPopup(popPt, content, titleShared, // "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
-                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), lbl, true);
+                null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, clickPt.popId, lbl, true);
               this.markerInfoPopups.set(clickPt.popId, mip);
               this.markers.push(mip.getMarker());
               mip.openSharedPopover();
@@ -785,18 +785,10 @@ export class MapHosterGoogle extends MapHoster {
             var popPt = e.latLng,
                 popPtRaw = {lat: popPt.lat(), lng: popPt.lng()},
                 fixedLL = this.utils.toFixedTwo(popPt.lng(), popPt.lat(), 9),
-                marker,
                 content = "You clicked the map at " + fixedLL.lat + ", " + fixedLL.lon;
 
                 this.geoCoder.geoCode({location : popPtRaw}).then((adrs) => {
                     if(adrs) {
-                        marker = new google.maps.Marker({
-                            map: this.mphmap,
-                            title : adrs,
-                            position: popPtRaw,
-                            label : ""
-                        });
-
                         content = adrs;
                     }
                     this.showClickResult(content, popPt);
