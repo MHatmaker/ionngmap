@@ -30,6 +30,41 @@ import { AppModule } from '../../../app/app.module';
 
 declare var google;
 
+class PointIndex {
+  constructor(private x : number, private y : number) {
+
+  }
+    getX() : number {
+      return this.x;
+    }
+    getY() : number {
+      return this.y;
+    }
+    equals(ndx : PointIndex) : boolean {
+      return (this.x == ndx.getX() && this.y == ndx.getY());
+    }
+}
+
+interface SetItem {
+    equals(other: SetItem): boolean;
+}
+
+class SetObj<T extends SetItem> extends Set<T> {
+    add(value: T): this {
+        let found = false;
+        this.forEach(item => {
+            if (value.equals(item)) {
+                found = true;
+            }
+        });
+
+        if (!found) {
+            super.add(value);
+        }
+
+        return this;
+    }
+}
 // interface IInfoWnd  IMap<{'title' : string, infownd : google.maps.InfoWindow};
 
 // @Injectable()
@@ -51,6 +86,7 @@ export class MapHosterGoogle extends MapHoster {
     popup = null;
     marker = null;
     markers = [];
+    popupSet : Set<string> = new Set<string>(); // SetObj<PointIndex> = new SetObj<PointIndex>();
     popups = [];
     infoWnds = new Map<string, google.maps.InfoWindow> ();
     popovers = new Map<string, Popover>();
@@ -178,6 +214,8 @@ export class MapHosterGoogle extends MapHoster {
                     this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), lbl);
                 this.markerInfoPopups.set(mip.getId(), mip);
                 this.markers.push(mip.getMarker());
+                this.addToPopupSet(mip.getMarker().getPosition().lng(), mip.getMarker().getPosition().lat());
+                // this.popupSet.add(new PointIndex(mip.getMarker().getPosition().lng(), mip.getMarker().getPosition().lat()));
                 // this.geopushSup.pophandlerProvider.addPopup(place.name, mip);
 
                 boundsForMarkers.extend(place.geometry.location);
@@ -363,6 +401,12 @@ export class MapHosterGoogle extends MapHoster {
         }
     }
 
+    addToPopupSet(x : number, y : number) {
+      if(this.popupSet.has("" + x + ", " + y) == false) {
+        this.popupSet.add("" + x + ", " + y);
+      }
+    }
+
     retrievedClick(clickPt) {
         var fixedLL = this.utils.toFixedTwo(clickPt.x, clickPt.y, 9),
             content,
@@ -389,13 +433,16 @@ export class MapHosterGoogle extends MapHoster {
         console.log(`referrerId is ${clickPt.referrerId}, I am ${this.mlconfig.getUserId()}`);
         console.log(`popoverId is ${clickPt.popId}`);
         if (clickPt.referrerId !== this.mlconfig.getUserId()) {
-            if(this.markerInfoPopups.has(clickPt.popId) === false) {
+            if(this.popupSet.has("" + clickPt.x + ", " + clickPt.y) == false){
+            // if(this.markerInfoPopups.has(clickPt.popId) === false) {
               let titleShared = "(shared )" + clickPt.title;
               let lbl = this.labels[this.labelIndex++ % this.labels.length];
               let mip = new MarkerInfoPopup(popPt, content, titleShared, // "Received from user " + clickPt.referrerName + ", " + clickPt.referrerId,
                 null, this.mphmap, this.mlconfig.getUserId(), this.mapNumber, clickPt.popId, lbl, true);
               this.markerInfoPopups.set(clickPt.popId, mip);
               this.markers.push(mip.getMarker());
+              this.addToPopupSet(clickPt.x, clickPt.y);
+              // this.addToPopupSet(mip.getMarker().getPosition().lng(), mip.getMarker().getPosition().lat());
               mip.openSharedPopover();
                 // this.geopushSup.pophandlerProvider.addPopup("received", mip);
               // this.markerInfoPopups[place.name] = mip;
