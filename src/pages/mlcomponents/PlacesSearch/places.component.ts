@@ -51,7 +51,7 @@ export class PlacesSearchComponent implements AfterViewInit {
             let gmap = this.mapInstanceService.getHiddenMap();
 
             let cfg = this.mapInstanceService.getRecentConfig();
-            let bnds = cfg.getRawMap().getBounds(); //gmap.getBounds();
+            let bnds = gmap.getBounds(); // cfg.getRawMap().getBounds(); //gmap.getBounds();
             let cntr = mph.getCenter();
             let googlecntr = new google.maps.LatLng(cntr.lat, cntr.lon);
             console.log("searchBox latest bounds");
