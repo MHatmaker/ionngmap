@@ -1,3 +1,11 @@
 destselection {
-
+  .item-radio-checked{
+        background-color: rgba(16, 68, 136, 0.582);
+        ion-label{
+          color: white;
+        }
+        ion-item.item-md{
+          color: white !important;
+        }
+    }
 }

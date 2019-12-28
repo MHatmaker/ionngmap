@@ -15,8 +15,8 @@
       <ion-card-content>
         <form [formGroup]="destselgroup">
           <ion-list radio-group formControlName="dests">
-              <ion-item *ngFor="let dest of destinations;">
-                <ion-label>{{dest.title}}</ion-label>
+              <ion-item *ngFor="let dest of destinations;" class="item item-block item-radio-checked" [class.destselection.item-radio-checked] = 'dest.isChecked'>
+                <ion-label color="dest.isChecked?primary:secondary">{{dest.title}}</ion-label>
                 <ion-radio (ionSelect)="checkDestination(dest)" [value]="dest" [checked]="dest.id==selectedDestination.id"></ion-radio>
             </ion-item>
           </ion-list>

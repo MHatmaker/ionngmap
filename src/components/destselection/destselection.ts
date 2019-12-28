@@ -25,7 +25,7 @@ export class DestselectionComponent {
     this.destselgroup = formBuilder.group({
       selectedDestination : this.selectedDestination,
       dests : this.destinations,
-      useDestination : this.selectedDestination.title
+      useDestination : 'Open new map in ' + this.selectedDestination.title
     });
     // this.destselgroup.setValue({selectedDestination : this.selectedDestination, useDestination : this.selectedDestination.title, dests: this.destinations})
     this.destselgroup.controls['dests'].setValue(this.selectedDestination);
@@ -38,7 +38,7 @@ export class DestselectionComponent {
       // this.destselgroup.value['destTitle'] = item.title;
       item.isChecked = true;
       this.destselgroup.value['selectedDestination'] = item;
-      this.destselgroup.patchValue({useDestination : item.title});
+      this.destselgroup.patchValue({useDestination : 'Open new map in ' + item.title});
       this.destselgroup.patchValue({dests : item});
       this.destselgroup.patchValue({selectedDestination : item});
       // console.log("checkDestination - item " + this.selectedDestination);
