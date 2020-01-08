@@ -51,7 +51,7 @@ export class DestinationsProvider {
   }
   clearChecks(dest : Destination) {
       for (let i in this.destinations) {
-          if(this.destinations[i].id = dest.id) {
+          if(this.destinations[i].id == dest.id) {
             this.destinations[i].isChecked = true;
           } else {
             this.destinations[i].isChecked = false;
