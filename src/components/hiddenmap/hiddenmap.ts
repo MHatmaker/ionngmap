@@ -2,10 +2,10 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions } from '../../services/positionupdate.interface';
 import { CanvasService } from '../../services/CanvasService';
+import { PusherClientService } from '../../services/pusherclient.service';
 import { GeoPusherSupport, IGeoPusher } from '../../pages/mlcomponents/libs/geopushersupport';
 import { PusherEventHandler } from '../../pages/mlcomponents/libs/PusherEventHandler';
 import { MapInstanceService } from '../../services/MapInstanceService';
-// import { HostConfig } from '../../pages/mlcomponents/libs/HostConfig'
 
 declare var google;
 
@@ -14,16 +14,14 @@ declare var google;
   templateUrl: 'hiddenmap.html'
 })
 export class HiddenmapComponent {
-@ViewChild('hiddenmap') mapElement : ElementRef;
-    map: google.maps.Map;
-    pusherEventHandler : PusherEventHandler;
-    private geopushSup : IGeoPusher;
-    private hiddenMapCreated : boolean = false;
+  @ViewChild('hiddenmap') mapElement : ElementRef;
+  map: google.maps.Map;
+  pusherEventHandler : PusherEventHandler;
+  private hiddenMapCreated : boolean = false;
 
-  constructor(private mapOpener : MapopenerProvider, private canvasService : CanvasService, private geopush : GeoPusherSupport,
-      private mapInstanceService : MapInstanceService) { //}, private hostConfig : HostConfig) {
+  constructor(private mapOpener : MapopenerProvider, private canvasService : CanvasService, private pusherClientService : PusherClientService,
+      private mapInstanceService : MapInstanceService) {
     console.log('Hello HiddenmapComponent Component');
-    this.geopushSup = geopush.getGeoPusherSupport();
       mapOpener.openMap.subscribe(
           (data : MapLocOptions) => {
             if (this.hiddenMapCreated == false) {
@@ -46,7 +44,7 @@ export class HiddenmapComponent {
     this.pusherEventHandler = new PusherEventHandler(-1);
     this.pusherEventHandler.addEvent('client-MapXtntEvent', (xj) => this.onPan(xj));
     this.pusherEventHandler.addEvent('client-MapClickEvent', (pt) => {});
-    this.geopush.IgeoPusher.pusherClientService.createHiddenPusherClient(this.pusherEventHandler.getEventDct());
+    this.pusherClientService.createHiddenPusherClient(this.pusherEventHandler.getEventDct());
   }
   onPan(xj){
     let cntr = new google.maps.LatLng(xj.lat, xj.lon);

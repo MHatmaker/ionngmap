@@ -6,7 +6,7 @@ import { IPosition, MLPosition } from '../../services/position.service';
 import { IConfigParams, EMapSource } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
 import { HostConfig } from '../mlcomponents/libs/HostConfig';
-import { GeoPusherSupport } from '../mlcomponents/libs/geopushersupport';
+import { PusherConfig } from '../mlcomponents/libs/PusherConfig';
 import { PusherEventHandler } from '../mlcomponents/libs/PusherEventHandler';
 import { MapInstanceService} from '../../services/MapInstanceService';
 // import { CarouselComponent} from '../mlcomponents/Carousel/carousel.component';
@@ -30,7 +30,7 @@ import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { MLBounds, ImlBounds } from '../../services/mlbounds.service';
 import { SearchplacesProvider } from '../../providers/searchplaces/searchplaces';
-import { HiddenmapComponent } from '../../components/hiddenmap/hiddenmap';
+import { AppModule } from '../../app/app.module';
 
 declare var google;
 
@@ -56,8 +56,7 @@ export class MapsPage implements AfterViewInit {
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
               private slideViewService : SlideViewService, private modalCtrl : ModalController,
-              private mapOpener : MapopenerProvider, private hostConfig : HostConfig,
-              private geoPush : GeoPusherSupport) {
+              private mapOpener : MapopenerProvider, private hostConfig : HostConfig, private pusherConfig : PusherConfig) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
 
@@ -87,7 +86,7 @@ export class MapsPage implements AfterViewInit {
           modal.present();
           modal.onDidDismiss((mode, data) => {
               if(mode == 'usepush') {
-                  let pusherClientService = this.geoPush.getGeoPusherSupport().pusherClientService;
+                  let pusherClientService = AppModule.injector.get('PusherClientService');
                   // publish stringifyed IMapShare
                   pusherClientService.publishPosition(data);
                   // this.onNewMapPosition(data);
@@ -128,7 +127,6 @@ export class MapsPage implements AfterViewInit {
       });
       this.showLocate(true);
 
-      // this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
   }
   async searchMap() {
       let modal = this.modalCtrl.create(AgoitemComponent);
@@ -176,7 +174,7 @@ export class MapsPage implements AfterViewInit {
           console.log('showLocate returned');
           console.log(mode);
           if(mode == 'showme') {
-            this.canvasService.addInitialCanvas(this.geoPush.getGeoPusherSupport().pusherConfig.getUserName());
+            this.canvasService.addInitialCanvas(this.pusherConfig.getUserName());
           } else {
             return;
           }
@@ -229,7 +227,7 @@ export class MapsPage implements AfterViewInit {
           startquery : string = '',
           agoId : string = ago,
           mlConfig,
-          userName = this.geoPush.getGeoPusherSupport().pusherConfig.getUserName();
+          userName = this.pusherConfig.getUserName();
           console.log(`addCanvas set userName to ${userName}`);
       if (mlcfg) {
           mlConfig = mlcfg;
@@ -260,7 +258,7 @@ export class MapsPage implements AfterViewInit {
                   console.log(opts.mapLocOpts);
                   ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat, 'zoom' : opts.mapLocOpts.zoom};
               }
-            } else { 
+            } else {
                   // there is already a map open in the slide viewer
                   if(opts.source != EMapSource.sharegoogle) {
                       let gmquery = this.hostConfig.getQuery();
