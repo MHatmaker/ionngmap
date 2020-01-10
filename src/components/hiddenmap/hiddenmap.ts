@@ -3,7 +3,6 @@ import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions } from '../../services/positionupdate.interface';
 import { CanvasService } from '../../services/CanvasService';
 import { PusherClientService } from '../../services/pusherclient.service';
-import { GeoPusherSupport, IGeoPusher } from '../../pages/mlcomponents/libs/geopushersupport';
 import { PusherEventHandler } from '../../pages/mlcomponents/libs/PusherEventHandler';
 import { MapInstanceService } from '../../services/MapInstanceService';
 

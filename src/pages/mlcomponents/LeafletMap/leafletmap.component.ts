@@ -5,8 +5,6 @@ import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
 import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
 import { StartupLeaflet } from '../libs/StartupLeaflet';
-import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
-
 // import { PlacesSearch } from '../PlacesSearch/places.component';
 
 interface ILeafletParams {
@@ -41,7 +39,7 @@ export class LeafletMapComponent implements AfterViewInit {
      };
 
   constructor (private mapInstanceService: MapInstanceService, private rndr: Renderer2,
-      public geolocation : Geolocation, geopush: GeoPusherSupport, ngZone : NgZone) {
+      public geolocation : Geolocation, ngZone : NgZone) {
       this.mapNumber = this.mapInstanceService.getNextSlideNumber();
   }
 

@@ -12,7 +12,6 @@ import { ImlBounds, MLBounds } from '../../../services/mlbounds.service';
 // import { Point } from 'esri/geometry';
 import { utils } from '../libs/utils';
 import { StartupArcGIS } from '../libs/StartupArcGIS';
-import { GeoPusherSupport } from '../libs/geopushersupport';
 
 // import * as Locator from 'esri/tasks/Locator';
 // import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
@@ -44,10 +43,10 @@ export class EsriMapComponent implements OnInit {
 
   constructor(private mapService: ESRIMapService, private geolocation : Geolocation,
       private mapInstanceService: MapInstanceService,
-      private elementRef: ElementRef, private utils : utils, private geopush: GeoPusherSupport) {
+      private elementRef: ElementRef, private utils : utils) {
       this.mapNumber = this.mapInstanceService.getNextSlideNumber();
       this.startup = new StartupArcGIS(this.mapNumber,
-          this.mapInstanceService.getConfigForMap(this.mapNumber), geopush);
+          this.mapInstanceService.getConfigForMap(this.mapNumber));
   }
 
   ngOnInit() {

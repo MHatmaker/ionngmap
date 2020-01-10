@@ -16,7 +16,6 @@ import { PusherClientService } from '../../../services/pusherclient.service';
 import { PusherConfig } from './PusherConfig';
 // import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
-import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService';
 import { Observable } from 'rxjs/Observable';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
@@ -124,8 +123,8 @@ export class MapHosterGoogle extends MapHoster {
     private positionUpdateService : PositionUpdateService;
     private geoCoder : GeoCodingService;
 
-    constructor(private mapNumber: number, mlconfig: MLConfig, geopush: GeoPusherSupport) {
-        super(geopush);
+    constructor(private mapNumber: number, mlconfig: MLConfig) {
+        super();
         this.mlconfig = mlconfig;
         this.self = this;
         this.utils = AppModule.injector.get(utils);
@@ -155,7 +154,7 @@ export class MapHosterGoogle extends MapHoster {
         this.cntrxG = cntrx;
         this.cntryG = cntry;
         console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
-        // this.geopushSup.positionUpdateService.positionData.emit(
+        // AppModule.injector.get(PositionUpdateService).positionData.emit(
         //     {'key' : 'zm',
         //       'val' : {
         //         'zm' : this.zmG,
@@ -216,7 +215,7 @@ export class MapHosterGoogle extends MapHoster {
                 this.markers.push(mip.getMarker());
                 this.addToPopupSet(mip.getMarker().getPosition().lng(), mip.getMarker().getPosition().lat());
                 // this.popupSet.add(new PointIndex(mip.getMarker().getPosition().lng(), mip.getMarker().getPosition().lat()));
-                // this.geopushSup.pophandlerProvider.addPopup(place.name, mip);
+                // AppModule.injector.get(PophandlerProvider).addPopup(place.name, mip);
 
                 boundsForMarkers.extend(place.geometry.location);
             }
@@ -444,7 +443,7 @@ export class MapHosterGoogle extends MapHoster {
               this.addToPopupSet(clickPt.x, clickPt.y);
               // this.addToPopupSet(mip.getMarker().getPosition().lng(), mip.getMarker().getPosition().lat());
               mip.openSharedPopover();
-                // this.geopushSup.pophandlerProvider.addPopup("received", mip);
+                // AppModule.injector.get(PophandlerProvider).addPopup("received", mip);
               // this.markerInfoPopups[place.name] = mip;
               // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
 
@@ -811,7 +810,7 @@ export class MapHosterGoogle extends MapHoster {
             let mip = new MarkerInfoPopup(popPt, content, "Shareable position/info", null, // placeholder for image icon url
               this.mphmap, this.mlconfig.getUserId(), this.mapNumber, uuid(), label);
             this.markerInfoPopups.set(mip.getId(), mip);
-              // this.geopushsup.pophandlerprovider.addpopup("mapclicked", mip);
+              // AppModule.injector.get(Pophandlerprovider).addpopup("mapclicked", mip);
               // this.markerInfoPopups[place.name] = mip;
             // this.popDetails.infoWnd.open(this.mphmap, this.popDetails.infoMarker);
             if (this.selfPusherDetails.pusher)

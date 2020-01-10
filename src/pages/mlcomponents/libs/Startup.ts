@@ -7,7 +7,6 @@ import { Injectable} from '@angular/core';
 // import { PusherEventHandler } from './PusherEventHandler';
 // import { CurrentMapTypeService } from '../../../services/currentmaptypeservice';
 // import { MapInstanceService } from '../../../services/MapInstanceService';
-import { GeoPusherSupport } from '../libs/geopushersupport';
 
 @Injectable()
 export class Startup {
@@ -23,5 +22,5 @@ export class Startup {
     //     protected pusherClientService?: PusherClientService, protected positionUpdateService?: PositionUpdateService,
     //     protected pusherEventHandler?: PusherEventHandler, protected currentmaptypeservice?: CurrentMapTypeService,
     //     protected mapInstanceService?: MapInstanceService) {}
-    constructor(protected geoPusherSupport : GeoPusherSupport) {}
+    constructor() {}
 }

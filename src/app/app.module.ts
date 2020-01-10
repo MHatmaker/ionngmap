@@ -49,7 +49,6 @@ import { HostConfig } from '../pages/mlcomponents/libs/HostConfig';
 import { utils } from '../pages/mlcomponents/libs/utils';
 import { CurrentMapTypeService } from '../services/currentmaptypeservice';
 import { GeoCodingService } from '../services/GeoCodingService';
-import { GeoPusherSupport } from '../pages/mlcomponents/libs/geopushersupport';
 import { NewsComponent } from '../components/news/news';
 import { LocateselfComponent } from '../components/locateself/locateself';
 import { PushersetupComponent } from '../components/pushersetup/pushersetup';
@@ -168,7 +167,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     PusherEventHandler,
     HostConfig,
     utils,
-    GeoPusherSupport,
     HttpClient,
     HttpClientModule,
     // HttpHandler,

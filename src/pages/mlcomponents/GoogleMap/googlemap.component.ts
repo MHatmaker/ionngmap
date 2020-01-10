@@ -4,7 +4,6 @@ import { MapInstanceService} from '../../../services/MapInstanceService';
 import { MLConfig } from '../libs/MLConfig';
 import { MLBounds } from '../../../services/mlbounds.service';
 import { StartupGoogle } from '../libs/StartupGoogle';
-import { GeoPusherSupport } from '../libs/geopushersupport';
 import { SlideViewService } from '../../../services/slideview.service';
 import { CanvasService } from '../../../services/CanvasService';
 import { InfopopProvider } from '../../../providers/infopop/infopop';
@@ -40,13 +39,13 @@ export class GoogleMapComponent implements AfterViewInit, OnInit {
   constructor(
       ngZone : NgZone, private mapInstanceService: MapInstanceService, private canvasService : CanvasService,
       public geolocation : Geolocation, public elementRef : ElementRef, private rndr : Renderer2,
-      geopush: GeoPusherSupport, private slideViewService : SlideViewService,
+      private slideViewService : SlideViewService,
       private infopopProvider : InfopopProvider) {
 
       console.log("GoogleMapComponent ctor");
       this.mapNumber = this.mapInstanceService.getNextSlideNumber();
       this.startup = new StartupGoogle(this.mapNumber,
-          this.mapInstanceService.getConfigForMap(this.mapNumber), geopush);
+          this.mapInstanceService.getConfigForMap(this.mapNumber));
       this.gmHeight = slideViewService.getMapColHeight() + 'px';
   }
 

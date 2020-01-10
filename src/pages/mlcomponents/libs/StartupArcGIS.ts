@@ -1,14 +1,16 @@
 import {Injectable, Output, EventEmitter, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { ConfigParams, EMapSource } from '../../../services/configparams.service';
-// import { PusherConfig } from './PusherConfig';
+import { PusherConfig } from './PusherConfig';
 // import { PusherClientService } from '../../../services/pusherclient.service';
 // import { utils } from './utils';
 import { Startup } from './Startup';
 import { MapHosterArcGIS } from './MapHosterArcGIS';
 import { loadModules } from 'esri-loader';
-import { GeoPusherSupport } from './geopushersupport';
 import { utils } from './utils';
+import { AppModule } from "../../../app/app.module";
+import { MapInstanceService } from "../../../services/MapInstanceService";
+import { PusherClientService } from "../../../services/pusherclient.service";
 
 interface ConfigOptions {
     // webmap: '4b99c1fb712d4fe694805717df5fadf2', // selectedWebMapId,
@@ -53,6 +55,7 @@ export class StartupArcGIS  extends Startup {
     private elementRef : ElementRef;
     private mapOptions : any;
     private utils : any;
+    private pusherConfig : PusherConfig;
 
     async loadEsriModules() {
       const options = {
@@ -72,10 +75,10 @@ export class StartupArcGIS  extends Startup {
               this.esriSpatialReference = SpatialReference;
     }
 
-    constructor (private mapNumber : number, mlconfig : MLConfig,
-        private geopush: GeoPusherSupport) {
-        super(geopush);
+    constructor (private mapNumber : number, mlconfig : MLConfig) {
+        super();
         //this.utils = AppModule.injector.get(utils);
+        this.pusherConfig = AppModule.injector.get(PusherConfig);
         // @Output()
             this.viewCreated = new EventEmitter();
             // this.loadEsriModules();
@@ -99,7 +102,7 @@ export class StartupArcGIS  extends Startup {
           */
         this.mlconfig = mlconfig;
         this.mlconfig.setMapNumber(mapNumber);
-        this.mlconfig.setUserId(this.geopush.getGeoPusherSupport().pusherConfig.getUserName() + mapNumber);
+        this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNumber);
     }
 
   configure  (newMapId, mapLocOpts, elementRef) {
@@ -173,11 +176,11 @@ export class StartupArcGIS  extends Startup {
           console.log("this.mapHoster is null");
           // alert("StartupArcGIS.initUI : thisDetails.mph == null");
           // placeCustomControls();
-          this.mapHoster = new MapHosterArcGIS(this.aMap, this.mapNumber, this.mlconfig, this.geopush, this.elementRef);
+          this.mapHoster = new MapHosterArcGIS(this.aMap, this.mapNumber, this.mlconfig, this.elementRef);
 
-          this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
+          AppModule.injector.get('MapInstanceService').setMapHosterInstance(this.mapNumber, this.mapHoster);
           this.mlconfig.setMapHosterInstance(this.mapHoster);
-          this.geopush.getGeoPusherSupport().currentMapTypeService.setCurrentMapType('arcgis');
+          AppModule.injector.get('CurrentMapTypeService').setCurrentMapType('arcgis');
           await this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
           // this.placeCustomControls();
           // this.setupQueryListener();
@@ -194,7 +197,7 @@ export class StartupArcGIS  extends Startup {
           // curmph = mapTypeSvc.getSelectedMapType();
           // console.log('selected map type is ' + curmph);
 
-          this.pusher = this.geopush.getGeoPusherSupport().pusherClientService.createPusherClient(
+          this.pusher = AppModule.injector.get('pusherClientService').createPusherClient(
               this.mlconfig,
               function (callbackChannel, userName) {
                   console.log("callback - don't need to setPusherClient");
@@ -210,15 +213,15 @@ export class StartupArcGIS  extends Startup {
 
       } else {
           console.log("this.mapHoster is something or other");
-          this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
+          AppModule.injector.get('mapInstanceService').setMapHosterInstance(this.mapNumber, this.mapHoster);
           this.mlconfig.setMapHosterInstance(this.mapHoster);
           // $inj = this.mlconfig.getInjector();
           // mapTypeSvc = $inj.get('CurrentMapTypeService');
           // curmph = mapTypeSvc.getSelectedMapType();
           // console.log('selected map type is ' + curmph);
           await this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
-          this.pusherChannel = this.geopush.getGeoPusherSupport().pusherConfig.masherChannel(false);
-          this.pusher = this.geopush.getGeoPusherSupport().pusherClientService.createPusherClient(
+          this.pusherChannel = this.pusherConfig.masherChannel(false);
+          this.pusher = AppModule.injector.get('pusherClientService').createPusherClient(
               this.mlconfig,
               function (callbackChannel, userName) {
                   console.log("callback - don't need to setPusherClient");
@@ -391,9 +394,9 @@ export class StartupArcGIS  extends Startup {
               // dojo.connect(aMap, "onUpdateEnd", hideLoading);
               // dojo.connect(aMap, "onLoad", initUI);
               // this.mlconfig.setPosition({lat : this.mapView.center.latitude, lon : this.mapView.center.longitude, zoom : this.mapView.zoom});
-              this.mapHoster = new MapHosterArcGIS(this.mapView, this.mapNumber, this.mlconfig, this.geopush, this.elementRef);
+              this.mapHoster = new MapHosterArcGIS(this.mapView, this.mapNumber, this.mlconfig, this.elementRef);
               this.mlconfig.setMapHosterInstance(this.mapHoster);
-              this.geopush.getGeoPusherSupport().mapInstanceService.setMapHosterInstance(this.mapNumber, this.mapHoster);
+              AppModule.injector.get('mapInstanceService').setMapHosterInstance(this.mapNumber, this.mapHoster);
               this.initUI();
               this.mapHosterSetupCallback(this.mapHoster, this.aMap);
           },
@@ -440,12 +443,12 @@ export class StartupArcGIS  extends Startup {
           }
       };
 
-      if (this.geopush.getGeoPusherSupport().pusherConfig.isNameChannelAccepted() === false) {
-          this.geopush.getGeoPusherSupport().pusherClientService.setupPusherClient(openNewDisplay,
+      if (this.pusherConfig.isNameChannelAccepted() === false) {
+          AppModule.injector.get('PusherClientService').setupPusherClient(openNewDisplay,
                   {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : idAgoItem});
       } else {
-          openNewDisplay(this.geopush.getGeoPusherSupport().pusherConfig.masherChannel(false),
-              this.geopush.getGeoPusherSupport().pusherConfig.getUserName());
+          openNewDisplay(this.pusherConfig.masherChannel(false),
+              this.pusherConfig.getUserName());
       }
   }
 

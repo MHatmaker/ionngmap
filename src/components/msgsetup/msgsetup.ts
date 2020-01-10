@@ -4,7 +4,6 @@ import { CurrentMapTypeService } from '../../services/currentmaptypeservice';
 import { MapInstanceService } from '../../services/MapInstanceService';
 import { HostConfig } from '../../pages/mlcomponents/libs/HostConfig';
 import { PusherConfig } from '../../pages/mlcomponents/libs/PusherConfig';
-import { GeoPusherSupport } from '../../pages/mlcomponents/libs/geopushersupport';
 import * as Clipboard from 'clipboard/dist/clipboard.min.js';
 import { PusherClientService } from '../../services/pusherclient.service';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
@@ -12,6 +11,7 @@ import { EmailerProvider, EmailParts, IEmailAddress } from '../../providers/emai
 import { EMapSource } from '../../services/configparams.service'
 import { ImlBounds } from "../../services/mlbounds.service";
 import { IPosition } from '../../services/position.service';
+import { AppModule } from '../../app/app.module';
 
 @Component({
   selector: 'msgsetup',
@@ -26,13 +26,12 @@ export class MsgsetupComponent {
   private mapInstanceService : MapInstanceService;
   private currentMapTypeService : CurrentMapTypeService;
 
-  constructor(public viewCtrl: ViewController, private geopush : GeoPusherSupport, private hostConfig : HostConfig,
+  constructor(public viewCtrl: ViewController, private hostConfig : HostConfig,
       private pusherConfig : PusherConfig, private emailer : EmailerProvider) {
     console.log('Hello MsgsetupComponent Component');
 
-    let geoPush = geopush.getGeoPusherSupport();
-    this.mapInstanceService = geoPush.mapInstanceService;
-    this.currentMapTypeService = geoPush.currentMapTypeService;
+    this.mapInstanceService = AppModule.injector.get(MapInstanceService);
+    this.currentMapTypeService = AppModule.injector.get(CurrentMapTypeService);
 
     this.items = [
         {expanded: false},
@@ -173,7 +172,6 @@ export class MsgsetupComponent {
     this.viewCtrl.dismiss('usemsg', null);
   }
   shareMap() {
-    // let pusherClientService = this.geopush.getGeoPusherSupport().pusherClientService;
     // pusherClientService.publishPosition(this.urlCopyField);
     this.viewCtrl.dismiss('usepush', JSON.stringify(this.assembleJson()));
   }

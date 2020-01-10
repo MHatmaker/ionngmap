@@ -6,7 +6,6 @@ import { utils } from './utils';
 import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService';
 import { PusherEventHandler } from './PusherEventHandler';
-import { GeoPusherSupport } from './geopushersupport';
 import { MLConfig } from './MLConfig';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
 
@@ -24,7 +23,7 @@ export class MapHoster {
     //     protected pusherEventHandler?: PusherEventHandler
     //     ) {
     // }
-    constructor(protected geopush : GeoPusherSupport) {}
+    constructor() {}
     getMap() {
         return null;
     }

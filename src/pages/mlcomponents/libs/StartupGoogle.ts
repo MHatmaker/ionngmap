@@ -6,7 +6,6 @@ import { MLConfig } from './MLConfig';
 import { MapHosterGoogle } from './MapHosterGoogle';
 // import { GoogleMap } from '@agm/core/services/google-maps-types';
 import { Startup } from './Startup';
-import { GeoPusherSupport, IGeoPusher } from './geopushersupport';
 import { PusherConfig } from './PusherConfig';
 import { MapInstanceService} from '../../../services/MapInstanceService';
 import { CurrentMapTypeService } from '../../../services/currentmaptypeservice';
@@ -29,8 +28,8 @@ export class StartupGoogle extends Startup {
     private pusherClientService : PusherClientService;
     private currentMapTypeService : CurrentMapTypeService;
 
-    constructor (private mapNumber : number, mlconfig : MLConfig, private geopush : GeoPusherSupport) {
-        super(geopush);
+    constructor (private mapNumber : number, mlconfig : MLConfig) {
+        super();
         this.mlconfig = mlconfig;
         this.mlconfig.setMapNumber(mapNumber);
         this.pusherConfig = AppModule.injector.get(PusherConfig);
@@ -88,7 +87,7 @@ export class StartupGoogle extends Startup {
 
         this.gMap = new google.maps.Map(mapElement, mapGoogleLocOpts);
         console.log('StartupGoogle ready to instantiate Map Hoster with map no. ' + this.mapNumber);
-        this.mapHoster = new MapHosterGoogle(this.mapNumber, this.mlconfig, this.geopush);
+        this.mapHoster = new MapHosterGoogle(this.mapNumber, this.mlconfig);
         this.mapHoster.configureMap(this.gMap, mapGoogleLocOpts, google, google.maps.places, this.mlconfig);
         google.maps.event.trigger(mapElement, 'resize');
         this.mlconfig.setMapHosterInstance(this.mapHoster);

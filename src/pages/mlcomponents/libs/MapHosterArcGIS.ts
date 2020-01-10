@@ -1,6 +1,6 @@
 import {Injectable, OnInit, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
-// import { PusherConfig } from './PusherConfig';
+import { PusherConfig } from './PusherConfig';
 // import { PusherClientService } from '../../../services/pusherclient.service';
 import { utils } from './utils';
 // import { ConfigParams } from '../../../services/configparams.service';
@@ -17,7 +17,6 @@ import * as proj4x from 'proj4';
 // import { webMercatorToGeographic, xyToLngLat, lngLatToXY } from 'esri/geometry/support/webMercatorUtils';
 // import * as Locator from 'esri/tasks/Locator';
 import { MapHoster } from './MapHoster';
-import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
 import { ImlBounds, MLBounds, xtntParams } from '../../../services/mlbounds.service';
 import { DomService } from '../../../services/dom.service';
 import { ReflectiveInjector } from '@angular/core';
@@ -60,8 +59,8 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         pusher : null
     };
     mlconfig : MLConfig;
-    geopushSup : IGeoPusher;
     pusherEventHandler: PusherEventHandler;
+    pusherConfig : PusherConfig;
     utils : any;
 
     agoOptions
@@ -81,11 +80,10 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     //     'dojo/_base/event'
     // ],
 
-    constructor(private mphmap : __esri.MapView, private mapNumber: number,  mlconfig: MLConfig, protected geopush: GeoPusherSupport,
+    constructor(private mphmap : __esri.MapView, private mapNumber: number,  mlconfig: MLConfig,
         private elementRef : ElementRef) {
-        super(geopush);
+        super();
         this.mlconfig = mlconfig;
-        this.geopushSup = geopush.getGeoPusherSupport();
         let pos = this.mlconfig.getPosition();
         this.cntrxG = pos.lon;
         this.cntryG = pos.lat;
@@ -154,7 +152,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             // this.mlconfig.setBounds({'llx' : this.bounds.xmin, 'lly' : this.bounds.ymin, 'urx' : this.bounds.xmax, 'ury' : this.bounds.ymax});
         }
         console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
-        this.geopushSup.positionUpdateService.positionData.emit(
+        AppModule.injector.get('positionUpdateService').positionData.emit(
             {'key' : 'zm',
               'val' : {
                 'zm' : this.zmG,
@@ -255,7 +253,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 // if (selfPusherDetails.pusher && selfPusherDetails.channelName) {
                 //     selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
                 // }
-                this.geopushSup.pusherClientService.publishPanEvent(xtExt);
+                AppModule.injector.get('usherClientService').publishPanEvent(xtExt);
                 await this.updateGlobals("in setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                 //console.debug(sendRet);
             }
@@ -263,7 +261,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     setUserName(name) {
-        this.geopushSup.pusherConfig.setUserName(name);
+        AppModule.injector.get('PusherConfig').setUserName(name);
     }
     getEventDictionary() {
         var eventDct = this.pusherEventHandler.getEventDct();
@@ -496,7 +494,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         }
         this.mphmap.popup.on("trigger-action", (event) =>{
           if(event.action.id === "idShareInfo"){
-            this.geopushSup.pusherClientService.publishClickEvent(pushContent);
+            AppModule.injector.get('pusherClientService').publishClickEvent(pushContent);
           }
         });
 
@@ -523,7 +521,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
         // if (selfPusherDetails.pusher) {
             referrerId = this.mlconfig.getUserId();
-            referrerName = this.geopushSup.pusherConfig.getUserName();
+            referrerName = AppModule.injector.get('PusherConfig').getUserName();
             pushLL = {
                 "x" : this.fixedLLG.lon,
                 "y" : this.fixedLLG.lat,
@@ -624,7 +622,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         // this.mphmap.centerAndZoom(startCenter, this.zmG);
         this.mphmap.goTo({target : startCenter, zoom : this.zmG});
         this.showGlobals("After centerAndZoom");
-        this.geopushSup.pusherClientService.publishPanEvent({lat : startCenter.y, lon : startCenter.x, zoom : this.zmG});
+        AppModule.injector.get('PusherClientService').publishPanEvent({lat : startCenter.y, lon : startCenter.x, zoom : this.zmG});
 
         this.initMap("mapDiv_layer0");
         this.geoLocator = new esriLocator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
@@ -691,7 +689,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 fixedLL = this.utils.toFixedTwo(ltln.longitude, ltln.latitude, 4),
                 evlng = fixedLL.lon,
                 evlat = fixedLL.lat
-            this.geopushSup.positionUpdateService.positionData.emit(
+            AppModule.injector.get('PositionUpdateService').positionData.emit(
                 {'key' : 'coords',
                   'val' : {
                     'zm' : this.zmG,

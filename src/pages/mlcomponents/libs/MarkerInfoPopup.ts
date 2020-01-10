@@ -55,16 +55,16 @@ export class MarkerInfoPopup {
                 label: {text: labelarg, color: "#003a44", fontSize: "16px", fontWeight: "bold"}
             }),
             // shareClick  = function(e: Event, self) {
-            //     let fixedLL = self.geopushSup.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9);
+            //     let fixedLL = this.utils.toFixedTwo(marker.position.lng(), marker.position.lat(), 9);
             //     let referrerId = self.mlconfig.getUserId();
-            //     let referrerName = self.geopushSup.pusherConfig.getUserName();
+            //     let referrerName = this.pusherConfig.getUserName();
             //     let mapId = "map" + self.mlconfig.getUserId();
             //     let pushLL = {"x" : fixedLL.lon, "y" : fixedLL.lat, "z" : self.zmG,
             //         "referrerId" : referrerId, "referrerName" : referrerName,
             //         "mapId" : mapId,
             //         'address' : marker.address, 'title' : marker.title };
             //     console.log("You, " + referrerName + ", " + referrerId + ", clicked the map at " + fixedLL.lat + ", " + fixedLL.lon);
-            //     self.geopushSup.pusherClientService.publishClickEvent(pushLL);
+            //     this..pusherClientService.publishClickEvent(pushLL);
             // },
 
             dockPopup = async function(e: Event, self) {
@@ -100,7 +100,7 @@ export class MarkerInfoPopup {
                         infopop.close(self.popOver);
                         subscriber.unsubscribe();
                     }
-                    // self.geopushSup.pophandlerProvider.closePopupsExceptOne(title);
+                    // this.pophandlerProvider.closePopupsExceptOne(title);
                     subscriber.unsubscribe();
                 });
                 self.popupId = uuid();
@@ -125,14 +125,14 @@ export class MarkerInfoPopup {
         this.popMarker = marker;
         // this.popMarker.setLabel(lbl);
         google.maps.event.addListener(marker, 'click',  async (event) => {
-            // this.geopushSup.pophandlerProvider.closePopupsExceptOne(marker.title);
+            // this.pophandlerProvider.closePopupsExceptOne(marker.title);
             console.log(`triggered click listener for user ${this.userId} on marker ${marker.title}`);
             let latlng = {lat: pos.lat(), lng: pos.lng()};
             this.geoCoder.geoCode({location : latlng}).then((adrs) => {
               contentRaw = adrs;
                 dockPopup(event, this);
             });
-            // this.geopushSup.pophandlerProvider.closeAllPopups();
+            // this.pophandlerProvider.closeAllPopups();
         });
 
     }

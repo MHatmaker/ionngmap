@@ -1,17 +1,16 @@
 import {Injectable} from '@angular/core';
 import { MLConfig } from './MLConfig';
-// import { PusherConfig } from './PusherConfig';
-// import { PusherClientService } from '../../../services/pusherclient.service';
+import { PusherConfig } from './PusherConfig';
+import { PusherClientService } from '../../../services/pusherclient.service';
 // import { utils } from './utils';
 import { ImlBounds, xtntParams } from '../../../services/mlbounds.service';
 // import { ConfigParams } from '../../../services/configparams.service';
 import * as L from "leaflet";
 import { GeoCoder } from './GeoCoder';
-// import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
-// import { PositionUpdateService } from '../../../services/positionupdate.service';
+import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
+import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { PusherEventHandler } from './PusherEventHandler';
 import { MapHoster } from './MapHoster';
-import {GeoPusherSupport, IGeoPusher } from '../libs/geopushersupport';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
 import { AppModule } from '../../../app/app.module';
 import { utils } from './utils';
@@ -40,15 +39,16 @@ export class MapHosterLeaflet extends MapHoster {
     queryListenerLoaded = false;
     pusherEvtHandler;
     mlconfig : MLConfig;
-    geopushSup : IGeoPusher;
+    pusherConfig : PusherConfig;
     utils : any;
 
 
-    constructor(private mapNumber: number, mlconfig: MLConfig, protected geopush: GeoPusherSupport,
+    constructor(private mapNumber: number, mlconfig: MLConfig,
         private geoCoderLflt : GeoCoder) {
-        super(geopush);
+        super();
         this.mlconfig = mlconfig;
         this.utils = AppModule.injector.get(utils);
+        this.pusherConfig = AppModule.injector.get(PusherConfig);
         this.CustomControl =  L.Control.extend({
             options: {
                 position: 'topright'
@@ -224,7 +224,7 @@ export class MapHosterLeaflet extends MapHoster {
 
 
 
-        this.geopushSup.positionUpdateService.positionData.emit(
+        AppModule.injector.get(PositionUpdateService).positionData.emit(
             {
               'key' : 'zm',
               'val' : {
@@ -309,7 +309,7 @@ export class MapHosterLeaflet extends MapHoster {
 
         if (cmp === false) {
             console.log("MapHoster Leaflet setBounds publishPanEvent");
-            this.geopushSup.pusherClientService.publishPanEvent(xtExt);
+            AppModule.injector.get(PusherClientService).publishPanEvent(xtExt);
             this.updateGlobals("setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
         }
     }
@@ -562,7 +562,7 @@ export class MapHosterLeaflet extends MapHoster {
         bndsUrl = this.mlconfig.getBoundsForUrl();
         pos.search += bnds;
 
-        this.geopushSup.pusherClientService.publishPosition(pos);
+        AppModule.injector.get(PusherClientService).publishPosition(pos);
     }
 
     getCenter() {
