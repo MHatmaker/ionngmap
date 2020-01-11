@@ -11,6 +11,7 @@ import { utils } from './utils';
 import { AppModule } from "../../../app/app.module";
 import { MapInstanceService } from "../../../services/MapInstanceService";
 import { PusherClientService } from "../../../services/pusherclient.service";
+import { CurrentMapTypeService } from "../../../services/currentmaptypeservice";
 
 interface ConfigOptions {
     // webmap: '4b99c1fb712d4fe694805717df5fadf2', // selectedWebMapId,
@@ -178,9 +179,9 @@ export class StartupArcGIS  extends Startup {
           // placeCustomControls();
           this.mapHoster = new MapHosterArcGIS(this.aMap, this.mapNumber, this.mlconfig, this.elementRef);
 
-          AppModule.injector.get('MapInstanceService').setMapHosterInstance(this.mapNumber, this.mapHoster);
+          AppModule.injector.get(MapInstanceService).setMapHosterInstance(this.mapNumber, this.mapHoster);
           this.mlconfig.setMapHosterInstance(this.mapHoster);
-          AppModule.injector.get('CurrentMapTypeService').setCurrentMapType('arcgis');
+          AppModule.injector.get(CurrentMapTypeService).setCurrentMapType('arcgis');
           await this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
           // this.placeCustomControls();
           // this.setupQueryListener();
@@ -197,7 +198,7 @@ export class StartupArcGIS  extends Startup {
           // curmph = mapTypeSvc.getSelectedMapType();
           // console.log('selected map type is ' + curmph);
 
-          this.pusher = AppModule.injector.get('pusherClientService').createPusherClient(
+          this.pusher = AppModule.injector.get(PusherClientService).createPusherClient(
               this.mlconfig,
               function (callbackChannel, userName) {
                   console.log("callback - don't need to setPusherClient");
@@ -213,7 +214,7 @@ export class StartupArcGIS  extends Startup {
 
       } else {
           console.log("this.mapHoster is something or other");
-          AppModule.injector.get('mapInstanceService').setMapHosterInstance(this.mapNumber, this.mapHoster);
+          AppModule.injector.get(MapInstanceService).setMapHosterInstance(this.mapNumber, this.mapHoster);
           this.mlconfig.setMapHosterInstance(this.mapHoster);
           // $inj = this.mlconfig.getInjector();
           // mapTypeSvc = $inj.get('CurrentMapTypeService');
@@ -221,7 +222,7 @@ export class StartupArcGIS  extends Startup {
           // console.log('selected map type is ' + curmph);
           await this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
           this.pusherChannel = this.pusherConfig.masherChannel(false);
-          this.pusher = AppModule.injector.get('pusherClientService').createPusherClient(
+          this.pusher = AppModule.injector.get(PusherClientService).createPusherClient(
               this.mlconfig,
               function (callbackChannel, userName) {
                   console.log("callback - don't need to setPusherClient");
@@ -396,7 +397,7 @@ export class StartupArcGIS  extends Startup {
               // this.mlconfig.setPosition({lat : this.mapView.center.latitude, lon : this.mapView.center.longitude, zoom : this.mapView.zoom});
               this.mapHoster = new MapHosterArcGIS(this.mapView, this.mapNumber, this.mlconfig, this.elementRef);
               this.mlconfig.setMapHosterInstance(this.mapHoster);
-              AppModule.injector.get('mapInstanceService').setMapHosterInstance(this.mapNumber, this.mapHoster);
+              AppModule.injector.get(MapInstanceService).setMapHosterInstance(this.mapNumber, this.mapHoster);
               this.initUI();
               this.mapHosterSetupCallback(this.mapHoster, this.aMap);
           },
@@ -444,7 +445,7 @@ export class StartupArcGIS  extends Startup {
       };
 
       if (this.pusherConfig.isNameChannelAccepted() === false) {
-          AppModule.injector.get('PusherClientService').setupPusherClient(openNewDisplay,
+          AppModule.injector.get(PusherClientService).setupPusherClient(openNewDisplay,
                   {'destination' : displayDestination, 'currentMapHolder' : curmph, 'newWindowId' : idAgoItem});
       } else {
           openNewDisplay(this.pusherConfig.masherChannel(false),

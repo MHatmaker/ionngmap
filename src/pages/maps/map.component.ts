@@ -8,6 +8,7 @@ import { MLConfig } from '../mlcomponents/libs/MLConfig';
 import { HostConfig } from '../mlcomponents/libs/HostConfig';
 import { PusherConfig } from '../mlcomponents/libs/PusherConfig';
 import { PusherEventHandler } from '../mlcomponents/libs/PusherEventHandler';
+import { PusherClientService } from '../../services/pusherclient.service';
 import { MapInstanceService} from '../../services/MapInstanceService';
 // import { CarouselComponent} from '../mlcomponents/Carousel/carousel.component';
 
@@ -86,7 +87,7 @@ export class MapsPage implements AfterViewInit {
           modal.present();
           modal.onDidDismiss((mode, data) => {
               if(mode == 'usepush') {
-                  let pusherClientService = AppModule.injector.get('PusherClientService');
+                  let pusherClientService = AppModule.injector.get(PusherClientService);
                   // publish stringifyed IMapShare
                   pusherClientService.publishPosition(data);
                   // this.onNewMapPosition(data);

@@ -1,12 +1,12 @@
 import {Injectable, OnInit, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
-// import { PusherClientService } from '../../../services/pusherclient.service';
+import { PusherClientService } from '../../../services/pusherclient.service';
 import { utils } from './utils';
 // import { ConfigParams } from '../../../services/configparams.service';
 // import { GeoCoder } from './GeoCoder';
 // import { IPositionParams, IPositionData } from '../../../services/positionupdate.interface';
-// import { PositionUpdateService } from '../../../services/positionupdate.service';
+import { PositionUpdateService } from '../../../services/positionupdate.service';
 import { PusherEventHandler } from './PusherEventHandler';
 import { loadModules } from 'esri-loader';
 // import { ImlBounds } from '../../../services/mlbounds.service'
@@ -152,7 +152,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
             // this.mlconfig.setBounds({'llx' : this.bounds.xmin, 'lly' : this.bounds.ymin, 'urx' : this.bounds.xmax, 'ury' : this.bounds.ymax});
         }
         console.log("Updated Globals " + msg + " " + this.cntrxG + ", " + this.cntryG + " : " + this.zmG);
-        AppModule.injector.get('positionUpdateService').positionData.emit(
+        AppModule.injector.get(PositionUpdateService).positionData.emit(
             {'key' : 'zm',
               'val' : {
                 'zm' : this.zmG,
@@ -253,7 +253,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 // if (selfPusherDetails.pusher && selfPusherDetails.channelName) {
                 //     selfPusherDetails.pusher.channel(selfPusherDetails.channelName).trigger('client-MapXtntEvent', xtExt);
                 // }
-                AppModule.injector.get('usherClientService').publishPanEvent(xtExt);
+                AppModule.injector.get(PusherClientService).publishPanEvent(xtExt);
                 await this.updateGlobals("in setBounds with cmp false", xtExt.lon, xtExt.lat, xtExt.zoom);
                 //console.debug(sendRet);
             }
@@ -261,7 +261,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
     }
 
     setUserName(name) {
-        AppModule.injector.get('PusherConfig').setUserName(name);
+        AppModule.injector.get(PusherConfig).setUserName(name);
     }
     getEventDictionary() {
         var eventDct = this.pusherEventHandler.getEventDct();
@@ -494,7 +494,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         }
         this.mphmap.popup.on("trigger-action", (event) =>{
           if(event.action.id === "idShareInfo"){
-            AppModule.injector.get('pusherClientService').publishClickEvent(pushContent);
+            AppModule.injector.get(PusherClientService).publishClickEvent(pushContent);
           }
         });
 
@@ -521,7 +521,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
 
         // if (selfPusherDetails.pusher) {
             referrerId = this.mlconfig.getUserId();
-            referrerName = AppModule.injector.get('PusherConfig').getUserName();
+            referrerName = AppModule.injector.get(PusherConfig).getUserName();
             pushLL = {
                 "x" : this.fixedLLG.lon,
                 "y" : this.fixedLLG.lat,
@@ -622,7 +622,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         // this.mphmap.centerAndZoom(startCenter, this.zmG);
         this.mphmap.goTo({target : startCenter, zoom : this.zmG});
         this.showGlobals("After centerAndZoom");
-        AppModule.injector.get('PusherClientService').publishPanEvent({lat : startCenter.y, lon : startCenter.x, zoom : this.zmG});
+        AppModule.injector.get(PusherClientService).publishPanEvent({lat : startCenter.y, lon : startCenter.x, zoom : this.zmG});
 
         this.initMap("mapDiv_layer0");
         this.geoLocator = new esriLocator({url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"});
@@ -689,7 +689,7 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
                 fixedLL = this.utils.toFixedTwo(ltln.longitude, ltln.latitude, 4),
                 evlng = fixedLL.lon,
                 evlat = fixedLL.lat
-            AppModule.injector.get('PositionUpdateService').positionData.emit(
+            AppModule.injector.get(PositionUpdateService).positionData.emit(
                 {'key' : 'coords',
                   'val' : {
                     'zm' : this.zmG,
