@@ -20,6 +20,7 @@ import { GeoCodingService, OSMAddress } from '../../../services/GeoCodingService
 import { Observable } from 'rxjs/Observable';
 import { MapLocOptions } from '../../../services/positionupdate.interface';
 import { SearchplacesProvider } from '../../../providers/searchplaces/searchplaces';
+import { LocationsProvider } from '../../../providers/locations/locations';
 // import { InfopopupComponent } from '../../../src/infopopup/infopopup';
 import { GmpopoverProvider } from '../../../providers/gmpopover/gmpopover';
 import { Popover } from 'ionic-angular';
@@ -122,6 +123,7 @@ export class MapHosterGoogle extends MapHoster {
     private pusherClientService : PusherClientService;
     private positionUpdateService : PositionUpdateService;
     private geoCoder : GeoCodingService;
+    private initialLocations : LocationsProvider;
 
     constructor(private mapNumber: number, mlconfig: MLConfig) {
         super();
@@ -132,6 +134,7 @@ export class MapHosterGoogle extends MapHoster {
         this.positionUpdateService = AppModule.injector.get(PositionUpdateService);
         this.pusherConfig = AppModule.injector.get(PusherConfig);
         this.geoCoder = AppModule.injector.get(GeoCodingService);
+        this.initialLocations = AppModule.injector.get(LocationsProvider);
     }
 
     updateGlobals(msg : string, cntrx : number, cntry : number, zm : number) {
@@ -231,9 +234,8 @@ export class MapHosterGoogle extends MapHoster {
     }
 
     addInitialSymbols() {
-        this.addInitialSymbol(41.890283, -87.625842, "Lofty Thoughts",  "Creativity is inspired by collapsing ceilings and rubble walls.");
-        this.addInitialSymbol(41.888941, -87.620692, "Drafty Sweatbox",  "Climate control as nature intended.");
-        this.addInitialSymbol(41.884979, -87.620950, "Blank Wall Vistas",  "Panorama views are over-rated if you prefer exposed brick.");
+        let locs = this.initialLocations.getInitialLocations();
+        locs.forEach(loc => this.addInitialSymbol(loc.lat, loc.lon, loc.name, loc.description));
     }
 
     // formatBounds(b) {

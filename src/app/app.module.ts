@@ -73,6 +73,7 @@ import { PophandlerProvider } from '../providers/pophandler/pophandler';
 import { InfopopProvider } from '../providers/infopop/infopop';
 import { InfopopComponent} from '../components/infopop/infopop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LocationsProvider } from '../providers/locations/locations';
 // import { Startup } from '../pages/mlcomponents/libs/Startup';
 // import { StartupGoogle } from '../pages/mlcomponents/libs/StartupGoogle';
 // import { MapHoster } from '../pages/mlcomponents/libs/MapHoster';
@@ -186,7 +187,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     EmailerProvider,
     GmpopoverProvider,
     PophandlerProvider,
-    InfopopProvider
+    InfopopProvider,
+    LocationsProvider
   ]
 })
 export class AppModule {
