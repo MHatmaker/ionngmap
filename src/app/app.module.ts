@@ -50,6 +50,8 @@ import { utils } from '../pages/mlcomponents/libs/utils';
 import { CurrentMapTypeService } from '../services/currentmaptypeservice';
 import { GeoCodingService } from '../services/GeoCodingService';
 import { NewsComponent } from '../components/news/news';
+import { LinkrhelpComponent } from '../components/linkrhelp/linkrhelp';
+import { SharinghelpComponent } from '../components/sharinghelp/sharinghelp';
 import { LocateselfComponent } from '../components/locateself/locateself';
 import { PushersetupComponent } from '../components/pushersetup/pushersetup';
 import { AgogroupComponent } from '../components/agogroup/agogroup';
@@ -94,6 +96,8 @@ import { LocationsProvider } from '../providers/locations/locations';
     MultiCanvasLeaflet,
     CarouselComponent,
     NewsComponent,
+    LinkrhelpComponent,
+    SharinghelpComponent,
     LocateselfComponent,
     PushersetupComponent,
     AgogroupComponent,
@@ -137,6 +141,8 @@ import { LocationsProvider } from '../providers/locations/locations';
     LeafletMapComponent,
     PositionViewComponent,
     NewsComponent,
+    LinkrhelpComponent,
+    SharinghelpComponent,
     LocateselfComponent,
     PushersetupComponent,
     AgogroupComponent,

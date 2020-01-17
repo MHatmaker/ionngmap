@@ -22,6 +22,8 @@ import { SlideViewService } from '../../services/slideview.service';
 import { MenuOptionModel } from './../../side-menu-content/models/menu-option-model';
 import { PageService } from "../../services/pageservice"
 import { NewsComponent } from "../../components/news/news";
+import { LinkrhelpComponent } from "../../components/linkrhelp/linkrhelp";
+import { SharinghelpComponent } from "../../components/sharinghelp/sharinghelp";
 import { LocateselfComponent } from "../../components/locateself/locateself";
 import { PushersetupComponent } from "../../components/pushersetup/pushersetup";
 import { MsgsetupComponent } from "../../components/msgsetup/msgsetup";
@@ -163,7 +165,12 @@ export class MapsPage implements AfterViewInit {
   }
 
   showUsing() {
-      console.log('show using');
+    let modal = this.modalCtrl.create(LinkrhelpComponent);
+    modal.present();
+    modal.onDidDismiss((mode, data) => {
+      console.log('showUsing returned');
+      console.log(mode);
+    });
   }
   showLocate(showModal : boolean) {
       console.log('show locate');
@@ -185,10 +192,12 @@ export class MapsPage implements AfterViewInit {
       }
   }
   showSharingHelp() {
-      console.log('show sharing help');
-  }
-  showSharing() {
-      console.log('show sharing');
+    let modal = this.modalCtrl.create(SharinghelpComponent);
+    modal.present();
+    modal.onDidDismiss((mode, data) => {
+      console.log('showUsing returned');
+      console.log(mode);
+    });
   }
 
   onsetMap (menuOption : MenuOptionModel) {

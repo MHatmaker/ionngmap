@@ -13,6 +13,8 @@ import { AccordionListComponent } from './accordion-list/accordion-list';
 import { GmpopoverComponent } from './gmpopover/gmpopover';
 import { InfopopComponent } from './infopop/infopop';
 import { LocateselfComponent } from './locateself/locateself';
+import { LinkrhelpComponent } from './linkrhelp/linkrhelp';
+import { SharinghelpComponent } from './sharinghelp/sharinghelp';
 @NgModule({
 	declarations: [PushersetupComponent,
     NewsComponent,
@@ -28,7 +30,9 @@ import { LocateselfComponent } from './locateself/locateself';
     AccordionListComponent,
     GmpopoverComponent,
     InfopopComponent,
-    LocateselfComponent],
+    LocateselfComponent,
+    LinkrhelpComponent,
+    SharinghelpComponent],
 	imports: [],
 	exports: [PushersetupComponent,
     NewsComponent,
@@ -44,6 +48,8 @@ import { LocateselfComponent } from './locateself/locateself';
     AccordionListComponent,
     GmpopoverComponent,
     InfopopComponent,
-    LocateselfComponent]
+    LocateselfComponent,
+    LinkrhelpComponent,
+    SharinghelpComponent]
 })
 export class ComponentsModule {}
