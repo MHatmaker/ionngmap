@@ -1,0 +1,91 @@
+
+<ion-header>
+  <ion-navbar>
+    <ion-title>Sharing Help</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="cards-bg social-cards">
+    <ion-card id="idSharingHelpCard" role="tabpanel" aria-labelledby="idSharingHelp">
+              <ion-card-title>MapLinkr Sharing Instructions</ion-card-title>
+              <h1>Helpful instructions for sharing map content</h1>
+
+        <ion-card-content>
+            <p>
+                Multiple users can view synchronized maps in web browsers on other devices.
+                After  finding
+                <br>
+                (1) a Google Map or Leaflet Map or
+                <br>
+                (2) an ArcGIS WebMap
+                <br>
+                that you want to share:
+            <br>
+            <br>
+            </p>
+            <h2>For Google or Leaflet Map</h2>
+            <br>
+            <p>
+                After selecting a map exent and zoom level (and optionally performing a spatial query
+                using the Google search too), perform two steps:
+            </p>
+            <ul>Steps For Publishing
+                <li>
+                     1. If you haven't subscribed to a Pusher channel or entered a user/collaborator name,
+                      open the "Set Pusher Channel" menu, and follow the instructions to enter these details.
+                </li>
+                <li>
+                    2. Open the "Publish Current Url" menu and click the "Publish Url" button.
+                    This will open a new window with the current zoom, extent, and search results on the
+                    publisher's system, and will open the same new window on all collaborators' systems.
+                </li>
+            </ul>
+            <br>
+            <br>
+            <h2>For ArcGIS Online Map</h2>
+            <br>
+            <ul>Steps for Sharing
+                <li>
+                     1. Open the "Copy MapLinkr Url" menu. The url for the current host site will be inserted
+                     in the text field and will be focused and selected.
+                </li>
+                <li>
+                     2. Use Ctrl-C to copy it to the clipboard.
+                </li>
+                <li>
+                     3. Paste the link in a text message or email to collaborators or in a shared chat window.
+                </li>
+            </ul>
+            <br>
+            <p>
+                The url includes the name of the Pusher channel that you have selected.
+                As users open  the link, they will be subscribing to share map clicks, pans and zooms
+                with all other users as any user manipulates any map view.
+            </p>
+            <p>
+                The Pusher channel can also be set without opening a new map viewer by opening the
+                "Set  Pusher Channel" menu option.  Share this channel name with collaborators to
+                synchronize their displays with your display.  This step is necessary if you and
+                your collaborators want to synchronize map views where all collaborators already
+                have synchronize-capable maps open.
+            </p>
+            <p>
+                At any time a user has opened a new ArcGIS map and desires to share the map with
+                collaborators, the "Publish Current Url" menu provides the necessary tool.  The
+                user opens the menu option in the window containing the map to be shared and clicks
+                the "Publish Url" button.
+            </p>
+            <br>
+
+        </ion-card-content>
+    </ion-card>
+
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">dismiss
+    <!--
+        <span ion-text color="primary" showWhen="ios">Cancel</span>
+        <ion-icon name="md-close" showWhen="android, windows"></ion-icon>
+    -->
+      </button>
+    </ion-buttons>
+</ion-content>
