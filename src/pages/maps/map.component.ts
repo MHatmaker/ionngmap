@@ -44,12 +44,10 @@ declare var google;
   // styleUrls: ['./map.component.scss']
 })
 export class MapsPage implements AfterViewInit {
-    private selectedMapType : string = 'google';
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
     private menuActions = {};
     private pusherEventHandler : PusherEventHandler;
-    private shr : IMapShare = null;
     private mapHosterDict : Map<string, any> = new Map<string, any>([
         ['google', MultiCanvasGoogle],
         ['arcgis', MultiCanvasEsri],
@@ -119,9 +117,9 @@ export class MapsPage implements AfterViewInit {
             console.log("mapOpener.openMap subscriber entered");
             console.log(`source is ${data.source}`);
             if(data.source == EMapSource.urlgoogle) {
-                this.addCanvas('google', data, null, 'nowebmap');
+                this.addCanvasGoogle(data,);
             } else if (data.source == EMapSource.placesgoogle){
-                this.addCanvas('google', data, null, 'nowebmap');
+                this.addCanvasGoogle(data);
             } else if (data.source == EMapSource.sharegoogle || data.source == EMapSource.srcagonline) {
                 this.onNewMapPosition(data);
             } else {
@@ -154,10 +152,7 @@ export class MapsPage implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this.addCanvas(this.selectedMapType, this.mlconfig, null);
-    // this.addCanvas('google', null, null);
     this.pusherEventHandler = new PusherEventHandler(-101);
-    // this.pusherEventHandler.addEvent('client-NewMapPosition', this.onNewMapPosition);
   }
 
   ionViewDidLoad() {
@@ -216,10 +211,10 @@ export class MapsPage implements AfterViewInit {
       console.log(`onNewMapPosition - Open new window with name ${nextWindowName}, query : ${opts.mapLocOpts.query},
             source : ${opts.source}`);
       let referrerName = opts.userName;
-
+      // this isn't a shared map if it is coming from us and we aleady have it open
       if (this.hostConfig.getUserName() !== referrerName) {
           if(opts.source == EMapSource.sharegoogle) {
-                  this.addCanvas('google', opts, null, 'nowebmap');
+                  this.addCanvasGoogle(opts);
           }
           else if (opts.source == EMapSource.srcagonline) {
                 console.log(`addCanvas with arcgis, source : ${opts.source}`)
@@ -228,13 +223,100 @@ export class MapsPage implements AfterViewInit {
       }
   }
 
+  async addCanvasGoogle(opts : IMapShare) {
+    let ipos : IPosition = null,
+        mlConfig : MLConfig,
+        currIndex : number = this.mapInstanceService.getNextSlideNumber();
+    let cfg = this.mapInstanceService.getRecentConfig(); // is this  the first map opened on startup
+    if (cfg === null) {
+        if (opts.source == EMapSource.urlgoogle) { // someone sent us a url in email or message
+            console.log("get maploc from maploc argument in url");
+            console.log(opts.mapLocOpts);
+
+            console.log(`mapLocOpts : lng : ${opts.mapLocOpts.center.lng}, lat : ${opts.mapLocOpts.center.lat}`);
+            ipos = new MLPosition(opts.mapLocOpts.center.lng, opts.mapLocOpts.center.lat, opts.mapLocOpts.zoom);
+            console.log("ipos");
+            console.log(ipos);
+            console.log(opts.mapLocOpts);
+            let urlquery = this.hostConfig.getQuery(); // was read from location.search on app initialization
+            console.log(`urlquery is ${urlquery}`);
+            // alert (urlquery);
+            if(urlquery && urlquery != '') {
+                if(! this.mapInstanceService.getHiddenMap() ) {
+                    let startupQuery = this.hostConfig.assembleStartupQuery();
+                    let mapLocOpts = startupQuery.mapLocOpts;
+                    ipos = <IPosition>{'lon' : mapLocOpts.center.lng, 'lat' : mapLocOpts.center.lat,
+                        'zoom' : mapLocOpts.zoom};
+                }
+            }
+        } else {
+            // This should have happened on the first map instance in canvasService ctor
+            console.log("get maploc from initial location from gps");
+            await this.canvasService.awaitInitialLocation();
+            opts.mapLocOpts = this.canvasService.getInitialLocation();
+            console.log(opts.mapLocOpts);
+            ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat,
+                'zoom' : opts.mapLocOpts.zoom};
+        }
+        let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : 'google',
+            webmapId : null, mlposition :ipos, source : opts.source, bounds : opts.mlBounds}; //  cfg.getBounds()};
+        console.log(cfgparams);
+        mlConfig = new MLConfig(cfgparams);
+      } else { // this is'nt the first map oened in this session
+          if(opts.source == EMapSource.placesgoogle || opts.source == EMapSource.sharegoogle) {
+              ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat,
+                      'zoom' : opts.mapLocOpts.zoom};
+          } else {
+              console.log('create maploc at initial position');
+              let initialMaploc = this.canvasService.getInitialLocation();
+              opts.mapLocOpts = initialMaploc;
+              ipos = <IPosition>{'lon' : initialMaploc.center.lng, 'lat' : initialMaploc.center.lat,
+                  'zoom' : initialMaploc.zoom};
+          }
+
+          let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : 'google',
+              webmapId : null, mlposition :ipos, source : opts.source, bounds : cfg.getBounds()};
+          console.log(cfgparams);
+          mlConfig = new MLConfig(cfgparams);
+      }
+
+      mlConfig.setUserName(this.pusherConfig.getUserName());
+      console.log("setInitialPlaces with places:");
+      console.log(opts.mapLocOpts.places);
+      mlConfig.setInitialPlaces(opts.mapLocOpts.places);
+        console.log(`setQuery with ${opts.mapLocOpts.query}`);
+      mlConfig.setQuery(opts.mapLocOpts.query);
+      if(opts.source == EMapSource.urlgoogle) {
+          mlConfig.setSearch(this.hostConfig.getSearch());
+          mlConfig.setQuery(this.hostConfig.getQuery());
+      }
+
+      if (currIndex == 0) {
+          this.mapInstanceService.setConfigInstanceForMap(0, mlConfig);
+      } else {
+          if(opts.source == EMapSource.sharegoogle || opts.source == EMapSource.placesgoogle) {
+              console.log('get config from shared config');
+              this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
+          } else {
+              console.log("get config from map in previous slide");
+              mlConfig.setConfigParams(this.mapInstanceService.getRecentConfig().getConfigParams());
+              // mlConfig.setConfigParams(this.mapInstanceService.getConfigInstanceForMap(
+              //     currIndex - 1).getConfigParams());
+              mlConfig.setSource(opts.source);
+              this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
+          }
+      }
+      let mapTypeToCreate = this.mapHosterDict.get('google');
+
+      let appendedElem = this.canvasService.addCanvas('google', mapTypeToCreate, opts.source, mlConfig, opts.mapLocOpts);
+  }
+
   async addCanvas (mapType : string, opts : IMapShare, mlcfg : MLConfig, ago : string) {
       console.log("in map.component.addCanvas");
       var currIndex : number = this.mapInstanceService.getNextSlideNumber(),
           appendedElem : HTMLElement,
           mapTypeToCreate,
           ipos : IPosition,
-          startquery : string = '',
           agoId : string = ago,
           mlConfig,
           userName = this.pusherConfig.getUserName();
@@ -269,24 +351,17 @@ export class MapsPage implements AfterViewInit {
                   ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat, 'zoom' : opts.mapLocOpts.zoom};
               }
             } else {
-                  // there is already a map open in the slide viewer
+                  // there is already at least one map open in the slide viewer
                   if(opts.source != EMapSource.sharegoogle) {
                       let gmquery = this.hostConfig.getQuery();
                       console.log(`gmquery is ${gmquery}`);
                       // alert (gmquery);
                       if(gmquery && gmquery != '') {
                           if(! this.mapInstanceService.getHiddenMap() ) {
-                              let bnds = this.hostConfig.getBoundsFromUrl();
-                              let lng = +this.hostConfig.lon();
-                              let lat = +this.hostConfig.lat();
-                              let zm = +this.hostConfig.zoom();
-                              let opts = <MapLocOptions>{center : {lng : lng, lat : lat}, zoom : zm, places : null, query : gmquery};
-                              this.shr = <IMapShare>{mapLocOpts : opts, userName : this.hostConfig.getUserName(), mlBounds : bnds,
-                                  source : EMapSource.urlgoogle, webmapId : agoId};
-                              this.hostConfig.setStartupQuery(this.shr);
-                              opts.query = gmquery;
-                              ipos = <IPosition>{'lon' : lng, 'lat' : lat, 'zoom' : zm};
-                              this.selectedMapType = 'google';
+                              let startupQuery = this.hostConfig.assembleStartupQuery();
+                              let mapLocOpts = startupQuery.mapLocOpts;
+                              ipos = <IPosition>{'lon' : mapLocOpts.center.lng, 'lat' : mapLocOpts.center.lat,
+                                  'zoom' : mapLocOpts.zoom};
                           }
                         } else {
                           if(opts.source == EMapSource.placesgoogle) {

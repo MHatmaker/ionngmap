@@ -6,6 +6,7 @@ import {
 import { PusherConfig } from './PusherConfig';
 import { utils } from './utils';
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../../services/positionupdate.interface';
+import { EMapSource } from '../../../services/configparams.service';
 import { Http } from '@angular/http';
 // import { MapLocOptions, MapLocCoords } from '../../../services/positionupdate.interface';
 // import { IPosition } from '../../../services/position.service'
@@ -331,6 +332,16 @@ export class HostConfig implements IHostConfigDetails {
     }
     getStartupQuery() : IMapShare {
         return this.details.startupQuery;
+    }
+    assembleStartupQuery() : IMapShare {
+      let bnds = this.getBoundsFromUrl();
+      let lng = +this.lon();
+      let lat = +this.lat();
+      let zm = +this.zoom();
+      let opts = <MapLocOptions>{center : {lng : lng, lat : lat}, zoom : zm, places : null, query : this.getQuery()};
+      this.details.startupQuery = <IMapShare>{mapLocOpts : opts, userName : this.getUserName(), mlBounds : bnds,
+          source : EMapSource.urlgoogle, webmapId : '-99'};
+      return this.details.startupQuery;
     }
 
     setQuery  (q: string) {
