@@ -145,7 +145,7 @@ export class MapsPage implements AfterViewInit {
               mlcfg.setBounds(xtnt);
               let opts : IMapShare = {mapLocOpts : mploc, userName : this.hostConfig.getUserName(), mlBounds : xtnt,
                   source : EMapSource.srcagonline, webmapId : data.id};
-              this.addCanvas('arcgis', opts, mlcfg, data.id);
+              this.addCanvasArcGIS(opts, mlcfg, data.id);
           }
       });
       modal.present();
@@ -217,8 +217,14 @@ export class MapsPage implements AfterViewInit {
                   this.addCanvasGoogle(opts);
           }
           else if (opts.source == EMapSource.srcagonline) {
-                console.log(`addCanvas with arcgis, source : ${opts.source}`)
-                  this.addCanvas('arcgis', opts, null, opts.webmapId);
+                console.log(`addCanvas with arcgis, source : ${opts.source}`);
+                let ipos = opts.mapLocOpts.center;
+                let zm = opts.mapLocOpts.zoom;
+                let cntr : IPosition = new MLPosition(ipos.lng, ipos.lat, zm);
+                let mlcfg = new MLConfig({mapId : -1, mapType : 'arcgis', webmapId : opts.webmapId,
+                  mlposition : cntr, source : EMapSource.srcagonline, bounds : opts.mlBounds});
+
+                this.addCanvasArcGIS(opts, mlcfg, opts.webmapId);
           }
       }
   }
@@ -311,6 +317,33 @@ export class MapsPage implements AfterViewInit {
       let appendedElem = this.canvasService.addCanvas('google', mapTypeToCreate, opts.source, mlConfig, opts.mapLocOpts);
   }
 
+  async addCanvasArcGIS (opts : IMapShare, mlcfg : MLConfig, ago : string) {
+      console.log("in map.component.addCanvasArcGIS");
+      var currIndex : number = this.mapInstanceService.getNextSlideNumber(),
+          appendedElem : HTMLElement,
+          mapTypeToCreate,
+          ipos : IPosition,
+          agoId : string = ago,
+          mlConfig : MLConfig = mlcfg,
+          userName = this.pusherConfig.getUserName();
+      if (mlcfg) {
+          mlConfig = mlcfg;
+          mlConfig.setMapId(currIndex);
+          mlConfig.setUserName(userName);
+          // mlConfig.setHardInitialized(true);
+          mlConfig.setInitialPlaces(opts.mapLocOpts.places);
+            mlConfig.setQuery(opts.mapLocOpts.query);
+            if( opts.source == EMapSource.srcagonline) {
+                mlConfig.setSearch(this.hostConfig.getSearch());
+                mlConfig.setQuery(this.hostConfig.getQuery());
+            }
+          this.mapInstanceService.setConfigInstanceForMap(currIndex, mlConfig);
+      }
+
+      mapTypeToCreate = this.mapHosterDict.get('arcgis');
+      appendedElem = this.canvasService.addCanvas('arcgis', mapTypeToCreate, opts.source, mlConfig, opts.mapLocOpts); // mlcfg, resolve); //appendNewCanvasToContainer(mapTypeToCreate, currIndex);
+
+  }
   async addCanvas (mapType : string, opts : IMapShare, mlcfg : MLConfig, ago : string) {
       console.log("in map.component.addCanvas");
       var currIndex : number = this.mapInstanceService.getNextSlideNumber(),
