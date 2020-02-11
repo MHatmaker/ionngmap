@@ -27,6 +27,9 @@ export class HiddenmapComponent {
               this.addHiddenCanvas();
             }
       });
+      mapOpener.addHiddenCanvas.subscribe(() => {
+          this.addHiddenCanvas();
+      });
   }
 
   addHiddenCanvas(){

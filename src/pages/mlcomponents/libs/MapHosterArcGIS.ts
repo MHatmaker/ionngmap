@@ -2,6 +2,8 @@ import {Injectable, OnInit, ElementRef} from '@angular/core';
 import { MLConfig } from './MLConfig';
 import { PusherConfig } from './PusherConfig';
 import { PusherClientService } from '../../../services/pusherclient.service';
+import { MapInstanceService } from '../../../services/MapInstanceService';
+import { MapopenerProvider } from '../../../providers/mapopener/mapopener';
 import { utils } from './utils';
 // import { ConfigParams } from '../../../services/configparams.service';
 // import { GeoCoder } from './GeoCoder';
@@ -89,6 +91,9 @@ export class MapHosterArcGIS extends MapHoster implements OnInit {
         this.cntryG = pos.lat;
         this.zmG = pos.zoom;
         this.utils = AppModule.injector.get(utils);
+            // let mpopn = AppModule.injector.get(MapopenerProvider);
+            // mpopn.addHiddenCanvas.emit();
+            // this.updateGlobals("adding hidden canvas updateGlobals", pos.lon, pos.lat, pos.zoom);
     }
 
     async initializeMap() {

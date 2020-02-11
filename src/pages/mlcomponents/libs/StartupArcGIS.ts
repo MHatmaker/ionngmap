@@ -209,7 +209,7 @@ export class StartupArcGIS  extends Startup {
               {'destination' : "destPlaceHolder", 'currentMapHolder' : this.mapHoster, 'newWindowId' : "windowIdPlaceholder"}
           );
           if (!this.pusher) {
-              console.log("failed to create Pusher in StartupGoogle");
+              console.log("failed to create Pusher in StartupArcGIS");
           }
 
       } else {
@@ -239,6 +239,7 @@ export class StartupArcGIS  extends Startup {
           // mph = new MapHosterArcGIS(window.map, zoomWebMap, pointWebMap);
           console.log("use current pusher - now setPusherClient");
           this.mapHoster.setPusherClient(currentPusher, currentChannel);
+          await this.mapHoster.configureMap(this.aMap, this.zoomWebMap, this.pointWebMap, this.mlconfig);
           // this.placeCustomControls();  // MOVED TEMPORARILY on 3/15
           // this.setupQueryListener();
       }

@@ -8,6 +8,7 @@ import { EMapSource } from '../../services/configparams.service';
 @Injectable()
 export class MapopenerProvider implements IMapShare {
     openMap = new EventEmitter<IMapShare>();
+    addHiddenCanvas = new EventEmitter<any>();
     center : MapLocCoords;
     zoom : number;
     places : any;

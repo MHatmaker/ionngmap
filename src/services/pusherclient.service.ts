@@ -249,7 +249,9 @@ export class PusherClientService {
     }
 
     createHiddenPusherClient(evtDct : IEventDct) {
+        this.CHANNELNAME = this.pusherConfig.getPusherChannel();
         this.clients['hiddenmap'] = new PusherClient(evtDct, 'hiddenmap', 'hiddenmap', 99);
+        this.PusherChannel(this.CHANNELNAME);
     }
 
     setupPusherClient (resolve, reject) {

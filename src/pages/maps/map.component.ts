@@ -1,5 +1,6 @@
 import {
     Component,
+    ViewChild,
     AfterViewInit} from '@angular/core';
 import { IonicPage, ModalController } from 'ionic-angular';
 import { IPosition, MLPosition } from '../../services/position.service';
@@ -29,6 +30,7 @@ import { PushersetupComponent } from "../../components/pushersetup/pushersetup";
 import { MsgsetupComponent } from "../../components/msgsetup/msgsetup";
 import { AgogroupComponent } from "../../components/agogroup/agogroup";
 import { AgoitemComponent } from "../../components/agoitem/agoitem";
+import { HiddenmapComponent } from "../../components/hiddenmap/hiddenmap";
 import { MapopenerProvider } from "../../providers/mapopener/mapopener";
 import { MapLocOptions, MapLocCoords, IMapShare } from '../../services/positionupdate.interface';
 import { MLBounds, ImlBounds } from '../../services/mlbounds.service';
@@ -44,6 +46,8 @@ declare var google;
   // styleUrls: ['./map.component.scss']
 })
 export class MapsPage implements AfterViewInit {
+    @ViewChild(HiddenmapComponent) private hiddenMap:
+      HiddenmapComponent;
     private outerMapNumber : number = 0;
     private mlconfig : MLConfig;
     private menuActions = {};
@@ -142,7 +146,10 @@ export class MapsPage implements AfterViewInit {
               let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null, query: null};
               let mlcfg = new MLConfig({mapId : -1, mapType : 'arcgis', webmapId : data.id,
                 mlposition : cntr, source : EMapSource.srcagonline, bounds : xtnt});
-              mlcfg.setBounds(xtnt);
+              mlcfg.setBounds(xtnt);// this is'nt the first map oened in this session
+              if(! this.mapInstanceService.getHiddenMap() ) {
+                  this.mapOpener.addHiddenCanvas.emit();
+              }
               let opts : IMapShare = {mapLocOpts : mploc, userName : this.hostConfig.getUserName(), mlBounds : xtnt,
                   source : EMapSource.srcagonline, webmapId : data.id};
               this.addCanvasArcGIS(opts, mlcfg, data.id);
@@ -179,6 +186,9 @@ export class MapsPage implements AfterViewInit {
           if(mode == 'showme') {
             this.canvasService.addInitialCanvas(this.pusherConfig.getUserName());
           } else {
+            let modal = this.modalCtrl.create(PushersetupComponent);
+            modal.present();
+            this.searchMap();
             return;
           }
         });
@@ -200,6 +210,11 @@ export class MapsPage implements AfterViewInit {
           'google' : EMapSource.srcgoogle,
           'arcgis' : EMapSource.srcagonline,
           'leaflet': EMapSource.srcleaflet
+      }
+      let opts : IMapShare = {mapLocOpts : null, userName : this.hostConfig.getUserName(), mlBounds : null,
+          source : EMapSource.srcagonline, webmapId : 'nowebmap'};
+      if(menuOption.displayName == 'google') {
+          this.addCanvasGoogle(opts);
       }
       // this.addCanvas( menuOption.displayName, srcdct[menuOption.displayName], null, null, 'nowebmap');
   }
@@ -265,10 +280,13 @@ export class MapsPage implements AfterViewInit {
                 'zoom' : opts.mapLocOpts.zoom};
         }
         let cfgparams = <IConfigParams>{mapId : this.outerMapNumber, mapType : 'google',
-            webmapId : null, mlposition :ipos, source : opts.source, bounds : opts.mlBounds}; //  cfg.getBounds()};
+            webmapId : null, mlposition :ipos, source : opts.source, bounds : opts.mlBounds};
         console.log(cfgparams);
         mlConfig = new MLConfig(cfgparams);
       } else { // this is'nt the first map oened in this session
+          if(! this.mapInstanceService.getHiddenMap() ) {
+              this.mapOpener.openMap.emit(null);
+          }
           if(opts.source == EMapSource.placesgoogle || opts.source == EMapSource.sharegoogle) {
               ipos = <IPosition>{'lon' : opts.mapLocOpts.center.lng, 'lat' : opts.mapLocOpts.center.lat,
                       'zoom' : opts.mapLocOpts.zoom};
