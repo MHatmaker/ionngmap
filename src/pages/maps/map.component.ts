@@ -185,6 +185,8 @@ export class MapsPage implements AfterViewInit {
           console.log(mode);
           if(mode == 'showme') {
             this.canvasService.addInitialCanvas(this.pusherConfig.getUserName());
+          } else if (mode == 'usequery') {
+            console.log('must be a request for Ago Online item on startup')
           } else {
             let modal = this.modalCtrl.create(PushersetupComponent);
             modal.present();

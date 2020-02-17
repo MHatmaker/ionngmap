@@ -45,7 +45,6 @@ export class PusherClientService {
     private eventHandlers : Map<string, IEventDct>;
     private mapNumber : number;
     private clientName : string;
-    private mlconfig : MLConfig;
 
     private statedata = {
         privateChannelMashover : null, // PusherConfig.masherChannel(),
@@ -61,10 +60,6 @@ export class PusherClientService {
         private mapInstanceService: MapInstanceService,
         private mapOpener : MapopenerProvider
       ){
-    }
-
-    setMLConfig(mlcfg : MLConfig) {
-        this.mlconfig = mlcfg;
     }
 
     preserveState () {
@@ -100,12 +95,25 @@ export class PusherClientService {
         this.restoreState();
     }
 
+    traverseClients(evt, frame) {
+        var clientName : string;
+        var client : any;
+        for(clientName in this.clients){
+          if (this.clients[clientName]) {
+                client = this.clients[clientName]
+                if (client.eventHandlers.hasOwnProperty(evt)) {
+                    client.eventHandlers[evt](frame);
+                }
+            }
+        }
+    }
 
     PusherChannel(chnl) {
         var // pusher,
             // APP_ID = '40938',
             APP_KEY = this.pusherConfig.getAppKey(),
-            APP_SECRET = this.pusherConfig.getSecretKey(),            channel = chnl,
+            APP_SECRET = this.pusherConfig.getSecretKey(),
+            channel = chnl,
             channelBind,
             chlength = channel.length,
             channelsub = channel.substring(1);
@@ -150,12 +158,12 @@ export class PusherClientService {
         channelBind.bind('client-NewUrlEvent', function (frame) {
             console.log('frame is', frame);
             // eventDct['client-NewUrlEvent'](frame);
-            console.log("back from NewUrlEvent");
+            console.log("currently unsupported NewUrlEvent");
         });
 
         channelBind.bind('client-NewMapPosition', (frame : IMapShare) => {
             console.log('frame is', frame);
-            console.log("back from NewMapPosition Event");
+            console.log("Open slide on NewMapPosition Event");
             this.mapOpener.openMap.emit(frame);
             // this.testShare.testShare.emit(frame);
         });
@@ -164,48 +172,26 @@ export class PusherClientService {
 
         channelBind.bind('client-MapXtntEvent',  (frame) => {
             console.log('frame is', frame);
+            // frame might already have lat, lon, zoom, rather than x, y, z properties
             if (frame.hasOwnProperty('x')) {
                 frame.lat = frame.y;
                 frame.lon = frame.x;
                 frame.zoom = frame.z;
             }
-            var handlerkey : string,
-                obj : IEventDct,
-                clientName,
-                client;
-
-            for(clientName in this.clients){
-              if (this.clients[clientName]) {
-                    client = this.clients[clientName]
-                    if (client.eventHandlers.hasOwnProperty('client-MapXtntEvent')) {
-                        client.eventHandlers['client-MapXtntEvent'](frame);
-                    }
-                }
-            }
-
+            this.traverseClients('client-MapXtntEvent', frame);
 
             console.log("back from boundsRetriever");
         });
 
         channelBind.bind('client-MapClickEvent', (frame) => {
             console.log('frame is', frame);
+            // frame might already have lat, lon, zoom, rather than x, y, z properties
             if (frame.hasOwnProperty('x')) {
                 frame.lat = frame.y;
                 frame.lon = frame.x;
                 frame.zoom = frame.z;
             }
-            var handlerkey,
-                clientName,
-                client,
-                obj;
-            for(clientName in this.clients){
-              if (this.clients[clientName]) {
-                    client = this.clients[clientName]
-                    if (client.eventHandlers.hasOwnProperty('client-MapClickEvent')) {
-                        client.eventHandlers['client-MapClickEvent'](frame);
-                    }
-                }
-            }
+            this.traverseClients('client-MapClickEvent', frame);
             // for (handlerkey in this.eventHandlers) {
             //     if (this.eventHandlers.hasOwnProperty(handlerkey)) {
             //         obj = this.eventHandlers[handlerkey];
@@ -230,14 +216,13 @@ export class PusherClientService {
     }
     createPusherClient(mlcfg, cbfn, nfo) : PusherClient {
         console.log("pusherClientService.createPusherClient");
-        this.mlconfig = mlcfg;
         var
-            mapHoster = this.mlconfig.getMapHosterInstance(),
-            clientName = 'map' + this.pusherConfig.getUserName() + this.mlconfig.getMapNumber();
+            mapHoster = mlcfg.getMapHosterInstance(),
+            clientName = 'map' + this.pusherConfig.getUserName() + mlcfg.getMapNumber();
 
         this.CHANNELNAME = this.pusherConfig.getPusherChannel();
         this.userName = this.pusherConfig.getUserName();
-        this.mapNumber = this.mlconfig.getMapNumber();
+        this.mapNumber = mlcfg.getMapNumber();
 
         this.callbackFunction = cbfn;
         this.info = nfo;
