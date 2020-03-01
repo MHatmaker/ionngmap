@@ -269,6 +269,7 @@ export class StartupArcGIS  extends Startup {
               }
               // basemap : 'streets'
           });
+          console.log(`Hopefully created new esriWebMap with id ${this.mlconfig.getWebmapId(false)}`);
 
           // webMap.add(layer);  // adds the layer to the map
           // viewCreated;
@@ -321,7 +322,7 @@ export class StartupArcGIS  extends Startup {
       // this.aMap = new WebMap({portalItem : {id: 'e691172598f04ea8881cd2a4adaa45ba'}});
 
       // this.aMap = new WebMap({portalItem : {id: 'a4bb8a91ecfb4131aa544eddfbc2f1d0'}});
-      // this.aView = new MapView({
+        // this.aView = new MapView({
       //     map : this.aMap,
       //     container : document.getElementById("map" + this.mapNumber),
       //     zoom : 14,
@@ -403,7 +404,7 @@ export class StartupArcGIS  extends Startup {
               this.mapHosterSetupCallback(this.mapHoster, this.aMap);
           },
             function(error){
-
+              console.log(`The webmap failed to load : ${this.configOptions.webmap}`);
             });
           this.viewCreated.next(this.mapView);
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CanvasService } from '../../../services/CanvasService';
 
 @Component({
@@ -7,14 +7,12 @@ import { CanvasService } from '../../../services/CanvasService';
   styles: ['./multicanvas.component.css']
 })
 
-export class MultiCanvasEsri {
+export class MultiCanvasEsri implements OnInit, AfterViewInit {
     // private el : string = null;
     private ndx : number = null;
     public slidevisibility : string = "multi-can-current";
 
-    constructor(private canvasService: CanvasService) {
-        this.ndx = this.canvasService.getIndex();
-        console.log("ndx is " + this.ndx);
+    constructor(private canvasService: CanvasService, private cd: ChangeDetectorRef) {
         this.canvasService.setCurrent.subscribe((sn: number) =>{
             console.log(`subscriber received id ${sn}`)
             if(sn == this.ndx) {
@@ -35,6 +33,16 @@ export class MultiCanvasEsri {
                 mapParent.appendChild(this.el);
             };
       */
+      ngOnInit() {
+        // this.ndx = this.canvasService.getIndex();
+        // console.log("ndx is " + this.ndx);
+      }
+      ngAfterViewInit() {
+        //this.cd.detectChanges();
+        this.ndx = this.canvasService.getIndex();
+        console.log("ndx is " + this.ndx);
+        this.cd.detectChanges();
+      }
 
     onMouseDown (event) {
         console.log('onMouseDown: '); //, this.el);

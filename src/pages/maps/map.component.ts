@@ -2,7 +2,7 @@ import {
     Component,
     ViewChild,
     AfterViewInit} from '@angular/core';
-import { IonicPage, ModalController } from 'ionic-angular';
+import { IonicPage, ModalController, AlertController, AlertOptions } from 'ionic-angular';
 import { IPosition, MLPosition } from '../../services/position.service';
 import { IConfigParams, EMapSource } from '../../services/configparams.service';
 import { MLConfig } from '../mlcomponents/libs/MLConfig';
@@ -60,7 +60,7 @@ export class MapsPage implements AfterViewInit {
 
   constructor( private mapInstanceService : MapInstanceService, private canvasService : CanvasService,
               private slideshareService : SlideShareService, pageService : PageService,
-              private slideViewService : SlideViewService, private modalCtrl : ModalController,
+              private slideViewService : SlideViewService, private modalCtrl : ModalController, private agoAlert : AlertController,
               private mapOpener : MapopenerProvider, private hostConfig : HostConfig, private pusherConfig : PusherConfig) {
     // If we navigated to this page, we will have an item available as a nav param
     //this.selectedMapType = navParams.subItems.length == 0 ?  'google' : navParams.subItems[0].displayName; //get('title');
@@ -124,13 +124,20 @@ export class MapsPage implements AfterViewInit {
                 this.addCanvasGoogle(data,);
             } else if (data.source == EMapSource.placesgoogle){
                 this.addCanvasGoogle(data);
-            } else if (data.source == EMapSource.sharegoogle || data.source == EMapSource.srcagonline) {
+            } else if (data.source == EMapSource.sharegoogle) {
                 this.onNewMapPosition(data);
+            } else if (data.source == EMapSource.srcagonline) {
+                this.onNewMapPosition(data);
+            } else if (data.source == EMapSource.urlagonline) {
+                this.openArcGISMapOnStartup();
             } else {
                 console.log("invalid EMapSource");
             }
       });
-      this.showLocate(true);
+      if (this.hostConfig.getWebmapId(true) == '') {
+          console.log("does not appear to be a webmap");
+          this.showLocate(true);
+      }
 
   }
   async searchMap() {
@@ -160,12 +167,53 @@ export class MapsPage implements AfterViewInit {
 
   ngAfterViewInit() {
     this.pusherEventHandler = new PusherEventHandler(-101);
+    if (this.hostConfig.getWebmapId(true) != '')  {
+          this.mapOpener.openMap.emit({
+              mapLocOpts : null,
+              userName : null,
+              mlBounds : null,
+              source : EMapSource.urlagonline,
+              webmapId : ""
+            })
+      }
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MapsPage');
   }
+  async presentAlert() {
+    const alert = await this.agoAlert.create({
+      title: 'ArcGIS Online',
+      subTitle: 'Webmap',
+      message: 'Hold on for an AGO webmap',
+      buttons: ['OK']
+    });
 
+    await alert.present();
+  }
+  async openArcGISMapOnStartup() {
+    if (this.hostConfig.getWebmapId(true) != '') {
+          console.log("appears to be a webmap");
+          await this.presentAlert();
+          // let xtnt : MLBounds = data.defaultExtent; //new MLBounds(data.extent[0][0], data.extent[0][1], data.extent[1][0], data.extent[1][1]);
+          let lon = +this.hostConfig.lon();
+          let lat = +this.hostConfig.lat();
+          let zm = +this.hostConfig.zoom();
+          let cntr : IPosition = new MLPosition(lon, lat, zm);
+          let mplocCoords : MapLocCoords = {lat: lat, lng: lon};
+          let mploc : MapLocOptions = {center: mplocCoords, zoom: 15, places: null, query: null};
+          let wmId = this.hostConfig.getWebmapId(true);
+          let mlcfg = new MLConfig({mapId : -1, mapType : 'arcgis', webmapId : wmId,
+            mlposition : cntr, source : EMapSource.urlagonline, bounds : null});
+          // mlcfg.setBounds(xtnt);// this is'nt the first map oened in this session
+          if(! this.mapInstanceService.getHiddenMap() ) {
+              this.mapOpener.addHiddenCanvas.emit(null);
+          }
+          let opts : IMapShare = {mapLocOpts : mploc, userName : this.hostConfig.getUserName(), mlBounds : null,
+              source : EMapSource.srcagonline, webmapId : wmId};
+          this.addCanvasArcGIS(opts, mlcfg, wmId);
+      }
+  }
   showUsing() {
     let modal = this.modalCtrl.create(LinkrhelpComponent);
     modal.present();
@@ -186,7 +234,8 @@ export class MapsPage implements AfterViewInit {
           if(mode == 'showme') {
             this.canvasService.addInitialCanvas(this.pusherConfig.getUserName());
           } else if (mode == 'usequery') {
-            console.log('must be a request for Ago Online item on startup')
+            console.log('must be a request for Ago Online item on startup');
+            this.hostConfig.showConfig('showConfig for ago url startup');
           } else {
             let modal = this.modalCtrl.create(PushersetupComponent);
             modal.present();

@@ -52,7 +52,7 @@ export interface IHostConfigDetails {
 @Injectable()
 export class HostConfig implements IHostConfigDetails {
     public details = {
-        webmapId : "f52bc3aee47749c380ddb0cd89337349",
+        webmapId : "",
         lat : '',
         lon : '',
         zoom : '',
@@ -134,6 +134,9 @@ export class HostConfig implements IHostConfigDetails {
     setSearch  (searchdetails: string) {
         this.details.search = searchdetails;
         this.details.query = this.getQueryFromUrl();
+        // if (this.details.webmapId != "") {
+        //     this.details.mapHost = "arcgis";
+        // }
     }
     getSearch() : string {
         return this.details.search;
