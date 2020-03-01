@@ -13,6 +13,8 @@ export class MultiCanvasEsri implements OnInit, AfterViewInit {
     public slidevisibility : string = "multi-can-current";
 
     constructor(private canvasService: CanvasService, private cd: ChangeDetectorRef) {
+        this.ndx = this.canvasService.getIndex();
+        console.log("ndx is " + this.ndx);
         this.canvasService.setCurrent.subscribe((sn: number) =>{
             console.log(`subscriber received id ${sn}`)
             if(sn == this.ndx) {
@@ -39,9 +41,9 @@ export class MultiCanvasEsri implements OnInit, AfterViewInit {
       }
       ngAfterViewInit() {
         //this.cd.detectChanges();
-        this.ndx = this.canvasService.getIndex();
-        console.log("ndx is " + this.ndx);
-        this.cd.detectChanges();
+        // this.ndx = this.canvasService.getIndex();
+        // console.log("ndx is " + this.ndx);
+        // this.cd.detectChanges();
       }
 
     onMouseDown (event) {
