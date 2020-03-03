@@ -631,11 +631,13 @@ export class MapHosterGoogle extends MapHoster {
             //     this.mlconfig.setQuery(gmQuery);
             // }
             // if (this.searchFiredFromUrl === true) {
-            if (this.mlconfig.getSource() == EMapSource.urlgoogle || this.mlconfig.getSource() == EMapSource.sharegoogle) {
+            if (this.mlconfig.getSource() == EMapSource.placesgoogle ||
+                  this.mlconfig.getSource() == EMapSource.urlgoogle ||
+                  this.mlconfig.getSource() == EMapSource.sharegoogle) {
                 console.log("getBoundsFromUrl or from share config.......in MapHosterGoogle 'tilesloaded' listener");
                 bnds = this.mlconfig.getBounds();
                 qtext = this.mlconfig.getQuery();
-                if (this.mlconfig.getSource() == EMapSource.sharegoogle) {
+                if (this.mlconfig.getSource() == EMapSource.sharegoogle || this.mlconfig.getSource() == EMapSource.placesgoogle) {
                     let xtExt = this.extractBounds('pan');
                     this.pusherClientService.publishPanEvent(xtExt);
                 }
