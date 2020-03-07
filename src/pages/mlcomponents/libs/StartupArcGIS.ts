@@ -55,6 +55,7 @@ export class StartupArcGIS  extends Startup {
     private mlconfig : MLConfig;
     private elementRef : ElementRef;
     private mapOptions : any;
+    private mapNumber : number;
     private utils : any;
     private pusherConfig : PusherConfig;
 
@@ -76,9 +77,9 @@ export class StartupArcGIS  extends Startup {
               this.esriSpatialReference = SpatialReference;
     }
 
-    constructor (private mapNumber : number, mlconfig : MLConfig) {
+    constructor () {
         super();
-        //this.utils = AppModule.injector.get(utils);
+        let mapInstanceService = AppModule.injector.get(MapInstanceService);
         this.pusherConfig = AppModule.injector.get(PusherConfig);
         // @Output()
             this.viewCreated = new EventEmitter();
@@ -101,9 +102,14 @@ export class StartupArcGIS  extends Startup {
               this.esriSpatialReference = SpatialReference;
           });
           */
-        this.mlconfig = mlconfig;
-        this.mlconfig.setMapNumber(mapNumber);
-        this.mlconfig.setUserId(this.pusherConfig.getUserName() + mapNumber);
+
+        this.mapNumber = mapInstanceService.getNextSlideNumber();
+        this.mlconfig = mapInstanceService.getConfigForMap(this.mapNumber);
+        if(!this.mlconfig) {
+            this.mapNumber = 0;
+            this.mlconfig = mapInstanceService.getConfigInstanceForMap(0);
+        }
+        this.mlconfig.setUserId(this.pusherConfig.getUserName() + this.mapNumber);
     }
 
   configure  (newMapId, mapLocOpts, elementRef) {

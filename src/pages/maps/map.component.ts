@@ -205,6 +205,7 @@ export class MapsPage implements AfterViewInit {
           let wmId = this.hostConfig.getWebmapId(true);
           let mlcfg = new MLConfig({mapId : -1, mapType : 'arcgis', webmapId : wmId,
             mlposition : cntr, source : EMapSource.urlagonline, bounds : null});
+          this.mapInstanceService.setConfigInstanceForMap(0, mlcfg);
           // mlcfg.setBounds(xtnt);// this is'nt the first map oened in this session
           if(! this.mapInstanceService.getHiddenMap() ) {
               this.mapOpener.addHiddenCanvas.emit(null);

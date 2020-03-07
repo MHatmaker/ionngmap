@@ -44,9 +44,6 @@ export class EsriMapComponent implements OnInit {
   constructor(private mapService: ESRIMapService, private geolocation : Geolocation,
       private mapInstanceService: MapInstanceService,
       private elementRef: ElementRef, private utils : utils) {
-      this.mapNumber = this.mapInstanceService.getNextSlideNumber();
-      this.startup = new StartupArcGIS(this.mapNumber,
-          this.mapInstanceService.getConfigForMap(this.mapNumber));
   }
 
   ngOnInit() {
@@ -68,6 +65,8 @@ export class EsriMapComponent implements OnInit {
               }),
               zoom: 15
             };
+      this.mapNumber = this.mapInstanceService.getNextSlideNumber();
+      this.startup = new StartupArcGIS();
             this.startup.configure('esri-map-component' + this.mapNumber, mapOptions, this.elementRef.nativeElement.firstChild);
 
 });
